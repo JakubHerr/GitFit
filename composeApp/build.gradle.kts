@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.googleServices)
 }
 
 kotlin {
@@ -37,9 +36,13 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.kotlinx.datetime)
-            implementation(project.dependencies.platform(libs.firebase))
-            implementation(libs.gitlive.firebase.firestore)
-            implementation(libs.gitlive.firebase.auth)
+
+            implementation(project.dependencies.platform(libs.supabase.bom))
+            implementation(libs.supabase.postgrest)
+            implementation(libs.supabase.auth)
+
+            implementation(libs.ktor.core)
+            implementation(libs.ktor.android)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

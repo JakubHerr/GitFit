@@ -1,4 +1,4 @@
-package io.github.jakubherr.gitfit
+package io.github.jakubherr.gitfit.presentation
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -12,10 +12,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.auth
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.mx
+import io.github.jakubherr.gitfit.data.Supabase
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -26,8 +25,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 @Preview
 fun App() {
-    val auth = Firebase.auth // TODO fix desktop implementation
-
     MaterialTheme {
         val scope = rememberCoroutineScope()
         var showContent by remember { mutableStateOf(false) }
@@ -49,9 +46,7 @@ fun App() {
                     TextField(email, onValueChange = { email = it})
                     TextField(password, onValueChange = { password = it}, visualTransformation = PasswordVisualTransformation())
                     Button(onClick = {
-                        scope.launch {
-                            auth.createUserWithEmailAndPassword(email, password)
-                        }
+                        scope.launch { Supabase.registerUser(email, password)}
                     }) {
                         Text("register")
                     }
