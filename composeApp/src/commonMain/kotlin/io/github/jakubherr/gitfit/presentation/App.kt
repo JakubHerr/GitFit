@@ -32,13 +32,13 @@ fun App() {
 
             NavHost(
                 navController = navController,
-                startDestination = "Login"
+                startDestination = "Login",
             ) {
                 composable("Login") {
                     val vm = koinViewModel<AuthViewModel>()
                     LoginScreen(
                         onRegister = { email, pass -> vm.register(email, pass) },
-                        onLogin = { email, pass -> vm.signIn(email, pass) }
+                        onLogin = { email, pass -> vm.signIn(email, pass) },
                     )
                 }
                 composable("Register") { /* TODO */ }
@@ -63,7 +63,7 @@ fun LoginScreen(
     Column(
         Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         TextField(email, onValueChange = { email = it })
 
@@ -72,7 +72,7 @@ fun LoginScreen(
         TextField(
             password,
             onValueChange = { password = it },
-            visualTransformation = PasswordVisualTransformation()
+            visualTransformation = PasswordVisualTransformation(),
         )
 
         Spacer(Modifier.height(16.dp))

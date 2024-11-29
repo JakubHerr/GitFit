@@ -14,7 +14,7 @@ class Supabase {
     ) {
         install(Auth)
         install(Postgrest)
-        //install other modules
+        // install other modules
     }
 
     private val auth = supabase.auth
@@ -22,7 +22,10 @@ class Supabase {
     // TODO
     //  return result?
     //  empty user and password get handled by backend
-    suspend fun registerUser(userEmail: String, userPassword: String) = try {
+    suspend fun registerUser(
+        userEmail: String,
+        userPassword: String,
+    ) = try {
         auth.signUpWith(Email) {
             email = userEmail
             password = userPassword
@@ -31,7 +34,10 @@ class Supabase {
         println("Failed to register user")
     }
 
-    suspend fun signIn(userEmail: String, userPassword: String) = try {
+    suspend fun signIn(
+        userEmail: String,
+        userPassword: String,
+    ) = try {
         auth.signInWith(Email) {
             email = userEmail
             password = userPassword
