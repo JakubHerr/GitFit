@@ -22,7 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.github.jakubherr.gitfit.di.initKoin
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun App() {
@@ -35,7 +35,7 @@ fun App() {
                 startDestination = "Login"
             ) {
                 composable("Login") {
-                    val vm = koinInject<AuthViewModel>()
+                    val vm = koinViewModel<AuthViewModel>()
                     LoginScreen(
                         onRegister = { email, pass -> vm.register(email, pass) },
                         onLogin = { email, pass -> vm.signIn(email, pass) }
