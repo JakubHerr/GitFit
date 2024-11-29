@@ -7,7 +7,7 @@ import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.exceptions.HttpRequestException
 import io.github.jan.supabase.postgrest.Postgrest
 
-object Supabase {
+class Supabase {
     private val supabase = createSupabaseClient(
         supabaseUrl = supabaseUrl,
         supabaseKey = supabaseKey
@@ -19,6 +19,9 @@ object Supabase {
 
     private val auth = supabase.auth
 
+    // TODO
+    //  return result?
+    //  empty user and password get handled by backend
     suspend fun registerUser(userEmail: String, userPassword: String) = try {
         auth.signUpWith(Email) {
             email = userEmail
@@ -27,4 +30,15 @@ object Supabase {
     } catch (e: HttpRequestException) {
         println("Failed to register user")
     }
+
+    suspend fun signIn(userEmail: String, userPassword: String) = try {
+        auth.signInWith(Email) {
+            email = userEmail
+            password = userPassword
+        }
+    } catch (e: HttpRequestException) {
+        println("Failed to sign in user")
+    }
+
+    suspend fun signOut() = auth.signOut()
 }
