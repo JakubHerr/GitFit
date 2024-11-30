@@ -17,7 +17,7 @@ class Supabase {
         // install other modules
     }
 
-    private val auth = supabase.auth
+    val auth = supabase.auth
 
     // TODO
     //  return result?

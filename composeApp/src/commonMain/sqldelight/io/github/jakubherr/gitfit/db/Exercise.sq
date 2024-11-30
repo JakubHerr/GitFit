@@ -1,0 +1,18 @@
+
+CREATE TABLE IF NOT EXISTS Exercise (
+    name TEXT NOT NULL,
+    description TEXT
+);
+
+insert:
+INSERT OR REPLACE INTO Exercise(name, description)
+VALUES (?, ?);
+
+update:
+UPDATE Exercise SET description = ? WHERE name = ?;
+
+selectAll:
+SELECT * FROM Exercise;
+
+clear:
+DELETE FROM Exercise;

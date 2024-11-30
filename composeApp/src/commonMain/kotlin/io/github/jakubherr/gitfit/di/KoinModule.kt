@@ -1,10 +1,11 @@
 package io.github.jakubherr.gitfit.di
 
-import androidx.compose.runtime.Composable
 import io.github.jakubherr.gitfit.data.Supabase
 import io.github.jakubherr.gitfit.presentation.AuthViewModel
-import org.koin.compose.KoinApplication
+import org.koin.core.context.startKoin
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 
 private val apiModule = module {
@@ -15,11 +16,16 @@ private val repositoryModule = module {
 
 }
 
+expect val platformModule: Module
+
 private val viewmodelModule = module {
     viewModel { AuthViewModel(get()) }
 }
 
 private val sharedModules = listOf(viewmodelModule, repositoryModule, apiModule)
 
-@Composable
-fun initKoin(content: @Composable () -> Unit) = KoinApplication(application = { modules(sharedModules) }, content)
+fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
+    config?.invoke(this)
+    modules(sharedModules)
+    modules(platformModule)
+}

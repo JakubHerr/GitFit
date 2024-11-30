@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -27,6 +28,7 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
+            implementation(libs.sqlDelight.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -57,6 +59,7 @@ kotlin {
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.sqlDelight.jvm)
         }
     }
 }
@@ -85,6 +88,19 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+}
+
+ktlint {
+    verbose.set(true)
+    outputToConsole.set(true)
+}
+
+sqldelight {
+    databases {
+        create("LocalDatabase") {
+            packageName.set("io.github.jakubherr.gitfit.db")
+        }
     }
 }
 
