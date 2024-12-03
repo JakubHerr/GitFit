@@ -1,4 +1,4 @@
-package io.github.jakubherr.gitfit.presentation
+package io.github.jakubherr.gitfit.presentation.workout
 
 import androidx.lifecycle.ViewModel
 import io.github.jakubherr.gitfit.domain.Block

@@ -9,6 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.jakubherr.gitfit.presentation.auth.AuthAction
+import io.github.jakubherr.gitfit.presentation.auth.AuthState
+import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 

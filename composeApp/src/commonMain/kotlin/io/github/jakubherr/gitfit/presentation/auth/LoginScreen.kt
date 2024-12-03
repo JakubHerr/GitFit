@@ -1,4 +1,4 @@
-package io.github.jakubherr.gitfit.presentation
+package io.github.jakubherr.gitfit.presentation.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

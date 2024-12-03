@@ -1,4 +1,4 @@
-package io.github.jakubherr.gitfit.presentation
+package io.github.jakubherr.gitfit.presentation.auth
 
 data class AuthState(
     val email: String,
