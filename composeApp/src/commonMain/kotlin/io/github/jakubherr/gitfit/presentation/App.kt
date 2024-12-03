@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.github.jakubherr.gitfit.presentation.auth.LoginScreenRoot
+import io.github.jakubherr.gitfit.presentation.exercise.CreateExerciseScreenRoot
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseListScreenRoot
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutScreenRoot
 import org.koin.compose.KoinContext
@@ -40,9 +41,18 @@ fun App() {
                 composable("Workout") {
                     WorkoutScreenRoot { navController.navigate("Exercise List") }
                 }
+
                 composable("Exercise List") {
-                    ExerciseListScreenRoot()
+                    ExerciseListScreenRoot { navController.navigate("Create Exercise")}
                 }
+                composable("Exercise Detail") {
+                    // TODO
+                }
+                composable("Create Exercise") {
+                    CreateExerciseScreenRoot()
+                }
+
+
                 composable("Measurement") {
                     // TODO
                 }

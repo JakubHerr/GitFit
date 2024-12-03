@@ -12,5 +12,5 @@ class ExerciseViewModel : ViewModel() {
 
 sealed interface ExerciseAction {
     class ExerciseSelected(val id: Long) : ExerciseAction
-    object AddExercise : ExerciseAction
+    object CreateExercise : ExerciseAction
 }

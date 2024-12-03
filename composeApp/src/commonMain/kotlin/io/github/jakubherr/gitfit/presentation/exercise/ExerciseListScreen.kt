@@ -32,11 +32,14 @@ import io.github.jakubherr.gitfit.domain.mockExercise
 // Use case: show a list of existing exercises
 // the purpose is to either browse and show detail or add exercise to workout (real time or planned)
 @Composable
-fun ExerciseListScreenRoot(modifier: Modifier = Modifier) {
+fun ExerciseListScreenRoot(
+    modifier: Modifier = Modifier,
+    onCreateExerciseClick: () -> Unit = {},
+) {
     ExerciseListScreen(
         state = listOf(mockExercise, mockExercise)
-    ) {
-        
+    ) { action ->
+        if (action is ExerciseAction.CreateExercise) onCreateExerciseClick()
     }
 }
 
@@ -44,7 +47,7 @@ fun ExerciseListScreenRoot(modifier: Modifier = Modifier) {
 fun ExerciseListScreen(
     state: List<Exercise>,
     modifier: Modifier = Modifier,
-    onAction: () -> Unit = {},
+    onAction: (ExerciseAction) -> Unit = {},
 ) {
     Column(
         Modifier.fillMaxSize().statusBarsPadding(),
@@ -78,7 +81,7 @@ fun ExerciseListScreen(
             }
         }
         Row {
-            Button(onClick = { /* TODO create new exercise */}) {
+            Button(onClick = { onAction(ExerciseAction.CreateExercise) }) {
                 Text("Create exercise")
             }
         }
