@@ -2,6 +2,7 @@ package io.github.jakubherr.gitfit.di
 
 import io.github.jakubherr.gitfit.data.Supabase
 import io.github.jakubherr.gitfit.presentation.AuthViewModel
+import io.github.jakubherr.gitfit.presentation.WorkoutViewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
@@ -20,6 +21,7 @@ expect val platformModule: Module
 
 private val viewmodelModule = module {
     viewModel { AuthViewModel(get()) }
+    viewModel { WorkoutViewModel() }
 }
 
 private val sharedModules = listOf(viewmodelModule, repositoryModule, apiModule)

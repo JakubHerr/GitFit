@@ -8,5 +8,5 @@ import io.github.jakubherr.gitfit.presentation.WorkoutScreen
 @Preview
 @Composable
 private fun WorkoutScreenPreview() {
-    WorkoutScreen(mockWorkout)
+    WorkoutScreen(mockWorkout) {}
 }

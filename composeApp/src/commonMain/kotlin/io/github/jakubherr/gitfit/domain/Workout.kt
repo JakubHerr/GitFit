@@ -16,15 +16,17 @@ data class Block(
 
 // this should be named Set but is named series because of name conflict with Set collection
 data class Series(
+    val id: Long,
     val repetitions: Long?,
     val weight: Long?,
     val completed: Boolean
 )
 
 val mockSeries = Series(
+    id = -1,
     repetitions = 3,
     weight = 40,
-    false
+    completed = false
 )
 
 val mockBlock = Block(

@@ -1,15 +1,16 @@
 
 CREATE TABLE IF NOT EXISTS Exercise (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     description TEXT
 );
 
 insert:
-INSERT OR REPLACE INTO Exercise(name, description)
-VALUES (?, ?);
+INSERT OR REPLACE INTO Exercise(id, name, description)
+VALUES (?, ?, ?);
 
 update:
-UPDATE Exercise SET description = ? WHERE name = ?;
+UPDATE Exercise SET name = ?, description = ? WHERE id = ?;
 
 selectAll:
 SELECT * FROM Exercise;

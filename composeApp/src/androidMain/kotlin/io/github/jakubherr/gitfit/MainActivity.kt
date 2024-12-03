@@ -3,8 +3,7 @@ package io.github.jakubherr.gitfit
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import io.github.jakubherr.gitfit.presentation.App
@@ -24,8 +23,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun CommonPreview() {
     MaterialTheme {
-        Surface {
-            LoginScreen()
-        }
+        LoginScreen()
     }
 }
