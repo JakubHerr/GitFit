@@ -26,20 +26,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.jakubherr.gitfit.domain.Exercise
-import io.github.jakubherr.gitfit.domain.mockExercise
+import org.koin.compose.viewmodel.koinViewModel
 
 // Use case: show a list of existing exercises
 // the purpose is to either browse and show detail or add exercise to workout (real time or planned)
 @Composable
 fun ExerciseListScreenRoot(
+    vm: ExerciseViewModel = koinViewModel(),
     modifier: Modifier = Modifier,
     onCreateExerciseClick: () -> Unit = {},
 ) {
+    val state = vm.flow.collectAsStateWithLifecycle(emptyList())
+
     ExerciseListScreen(
-        state = listOf(mockExercise, mockExercise)
+        state = state.value
     ) { action ->
-        if (action is ExerciseAction.CreateExercise) onCreateExerciseClick()
+        if (action is ExerciseAction.CreateExerciseSelected) onCreateExerciseClick()
     }
 }
 
@@ -62,7 +66,7 @@ fun ExerciseListScreen(
 
         if (state.isEmpty()) {
             Column(
-                Modifier.fillMaxSize(),
+                Modifier.fillMaxSize().weight(1f),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -81,7 +85,7 @@ fun ExerciseListScreen(
             }
         }
         Row {
-            Button(onClick = { onAction(ExerciseAction.CreateExercise) }) {
+            Button(onClick = { onAction(ExerciseAction.CreateExerciseSelected) }) {
                 Text("Create exercise")
             }
         }

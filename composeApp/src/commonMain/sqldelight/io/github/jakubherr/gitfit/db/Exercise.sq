@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS Exercise (
 );
 
 insert:
-INSERT OR REPLACE INTO Exercise(id, name, description)
-VALUES (?, ?, ?);
+INSERT OR REPLACE INTO Exercise(name, description)
+VALUES (?, ?);
 
 update:
 UPDATE Exercise SET name = ?, description = ? WHERE id = ?;

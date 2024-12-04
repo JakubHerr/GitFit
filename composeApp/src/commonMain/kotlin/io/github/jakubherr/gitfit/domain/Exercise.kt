@@ -4,7 +4,7 @@ package io.github.jakubherr.gitfit.domain
 data class Exercise(
     val id: Long,
     val name: String,
-    val description: String,
+    val description: String?,
     val primaryMuscle: List<MuscleGroup>,
     val secondaryMuscle: List<MuscleGroup>,
 )

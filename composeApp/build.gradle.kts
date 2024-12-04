@@ -55,6 +55,8 @@ kotlin {
             implementation(libs.ktor.core)
             implementation(libs.ktor.android)
 
+            implementation(libs.sqlDelight.ktx)
+
             implementation(libs.androidx.navigation.compose)
         }
         desktopMain.dependencies {

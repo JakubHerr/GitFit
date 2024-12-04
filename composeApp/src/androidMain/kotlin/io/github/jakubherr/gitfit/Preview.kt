@@ -7,6 +7,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import io.github.jakubherr.gitfit.domain.mockExercise
 import io.github.jakubherr.gitfit.domain.mockWorkout
 import io.github.jakubherr.gitfit.presentation.exercise.CreateExerciseScreen
+import io.github.jakubherr.gitfit.presentation.exercise.ExerciseDetailScreen
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseListScreen
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutScreen
 
@@ -36,6 +37,18 @@ private fun CreateExerciseScreenPreview() {
         Surface {
             CreateExerciseScreen(
                 
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun ExerciseDetailScreenPreview() {
+    MaterialTheme {
+        Surface {
+            ExerciseDetailScreen(
+
             )
         }
     }

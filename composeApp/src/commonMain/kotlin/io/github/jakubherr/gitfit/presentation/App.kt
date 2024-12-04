@@ -42,6 +42,7 @@ fun App() {
                     WorkoutScreenRoot { navController.navigate("Exercise List") }
                 }
 
+
                 composable("Exercise List") {
                     ExerciseListScreenRoot { navController.navigate("Create Exercise")}
                 }
@@ -49,7 +50,9 @@ fun App() {
                     // TODO
                 }
                 composable("Create Exercise") {
-                    CreateExerciseScreenRoot()
+                    CreateExerciseScreenRoot {
+                        navController.navigate("Exercise List")
+                    }
                 }
 
 
