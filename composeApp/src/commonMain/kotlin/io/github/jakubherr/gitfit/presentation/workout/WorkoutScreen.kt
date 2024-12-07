@@ -44,8 +44,8 @@ fun WorkoutScreenRoot(
     vm: WorkoutViewModel = koinViewModel(),
     onAddExerciseClick: () -> Unit = {},
 ) {
-    val state = vm.state.collectAsStateWithLifecycle()
-    WorkoutScreen(state.value) { action ->
+    val state = vm.state
+    WorkoutScreen(state) { action ->
         if (action is WorkoutAction.AddBlock) onAddExerciseClick()
         vm.onAction(action)
     }

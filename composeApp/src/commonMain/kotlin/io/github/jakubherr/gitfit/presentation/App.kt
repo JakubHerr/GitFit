@@ -44,7 +44,10 @@ fun App() {
 
 
                 composable("Exercise List") {
-                    ExerciseListScreenRoot { navController.navigate("Create Exercise")}
+                    ExerciseListScreenRoot(
+                        onCreateExerciseClick = { navController.navigate("Create Exercise") },
+                        onExerciseClick = { navController.navigate("Workout") } // TODO add selected exercise to workout
+                    )
                 }
                 composable("Exercise Detail") {
                     // TODO
@@ -61,6 +64,10 @@ fun App() {
                 }
                 composable("Trends") {
                     // TODO
+                }
+
+                composable("Settings") {
+                    // TODO user should set some preferences during onboarding and then be able to modify them here
                 }
             }
         }

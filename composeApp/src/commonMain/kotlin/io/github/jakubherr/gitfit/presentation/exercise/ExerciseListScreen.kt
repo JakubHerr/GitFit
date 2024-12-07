@@ -36,6 +36,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ExerciseListScreenRoot(
     vm: ExerciseViewModel = koinViewModel(),
     modifier: Modifier = Modifier,
+    onExerciseClick: (Exercise) -> Unit = {},
     onCreateExerciseClick: () -> Unit = {},
 ) {
     val state = vm.flow.collectAsStateWithLifecycle(emptyList())
@@ -44,6 +45,7 @@ fun ExerciseListScreenRoot(
         state = state.value
     ) { action ->
         if (action is ExerciseAction.CreateExerciseSelected) onCreateExerciseClick()
+        if (action is ExerciseAction.ExerciseSelected) onExerciseClick(action.exercise)
     }
 }
 
@@ -79,7 +81,7 @@ fun ExerciseListScreen(
                 contentPadding = PaddingValues(16.dp)
             ) {
                 items(state) { exercise ->
-                    ExerciseListItem(exercise) { }
+                    ExerciseListItem(exercise) { onAction(ExerciseAction.ExerciseSelected(exercise)) }
                     HorizontalDivider(Modifier.height(1.dp))
                 }
             }

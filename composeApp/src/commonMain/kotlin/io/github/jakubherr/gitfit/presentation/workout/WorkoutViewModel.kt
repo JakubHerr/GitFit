@@ -1,16 +1,17 @@
 package io.github.jakubherr.gitfit.presentation.workout
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import io.github.jakubherr.gitfit.domain.Block
 import io.github.jakubherr.gitfit.domain.Exercise
 import io.github.jakubherr.gitfit.domain.Series
 import io.github.jakubherr.gitfit.domain.mockWorkout
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 class WorkoutViewModel : ViewModel() {
-    private val _state = MutableStateFlow(mockWorkout)
-    val state = _state.asStateFlow()
+    var state by mutableStateOf(mockWorkout)
+        private set
 
     fun onAction(action: WorkoutAction) {
         when(action) {
@@ -21,16 +22,16 @@ class WorkoutViewModel : ViewModel() {
     }
 
     private fun addBlock(exercise: Exercise) {
-        _state.value = _state.value.copy(blocks = state.value.blocks + Block(-1, exercise, emptyList(), null))
+        state = state.copy(blocks = state.blocks + Block(-1, exercise, emptyList(), null))
     }
 
     private fun addSet(blockId: Long, set: Series) {
-        val blockListCopy = _state.value.blocks.toMutableList()
+        val blockListCopy = state.blocks.toMutableList()
 
         val block = blockListCopy.find { it.id == blockId } ?: return
         val newBlock = block.copy(series = block.series.toMutableList().apply { add(set) })
         blockListCopy[0] = newBlock
-        _state.value = _state.value.copy(blocks = blockListCopy)
+        state = state.copy(blocks = blockListCopy)
     }
 
     private fun toggleSetCompletion(id: Long) {
