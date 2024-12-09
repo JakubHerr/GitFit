@@ -1,27 +1,36 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-abstract class AbstractList
-abstract AbstractCollection
-interface List
-interface Collection
-
-List <|-- AbstractList
-Collection <|-- AbstractCollection
-
-Collection <|- List
-AbstractCollection <|- AbstractList
-AbstractList <|-- ArrayList
-
-class ArrayList {
-Object[] elementData
-size()
+package presentation {
+    package ui {
+        class ExerciseListScreen
+        class ExerciseDetailScreen
+    }
+    package vm {
+        class ExerciseViewModel
+    }
 }
 
-enum TimeUnit {
-DAYS
-HOURS
-MINUTES
+package domain {
+    class Exercise
 }
 
+package data {
+    interface RemoteDataSource
+    interface LocalDataSource
+    interface Repository
+}
+
+note right of Repository : Repozitář abstrahuje, odkud data pochází a jak se ukládají
+note right of ExerciseViewModel
+ ViewModel poskytuje stav, který se má zobrazit
+ a reaguje na akce uživatele
+ endnote
+
+
+ExerciseDetailScreen -- ExerciseViewModel
+ExerciseListScreen -- ExerciseViewModel
+ExerciseViewModel -- Repository
+Repository -- RemoteDataSource
+Repository -- LocalDataSource
 @enduml

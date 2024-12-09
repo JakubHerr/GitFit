@@ -1,22 +1,37 @@
 @startuml
 'https://plantuml.com/use-case-diagram
+left to right direction
 
-:Main Admin: as Admin
-(Use the application) as (Use)
+actor Uživatel as User
 
-User -> (Start)
-User --> (Use)
+package Systém {
+    (Naplánování tréninku) as (Plan)
+    (Zaznamenání tréninku) as (Record)
+    (Zobrazení seznamu cviků) as (ShowExercise)
+    (Zobrazení detailu cviku) as (ShowDetail)
+    (Zobrazení výsledků v čase) as (ShowHistory)
+    (Nastavení preferencí) as (Onboarding)
+    (Správa vlastních cviků) as (CustomExercise)
+    (Správa vlastních měření) as (Measure)
+    (Zobrazení profilu) as (Profile)
+}
 
-Admin ---> (Use)
+User --> (Onboarding)
+User --> (Plan)
+User --> (ShowExercise)
+User --> (ShowHistory)
+User --> (Measure)
+(ShowExercise) --> (ShowDetail)
+(ShowExercise) --> (CustomExercise)
+(Plan) --> (Record)
+(Onboarding) --> (Profile)
 
-note right of Admin : This is an example.
+note bottom of (Onboarding)
+    Uživatel může, ale nemusí nastavit
+    výšku, váhu, systém měření (Kg, Lbs)
+endnote
 
-note right of (Use)
-A note can also
-be on several lines
-end note
-
-note "This note is connected\nto several objects." as N2
-(Start) .. N2
-N2 .. (Use)
+note bottom of (Measure)
+    Uživatel může zaznamenávat změny váhy a např. obvodu pasu
+endnote
 @enduml
