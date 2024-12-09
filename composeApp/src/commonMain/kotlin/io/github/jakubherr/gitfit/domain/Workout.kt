@@ -1,10 +1,15 @@
 package io.github.jakubherr.gitfit.domain
 
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
+
 // a workout could be saved in progress
 data class Workout(
     val id: Long,
     val blocks: List<Block>,
-    // todo add date
+    val date: LocalDate,
 )
 
 data class Block(
@@ -38,6 +43,7 @@ val mockBlock = Block(
 
 val mockWorkout = Workout(
     id = -1,
-    blocks = listOf(mockBlock),
+    blocks = listOf(mockBlock, mockBlock),
+    date = Clock.System.todayIn(TimeZone.currentSystemDefault())
 )
 

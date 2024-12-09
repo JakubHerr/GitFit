@@ -1,0 +1,15 @@
+
+CREATE TABLE IF NOT EXISTS Block(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    workoutId INTEGER,
+    exerciseId INTEGER NOT NULL,
+    FOREIGN KEY(workoutId) REFERENCES Workout(id),
+    FOREIGN KEY(exerciseId) REFERENCES Exercise(id)
+);
+
+insert:
+INSERT OR REPLACE INTO Block(workoutId, exerciseId)
+VALUES (?, ?);
+
+getForWorkout:
+SELECT * FROM Block WHERE exerciseId = :id;

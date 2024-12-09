@@ -1,0 +1,12 @@
+
+CREATE TABLE IF NOT EXISTS Series(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    blockId INTEGER,
+    weight REAL NOT NULL,
+    reps INTEGER NOT NULL,
+    FOREIGN KEY(blockId) REFERENCES Block(id)
+);
+
+insert:
+INSERT OR REPLACE INTO Series(blockId, weight, reps)
+VALUES (?, ?, ?);

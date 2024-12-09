@@ -15,5 +15,5 @@ UPDATE Exercise SET name = ?, description = ? WHERE id = ?;
 selectAll:
 SELECT * FROM Exercise;
 
-clear:
-DELETE FROM Exercise;
+delete:
+DELETE FROM Exercise WHERE id = ?;
