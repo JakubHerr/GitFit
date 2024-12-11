@@ -3,8 +3,8 @@
 
 package presentation {
     package ui {
-        class ExerciseListScreen
         class ExerciseDetailScreen
+        class ExerciseListScreen
     }
     package vm {
         class ExerciseViewModel
@@ -16,21 +16,28 @@ package domain {
 }
 
 package data {
-    interface RemoteDataSource
-    interface LocalDataSource
-    interface Repository
+    interface RemoteExerciseDataSource
+    interface LocalExerciseDataSource
+    interface ExerciseRepository
+    class ExerciseRepositoryImpl
+    class SqlDelightDataSource
 }
 
-note right of Repository : Repozitář abstrahuje, odkud data pochází a jak se ukládají
+note right of ExerciseRepository : Repozitář abstrahuje, odkud data pochází a jak se ukládají
 note right of ExerciseViewModel
  ViewModel poskytuje stav, který se má zobrazit
  a reaguje na akce uživatele
  endnote
 
 
+ExerciseRepository -- ExerciseRepositoryImpl
+ExerciseListScreen -> ExerciseViewModel : Event
+ExerciseListScreen <- ExerciseViewModel : State
 ExerciseDetailScreen -- ExerciseViewModel
-ExerciseListScreen -- ExerciseViewModel
-ExerciseViewModel -- Repository
-Repository -- RemoteDataSource
-Repository -- LocalDataSource
+ExerciseViewModel -- ExerciseRepository
+ExerciseRepositoryImpl -- RemoteExerciseDataSource
+ExerciseRepositoryImpl -- LocalExerciseDataSource
+LocalExerciseDataSource -- SqlDelightDataSource
+
+ExerciseViewModel : StateFlow<Exercise>
 @enduml

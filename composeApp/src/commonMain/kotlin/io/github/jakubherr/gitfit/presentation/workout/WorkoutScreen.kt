@@ -45,8 +45,9 @@ fun WorkoutScreenRoot(
     onAddExerciseClick: () -> Unit = {},
 ) {
     val state = vm.state
-    WorkoutScreen(state) { action ->
-        if (action is WorkoutAction.AddBlock) onAddExerciseClick()
+    val workout = vm.currentWorkout
+    WorkoutScreen(workout.value) { action ->
+        if (action is WorkoutAction.AskForExercise) onAddExerciseClick()
         vm.onAction(action)
     }
 }
@@ -61,7 +62,7 @@ fun WorkoutScreen(
     Scaffold { padding ->
         Surface {
             Column(Modifier.padding(padding)) {
-                Button({ onAction(WorkoutAction.AddBlock(mockExercise)) }) {
+                Button({ onAction(WorkoutAction.AskForExercise) }) {
                     Text("Add exercise")
                 }
 

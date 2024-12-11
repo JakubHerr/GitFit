@@ -8,8 +8,16 @@ CREATE TABLE IF NOT EXISTS Workout(
 );
 
 insert:
-INSERT OR REPLACE INTO Workout(note, completed, date)
-VALUES (?, ?, ?);
+INSERT OR REPLACE INTO Workout(note, completed, date) VALUES (?, ?, ?);
 
 getCurrent:
 SELECT * FROM Workout WHERE completed = 0 LIMIT 1;
+
+getCurrentWithSeries:
+SELECT *
+FROM Workout
+LEFT JOIN Block ON Block.workoutId = Workout.id
+LEFT JOIN Series ON Series.blockId = Block.id
+WHERE completed = 0
+LIMIT 1
+;

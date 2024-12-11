@@ -3,13 +3,17 @@ CREATE TABLE IF NOT EXISTS Block(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     workoutId INTEGER,
     exerciseId INTEGER NOT NULL,
-    FOREIGN KEY(workoutId) REFERENCES Workout(id),
-    FOREIGN KEY(exerciseId) REFERENCES Exercise(id)
+    FOREIGN KEY(workoutId) REFERENCES Workout(id) ON DELETE CASCADE,
+    FOREIGN KEY(exerciseId) REFERENCES Exercise(id) ON DELETE CASCADE
 );
 
 insert:
 INSERT OR REPLACE INTO Block(workoutId, exerciseId)
 VALUES (?, ?);
 
+deleteById {
+    DELETE FROM Block WHERE id = :id;
+}
+
 getForWorkout:
-SELECT * FROM Block WHERE exerciseId = :id;
+SELECT * FROM Block WHERE workoutId = :id;

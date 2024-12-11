@@ -2,9 +2,12 @@ package io.github.jakubherr.gitfit.di
 
 import io.github.jakubherr.gitfit.data.Supabase
 import io.github.jakubherr.gitfit.data.repository.ExerciseRepositoryImpl
+import io.github.jakubherr.gitfit.data.repository.WorkoutRepositoryImpl
 import io.github.jakubherr.gitfit.data.source.ExerciseDataSource
 import io.github.jakubherr.gitfit.data.source.LocalExerciseDataSource
+import io.github.jakubherr.gitfit.data.source.LocalWorkoutDataSource
 import io.github.jakubherr.gitfit.domain.ExerciseRepository
+import io.github.jakubherr.gitfit.domain.WorkoutRepository
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseViewModel
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
@@ -22,14 +25,17 @@ private val apiModule = module {
 
 private val repositoryModule = module {
     singleOf(::LocalExerciseDataSource).bind<ExerciseDataSource>()
+    singleOf(::LocalWorkoutDataSource)
+
     singleOf(::ExerciseRepositoryImpl).bind<ExerciseRepository>()
+    singleOf(::WorkoutRepositoryImpl).bind<WorkoutRepository>()
 }
 
 expect val platformModule: Module
 
 private val viewmodelModule = module {
     viewModel { AuthViewModel(get()) }
-    viewModel { WorkoutViewModel() }
+    viewModel { WorkoutViewModel(get()) }
     viewModel { ExerciseViewModel(get()) }
 }
 
