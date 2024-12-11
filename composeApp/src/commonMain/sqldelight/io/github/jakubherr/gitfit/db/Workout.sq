@@ -1,7 +1,7 @@
 import kotlin.Boolean;
 
 CREATE TABLE IF NOT EXISTS Workout(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    workoutId INTEGER PRIMARY KEY AUTOINCREMENT,
     note TEXT,
     completed INTEGER AS Boolean NOT NULL,
     date TEXT NOT NULL
@@ -13,11 +13,11 @@ INSERT OR REPLACE INTO Workout(note, completed, date) VALUES (?, ?, ?);
 getCurrent:
 SELECT * FROM Workout WHERE completed = 0 LIMIT 1;
 
+-- this query joins all the workout related tables together so it reacts to every change
 getCurrentWithSeries:
 SELECT *
 FROM Workout
-LEFT JOIN Block ON Block.workoutId = Workout.id
-LEFT JOIN Series ON Series.blockId = Block.id
+LEFT JOIN Block ON Block.workoutFk = Workout.workoutId
+LEFT JOIN Series ON Series.blockFk = Block.blockId
 WHERE completed = 0
-LIMIT 1
 ;

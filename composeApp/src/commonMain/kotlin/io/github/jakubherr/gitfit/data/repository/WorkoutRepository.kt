@@ -8,7 +8,7 @@ import io.github.jakubherr.gitfit.domain.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.mockExercise
 import io.github.jakubherr.gitfit.domain.mockWorkout
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDate
@@ -23,17 +23,17 @@ class WorkoutRepositoryImpl(
         println("DBG: Repo observed workout $workout")
         if (workout == null) return@map mockWorkout
 
-        localSource.observeBlocksForWorkout(workout.id)
+        localSource.observeBlocksForWorkout(workout.workoutId)
 
         Workout(
-            workout.id,
-            localSource.getBlocksForWorkout(workout.id).map { block ->
+            workout.workoutId,
+            localSource.getBlocksForWorkout(workout.workoutId).map { block ->
                 Block(
-                    block.id,
+                    block.blockId,
                     mockExercise, // TODO replace
-                    localSource.getSeriesForBlock(block.id).map { series ->
+                    localSource.getSeriesForBlock(block.blockId).map { series ->
                         Series(
-                            series.id,
+                            series.seriesId,
                             series.reps,
                             series.weight.toLong(), // TODO fix
                             false
@@ -46,9 +46,7 @@ class WorkoutRepositoryImpl(
         )
     }
 
-    fun observeCurrentWorkout2() = localSource.assembleCurrentWorkoutOrNull().map { query ->
-
-    }
+    override fun observeCurrentWorkoutOrNull(): Flow<Workout?> = localSource.assembleCurrentWorkoutOrNull()
 
     override suspend fun debug() {
         withContext(Dispatchers.IO) {
@@ -57,10 +55,12 @@ class WorkoutRepositoryImpl(
     }
 
     override suspend fun startWorkout() {
+        println("DBG: Starting new workout...")
         localSource.startWorkout()
     }
 
     override suspend fun addBlock(workoutId: Long, exerciseId: Long) {
+        println("DBG: Adding block with exercise $exerciseId to workout $workoutId")
         withContext(Dispatchers.IO) {
             localSource.addBlock(workoutId, exerciseId)
         }
@@ -74,8 +74,8 @@ class WorkoutRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun addEmptySeries(block: Block) {
-        TODO("Not yet implemented")
+    override suspend fun addEmptySeries(blockId: Long) {
+        localSource.addEmptySeries(blockId)
     }
 
     override suspend fun modifySeries(set: Series) {

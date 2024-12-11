@@ -15,6 +15,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -44,9 +45,11 @@ fun WorkoutScreenRoot(
     vm: WorkoutViewModel = koinViewModel(),
     onAddExerciseClick: () -> Unit = {},
 ) {
-    val state = vm.state
     val workout = vm.currentWorkout
-    WorkoutScreen(workout.value) { action ->
+    val bruh by vm.cold.collectAsStateWithLifecycle(null)
+
+    if (bruh == null) CircularProgressIndicator()
+    else WorkoutScreen(bruh!!) { action ->
         if (action is WorkoutAction.AskForExercise) onAddExerciseClick()
         vm.onAction(action)
     }

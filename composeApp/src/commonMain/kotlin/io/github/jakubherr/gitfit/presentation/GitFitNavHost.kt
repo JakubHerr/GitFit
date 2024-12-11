@@ -42,7 +42,7 @@ fun GitFitNavHost(
         // unplanned workout
         composable<WorkoutRoute> {
             WorkoutScreenRoot(workoutViewModel) {
-                navController.navigate(AddExerciseToWorkoutRoute(workoutViewModel.currentWorkout.value.id)) // TODO this is not ideal
+                navController.navigate(AddExerciseToWorkoutRoute(workoutViewModel.currentWorkout.value!!.id)) // TODO this is not ideal
             }
         }
 
@@ -57,8 +57,8 @@ fun GitFitNavHost(
             ExerciseListScreenRoot(
                 onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
                 onExerciseClick = { exercise ->
-                    workoutViewModel.onAction(WorkoutAction.AddBlock(workoutViewModel.currentWorkout.value.id, exercise.id))
-                    navController.navigate(WorkoutRoute)
+                    workoutViewModel.onAction(WorkoutAction.AddBlock(workoutViewModel.currentWorkout.value!!.id, exercise.id))
+                    navController.popBackStack()
                 }
             )
         }
@@ -68,7 +68,7 @@ fun GitFitNavHost(
         }
         composable<CreateExerciseRoute> {
             CreateExerciseScreenRoot {
-                navController.navigate(ExerciseListRoute)
+                navController.popBackStack()
             }
         }
 

@@ -1,15 +1,15 @@
 
 CREATE TABLE IF NOT EXISTS Series(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    blockId INTEGER,
+    seriesId INTEGER PRIMARY KEY AUTOINCREMENT,
+    blockFk INTEGER,
     weight REAL NOT NULL,
     reps INTEGER NOT NULL,
-    FOREIGN KEY(blockId) REFERENCES Block(id) ON DELETE CASCADE
+    FOREIGN KEY(blockFk) REFERENCES Block(blockId) ON DELETE CASCADE
 );
 
 insert:
-INSERT OR REPLACE INTO Series(blockId, weight, reps)
+INSERT OR REPLACE INTO Series(blockFk, weight, reps)
 VALUES (?, ?, ?);
 
 getForBlock:
-SELECT * FROM Series WHERE blockId = :id;
+SELECT * FROM Series WHERE blockFk = :id;

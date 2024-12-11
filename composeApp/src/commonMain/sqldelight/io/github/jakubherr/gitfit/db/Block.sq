@@ -1,19 +1,19 @@
 
 CREATE TABLE IF NOT EXISTS Block(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    workoutId INTEGER,
-    exerciseId INTEGER NOT NULL,
-    FOREIGN KEY(workoutId) REFERENCES Workout(id) ON DELETE CASCADE,
-    FOREIGN KEY(exerciseId) REFERENCES Exercise(id) ON DELETE CASCADE
+    blockId INTEGER PRIMARY KEY AUTOINCREMENT,
+    workoutFk INTEGER,
+    exerciseFk INTEGER NOT NULL,
+    FOREIGN KEY(workoutFk) REFERENCES Workout(workoutId) ON DELETE CASCADE,
+    FOREIGN KEY(exerciseFk) REFERENCES Exercise(exerciseId) ON DELETE CASCADE
 );
 
 insert:
-INSERT OR REPLACE INTO Block(workoutId, exerciseId)
+INSERT OR REPLACE INTO Block(workoutFk, exerciseFk)
 VALUES (?, ?);
 
 deleteById {
-    DELETE FROM Block WHERE id = :id;
+    DELETE FROM Block WHERE blockId = :id;
 }
 
 getForWorkout:
-SELECT * FROM Block WHERE workoutId = :id;
+SELECT * FROM Block WHERE workoutFk = :id;

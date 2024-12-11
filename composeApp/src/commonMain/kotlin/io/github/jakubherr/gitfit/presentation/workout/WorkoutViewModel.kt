@@ -19,11 +19,17 @@ class WorkoutViewModel(
         }
     }
 
-    var currentWorkout = workoutRepository.observeCurrentWorkout().stateIn(
+    var currentWorkout = workoutRepository.observeCurrentWorkoutOrNull().stateIn(
         scope = viewModelScope,
         initialValue = mockWorkout,
         started = SharingStarted.Eagerly  // TODO improve
-    )
+    ).also {
+        println("DBG: currentWorkout flow initiated")
+    }
+
+    val cold = workoutRepository.observeCurrentWorkoutOrNull()
+
+
 
     fun onAction(action: WorkoutAction) {
         when(action) {
@@ -36,7 +42,7 @@ class WorkoutViewModel(
 
     // starts a new unplanned workout
     fun startWorkout() {
-        viewModelScope.launch { workoutRepository.startWorkout() }
+        if (currentWorkout.value == null) viewModelScope.launch { workoutRepository.startWorkout() }
     }
 
     // adds a new empty block with exercise to workout
@@ -45,7 +51,7 @@ class WorkoutViewModel(
     }
 
     private fun addSet(blockId: Long, set: Series) {
-        // TODO
+        viewModelScope.launch { workoutRepository.addEmptySeries(blockId) }
     }
 
     private fun toggleSetCompletion(id: Long) {

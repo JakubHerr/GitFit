@@ -13,6 +13,7 @@ class ExerciseRepositoryImpl(
     }
 
     override fun createExercise(exercise: Exercise) {
+        println("DBG: creating exercise $exercise")
         local.insert(exercise)
     }
 }
