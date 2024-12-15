@@ -102,7 +102,7 @@ fun BlockItem(
                 SetHeader()
                 Spacer(Modifier.height(16.dp))
                 block.series.forEachIndexed { idx, series ->
-                    SetItem(idx + 1, series)
+                    SetItem(idx + 1, series, onAction = onAction)
                 }
             }
             Spacer(modifier.height(8.dp))

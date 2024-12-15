@@ -54,8 +54,8 @@ class WorkoutViewModel(
         viewModelScope.launch { workoutRepository.addEmptySeries(blockId) }
     }
 
-    private fun toggleSetCompletion(id: Long) {
-        // TODO
+    private fun toggleSetCompletion(setId: Long) {
+        viewModelScope.launch { workoutRepository.toggleSeries(setId) }
     }
 
     private fun completeWorkout() {

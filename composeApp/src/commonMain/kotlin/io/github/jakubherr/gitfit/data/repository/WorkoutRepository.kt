@@ -59,6 +59,10 @@ class WorkoutRepositoryImpl(
         localSource.startWorkout()
     }
 
+    override suspend fun completeWorkout() {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun addBlock(workoutId: Long, exerciseId: Long) {
         println("DBG: Adding block with exercise $exerciseId to workout $workoutId")
         withContext(Dispatchers.IO) {
@@ -76,6 +80,10 @@ class WorkoutRepositoryImpl(
 
     override suspend fun addEmptySeries(blockId: Long) {
         localSource.addEmptySeries(blockId)
+    }
+
+    override suspend fun toggleSeries(seriesId: Long) {
+        localSource.toggleSeries(seriesId)
     }
 
     override suspend fun modifySeries(set: Series) {

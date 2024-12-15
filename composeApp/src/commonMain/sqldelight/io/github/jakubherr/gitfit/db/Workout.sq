@@ -19,5 +19,5 @@ SELECT *
 FROM Workout
 LEFT JOIN Block ON Block.workoutFk = Workout.workoutId
 LEFT JOIN Series ON Series.blockFk = Block.blockId
-WHERE completed = 0
+WHERE Workout.completed = 0
 ;

@@ -41,6 +41,7 @@ class LocalWorkoutDataSource(
 
     fun observeCurrentWorkoutOrNull() = workouts.getCurrent().asFlow().mapToOneOrNull(Dispatchers.IO)
 
+    // TODO this is not very efficient
     fun assembleCurrentWorkoutOrNull() = workouts.getCurrentWithSeries().asFlow().mapToList(Dispatchers.IO).map { blob ->
         if (blob.isEmpty()) null else {
             val block = blob.filter { it.blockId != null }.groupBy { it.blockId }.map { (id, u) ->
@@ -54,9 +55,9 @@ class LocalWorkoutDataSource(
                                 it.seriesId!!,
                                 it.reps,
                                 it.weight?.toLong(),
-                                it.completed
+                                it.completed_!!
                             )
-                        },
+                        }.sortedBy { it.id },
                         null
                     )
                 }
@@ -80,13 +81,16 @@ class LocalWorkoutDataSource(
     fun getSeriesForBlock(blockId: Long) = sets.getForBlock(blockId).executeAsList()
 
     suspend fun addBlock(workoutId: Long, exerciseId: Long) {
-        workouts.transaction {
-            blocks.insert(workoutId, exerciseId)
-        }
+        blocks.insert(workoutId, exerciseId)
     }
 
     suspend fun addEmptySeries(blockId: Long) {
         println("DBG: adding empty series to block $blockId")
-        sets.insert(blockId, 0.0, 0)
+        sets.insert(blockId, 0.0, 0, false)
+    }
+
+    suspend fun toggleSeries(seriesId: Long) {
+        println("DBG: toggling series $seriesId")
+        sets.toggleCompleted(seriesId)
     }
 }
