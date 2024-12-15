@@ -23,6 +23,9 @@ supabase = "3.0.2"
 navigationCompose = "2.7.0"
 ktlint = "12.1.2"
 sqldelight = "2.0.2"
+gitlive = "2.1.0"
+firebase = "33.2.0"
+gms = "4.4.2"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -55,6 +58,10 @@ ktor-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = 
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
 koin-core = { module = "io.insert-koin:koin-core" }
 
+firebase = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase" }
+gitlive-firebase-firestore = { group = "dev.gitlive", name = "firebase-firestore", version.ref = "gitlive" }
+gitlive-firebase-auth = { group = "dev.gitlive", name = "firebase-auth", version.ref = "gitlive" }
+
 # https://insert-koin.io/docs/reference/koin-compose/compose
 koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
@@ -80,3 +87,4 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
+googleServices = { id = "com.google.gms.google-services", version.ref = "gms" }

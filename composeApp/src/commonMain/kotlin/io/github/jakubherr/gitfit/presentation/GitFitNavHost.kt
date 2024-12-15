@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import io.github.jakubherr.gitfit.presentation.auth.LoginScreenRoot
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardAction
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardScreenRoot
 import io.github.jakubherr.gitfit.presentation.exercise.CreateExerciseScreenRoot
@@ -23,8 +24,12 @@ fun GitFitNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = DashboardRoute,
+        startDestination = LoginRoute, // DashboardRoute,
     ) {
+        composable<LoginRoute> {
+            LoginScreenRoot { }
+        }
+
         composable<OnboardingRoute> { /* TODO */ }
 
         composable<DashboardRoute> {

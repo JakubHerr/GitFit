@@ -4,14 +4,17 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
+import kotlinx.serialization.Serializable
 
 // a workout could be saved in progress
+@Serializable
 data class Workout(
     val id: Long,
     val blocks: List<Block>,
     val date: LocalDate,
 )
 
+@Serializable
 data class Block(
     val id: Long,
     val exercise: Exercise,
@@ -20,6 +23,7 @@ data class Block(
 )
 
 // this should be named Set but is named series because of name conflict with Set collection
+@Serializable
 data class Series(
     val id: Long,
     val repetitions: Long?,

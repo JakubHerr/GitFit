@@ -15,19 +15,35 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginScreenRoot(
     vm: AuthViewModel = koinViewModel(),
-    onLogin: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onLogin: () -> Unit
 ) {
+    vm.authDebug()
+    val scope = rememberCoroutineScope()
+
+    scope.launch {
+        scope.launch {
+            delay(1000)
+            vm.dbDebug()
+        }
+        vm.workouts.collect { idk ->
+            println("got list: ${idk.joinToString()}")
+        }
+    }
+
     // val state = vm.state.collectAsStateWithLifecycle()
     LoginScreen { action -> vm.onAction(action) }
 }

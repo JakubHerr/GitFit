@@ -8,6 +8,7 @@ import io.github.jakubherr.gitfit.domain.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.mockExercise
 import io.github.jakubherr.gitfit.domain.mockWorkout
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext

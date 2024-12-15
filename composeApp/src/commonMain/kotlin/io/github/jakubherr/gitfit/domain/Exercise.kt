@@ -1,6 +1,9 @@
 package io.github.jakubherr.gitfit.domain
 
+import kotlinx.serialization.Serializable
 
+
+@Serializable
 data class Exercise(
     val id: Long,
     val name: String,
