@@ -3,7 +3,7 @@ package io.github.jakubherr.gitfit.domain
 import kotlinx.coroutines.flow.Flow
 
 interface ExerciseRepository {
-    fun getAllExercises(): Flow<List<Exercise>>
+    fun getAllExercises(): Flow<List<Exercise>> // TODO use pagination to limit reads
 
-    fun createExercise(exercise: Exercise) // TODO use results?
+    suspend fun createExercise(exercise: Exercise) // TODO use results?
 }

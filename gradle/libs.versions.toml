@@ -19,10 +19,8 @@ kotlinx-datetime = "0.6.0"
 koin-bom = "4.0.0"
 ktor = "3.0.1"
 ktx-serialization = "1.7.3"
-supabase = "3.0.2"
 navigationCompose = "2.7.0"
 ktlint = "12.1.2"
-sqldelight = "2.0.2"
 gitlive = "2.1.0"
 firebase = "33.2.0"
 gms = "4.4.2"
@@ -45,10 +43,6 @@ kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-co
 
 androidx-navigation-compose = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose"}
 
-supabase-bom = { group = "io.github.jan-tennert.supabase", name = "bom", version.ref = "supabase"}
-supabase-postgrest = { group = "io.github.jan-tennert.supabase", name = "postgrest-kt" }
-supabase-auth = { group = "io.github.jan-tennert.supabase", name = "auth-kt" }
-
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
@@ -70,11 +64,6 @@ koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-view
 # required for android related APIs
 koin-android = { module = "io.insert-koin:koin-android" }
 
-# local database
-sqlDelight-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
-sqlDelight-jvm = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
-sqlDelight-ktx = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
-
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "ktx-serialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "ktx-serialization" }
 
@@ -86,5 +75,4 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
-sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "gms" }

@@ -1,8 +1,10 @@
 package io.github.jakubherr.gitfit.presentation.exercise
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import io.github.jakubherr.gitfit.domain.Exercise
 import io.github.jakubherr.gitfit.domain.ExerciseRepository
+import kotlinx.coroutines.launch
 
 class ExerciseViewModel(
     private val repository: ExerciseRepository
@@ -17,7 +19,9 @@ class ExerciseViewModel(
     }
 
     private fun createExercise(exercise: Exercise) {
-        repository.createExercise(exercise)
+        viewModelScope.launch {
+            repository.createExercise(exercise)
+        }
     }
 
     private fun getExerciseHistory(exercise: Exercise) {

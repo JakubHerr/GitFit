@@ -24,7 +24,7 @@ fun GitFitNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = LoginRoute, // DashboardRoute,
+        startDestination = DashboardRoute,
     ) {
         composable<LoginRoute> {
             LoginScreenRoot { }
@@ -46,9 +46,11 @@ fun GitFitNavHost(
 
         // unplanned workout
         composable<WorkoutRoute> {
-            WorkoutScreenRoot(workoutViewModel) {
-                navController.navigate(AddExerciseToWorkoutRoute(workoutViewModel.currentWorkout.value!!.id)) // TODO this is not ideal
-            }
+            WorkoutScreenRoot(
+                workoutViewModel,
+                onAddExerciseClick = { navController.navigate(AddExerciseToWorkoutRoute(workoutViewModel.currentWorkout.value!!.id)) }, // TODO this is not ideal
+                onWorkoutFinished = { navController.popBackStack() }
+            )
         }
 
         // TODO implement adding exercise by sending workout id?

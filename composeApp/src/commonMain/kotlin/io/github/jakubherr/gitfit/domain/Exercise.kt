@@ -5,27 +5,17 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Exercise(
-    val id: Long,
+    val id: String,
     val name: String,
     val description: String?,
-    val primaryMuscle: List<MuscleGroup>,
-    val secondaryMuscle: List<MuscleGroup>,
+    val primaryMuscle: List<MuscleGroup> = emptyList(),
+    val secondaryMuscle: List<MuscleGroup> = emptyList(),
 )
 
 enum class MuscleGroup {
-    ARMS,
-    LEGS,
-    SHOULDERS,
-    BACK,
-    ABS,
-    CHEST,
-    FOREARMS
+    ARMS, LEGS, SHOULDERS, BACK, ABS, CHEST, FOREARMS
 }
 
 val mockExercise = Exercise(
-    -1,
-    "Bench press",
-    "",
-    listOf(MuscleGroup.CHEST),
-    listOf(MuscleGroup.SHOULDERS)
+    "mock", "Bench press", "", listOf(MuscleGroup.CHEST), listOf(MuscleGroup.SHOULDERS)
 )

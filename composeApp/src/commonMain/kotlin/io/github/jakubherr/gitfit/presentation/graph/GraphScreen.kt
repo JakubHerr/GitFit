@@ -1,4 +1,4 @@
-package io.github.jakubherr.gitfit.presentation
+package io.github.jakubherr.gitfit.presentation.graph
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

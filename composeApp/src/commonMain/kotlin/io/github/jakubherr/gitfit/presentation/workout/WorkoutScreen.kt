@@ -35,7 +35,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.jakubherr.gitfit.domain.Block
 import io.github.jakubherr.gitfit.domain.Series
 import io.github.jakubherr.gitfit.domain.Workout
-import io.github.jakubherr.gitfit.domain.mockExercise
 import io.github.jakubherr.gitfit.domain.mockSeries
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -43,20 +42,19 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun WorkoutScreenRoot(
     vm: WorkoutViewModel = koinViewModel(),
+    onWorkoutFinished: () -> Unit = {},
     onAddExerciseClick: () -> Unit = {},
 ) {
-    val workout = vm.currentWorkout
-    val bruh by vm.cold.collectAsStateWithLifecycle(null)
+    val workout by vm.cold.collectAsStateWithLifecycle(null) // by vm.currentWorkout.collectAsStateWithLifecycle(null)
 
-    if (bruh == null) CircularProgressIndicator()
-    else WorkoutScreen(bruh!!) { action ->
+    if (workout == null) CircularProgressIndicator()
+    else WorkoutScreen(workout!!) { action ->
         if (action is WorkoutAction.AskForExercise) onAddExerciseClick()
         vm.onAction(action)
+        if (action is WorkoutAction.CompleteWorkout || action is WorkoutAction.DeleteWorkout) onWorkoutFinished()
     }
 }
 
-// TODO add options to definitively save workout and discard workout
-//  maybe save workout in progress somehow to survive process death
 @Composable
 fun WorkoutScreen(
     workout: Workout,
@@ -71,15 +69,22 @@ fun WorkoutScreen(
 
                 LazyColumn(Modifier.fillMaxSize().weight(1f)) {
                     items(workout.blocks) { block ->
-                        BlockItem(block, onAction = onAction)
+                        BlockItem(
+                            block,
+                            onAction = onAction,
+                            onAddSetClicked = {
+                                val set = Series(block.series.size.toString(), null, null, false)
+                                onAction(WorkoutAction.AddSet(workout.id, block.id, set))
+                            }
+                        )
                     }
                 }
 
                 Row(Modifier.fillMaxWidth().padding(16.dp)) {
-                    Button(onClick = {}) {
+                    Button(onClick = { onAction(WorkoutAction.DeleteWorkout(workout.id))}) { // TODO "are you sure?" dialog
                         Text("delete")
                     }
-                    Button(onClick = {}) {
+                    Button(onClick = { onAction(WorkoutAction.CompleteWorkout(workout.id)) }) {
                         Text("save")
                     }
                 }
@@ -93,6 +98,7 @@ fun BlockItem(
     block: Block,
     modifier: Modifier = Modifier,
     onAction: (WorkoutAction) -> Unit = {},
+    onAddSetClicked: () -> Unit = {},
 ) {
     Card(Modifier.fillMaxWidth().padding(16.dp)) {
         Column(Modifier.padding(8.dp)) {
@@ -106,7 +112,7 @@ fun BlockItem(
                 }
             }
             Spacer(modifier.height(8.dp))
-            Button(onClick = { onAction(WorkoutAction.AddSet(block.id, mockSeries)) }) {
+            Button(onClick = onAddSetClicked) {
                 Text("Add set")
             }
         }

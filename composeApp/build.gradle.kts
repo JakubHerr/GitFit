@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ktlint)
-    alias(libs.plugins.sqldelight)
     alias(libs.plugins.googleServices)
 }
 
@@ -27,7 +26,7 @@ kotlin {
     listOf(
         iosX64(),
         iosArm64(),
-        iosSimulatorArm64()
+        iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
@@ -42,7 +41,6 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
-            implementation(libs.sqlDelight.android)
             implementation(project.dependencies.platform(libs.firebase))
         }
         commonMain.dependencies {
@@ -58,10 +56,6 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.json)
 
-            implementation(project.dependencies.platform(libs.supabase.bom))
-            implementation(libs.supabase.postgrest)
-            implementation(libs.supabase.auth)
-
             implementation(project.dependencies.platform(libs.koin.bom))
             api(libs.koin.core)
             implementation(libs.koin.compose)
@@ -74,14 +68,11 @@ kotlin {
             implementation(libs.gitlive.firebase.firestore)
             implementation(libs.gitlive.firebase.auth)
 
-            implementation(libs.sqlDelight.ktx)
-
             implementation(libs.androidx.navigation.compose)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
-            implementation(libs.sqlDelight.jvm)
         }
     }
 }
@@ -117,14 +108,6 @@ android {
 ktlint {
     verbose.set(true)
     outputToConsole.set(true)
-}
-
-sqldelight {
-    databases {
-        create("LocalDatabase") {
-            packageName.set("io.github.jakubherr.gitfit.db")
-        }
-    }
 }
 
 dependencies {

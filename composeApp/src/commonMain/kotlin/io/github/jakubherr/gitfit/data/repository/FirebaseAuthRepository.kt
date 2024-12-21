@@ -12,6 +12,7 @@ import kotlinx.coroutines.withContext
 class FirebaseAuthRepository {
     // TODO add Google SSO (maybe android only)
     // TODO add support for anonymous user
+    // TODO add error message for actions unsupported on desktop
     private val auth = Firebase.auth
 
     suspend fun registerUser(email: String, password: String) {

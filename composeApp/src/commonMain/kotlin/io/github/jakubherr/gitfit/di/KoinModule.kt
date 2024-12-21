@@ -1,11 +1,7 @@
 package io.github.jakubherr.gitfit.di
 
-import io.github.jakubherr.gitfit.data.Supabase
-import io.github.jakubherr.gitfit.data.repository.ExerciseRepositoryImpl
-import io.github.jakubherr.gitfit.data.repository.WorkoutRepositoryImpl
-import io.github.jakubherr.gitfit.data.source.ExerciseDataSource
-import io.github.jakubherr.gitfit.data.source.LocalExerciseDataSource
-import io.github.jakubherr.gitfit.data.source.LocalWorkoutDataSource
+import io.github.jakubherr.gitfit.data.repository.FirestoreExerciseRepository
+import io.github.jakubherr.gitfit.data.repository.FirestoreWorkoutRepository
 import io.github.jakubherr.gitfit.domain.ExerciseRepository
 import io.github.jakubherr.gitfit.domain.WorkoutRepository
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
@@ -21,15 +17,12 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 private val apiModule = module {
-    single { Supabase() }
+
 }
 
 private val repositoryModule = module {
-    singleOf(::LocalExerciseDataSource).bind<ExerciseDataSource>()
-    singleOf(::LocalWorkoutDataSource)
-
-    singleOf(::ExerciseRepositoryImpl).bind<ExerciseRepository>()
-    singleOf(::WorkoutRepositoryImpl).bind<WorkoutRepository>()
+    singleOf(::FirestoreExerciseRepository).bind<ExerciseRepository>()
+    singleOf(::FirestoreWorkoutRepository).bind<WorkoutRepository>()
 }
 
 expect val platformModule: Module

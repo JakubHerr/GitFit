@@ -74,7 +74,7 @@ fun CreateExerciseScreen(
                 onAction(
                     ExerciseAction.ExerciseCreated(
                         Exercise(
-                            -1,
+                            "",
                             name,
                             description,
                             primaryMuscle.selected,

@@ -7,6 +7,6 @@ class DashboardViewModel : ViewModel() {
 }
 
 sealed interface DashboardAction {
-    class PlannedWorkoutClick(val id: Long) : DashboardAction
+    class PlannedWorkoutClick(val id: String) : DashboardAction
     object UnplannedWorkoutClick : DashboardAction
 }

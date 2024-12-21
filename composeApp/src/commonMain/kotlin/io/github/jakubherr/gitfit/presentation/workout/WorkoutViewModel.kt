@@ -13,12 +13,6 @@ class WorkoutViewModel(
     private val workoutRepository: WorkoutRepository,
 ) : ViewModel() {
 
-    init {
-        viewModelScope.launch {
-            workoutRepository.debug()
-        }
-    }
-
     var currentWorkout = workoutRepository.observeCurrentWorkoutOrNull().stateIn(
         scope = viewModelScope,
         initialValue = mockWorkout,
@@ -29,43 +23,49 @@ class WorkoutViewModel(
 
     val cold = workoutRepository.observeCurrentWorkoutOrNull()
 
-
-
     fun onAction(action: WorkoutAction) {
         when(action) {
             is WorkoutAction.AddBlock -> addBlock(action.workoutId, action.exerciseId)
-            is WorkoutAction.AddSet -> addSet(action.blockId, action.set)
+            is WorkoutAction.AddSet -> addSet(action.workoutId, action.blockId, action.set)
             is WorkoutAction.ToggleSetCompletion -> toggleSetCompletion(action.setId)
-            WorkoutAction.AskForExercise -> { }
+            is WorkoutAction.AskForExercise -> { }
+            is WorkoutAction.DeleteWorkout -> deleteWorkout(action.workoutId)
+            is WorkoutAction.CompleteWorkout -> completeWorkout(action.workoutId)
         }
     }
 
     // starts a new unplanned workout
     fun startWorkout() {
-        if (currentWorkout.value == null) viewModelScope.launch { workoutRepository.startWorkout() }
+        if (currentWorkout.value == null) viewModelScope.launch { workoutRepository.startNewWorkout() }
     }
 
     // adds a new empty block with exercise to workout
-    private fun addBlock(workoutId: Long, exerciseId: Long) {
+    private fun addBlock(workoutId: String, exerciseId: String) {
         viewModelScope.launch { workoutRepository.addBlock(workoutId, exerciseId) }
     }
 
-    private fun addSet(blockId: Long, set: Series) {
-        viewModelScope.launch { workoutRepository.addEmptySeries(blockId) }
+    private fun addSet(workoutId: String, blockId: String, set: Series) {
+        viewModelScope.launch { workoutRepository.addSeries(workoutId, blockId, set) }
     }
 
-    private fun toggleSetCompletion(setId: Long) {
+    private fun toggleSetCompletion(setId: String) {
         viewModelScope.launch { workoutRepository.toggleSeries(setId) }
     }
 
-    private fun completeWorkout() {
-        // TODO
+    private fun completeWorkout(workoutId: String) {
+        viewModelScope.launch { workoutRepository.completeWorkout(workoutId) }
+    }
+
+    private fun deleteWorkout(workoutId: String) {
+        viewModelScope.launch { workoutRepository.deleteWorkout(workoutId) }
     }
 }
 
 sealed interface WorkoutAction {
-    class AddBlock(val workoutId: Long, val exerciseId: Long) : WorkoutAction
-    class AddSet(val blockId: Long, val set: Series) : WorkoutAction
-    class ToggleSetCompletion(val setId: Long) : WorkoutAction
+    class AddBlock(val workoutId: String, val exerciseId: String) : WorkoutAction
+    class AddSet(val workoutId: String, val blockId: String, val set: Series) : WorkoutAction
+    class ToggleSetCompletion(val setId: String) : WorkoutAction
+    class CompleteWorkout(val workoutId: String) : WorkoutAction
+    class DeleteWorkout(val workoutId: String) : WorkoutAction
     object AskForExercise : WorkoutAction
 }

@@ -3,8 +3,6 @@ package io.github.jakubherr.gitfit.presentation.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.jakubherr.gitfit.data.repository.FirebaseAuthRepository
-import io.github.jakubherr.gitfit.data.repository.FirestoreWorkoutRepository
-import io.github.jakubherr.gitfit.domain.mockWorkout
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -34,9 +32,6 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    private val test = FirestoreWorkoutRepository()
-
-
     private fun register(
         email: String,
         password: String,
@@ -60,14 +55,6 @@ class AuthViewModel : ViewModel() {
             firebase.observeUser()
         }
     }
-
-    fun dbDebug() {
-        viewModelScope.launch {
-            test.addWorkout(mockWorkout)
-        }
-    }
-
-    val workouts = test.getWorkouts()
 }
 
 sealed interface AuthAction {
