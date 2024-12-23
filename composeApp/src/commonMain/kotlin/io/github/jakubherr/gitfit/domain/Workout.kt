@@ -16,7 +16,7 @@ data class Workout(
 
 @Serializable
 data class Block(
-    val id: String,
+    val id: String, // TODO consider using index since it is inside a subcollection anyway
     val exercise: Exercise,
     val series: List<Series> = emptyList(),
     val restTimeSeconds: Long?
@@ -25,7 +25,7 @@ data class Block(
 // this should be named Set but is named series because of name conflict with Set collection
 @Serializable
 data class Series(
-    val id: String,
+    val id: String, // TODO consider using index since it is inside a subcollection anyway
     val repetitions: Long?,
     val weight: Long?,
     val completed: Boolean

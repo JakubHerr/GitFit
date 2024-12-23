@@ -29,7 +29,6 @@ class FirestoreExerciseRepository: ExerciseRepository {
         }
     }
 
-
-
+    // consider what to do with all existing workouts that already use this exercise
     // fun deleteExercise()
 }

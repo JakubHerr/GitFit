@@ -44,6 +44,7 @@ class FirebaseAuthRepository {
     suspend fun deleteUser() {
         try {
             // TODO official firebase extension deletes all data related to user, but requires pay-as-you-go Blaze plan
+                // consider the number of deletes necessary to nuke all user data
             //  how will it work for an anonymous user?
             Firebase.auth.currentUser?.delete()
         } catch (e: FirebaseAuthException) {

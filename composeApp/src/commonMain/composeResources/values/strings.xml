@@ -1,0 +1,8 @@
+<resources>
+    <string name="dashboard">Dashboard</string>
+    <string name="plan">Plan</string>
+    <string name="workout">Workout</string>
+    <string name="profile">Profile</string>
+    <string name="measurement">Measure</string>
+    <string name="trends">Trends</string>
+</resources>

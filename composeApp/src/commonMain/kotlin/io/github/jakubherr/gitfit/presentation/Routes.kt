@@ -30,6 +30,9 @@ object CreateExerciseRoute
 object MeasurementRoute
 
 @Serializable
+object PlanningRoute
+
+@Serializable
 object TrendsRoute
 
 @Serializable
