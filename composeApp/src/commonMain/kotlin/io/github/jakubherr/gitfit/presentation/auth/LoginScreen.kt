@@ -20,6 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.register
+import gitfit.composeapp.generated.resources.sign_in
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -60,11 +64,11 @@ fun LoginScreen(
 
         Row(horizontalArrangement = Arrangement.SpaceBetween) {
             Button(onClick = { onAction(AuthAction.Register(email, password)) }) {
-                Text("register")
+                Text(stringResource(Res.string.register))
             }
             Spacer(Modifier.width(16.dp))
             Button(onClick = { onAction(AuthAction.SignIn(email, password)) }) {
-                Text("Sign in")
+                Text(stringResource(Res.string.sign_in))
             }
         }
     }

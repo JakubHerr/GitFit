@@ -5,4 +5,24 @@
     <string name="profile">Profile</string>
     <string name="measurement">Measure</string>
     <string name="trends">Trends</string>
+    <string name="add_exercise">Add exercise</string>
+    <string name="save_workout">Save</string>
+    <string name="delete_workout">Delete</string>
+    <string name="add_set">Add set</string>
+    <string name="set">Set</string>
+    <string name="kg">KG</string>
+    <string name="reps">Reps</string>
+    <string name="done">Done</string>
+    <string name="error_no_exercise_found">No exercise found</string>
+    <string name="create_exercise">Create exercise</string>
+    <string name="search_exercise">Search exercise</string>
+    <string name="save_exercise">Save exercise</string>
+    <string name="name">Name</string>
+    <string name="cancel">Cancel</string>
+    <string name="register">Register</string>
+    <string name="sign_in">Sign in</string>
+    <string name="primary_muscle">Primary muscle</string>
+    <string name="secondary_muscle">Secondary muscle</string>
+    <string name="planned_workouts">Planned workouts</string>
+    <string name="start_unplanned_workout">Start unplanned workout</string>
 </resources>

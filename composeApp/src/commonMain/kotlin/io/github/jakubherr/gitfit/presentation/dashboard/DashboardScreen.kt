@@ -18,10 +18,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.planned_workouts
+import gitfit.composeapp.generated.resources.start_unplanned_workout
 import io.github.jakubherr.gitfit.domain.Workout
 import io.github.jakubherr.gitfit.domain.mockWorkout
 import io.github.jakubherr.gitfit.presentation.auth.AuthAction
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -78,7 +82,7 @@ fun WorkoutSection(
         horizontalArrangement = Arrangement.Center,
     ) {
         Button({ onAction(DashboardAction.UnplannedWorkoutClick) }) {
-            Text("Start unplanned workout")
+            Text(stringResource(Res.string.start_unplanned_workout))
         }
     }
 }
@@ -86,7 +90,7 @@ fun WorkoutSection(
 @Composable
 fun WorkoutListHeader(modifier: Modifier = Modifier) {
     Row {
-        Text("Planned workouts")
+        Text(stringResource(Res.string.planned_workouts))
     }
 }
 
@@ -100,7 +104,7 @@ fun WorkoutListItem(
         modifier.clickable { onClick() }
     ) {
         Column {
-            Text(workout.id.toString())
+            Text(workout.id)
             Text(workout.date.toString())
 
 

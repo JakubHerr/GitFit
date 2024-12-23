@@ -32,10 +32,20 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.add_exercise
+import gitfit.composeapp.generated.resources.add_set
+import gitfit.composeapp.generated.resources.delete_workout
+import gitfit.composeapp.generated.resources.done
+import gitfit.composeapp.generated.resources.kg
+import gitfit.composeapp.generated.resources.reps
+import gitfit.composeapp.generated.resources.save_workout
+import gitfit.composeapp.generated.resources.set
 import io.github.jakubherr.gitfit.domain.Block
 import io.github.jakubherr.gitfit.domain.Series
 import io.github.jakubherr.gitfit.domain.Workout
 import io.github.jakubherr.gitfit.domain.mockSeries
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 // use case: track a workout while in the gym
@@ -64,7 +74,7 @@ fun WorkoutScreen(
         Surface {
             Column(Modifier.padding(padding)) {
                 Button({ onAction(WorkoutAction.AskForExercise) }) {
-                    Text("Add exercise")
+                    Text(stringResource(Res.string.add_exercise))
                 }
 
                 LazyColumn(Modifier.fillMaxSize().weight(1f)) {
@@ -82,10 +92,10 @@ fun WorkoutScreen(
 
                 Row(Modifier.fillMaxWidth().padding(16.dp)) {
                     Button(onClick = { onAction(WorkoutAction.DeleteWorkout(workout.id))}) { // TODO "are you sure?" dialog
-                        Text("delete")
+                        Text(stringResource(Res.string.delete_workout))
                     }
                     Button(onClick = { onAction(WorkoutAction.CompleteWorkout(workout.id)) }) {
-                        Text("save")
+                        Text(stringResource(Res.string.save_workout))
                     }
                 }
             }
@@ -113,7 +123,7 @@ fun BlockItem(
             }
             Spacer(modifier.height(8.dp))
             Button(onClick = onAddSetClicked) {
-                Text("Add set")
+                Text(stringResource(Res.string.add_set))
             }
         }
     }
@@ -123,10 +133,10 @@ fun BlockItem(
 @Composable
 fun SetHeader(modifier: Modifier = Modifier) {
     Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text("Set")
-        Text("KG")
-        Text("Reps")
-        Text("Done")
+        Text(stringResource(Res.string.set))
+        Text(stringResource(Res.string.kg))
+        Text(stringResource(Res.string.reps))
+        Text(stringResource(Res.string.done))
     }
 }
 
@@ -174,4 +184,3 @@ fun NumberInputField(
         singleLine = true,
     )
 }
-

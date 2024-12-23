@@ -27,7 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.create_exercise
+import gitfit.composeapp.generated.resources.error_no_exercise_found
+import gitfit.composeapp.generated.resources.search_exercise
 import io.github.jakubherr.gitfit.domain.Exercise
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 // Use case: show a list of existing exercises
@@ -73,7 +78,7 @@ fun ExerciseListScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(Icons.Default.Block, "", Modifier.size(128.dp).alpha(0.6f))
-                Text("No exercise found")
+                Text(stringResource(Res.string.error_no_exercise_found))
             }
         } else {
             LazyColumn(
@@ -88,7 +93,7 @@ fun ExerciseListScreen(
         }
         Row {
             Button(onClick = { onAction(ExerciseAction.CreateExerciseSelected) }) {
-                Text("Create exercise")
+                Text(stringResource(Res.string.create_exercise))
             }
         }
     }
@@ -105,6 +110,6 @@ fun SearchBar(
         onQueryChange,
         modifier = modifier.fillMaxWidth(),
         leadingIcon = { Icon(Icons.Default.Search, "") },
-        placeholder = { Text("Search exercise") }
+        placeholder = { Text(stringResource(Res.string.search_exercise)) }
     )
 }

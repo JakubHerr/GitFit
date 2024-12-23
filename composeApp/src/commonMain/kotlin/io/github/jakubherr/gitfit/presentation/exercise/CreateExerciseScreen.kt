@@ -21,8 +21,15 @@ import androidx.compose.runtime.toMutableStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.cancel
+import gitfit.composeapp.generated.resources.name
+import gitfit.composeapp.generated.resources.primary_muscle
+import gitfit.composeapp.generated.resources.save_exercise
+import gitfit.composeapp.generated.resources.secondary_muscle
 import io.github.jakubherr.gitfit.domain.Exercise
 import io.github.jakubherr.gitfit.domain.MuscleGroup
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 
@@ -57,16 +64,16 @@ fun CreateExerciseScreen(
         TextField(
             name,
             { name = it },
-            label = { Text("Name") }
+            label = { Text(stringResource(Res.string.name)) }
         )
         // description
 
         // primary muscles
-        Text("Primary muscle")
+        Text(stringResource(Res.string.primary_muscle))
         SelectMuscleGroups(primaryMuscle) { primaryMuscle[it] = !primaryMuscle[it]!! }
 
         // secondary muscles
-        Text("Secondary muscle")
+        Text(stringResource(Res.string.secondary_muscle))
         SelectMuscleGroups(secondaryMuscle) { secondaryMuscle[it] = !secondaryMuscle[it]!! }
 
         Row {
@@ -83,10 +90,10 @@ fun CreateExerciseScreen(
                     )
                 )
             }) {
-                Text("Save exercise")
+                Text(stringResource(Res.string.save_exercise))
             }
             Button({}) {
-                Text("Cancel")
+                Text(stringResource(Res.string.cancel))
             }
         }
     }
