@@ -2,9 +2,8 @@ package io.github.jakubherr.gitfit.presentation.workout
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.jakubherr.gitfit.domain.Series
+import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.WorkoutRepository
-import io.github.jakubherr.gitfit.domain.mockWorkout
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -12,44 +11,26 @@ import kotlinx.coroutines.launch
 class WorkoutViewModel(
     private val workoutRepository: WorkoutRepository,
 ) : ViewModel() {
-
     var currentWorkout = workoutRepository.observeCurrentWorkoutOrNull().stateIn(
         scope = viewModelScope,
-        initialValue = mockWorkout,
-        started = SharingStarted.Eagerly  // TODO improve
-    ).also {
-        println("DBG: currentWorkout flow initiated")
-    }
-
-    val cold = workoutRepository.observeCurrentWorkoutOrNull()
+        initialValue = null,
+        started = SharingStarted.WhileSubscribed(5_000L)
+    )
 
     fun onAction(action: WorkoutAction) {
         when(action) {
+            is WorkoutAction.StartWorkout -> startWorkout()
+            is WorkoutAction.CompleteWorkout -> completeWorkout(action.workoutId)
+            is WorkoutAction.DeleteWorkout -> deleteWorkout(action.workoutId)
+            is WorkoutAction.AskForExercise -> { }
             is WorkoutAction.AddBlock -> addBlock(action.workoutId, action.exerciseId)
             is WorkoutAction.AddSet -> addSet(action.workoutId, action.blockId, action.set)
-            is WorkoutAction.ToggleSetCompletion -> toggleSetCompletion(action.setId)
-            is WorkoutAction.AskForExercise -> { }
-            is WorkoutAction.DeleteWorkout -> deleteWorkout(action.workoutId)
-            is WorkoutAction.CompleteWorkout -> completeWorkout(action.workoutId)
+            is WorkoutAction.ModifySeries -> modifySeries(action.blockId, action.set)
         }
     }
 
-    // starts a new unplanned workout
-    fun startWorkout() {
+    private fun startWorkout() {
         if (currentWorkout.value == null) viewModelScope.launch { workoutRepository.startNewWorkout() }
-    }
-
-    // adds a new empty block with exercise to workout
-    private fun addBlock(workoutId: String, exerciseId: String) {
-        viewModelScope.launch { workoutRepository.addBlock(workoutId, exerciseId) }
-    }
-
-    private fun addSet(workoutId: String, blockId: String, set: Series) {
-        viewModelScope.launch { workoutRepository.addSeries(workoutId, blockId, set) }
-    }
-
-    private fun toggleSetCompletion(setId: String) {
-        viewModelScope.launch { workoutRepository.toggleSeries(setId) }
     }
 
     private fun completeWorkout(workoutId: String) {
@@ -59,12 +40,26 @@ class WorkoutViewModel(
     private fun deleteWorkout(workoutId: String) {
         viewModelScope.launch { workoutRepository.deleteWorkout(workoutId) }
     }
+
+    private fun addBlock(workoutId: String, exerciseId: String) {
+        viewModelScope.launch { workoutRepository.addBlock(workoutId, exerciseId) }
+    }
+
+    private fun addSet(workoutId: String, blockId: String, set: Series) {
+        viewModelScope.launch { workoutRepository.addSeries(workoutId, blockId, set) }
+    }
+
+    private fun modifySeries(blockId: String, set: Series) {
+        val workoutId = currentWorkout.value?.id ?: return // TODO error handling
+        viewModelScope.launch { workoutRepository.modifySeries(workoutId, blockId, set) }
+    }
 }
 
 sealed interface WorkoutAction {
+    object StartWorkout : WorkoutAction
     class AddBlock(val workoutId: String, val exerciseId: String) : WorkoutAction
     class AddSet(val workoutId: String, val blockId: String, val set: Series) : WorkoutAction
-    class ToggleSetCompletion(val setId: String) : WorkoutAction
+    class ModifySeries(val blockId: String, val set: Series) : WorkoutAction
     class CompleteWorkout(val workoutId: String) : WorkoutAction
     class DeleteWorkout(val workoutId: String) : WorkoutAction
     object AskForExercise : WorkoutAction

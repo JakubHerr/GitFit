@@ -1,6 +1,6 @@
 package io.github.jakubherr.gitfit.data.source
 
-import io.github.jakubherr.gitfit.domain.Exercise
+import io.github.jakubherr.gitfit.domain.model.Exercise
 import kotlinx.coroutines.flow.Flow
 
 interface ExerciseDataSource {

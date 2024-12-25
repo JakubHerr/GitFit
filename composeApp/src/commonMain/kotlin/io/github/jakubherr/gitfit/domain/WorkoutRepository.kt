@@ -1,8 +1,10 @@
 package io.github.jakubherr.gitfit.domain
 
+import io.github.jakubherr.gitfit.domain.model.Series
+import io.github.jakubherr.gitfit.domain.model.Workout
 import kotlinx.coroutines.flow.Flow
 
-
+// TODO integrate with auth to CRUD for a single user only, pagination
 interface WorkoutRepository {
     fun observeCurrentWorkoutOrNull(): Flow<Workout?>
 
@@ -13,14 +15,12 @@ interface WorkoutRepository {
 
     suspend fun addBlock(workoutId: String, exerciseId: String)
     suspend fun removeBlock(workoutId: String, blockId: String)
-    suspend fun setBlockTimer(blockId: String, seconds: Long?)
+    suspend fun setBlockTimer(workoutId: String, blockId: String, seconds: Long?)
 
     suspend fun addSeries(workoutId: String, blockId: String, set: Series)
-    // TODO remove series
-    suspend fun modifySeries(set: Series)
-    suspend fun toggleSeries(seriesId: String)
+    suspend fun modifySeries(workoutId: String, blockId: String, set: Series)
+    suspend fun removeSeries(workoutId: String, blockId: String, set: Series)
 
-    // TODO get only users workouts, pagination
     suspend fun getCompletedWorkouts()
-    suspend fun getPlannedWorkouts()
+    suspend fun getPlannedWorkouts(): List<Workout>
 }

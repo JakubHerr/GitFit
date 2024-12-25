@@ -2,7 +2,7 @@ package io.github.jakubherr.gitfit.presentation.exercise
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.jakubherr.gitfit.domain.Exercise
+import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.ExerciseRepository
 import kotlinx.coroutines.launch
 

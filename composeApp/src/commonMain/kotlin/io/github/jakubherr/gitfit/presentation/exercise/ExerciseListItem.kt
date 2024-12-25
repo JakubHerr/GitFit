@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.github.jakubherr.gitfit.domain.Exercise
+import io.github.jakubherr.gitfit.domain.model.Exercise
 
 @Composable
 fun ExerciseListItem(

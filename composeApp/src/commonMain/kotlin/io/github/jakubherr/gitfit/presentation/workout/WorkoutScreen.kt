@@ -41,10 +41,11 @@ import gitfit.composeapp.generated.resources.kg
 import gitfit.composeapp.generated.resources.reps
 import gitfit.composeapp.generated.resources.save_workout
 import gitfit.composeapp.generated.resources.set
-import io.github.jakubherr.gitfit.domain.Block
-import io.github.jakubherr.gitfit.domain.Series
-import io.github.jakubherr.gitfit.domain.Workout
-import io.github.jakubherr.gitfit.domain.mockSeries
+import io.github.jakubherr.gitfit.domain.isPositiveNumber
+import io.github.jakubherr.gitfit.domain.model.Block
+import io.github.jakubherr.gitfit.domain.model.Series
+import io.github.jakubherr.gitfit.domain.model.Workout
+import io.github.jakubherr.gitfit.domain.model.mockSeries
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -55,7 +56,7 @@ fun WorkoutScreenRoot(
     onWorkoutFinished: () -> Unit = {},
     onAddExerciseClick: () -> Unit = {},
 ) {
-    val workout by vm.cold.collectAsStateWithLifecycle(null) // by vm.currentWorkout.collectAsStateWithLifecycle(null)
+    val workout by vm.currentWorkout.collectAsStateWithLifecycle(null)
 
     if (workout == null) CircularProgressIndicator()
     else WorkoutScreen(workout!!) { action ->
@@ -117,8 +118,19 @@ fun BlockItem(
             Column {
                 SetHeader()
                 Spacer(Modifier.height(16.dp))
-                block.series.forEachIndexed { idx, series ->
-                    SetItem(idx + 1, series, onAction = onAction)
+                block.series.forEachIndexed { idx, set ->
+                    SetItem(idx + 1, set) { weight, reps ->
+                        onAction(
+                            WorkoutAction.ModifySeries(
+                                blockId = block.id,
+                                set = set.copy(
+                                    weight = weight.toLong(),
+                                    repetitions = reps.toLong(),
+                                    completed = !set.completed
+                                )
+                            )
+                        )
+                    }
                 }
             }
             Spacer(modifier.height(8.dp))
@@ -145,10 +157,10 @@ fun SetItem(
     index: Int,
     set: Series = mockSeries,
     modifier: Modifier = Modifier,
-    onAction: (WorkoutAction) -> Unit = {},
+    onToggle: (String, String) -> Unit,
 ) {
-    var weight by remember { mutableStateOf("") }
-    var reps by remember { mutableStateOf("") }
+    var weight by remember { mutableStateOf(set.weight?.toString() ?: "") }
+    var reps by remember { mutableStateOf(set.repetitions?.toString() ?: "") }
 
     Row(
         modifier.fillMaxWidth(),
@@ -160,10 +172,12 @@ fun SetItem(
         NumberInputField(weight, onValueChange = { weight = it })
         NumberInputField(reps, onValueChange = { reps = it })
 
-        // TODO sanity check values before saving
         Checkbox(
             set.completed,
-            onCheckedChange = { onAction(WorkoutAction.ToggleSetCompletion(set.id)) }
+            onCheckedChange = {
+                if (weight.isPositiveNumber() && reps.isPositiveNumber()) onToggle(weight, reps)
+                else println("DBG: either weight: $weight or reps $reps is not a valid Long") // TODO show error in ui
+            }
         )
     }
 }

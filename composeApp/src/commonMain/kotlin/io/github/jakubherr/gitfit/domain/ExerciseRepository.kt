@@ -1,5 +1,6 @@
 package io.github.jakubherr.gitfit.domain
 
+import io.github.jakubherr.gitfit.domain.model.Exercise
 import kotlinx.coroutines.flow.Flow
 
 interface ExerciseRepository {

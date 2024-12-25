@@ -17,16 +17,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.planned_workouts
 import gitfit.composeapp.generated.resources.start_unplanned_workout
-import io.github.jakubherr.gitfit.domain.Workout
-import io.github.jakubherr.gitfit.domain.mockWorkout
-import io.github.jakubherr.gitfit.presentation.auth.AuthAction
-import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
+import io.github.jakubherr.gitfit.domain.model.Workout
+import io.github.jakubherr.gitfit.domain.model.mockWorkout
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun DashboardScreenRoot(

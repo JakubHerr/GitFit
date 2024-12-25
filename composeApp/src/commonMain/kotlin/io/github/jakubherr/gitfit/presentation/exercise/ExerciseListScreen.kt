@@ -31,7 +31,7 @@ import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.create_exercise
 import gitfit.composeapp.generated.resources.error_no_exercise_found
 import gitfit.composeapp.generated.resources.search_exercise
-import io.github.jakubherr.gitfit.domain.Exercise
+import io.github.jakubherr.gitfit.domain.model.Exercise
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 

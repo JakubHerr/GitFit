@@ -1,4 +1,4 @@
-package io.github.jakubherr.gitfit.domain
+package io.github.jakubherr.gitfit.domain.model
 
 // a plan could be either predefined or custom made by the user
 // custom plans are private

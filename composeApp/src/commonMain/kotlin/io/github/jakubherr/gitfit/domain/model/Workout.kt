@@ -1,4 +1,4 @@
-package io.github.jakubherr.gitfit.domain
+package io.github.jakubherr.gitfit.domain.model
 
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
@@ -25,9 +25,9 @@ data class Block(
 // this should be named Set but is named series because of name conflict with Set collection
 @Serializable
 data class Series(
-    val id: String, // TODO consider using index since it is inside a subcollection anyway
+    val id: String,
     val repetitions: Long?,
-    val weight: Long?,
+    val weight: Long?, // TODO weight should be double
     val completed: Boolean
 )
 

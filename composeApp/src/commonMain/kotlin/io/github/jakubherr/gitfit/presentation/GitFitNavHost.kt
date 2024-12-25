@@ -53,10 +53,7 @@ fun GitFitNavHost(
                 DashboardScreenRoot() { action ->
                     when(action) {
                         is DashboardAction.PlannedWorkoutClick -> { /* TODO */ }
-                        is DashboardAction.UnplannedWorkoutClick -> {
-                            workoutViewModel.startWorkout()
-                            navController.navigate(WorkoutRoute)
-                        }
+                        is DashboardAction.UnplannedWorkoutClick -> navController.navigate(WorkoutRoute)
                     }
                 }
             }

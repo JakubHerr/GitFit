@@ -27,8 +27,8 @@ import gitfit.composeapp.generated.resources.name
 import gitfit.composeapp.generated.resources.primary_muscle
 import gitfit.composeapp.generated.resources.save_exercise
 import gitfit.composeapp.generated.resources.secondary_muscle
-import io.github.jakubherr.gitfit.domain.Exercise
-import io.github.jakubherr.gitfit.domain.MuscleGroup
+import io.github.jakubherr.gitfit.domain.model.Exercise
+import io.github.jakubherr.gitfit.domain.model.MuscleGroup
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 

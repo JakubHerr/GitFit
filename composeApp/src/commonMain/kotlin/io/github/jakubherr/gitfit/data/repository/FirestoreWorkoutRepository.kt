@@ -2,15 +2,18 @@ package io.github.jakubherr.gitfit.data.repository
 
 
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.firestore.FieldValue
 import dev.gitlive.firebase.firestore.firestore
-import io.github.jakubherr.gitfit.domain.Block
-import io.github.jakubherr.gitfit.domain.Exercise
-import io.github.jakubherr.gitfit.domain.Series
-import io.github.jakubherr.gitfit.domain.Workout
+import io.github.jakubherr.gitfit.domain.model.Block
+import io.github.jakubherr.gitfit.domain.model.Exercise
+import io.github.jakubherr.gitfit.domain.model.Series
+import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.domain.WorkoutRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
@@ -28,141 +31,145 @@ private data class WorkoutDTO(
 )
 
 // TODO handle uncached data, null value when something is not found
-class FirestoreWorkoutRepository: WorkoutRepository {
-    // maybe store unfinished workouts locally and only upload them on completion
+//  maybe store unfinished workouts locally and only upload them on completion
+class FirestoreWorkoutRepository : WorkoutRepository {
     private val firestore = Firebase.firestore
+    private val dispatcher = Dispatchers.IO
     private val workoutRef = firestore.collection("WORKOUTS")
 
-    fun observeBlocks(workoutId: String) = flow {
-        workoutRef
-            .document(workoutId)
-            .collection("BLOCKS")
-            .snapshots.collect { querySnapshot ->
-                val blocks = querySnapshot.documents.map { it.data<Block>() }
-                emit(blocks)
-            }
-    }
+    private fun blockRef(workoutId: String, blockId: String) = workoutRef.document(workoutId).collection("BLOCKS").document(blockId)
 
-    private suspend fun getBlocks(workoutId: String) = workoutRef
-        .document(workoutId)
-        .collection("BLOCKS")
-        .get()
-        .documents
-        .map { it.data<Block>()}
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun observeCurrentWorkoutOrNull() = observeCurrentWorkout()
+        .flatMapLatest { workoutDto ->
+            workoutDto?.let {
+                observeBlocks(workoutDto.id).map { blocks ->
+                    Workout(
+                        it.id,
+                        blocks,
+                        it.date,
+                        it.completed
+                    )
+                }
+            } ?: flowOf(null)
+        }
 
     override suspend fun startNewWorkout() {
-        println("Trying to start new workout..")
-        val id = workoutRef.document.id
-        val workout = WorkoutDTO(
-            id = id,
-            date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
-            completed = false,
-            inProgress = true
-        )
+        withContext(dispatcher) {
+            val id = workoutRef.document.id
+            val workout = WorkoutDTO(
+                id = id,
+                date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
+                completed = false,
+                inProgress = true
+            )
 
-        workoutRef
-            .document(id)
-            .set(workout) // set basically acts as upsert
+            workoutRef.document(id).set(workout)
+        }
     }
 
     override suspend fun startPlannedWorkout(workoutId: String) {
-        workoutRef.document(workoutId).update("inProgress" to true)
+        withContext(dispatcher) {
+            workoutRef.document(workoutId).update("inProgress" to true)
+        }
     }
 
     override suspend fun completeWorkout(workoutId: String) {
-        workoutRef.document(workoutId).update("completed" to true, "inProgress" to false)
+        withContext(dispatcher) {
+            workoutRef.document(workoutId).update("completed" to true, "inProgress" to false)
+        }
     }
 
     override suspend fun deleteWorkout(workoutId: String) {
-        // TODO optimize, maybe try transaction?
-        val blocks = workoutRef.document(workoutId).collection("BLOCKS").get().documents
-        blocks.forEach {
-            withContext(Dispatchers.IO) {
-                launch { workoutRef.document(workoutId).collection("BLOCKS").document(it.id).delete() }
+        withContext(dispatcher) {
+            firestore.runTransaction {
+                val blocks = workoutRef.document(workoutId).collection("BLOCKS").get().documents
+                blocks.forEach {
+                    launch {
+                        workoutRef.document(workoutId).collection("BLOCKS").document(it.id).delete()
+                    }
+                }
+                workoutRef.document(workoutId).delete()
             }
-        }
-        workoutRef.document(workoutId).delete()
-    }
-
-    private suspend fun getCurrentWorkoutOrNull(): Workout? {
-        val workout = workoutRef
-            .where { "completed" equalTo false }
-            .get().documents.firstOrNull()?.data<WorkoutDTO>()
-        return workout?.let {
-            val blocks = getBlocks(it.id)
-            Workout(
-                it.id,
-                blocks,
-                it.date,
-                it.completed
-            )
         }
     }
 
     override suspend fun addBlock(workoutId: String, exerciseId: String) {
-        val exercise = firestore.collection("EXERCISES").document(exerciseId).get().data<Exercise>()
+        withContext(dispatcher) {
+            val exercise = firestore.collection("EXERCISES").document(exerciseId).get().data<Exercise>()
 
-        val id = workoutRef.document(workoutId).collection("BLOCKS").document.id
-        val block = Block(
-            id,
-            exercise,
-            emptyList(),
-            null
-        )
+            val id = workoutRef.document(workoutId).collection("BLOCKS").document.id
+            val block = Block(
+                id,
+                exercise,
+                emptyList(),
+                null
+            )
 
-        workoutRef.document(workoutId).collection("BLOCKS").document(id).set(block)
+            blockRef(workoutId, id).set(block)
+        }
     }
 
     override suspend fun removeBlock(workoutId: String, blockId: String) {
-        workoutRef.document(workoutId).collection("BLOCKS").document(blockId).delete()
+        withContext(dispatcher) {
+            blockRef(workoutId, blockId).delete()
+        }
     }
 
-    override suspend fun setBlockTimer(blockId: String, seconds: Long?) {
-        TODO("Not yet implemented")
+    override suspend fun setBlockTimer(workoutId: String, blockId: String, seconds: Long?) {
+        withContext(dispatcher) {
+            blockRef(workoutId, blockId).update("restTimeSeconds" to seconds)
+        }
     }
 
     override suspend fun addSeries(workoutId: String, blockId: String, set: Series) {
-        // TODO try to add directly without fetching first
-        val blockRef = workoutRef.document(workoutId).collection("BLOCKS").document(blockId)
-        val test = blockRef.get()
-        val block = test.data<Block>()
-        val newBlock = block.copy(series = block.series + set)
-        blockRef.set(newBlock)
+        withContext(dispatcher) {
+            blockRef(workoutId, blockId).update("series" to FieldValue.arrayUnion(set))
+        }
     }
 
-    override suspend fun toggleSeries(seriesId: String) {
-        TODO("Not yet implemented")
+    override suspend fun modifySeries(workoutId: String, blockId: String, set: Series) {
+        val field = blockRef(workoutId, blockId).get().data<Block>().series
+        val newField = field.map { if (it.id == set.id) set else it }
+
+        blockRef(workoutId, blockId).update("series" to newField)
+    }
+
+    override suspend fun removeSeries(workoutId: String, blockId: String, set: Series) {
+        withContext(dispatcher) {
+            blockRef(workoutId, blockId).update("series" to FieldValue.arrayRemove(set))
+        }
     }
 
     override suspend fun getCompletedWorkouts() {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getPlannedWorkouts() {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun modifySeries(set: Series) {
-        TODO("Not yet implemented")
-    }
-
-    override fun observeCurrentWorkoutOrNull() = flow {
-        workoutRef
+    override suspend fun getPlannedWorkouts(): List<Workout> {
+        return workoutRef
             .where {
                 "completed" equalTo false
                 "inProgress" equalTo true
             }
-            .snapshots.collect { querySnapshot ->
-                val workoutDto = querySnapshot.documents.firstOrNull()?.data<WorkoutDTO>()
-                val workout = workoutDto?.let {
-                    Workout(
-                        it.id,
-                        getBlocks(it.id),
-                        it.date,
-                        it.completed
-                    )
-                }
-                emit(workout)
-            }
+            .get()
+            .documents
+            .map { it.data<Workout>() }
     }
+
+    private fun observeBlocks(workoutId: String) = workoutRef
+        .document(workoutId)
+        .collection("BLOCKS")
+        .snapshots.map { querySnapshot ->
+            querySnapshot.documents.map { it.data<Block>() }
+        }
+
+    private fun observeCurrentWorkout() = workoutRef
+        .where {
+            "completed" equalTo false
+            "inProgress" equalTo true
+        }
+        .snapshots.map { workoutSnapshot ->
+            val workoutDto = workoutSnapshot.documents.firstOrNull()?.data<WorkoutDTO>()
+            workoutDto
+        }
 }
