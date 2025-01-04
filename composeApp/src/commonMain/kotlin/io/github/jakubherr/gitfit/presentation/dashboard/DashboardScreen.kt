@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.planned_workouts
+import gitfit.composeapp.generated.resources.resume_workout
 import gitfit.composeapp.generated.resources.start_unplanned_workout
 import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
@@ -35,11 +36,17 @@ fun DashboardScreenRoot(
     onAction: (DashboardAction) -> Unit,
 ) {
     val planned by vm.plannedWorkouts.collectAsStateWithLifecycle()
+    val current by vm.currentWorkout.collectAsStateWithLifecycle()
 
     DashboardScreen(
-        planned,
+        plannedWorkouts = planned,
+        currentWorkout = current,
     ) { action ->
-        if (action is DashboardAction.UnplannedWorkoutClick) vm.onAction(WorkoutAction.StartNewWorkout)
+        when (action) {
+            is DashboardAction.UnplannedWorkoutClick -> vm.onAction(WorkoutAction.StartNewWorkout)
+            is DashboardAction.PlannedWorkoutClick -> vm.onAction(WorkoutAction.StartPlannedWorkout(action.workoutId))
+            else -> {}
+        }
         onAction(action)
     }
 }
@@ -47,13 +54,12 @@ fun DashboardScreenRoot(
 // TODO Scrollable list with composables
 //  show section with data and meaurements,
 //      - maybe add some customization options
-//  show section with planned workouts
-//      - option to quick start planned workout, plan a new workout etc.
 //  show section with exercises
 @Composable
 fun DashboardScreen(
-    plannedWorkouts: List<Workout> = emptyList(),
     modifier: Modifier = Modifier,
+    plannedWorkouts: List<Workout> = emptyList(),
+    currentWorkout: Workout? = null,
     onAction: (DashboardAction) -> Unit = { },
 ) {
     val scrollState = rememberScrollState()
@@ -66,8 +72,14 @@ fun DashboardScreen(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
         ) {
-            Button({ onAction(DashboardAction.UnplannedWorkoutClick) }) {
-                Text(stringResource(Res.string.start_unplanned_workout))
+            if (currentWorkout == null) {
+                Button({ onAction(DashboardAction.UnplannedWorkoutClick) }) {
+                    Text(stringResource(Res.string.start_unplanned_workout))
+                }
+            } else {
+                Button({ onAction(DashboardAction.ResumeWorkoutClick) }) {
+                    Text(stringResource(Res.string.resume_workout))
+                }
             }
         }
     }

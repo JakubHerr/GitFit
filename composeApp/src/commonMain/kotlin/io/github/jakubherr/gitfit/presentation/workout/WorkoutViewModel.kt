@@ -27,7 +27,8 @@ class WorkoutViewModel(
 
     fun onAction(action: WorkoutAction) {
         when (action) {
-            is WorkoutAction.StartNewWorkout -> startWorkout()
+            is WorkoutAction.StartNewWorkout -> startNewWorkout()
+            is WorkoutAction.StartPlannedWorkout -> startPlannedWorkout(action.workoutId)
             is WorkoutAction.CompleteWorkout -> completeWorkout(action.workoutId)
             is WorkoutAction.DeleteWorkout -> deleteWorkout(action.workoutId)
             is WorkoutAction.AskForExercise -> { }
@@ -37,10 +38,18 @@ class WorkoutViewModel(
         }
     }
 
-    private fun startWorkout() {
+    private fun startNewWorkout() {
         if (currentWorkout.value == null) {
             viewModelScope.launch {
                 workoutRepository.startNewWorkout()
+            }
+        }
+    }
+
+    private fun startPlannedWorkout(workoutId: String) {
+        if (currentWorkout.value == null) {
+            viewModelScope.launch {
+                workoutRepository.startPlannedWorkout(workoutId)
             }
         }
     }
@@ -79,6 +88,8 @@ class WorkoutViewModel(
 
 sealed interface WorkoutAction {
     object StartNewWorkout : WorkoutAction
+
+    class StartPlannedWorkout(val workoutId: String) : WorkoutAction
 
     class AddBlock(val workoutId: String, val exerciseId: String) : WorkoutAction
 

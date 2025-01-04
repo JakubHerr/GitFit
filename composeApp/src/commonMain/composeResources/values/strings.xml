@@ -26,4 +26,5 @@
     <string name="secondary_muscle">Secondary muscle</string>
     <string name="planned_workouts">Planned workouts</string>
     <string name="start_unplanned_workout">Start unplanned workout</string>
+    <string name="resume_workout">resume workout</string>
 </resources>

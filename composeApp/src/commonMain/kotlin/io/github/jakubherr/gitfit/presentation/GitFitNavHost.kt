@@ -52,8 +52,7 @@ fun GitFitNavHost(
             composable<DashboardRoute> {
                 DashboardScreenRoot { action ->
                     when (action) {
-                        is DashboardAction.PlannedWorkoutClick -> { /* TODO */ }
-                        is DashboardAction.UnplannedWorkoutClick -> {
+                        is DashboardAction.PlannedWorkoutClick, DashboardAction.UnplannedWorkoutClick, DashboardAction.ResumeWorkoutClick -> {
                             navController.navigate(WorkoutInProgressRoute)
                         }
                     }
