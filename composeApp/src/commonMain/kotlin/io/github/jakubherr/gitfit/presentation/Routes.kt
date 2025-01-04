@@ -6,13 +6,16 @@ import kotlinx.serialization.Serializable
 object LoginRoute
 
 @Serializable
+object RegisterRoute
+
+@Serializable
 object OnboardingRoute
 
 @Serializable
 object DashboardRoute
 
 @Serializable
-object WorkoutRoute
+object WorkoutInProgressRoute
 
 @Serializable
 object ExerciseListRoute

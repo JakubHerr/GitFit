@@ -54,7 +54,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun WorkoutScreenRoot(
     vm: WorkoutViewModel = koinViewModel(),
     onWorkoutFinished: () -> Unit = {},
-    onAddExerciseClick: () -> Unit = {},
+    onAddExerciseClick: (String) -> Unit = {},
 ) {
     val workout by vm.currentWorkout.collectAsStateWithLifecycle(null)
 
@@ -62,7 +62,7 @@ fun WorkoutScreenRoot(
         CircularProgressIndicator()
     } else {
         WorkoutScreen(workout!!) { action ->
-            if (action is WorkoutAction.AskForExercise) onAddExerciseClick()
+            if (action is WorkoutAction.AskForExercise) onAddExerciseClick(workout!!.id)
             vm.onAction(action)
             if (action is WorkoutAction.CompleteWorkout || action is WorkoutAction.DeleteWorkout) onWorkoutFinished()
         }

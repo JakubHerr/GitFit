@@ -27,7 +27,7 @@ class WorkoutViewModel(
 
     fun onAction(action: WorkoutAction) {
         when (action) {
-            is WorkoutAction.StartWorkout -> startWorkout()
+            is WorkoutAction.StartNewWorkout -> startWorkout()
             is WorkoutAction.CompleteWorkout -> completeWorkout(action.workoutId)
             is WorkoutAction.DeleteWorkout -> deleteWorkout(action.workoutId)
             is WorkoutAction.AskForExercise -> { }
@@ -78,7 +78,7 @@ class WorkoutViewModel(
 }
 
 sealed interface WorkoutAction {
-    object StartWorkout : WorkoutAction
+    object StartNewWorkout : WorkoutAction
 
     class AddBlock(val workoutId: String, val exerciseId: String) : WorkoutAction
 

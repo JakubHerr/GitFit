@@ -7,9 +7,9 @@ import io.github.jakubherr.gitfit.domain.model.Exercise
 import kotlinx.coroutines.launch
 
 class ExerciseViewModel(
-    private val repository: ExerciseRepository,
+    private val exerciseRepository: ExerciseRepository,
 ) : ViewModel() {
-    val flow = repository.getAllExercises()
+    val flow = exerciseRepository.getAllExercises()
 
     fun onAction(action: ExerciseAction) {
         when (action) {
@@ -20,7 +20,7 @@ class ExerciseViewModel(
 
     private fun createExercise(exercise: Exercise) {
         viewModelScope.launch {
-            repository.createExercise(exercise)
+            exerciseRepository.createExercise(exercise)
         }
     }
 

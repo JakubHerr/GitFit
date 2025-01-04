@@ -23,6 +23,7 @@ import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.planned_workouts
 import gitfit.composeapp.generated.resources.start_unplanned_workout
 import io.github.jakubherr.gitfit.domain.model.Workout
+import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -37,8 +38,10 @@ fun DashboardScreenRoot(
 
     DashboardScreen(
         planned,
-        onAction = onAction,
-    )
+    ) { action ->
+        if (action is DashboardAction.UnplannedWorkoutClick) vm.onAction(WorkoutAction.StartNewWorkout)
+        onAction(action)
+    }
 }
 
 // TODO Scrollable list with composables

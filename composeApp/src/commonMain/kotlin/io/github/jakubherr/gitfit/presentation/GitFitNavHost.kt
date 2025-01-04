@@ -14,15 +14,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
-import io.github.jakubherr.gitfit.presentation.auth.LoginScreenRoot
+import io.github.jakubherr.gitfit.presentation.auth.authGraph
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardAction
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardScreenRoot
-import io.github.jakubherr.gitfit.presentation.exercise.CreateExerciseScreenRoot
-import io.github.jakubherr.gitfit.presentation.exercise.ExerciseListScreenRoot
+import io.github.jakubherr.gitfit.presentation.exercise.exerciseNavigation
 import io.github.jakubherr.gitfit.presentation.settings.SettingsScreenRoot
-import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutScreenRoot
-import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -37,8 +34,6 @@ fun GitFitNavHost(
     val authViewModel: AuthViewModel = koinViewModel()
     val auth by authViewModel.state.collectAsStateWithLifecycle()
 
-    val workoutViewModel: WorkoutViewModel = koinViewModel()
-
     LaunchedEffect(auth) { println("DBG: auth state is $auth") }
 
     GitFitScaffold(
@@ -52,60 +47,29 @@ fun GitFitNavHost(
             navController = navController,
             startDestination = if (auth.loggedIn) DashboardRoute else LoginRoute,
         ) {
-            composable<LoginRoute> {
-                LoginScreenRoot { }
-            }
-
-            composable<OnboardingRoute> { /* TODO */ }
+            authGraph()
 
             composable<DashboardRoute> {
                 DashboardScreenRoot { action ->
                     when (action) {
                         is DashboardAction.PlannedWorkoutClick -> { /* TODO */ }
                         is DashboardAction.UnplannedWorkoutClick -> {
-                            workoutViewModel.onAction(WorkoutAction.StartWorkout)
-                            navController.navigate(WorkoutRoute)
+                            navController.navigate(WorkoutInProgressRoute)
                         }
                     }
                 }
             }
 
-            // unplanned workout
-            composable<WorkoutRoute> {
+            composable<WorkoutInProgressRoute> {
                 WorkoutScreenRoot(
-                    workoutViewModel,
-                    onAddExerciseClick = {
-                        // TODO this is not ideal
-                        navController.navigate(AddExerciseToWorkoutRoute(workoutViewModel.currentWorkout.value!!.id))
+                    onAddExerciseClick = { workoutId ->
+                        navController.navigate(AddExerciseToWorkoutRoute(workoutId))
                     },
                     onWorkoutFinished = { navController.popBackStack() },
                 )
             }
 
-            composable<ExerciseListRoute> {
-                ExerciseListScreenRoot(
-                    onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
-                    onExerciseClick = { navController.navigate(WorkoutRoute) },
-                )
-            }
-            composable<AddExerciseToWorkoutRoute> {
-                ExerciseListScreenRoot(
-                    onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
-                    onExerciseClick = { exercise ->
-                        workoutViewModel.onAction(WorkoutAction.AddBlock(workoutViewModel.currentWorkout.value!!.id, exercise.id))
-                        navController.popBackStack()
-                    },
-                )
-            }
-
-            composable<ExerciseDetailRoute> {
-                // TODO
-            }
-            composable<CreateExerciseRoute> {
-                CreateExerciseScreenRoot {
-                    navController.popBackStack()
-                }
-            }
+            exerciseNavigation(navController)
 
             composable<PlanningRoute> {
                 // TODO

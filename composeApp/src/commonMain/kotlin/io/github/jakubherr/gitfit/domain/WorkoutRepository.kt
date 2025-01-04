@@ -4,7 +4,7 @@ import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
 import kotlinx.coroutines.flow.Flow
 
-// TODO integrate with auth to CRUD for a single user only, pagination
+// TODO pagination
 interface WorkoutRepository {
     fun observeCurrentWorkoutOrNull(): Flow<Workout?>
 
