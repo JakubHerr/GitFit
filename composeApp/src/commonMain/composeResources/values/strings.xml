@@ -27,4 +27,18 @@
     <string name="planned_workouts">Planned workouts</string>
     <string name="start_unplanned_workout">Start unplanned workout</string>
     <string name="resume_workout">resume workout</string>
+    <string name="weight">weight</string>
+    <string name="height">height</string>
+    <string name="neck">neck</string>
+    <string name="chest">chest</string>
+    <string name="waist">waist</string>
+    <string name="left_arm">left arm</string>
+    <string name="right_arm">right arm</string>
+    <string name="left_forearm">left forearm</string>
+    <string name="right_forearm">right forearm</string>
+    <string name="left_thigh">left thigh</string>
+    <string name="right_thigh">right thigh</string>
+    <string name="left_calf">left calf</string>
+    <string name="right_calf">right calf</string>
+    <string name="save_measurement">save measurement</string>
 </resources>

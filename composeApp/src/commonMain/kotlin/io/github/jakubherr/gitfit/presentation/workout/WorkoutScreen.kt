@@ -41,7 +41,7 @@ import gitfit.composeapp.generated.resources.kg
 import gitfit.composeapp.generated.resources.reps
 import gitfit.composeapp.generated.resources.save_workout
 import gitfit.composeapp.generated.resources.set
-import io.github.jakubherr.gitfit.domain.isPositiveNumber
+import io.github.jakubherr.gitfit.domain.isPositiveLong
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
@@ -179,7 +179,7 @@ fun SetItem(
         Checkbox(
             set.completed,
             onCheckedChange = {
-                if (weight.isPositiveNumber() && reps.isPositiveNumber()) {
+                if (weight.isPositiveLong() && reps.isPositiveLong()) {
                     onToggle(weight, reps)
                 } else {
                     println("DBG: either weight: $weight or reps $reps is not a valid Long") // TODO show error in ui
@@ -192,9 +192,10 @@ fun SetItem(
 @Composable
 fun NumberInputField(
     value: String,
-    onValueChange: (String) -> Unit,
+    label: String? = null,
     modifier: Modifier = Modifier,
     placeholder: Int = 0,
+    onValueChange: (String) -> Unit,
 ) {
     OutlinedTextField(
         value,

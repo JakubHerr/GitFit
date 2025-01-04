@@ -18,6 +18,7 @@ import io.github.jakubherr.gitfit.presentation.auth.authGraph
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardAction
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardScreenRoot
 import io.github.jakubherr.gitfit.presentation.exercise.exerciseNavigation
+import io.github.jakubherr.gitfit.presentation.measurement.MeasurementScreenRoot
 import io.github.jakubherr.gitfit.presentation.settings.SettingsScreenRoot
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutScreenRoot
 import org.koin.compose.viewmodel.koinViewModel
@@ -75,7 +76,7 @@ fun GitFitNavHost(
             }
 
             composable<MeasurementRoute> {
-                // TODO
+                MeasurementScreenRoot()
             }
 
             composable<TrendsRoute> {
