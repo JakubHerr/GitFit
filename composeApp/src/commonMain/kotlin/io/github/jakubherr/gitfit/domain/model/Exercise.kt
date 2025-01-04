@@ -2,7 +2,6 @@ package io.github.jakubherr.gitfit.domain.model
 
 import kotlinx.serialization.Serializable
 
-
 @Serializable
 data class Exercise(
     val id: String,
@@ -15,9 +14,21 @@ data class Exercise(
 // some strength standards for each exercise?
 
 enum class MuscleGroup {
-    ARMS, LEGS, SHOULDERS, BACK, ABS, CHEST, FOREARMS
+    ARMS,
+    LEGS,
+    SHOULDERS,
+    BACK,
+    ABS,
+    CHEST,
+    FOREARMS,
 }
 
-val mockExercise = Exercise(
-    "mock", null,"Bench press", "", listOf(MuscleGroup.CHEST), listOf(MuscleGroup.SHOULDERS)
-)
+val mockExercise =
+    Exercise(
+        "mock",
+        null,
+        "Bench press",
+        "",
+        listOf(MuscleGroup.CHEST),
+        listOf(MuscleGroup.SHOULDERS),
+    )

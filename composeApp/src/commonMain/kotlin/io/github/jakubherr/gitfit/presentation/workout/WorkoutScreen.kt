@@ -58,11 +58,14 @@ fun WorkoutScreenRoot(
 ) {
     val workout by vm.currentWorkout.collectAsStateWithLifecycle(null)
 
-    if (workout == null) CircularProgressIndicator()
-    else WorkoutScreen(workout!!) { action ->
-        if (action is WorkoutAction.AskForExercise) onAddExerciseClick()
-        vm.onAction(action)
-        if (action is WorkoutAction.CompleteWorkout || action is WorkoutAction.DeleteWorkout) onWorkoutFinished()
+    if (workout == null) {
+        CircularProgressIndicator()
+    } else {
+        WorkoutScreen(workout!!) { action ->
+            if (action is WorkoutAction.AskForExercise) onAddExerciseClick()
+            vm.onAction(action)
+            if (action is WorkoutAction.CompleteWorkout || action is WorkoutAction.DeleteWorkout) onWorkoutFinished()
+        }
     }
 }
 
@@ -86,7 +89,7 @@ fun WorkoutScreen(
                             onAddSetClicked = {
                                 val set = Series(block.series.size.toString(), null, null, false)
                                 onAction(WorkoutAction.AddSet(workout.id, block.id, set))
-                            }
+                            },
                         )
                     }
                 }
@@ -123,12 +126,13 @@ fun BlockItem(
                         onAction(
                             WorkoutAction.ModifySeries(
                                 blockId = block.id,
-                                set = set.copy(
-                                    weight = weight.toLong(),
-                                    repetitions = reps.toLong(),
-                                    completed = !set.completed
-                                )
-                            )
+                                set =
+                                    set.copy(
+                                        weight = weight.toLong(),
+                                        repetitions = reps.toLong(),
+                                        completed = !set.completed,
+                                    ),
+                            ),
                         )
                     }
                 }
@@ -165,7 +169,7 @@ fun SetItem(
     Row(
         modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(index.toString())
 
@@ -175,9 +179,12 @@ fun SetItem(
         Checkbox(
             set.completed,
             onCheckedChange = {
-                if (weight.isPositiveNumber() && reps.isPositiveNumber()) onToggle(weight, reps)
-                else println("DBG: either weight: $weight or reps $reps is not a valid Long") // TODO show error in ui
-            }
+                if (weight.isPositiveNumber() && reps.isPositiveNumber()) {
+                    onToggle(weight, reps)
+                } else {
+                    println("DBG: either weight: $weight or reps $reps is not a valid Long") // TODO show error in ui
+                }
+            },
         )
     }
 }

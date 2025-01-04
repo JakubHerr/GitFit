@@ -32,13 +32,12 @@ import io.github.jakubherr.gitfit.domain.model.MuscleGroup
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
-
 // Use case: Add custom exercise
 @Composable
 fun CreateExerciseScreenRoot(
     vm: ExerciseViewModel = koinViewModel(),
     modifier: Modifier = Modifier,
-    onExerciseCreated: () -> Unit = {}
+    onExerciseCreated: () -> Unit = {},
 ) {
     CreateExerciseScreen(Modifier.fillMaxSize()) { action ->
         vm.onAction(action)
@@ -58,13 +57,13 @@ fun CreateExerciseScreen(
 
     Column(
         Modifier.fillMaxSize().padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         // name
         TextField(
             name,
             { name = it },
-            label = { Text(stringResource(Res.string.name)) }
+            label = { Text(stringResource(Res.string.name)) },
         )
         // description
 
@@ -82,13 +81,14 @@ fun CreateExerciseScreen(
                     ExerciseAction.ExerciseCreated(
                         Exercise(
                             "",
-                            "", // TODO add user id to exercise
+                            // TODO add user id to exercise
+                            "",
                             name,
                             description,
                             primaryMuscle.selected,
-                            secondaryMuscle.selected
-                        )
-                    )
+                            secondaryMuscle.selected,
+                        ),
+                    ),
                 )
             }) {
                 Text(stringResource(Res.string.save_exercise))
@@ -104,7 +104,7 @@ fun CreateExerciseScreen(
 fun SelectMuscleGroups(
     muscleGroups: Map<MuscleGroup, Boolean>,
     modifier: Modifier = Modifier,
-    onMuscleGroupToggle: (MuscleGroup) -> Unit = {}
+    onMuscleGroupToggle: (MuscleGroup) -> Unit = {},
 ) {
     val bruuh = muscleGroups.toList()
 
@@ -113,7 +113,7 @@ fun SelectMuscleGroups(
             FilterChip(
                 selected = pair.second,
                 onClick = { onMuscleGroupToggle(pair.first) },
-                label = { Text(pair.first.name) }
+                label = { Text(pair.first.name) },
             )
         }
     }

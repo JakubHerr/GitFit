@@ -1,6 +1,5 @@
 package io.github.jakubherr.gitfit.presentation
 
-
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.EditCalendar
@@ -17,7 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import gitfit.composeapp.generated.resources.Res
-import gitfit.composeapp.generated.resources.*
+import gitfit.composeapp.generated.resources.dashboard
+import gitfit.composeapp.generated.resources.measurement
+import gitfit.composeapp.generated.resources.plan
+import gitfit.composeapp.generated.resources.profile
+import gitfit.composeapp.generated.resources.trends
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import kotlin.reflect.KClass
@@ -43,9 +46,13 @@ fun GitFitScaffold(
     content: @Composable () -> Unit,
 ) {
     val layoutType =
-        if (showDestinations) NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(
-            currentWindowAdaptiveInfo()
-        ) else NavigationSuiteType.None
+        if (showDestinations) {
+            NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(
+                currentWindowAdaptiveInfo(),
+            )
+        } else {
+            NavigationSuiteType.None
+        }
 
     if (currentDestination != null) {
         NavigationSuiteScaffold(
@@ -55,18 +62,18 @@ fun GitFitScaffold(
                         icon = {
                             Icon(
                                 it.icon,
-                                null
+                                null,
                             )
                         },
                         label = { Text(stringResource(it.label)) },
                         selected = it == currentDestination,
-                        onClick = { onDestinationClicked(it) }
+                        onClick = { onDestinationClicked(it) },
                     )
                 }
             },
             layoutType = layoutType,
             modifier = modifier,
-            content = content
+            content = content,
         )
     } else {
         content()

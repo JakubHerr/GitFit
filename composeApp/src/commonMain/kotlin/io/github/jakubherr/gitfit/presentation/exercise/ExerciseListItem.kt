@@ -20,7 +20,7 @@ import io.github.jakubherr.gitfit.domain.model.Exercise
 fun ExerciseListItem(
     exercise: Exercise,
     modifier: Modifier = Modifier,
-    onItemClick: (String) -> Unit
+    onItemClick: (String) -> Unit,
 ) {
     Row(
         modifier.fillMaxWidth().clickable { onItemClick(exercise.id) },

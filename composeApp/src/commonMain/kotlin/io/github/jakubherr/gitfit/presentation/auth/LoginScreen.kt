@@ -30,12 +30,11 @@ import org.koin.compose.viewmodel.koinViewModel
 fun LoginScreenRoot(
     vm: AuthViewModel = koinViewModel(),
     modifier: Modifier = Modifier,
-    onLogin: () -> Unit
+    onLogin: () -> Unit,
 ) {
     // val state = vm.state.collectAsStateWithLifecycle()
     LoginScreen { action -> vm.onAction(action) }
 }
-
 
 @Composable
 fun LoginScreen(

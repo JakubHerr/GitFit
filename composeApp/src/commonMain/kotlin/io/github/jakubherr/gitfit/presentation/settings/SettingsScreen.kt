@@ -14,12 +14,10 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun SettingsScreenRoot(
-    modifier: Modifier = Modifier
-) {
+fun SettingsScreenRoot(modifier: Modifier = Modifier) {
     val auth: AuthViewModel = koinViewModel()
 
-    SettingsScreen() {
+    SettingsScreen {
         auth.onAction(AuthAction.SignOut)
     }
 }

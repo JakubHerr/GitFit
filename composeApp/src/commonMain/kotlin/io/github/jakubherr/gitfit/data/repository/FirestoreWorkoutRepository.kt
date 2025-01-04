@@ -1,15 +1,14 @@
 package io.github.jakubherr.gitfit.data.repository
 
-
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.FieldValue
 import dev.gitlive.firebase.firestore.firestore
+import io.github.jakubherr.gitfit.domain.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
-import io.github.jakubherr.gitfit.domain.WorkoutRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -33,14 +32,15 @@ private data class WorkoutDTO(
     val completed: Boolean = false,
     val inProgress: Boolean = false,
 ) {
-    fun toWorkout(blocks: List<Block> = emptyList()) = Workout(
-        id = id,
-        userId = userId,
-        blocks = blocks,
-        date = date,
-        completed = completed,
-        inProgress = inProgress,
-    )
+    fun toWorkout(blocks: List<Block> = emptyList()) =
+        Workout(
+            id = id,
+            userId = userId,
+            blocks = blocks,
+            date = date,
+            completed = completed,
+            inProgress = inProgress,
+        )
 }
 
 // TODO handle uncached data, null value when something is not found
@@ -51,18 +51,21 @@ class FirestoreWorkoutRepository : WorkoutRepository {
     private val dispatcher = Dispatchers.IO
     private val workoutRef = firestore.collection("WORKOUTS")
 
-    private fun blockRef(workoutId: String, blockId: String) =
-        workoutRef.document(workoutId).collection("BLOCKS").document(blockId)
+    private fun blockRef(
+        workoutId: String,
+        blockId: String,
+    ) = workoutRef.document(workoutId).collection("BLOCKS").document(blockId)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun observeCurrentWorkoutOrNull() = observeCurrentWorkout()
-        .flatMapLatest { workoutDto ->
-            workoutDto?.let {
-                observeBlocks(workoutDto.id).map { blocks ->
-                    it.toWorkout(blocks)
-                }
-            } ?: flowOf(null)
-        }
+    override fun observeCurrentWorkoutOrNull() =
+        observeCurrentWorkout()
+            .flatMapLatest { workoutDto ->
+                workoutDto?.let {
+                    observeBlocks(workoutDto.id).map { blocks ->
+                        it.toWorkout(blocks)
+                    }
+                } ?: flowOf(null)
+            }
 
     override suspend fun startNewWorkout() {
         withContext(dispatcher) {
@@ -70,13 +73,14 @@ class FirestoreWorkoutRepository : WorkoutRepository {
 
             val id = workoutRef.document.id
             println("DBG: starting new workout with id $id")
-            val workout = WorkoutDTO(
-                id = id,
-                userId = userId,
-                date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
-                completed = false,
-                inProgress = true
-            )
+            val workout =
+                WorkoutDTO(
+                    id = id,
+                    userId = userId,
+                    date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
+                    completed = false,
+                    inProgress = true,
+                )
 
             workoutRef.document(id).set(workout)
         }
@@ -109,48 +113,71 @@ class FirestoreWorkoutRepository : WorkoutRepository {
         }
     }
 
-    override suspend fun addBlock(workoutId: String, exerciseId: String) {
+    override suspend fun addBlock(
+        workoutId: String,
+        exerciseId: String,
+    ) {
         withContext(dispatcher) {
             val exercise = firestore.collection("EXERCISES").document(exerciseId).get().data<Exercise>()
 
             val id = workoutRef.document(workoutId).collection("BLOCKS").document.id
-            val block = Block(
-                id,
-                exercise,
-                emptyList(),
-                null
-            )
+            val block =
+                Block(
+                    id,
+                    exercise,
+                    emptyList(),
+                    null,
+                )
 
             blockRef(workoutId, id).set(block)
         }
     }
 
-    override suspend fun removeBlock(workoutId: String, blockId: String) {
+    override suspend fun removeBlock(
+        workoutId: String,
+        blockId: String,
+    ) {
         withContext(dispatcher) {
             blockRef(workoutId, blockId).delete()
         }
     }
 
-    override suspend fun setBlockTimer(workoutId: String, blockId: String, seconds: Long?) {
+    override suspend fun setBlockTimer(
+        workoutId: String,
+        blockId: String,
+        seconds: Long?,
+    ) {
         withContext(dispatcher) {
             blockRef(workoutId, blockId).update("restTimeSeconds" to seconds)
         }
     }
 
-    override suspend fun addSeries(workoutId: String, blockId: String, set: Series) {
+    override suspend fun addSeries(
+        workoutId: String,
+        blockId: String,
+        set: Series,
+    ) {
         withContext(dispatcher) {
             blockRef(workoutId, blockId).update("series" to FieldValue.arrayUnion(set))
         }
     }
 
-    override suspend fun modifySeries(workoutId: String, blockId: String, set: Series) {
+    override suspend fun modifySeries(
+        workoutId: String,
+        blockId: String,
+        set: Series,
+    ) {
         val field = blockRef(workoutId, blockId).get().data<Block>().series
         val newField = field.map { if (it.id == set.id) set else it }
 
         blockRef(workoutId, blockId).update("series" to newField)
     }
 
-    override suspend fun removeSeries(workoutId: String, blockId: String, set: Series) {
+    override suspend fun removeSeries(
+        workoutId: String,
+        blockId: String,
+        set: Series,
+    ) {
         withContext(dispatcher) {
             blockRef(workoutId, blockId).update("series" to FieldValue.arrayRemove(set))
         }
@@ -162,8 +189,8 @@ class FirestoreWorkoutRepository : WorkoutRepository {
         return workoutRef
             .where {
                 ("userId" equalTo uid) and
-                ("completed" equalTo true) and
-                ("inProgress" equalTo false)
+                    ("completed" equalTo true) and
+                    ("inProgress" equalTo false)
             }
             .snapshots
             .map { snapshot ->
@@ -177,8 +204,8 @@ class FirestoreWorkoutRepository : WorkoutRepository {
         return workoutRef
             .where {
                 ("userId" equalTo uid) and
-                ("completed" equalTo false) and
-                ("inProgress" equalTo false)
+                    ("completed" equalTo false) and
+                    ("inProgress" equalTo false)
             }
             .snapshots
             .map { snapshot ->
@@ -186,12 +213,13 @@ class FirestoreWorkoutRepository : WorkoutRepository {
             }
     }
 
-    private fun observeBlocks(workoutId: String) = workoutRef
-        .document(workoutId)
-        .collection("BLOCKS")
-        .snapshots.map { querySnapshot ->
-            querySnapshot.documents.map { it.data<Block>() }
-        }
+    private fun observeBlocks(workoutId: String) =
+        workoutRef
+            .document(workoutId)
+            .collection("BLOCKS")
+            .snapshots.map { querySnapshot ->
+                querySnapshot.documents.map { it.data<Block>() }
+            }
 
     private fun observeCurrentWorkout(): Flow<WorkoutDTO?> {
         val uid = auth.currentUser?.uid ?: return emptyFlow()
@@ -199,8 +227,8 @@ class FirestoreWorkoutRepository : WorkoutRepository {
         return workoutRef
             .where {
                 ("userId" equalTo uid) and
-                ("completed" equalTo false) and
-                ("inProgress" equalTo true)
+                    ("completed" equalTo false) and
+                    ("inProgress" equalTo true)
             }
             .snapshots.map { workoutSnapshot ->
                 workoutSnapshot.documents.firstOrNull()?.data<WorkoutDTO>()

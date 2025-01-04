@@ -12,7 +12,10 @@ class FirebaseAuthRepository {
     // TODO add error message for actions unsupported on desktop
     private val auth = Firebase.auth
 
-    suspend fun registerUser(email: String, password: String) {
+    suspend fun registerUser(
+        email: String,
+        password: String,
+    ) {
         println("Registering user...")
         try {
             val result = auth.createUserWithEmailAndPassword(email, password)
@@ -21,7 +24,10 @@ class FirebaseAuthRepository {
         }
     }
 
-    suspend fun signIn(email: String, password: String) {
+    suspend fun signIn(
+        email: String,
+        password: String,
+    ) {
         println("Signing in user...")
         try {
             val result = auth.signInWithEmailAndPassword(email, password)
@@ -41,7 +47,7 @@ class FirebaseAuthRepository {
     suspend fun deleteUser() {
         try {
             // TODO official firebase extension deletes all data related to user, but requires pay-as-you-go Blaze plan
-                // consider the number of deletes necessary to nuke all user data
+            // consider the number of deletes necessary to nuke all user data
             //  how will it work for an anonymous user?
             Firebase.auth.currentUser?.delete()
         } catch (e: FirebaseAuthException) {

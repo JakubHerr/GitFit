@@ -28,7 +28,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun GitFitNavHost(
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val destination = navController.currentBackStackEntryAsState().value?.destination
     val topLevelDestination = TopLevelDestination.entries.firstOrNull { destination?.hasRoute(it.route) == true }
@@ -46,7 +46,7 @@ fun GitFitNavHost(
         currentDestination = topLevelDestination,
         onDestinationClicked = {
             navController.navigateToTopLevelDestination(it)
-        }
+        },
     ) {
         NavHost(
             navController = navController,
@@ -59,7 +59,7 @@ fun GitFitNavHost(
             composable<OnboardingRoute> { /* TODO */ }
 
             composable<DashboardRoute> {
-                DashboardScreenRoot() { action ->
+                DashboardScreenRoot { action ->
                     when (action) {
                         is DashboardAction.PlannedWorkoutClick -> { /* TODO */ }
                         is DashboardAction.UnplannedWorkoutClick -> {
@@ -74,15 +74,18 @@ fun GitFitNavHost(
             composable<WorkoutRoute> {
                 WorkoutScreenRoot(
                     workoutViewModel,
-                    onAddExerciseClick = { navController.navigate(AddExerciseToWorkoutRoute(workoutViewModel.currentWorkout.value!!.id)) }, // TODO this is not ideal
-                    onWorkoutFinished = { navController.popBackStack() }
+                    onAddExerciseClick = {
+                        // TODO this is not ideal
+                        navController.navigate(AddExerciseToWorkoutRoute(workoutViewModel.currentWorkout.value!!.id))
+                    },
+                    onWorkoutFinished = { navController.popBackStack() },
                 )
             }
 
             composable<ExerciseListRoute> {
                 ExerciseListScreenRoot(
                     onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
-                    onExerciseClick = { navController.navigate(WorkoutRoute) }
+                    onExerciseClick = { navController.navigate(WorkoutRoute) },
                 )
             }
             composable<AddExerciseToWorkoutRoute> {
@@ -91,7 +94,7 @@ fun GitFitNavHost(
                     onExerciseClick = { exercise ->
                         workoutViewModel.onAction(WorkoutAction.AddBlock(workoutViewModel.currentWorkout.value!!.id, exercise.id))
                         navController.popBackStack()
-                    }
+                    },
                 )
             }
 
@@ -105,7 +108,7 @@ fun GitFitNavHost(
             }
 
             composable<PlanningRoute> {
-
+                // TODO
             }
 
             composable<MeasurementRoute> {
@@ -125,13 +128,14 @@ fun GitFitNavHost(
 }
 
 private fun NavHostController.navigateToTopLevelDestination(destination: TopLevelDestination) {
-    val route: Any = when(destination) {
-        TopLevelDestination.DASHBOARD -> DashboardRoute
-        TopLevelDestination.TRENDS -> TrendsRoute
-        TopLevelDestination.MEASUREMENT -> MeasurementRoute
-        TopLevelDestination.PLAN -> PlanningRoute
-        TopLevelDestination.PROFILE -> SettingsRoute
-    }
+    val route: Any =
+        when (destination) {
+            TopLevelDestination.DASHBOARD -> DashboardRoute
+            TopLevelDestination.TRENDS -> TrendsRoute
+            TopLevelDestination.MEASUREMENT -> MeasurementRoute
+            TopLevelDestination.PLAN -> PlanningRoute
+            TopLevelDestination.PROFILE -> SettingsRoute
+        }
     navigate(route) {
         // popUpTo(graph.startDestinationId) TODO fix
         launchSingleTop = true

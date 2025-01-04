@@ -16,28 +16,31 @@ import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-private val apiModule = module {
+private val apiModule =
+    module {
+    }
 
-}
-
-private val repositoryModule = module {
-    singleOf(::FirestoreExerciseRepository).bind<ExerciseRepository>()
-    singleOf(::FirestoreWorkoutRepository).bind<WorkoutRepository>()
-    singleOf(::FirebaseAuthRepository).bind<FirebaseAuthRepository>()
-}
+private val repositoryModule =
+    module {
+        singleOf(::FirestoreExerciseRepository).bind<ExerciseRepository>()
+        singleOf(::FirestoreWorkoutRepository).bind<WorkoutRepository>()
+        singleOf(::FirebaseAuthRepository).bind<FirebaseAuthRepository>()
+    }
 
 expect val platformModule: Module
 
-private val viewmodelModule = module {
-    viewModelOf(::AuthViewModel)
-    viewModelOf(::WorkoutViewModel)
-    viewModelOf(::ExerciseViewModel)
-}
+private val viewmodelModule =
+    module {
+        viewModelOf(::AuthViewModel)
+        viewModelOf(::WorkoutViewModel)
+        viewModelOf(::ExerciseViewModel)
+    }
 
 private val sharedModules = listOf(viewmodelModule, repositoryModule, apiModule)
 
-fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
-    config?.invoke(this)
-    modules(sharedModules)
-    modules(platformModule)
-}
+fun initKoin(config: KoinAppDeclaration? = null) =
+    startKoin {
+        config?.invoke(this)
+        modules(sharedModules)
+        modules(platformModule)
+    }

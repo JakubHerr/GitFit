@@ -35,7 +35,7 @@ private fun ExerciseListScreenPreview() {
         Surface {
             ExerciseListScreen(
                 // emptyList(),
-                listOf(mockExercise, mockExercise, mockExercise)
+                listOf(mockExercise, mockExercise, mockExercise),
             ) { }
         }
     }
@@ -46,9 +46,7 @@ private fun ExerciseListScreenPreview() {
 private fun CreateExerciseScreenPreview() {
     MaterialTheme {
         Surface {
-            CreateExerciseScreen(
-
-            )
+            CreateExerciseScreen()
         }
     }
 }
@@ -58,9 +56,7 @@ private fun CreateExerciseScreenPreview() {
 private fun ExerciseDetailScreenPreview() {
     MaterialTheme {
         Surface {
-            ExerciseDetailScreen(
-
-            )
+            ExerciseDetailScreen()
         }
     }
 }

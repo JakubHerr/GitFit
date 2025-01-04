@@ -47,7 +47,7 @@ fun ExerciseListScreenRoot(
     val state = vm.flow.collectAsStateWithLifecycle(emptyList())
 
     ExerciseListScreen(
-        state = state.value
+        state = state.value,
     ) { action ->
         if (action is ExerciseAction.CreateExerciseSelected) onCreateExerciseClick()
         if (action is ExerciseAction.ExerciseSelected) onExerciseClick(action.exercise)
@@ -62,12 +62,12 @@ fun ExerciseListScreen(
 ) {
     Column(
         Modifier.fillMaxSize().statusBarsPadding(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         SearchBar(
             "",
             onQueryChange = {},
-            Modifier.padding(16.dp)
+            Modifier.padding(16.dp),
         )
         Spacer(Modifier.height(32.dp))
 
@@ -75,7 +75,7 @@ fun ExerciseListScreen(
             Column(
                 Modifier.fillMaxSize().weight(1f),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Icon(Icons.Default.Block, "", Modifier.size(128.dp).alpha(0.6f))
                 Text(stringResource(Res.string.error_no_exercise_found))
@@ -83,7 +83,7 @@ fun ExerciseListScreen(
         } else {
             LazyColumn(
                 Modifier.weight(1f),
-                contentPadding = PaddingValues(16.dp)
+                contentPadding = PaddingValues(16.dp),
             ) {
                 items(state) { exercise ->
                     ExerciseListItem(exercise) { onAction(ExerciseAction.ExerciseSelected(exercise)) }
@@ -110,6 +110,6 @@ fun SearchBar(
         onQueryChange,
         modifier = modifier.fillMaxWidth(),
         leadingIcon = { Icon(Icons.Default.Search, "") },
-        placeholder = { Text(stringResource(Res.string.search_exercise)) }
+        placeholder = { Text(stringResource(Res.string.search_exercise)) },
     )
 }

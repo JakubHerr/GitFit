@@ -110,6 +110,16 @@ android {
 ktlint {
     verbose.set(true)
     outputToConsole.set(true)
+    filter {
+        exclude("**/generated/**")
+        include("**/kotlin/**")
+    }
+    additionalEditorconfig.set(
+        mapOf(
+            "ktlint_function_naming_ignore_when_annotated_with" to "Composable",
+            "ktlint_no-wildcard-imports" to "disabled",
+        ),
+    )
 }
 
 dependencies {

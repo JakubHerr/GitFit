@@ -5,5 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface ExerciseDataSource {
     fun getAll(): Flow<List<Exercise>>
+
     fun insert(exercise: Exercise)
 }

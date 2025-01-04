@@ -37,10 +37,9 @@ fun DashboardScreenRoot(
 
     DashboardScreen(
         planned,
-        onAction = onAction
+        onAction = onAction,
     )
 }
-
 
 // TODO Scrollable list with composables
 //  show section with data and meaurements,
@@ -52,7 +51,7 @@ fun DashboardScreenRoot(
 fun DashboardScreen(
     plannedWorkouts: List<Workout> = emptyList(),
     modifier: Modifier = Modifier,
-    onAction: (DashboardAction) -> Unit = { }
+    onAction: (DashboardAction) -> Unit = { },
 ) {
     val scrollState = rememberScrollState()
 
@@ -79,7 +78,7 @@ fun WorkoutSection(
 ) {
     WorkoutListHeader()
     LazyRow(
-        contentPadding = PaddingValues(16.dp)
+        contentPadding = PaddingValues(16.dp),
     ) {
         items(workouts) { workout ->
             WorkoutListItem(workout) { onAction(DashboardAction.PlannedWorkoutClick(workout.id)) }
@@ -101,7 +100,7 @@ fun WorkoutListItem(
     onClick: () -> Unit,
 ) {
     Card(
-        modifier.clickable { onClick() }
+        modifier.clickable { onClick() },
     ) {
         Column {
             Text(workout.id)

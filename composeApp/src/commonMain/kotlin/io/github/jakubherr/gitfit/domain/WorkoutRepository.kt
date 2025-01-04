@@ -9,18 +9,48 @@ interface WorkoutRepository {
     fun observeCurrentWorkoutOrNull(): Flow<Workout?>
 
     suspend fun startNewWorkout()
+
     suspend fun startPlannedWorkout(workoutId: String)
+
     suspend fun completeWorkout(workoutId: String)
+
     suspend fun deleteWorkout(workoutId: String)
 
-    suspend fun addBlock(workoutId: String, exerciseId: String)
-    suspend fun removeBlock(workoutId: String, blockId: String)
-    suspend fun setBlockTimer(workoutId: String, blockId: String, seconds: Long?)
+    suspend fun addBlock(
+        workoutId: String,
+        exerciseId: String,
+    )
 
-    suspend fun addSeries(workoutId: String, blockId: String, set: Series)
-    suspend fun modifySeries(workoutId: String, blockId: String, set: Series)
-    suspend fun removeSeries(workoutId: String, blockId: String, set: Series)
+    suspend fun removeBlock(
+        workoutId: String,
+        blockId: String,
+    )
+
+    suspend fun setBlockTimer(
+        workoutId: String,
+        blockId: String,
+        seconds: Long?,
+    )
+
+    suspend fun addSeries(
+        workoutId: String,
+        blockId: String,
+        set: Series,
+    )
+
+    suspend fun modifySeries(
+        workoutId: String,
+        blockId: String,
+        set: Series,
+    )
+
+    suspend fun removeSeries(
+        workoutId: String,
+        blockId: String,
+        set: Series,
+    )
 
     fun getCompletedWorkouts(): Flow<List<Workout>>
+
     fun getPlannedWorkouts(): Flow<List<Workout>>
 }

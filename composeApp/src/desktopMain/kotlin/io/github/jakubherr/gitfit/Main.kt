@@ -15,26 +15,34 @@ import io.github.jakubherr.gitfit.presentation.App
 
 fun main() =
     application {
-
         // https://github.com/GitLiveApp/firebase-java-sdk?tab=readme-ov-file#initializing-the-sdk
         // TODO implement persistent storage, this only stores in memory
-        FirebasePlatform.initializeFirebasePlatform(object : FirebasePlatform() {
-            val storage = mutableMapOf<String, String>()
-            override fun clear(key: String) {
-                storage.remove(key)
-            }
+        FirebasePlatform.initializeFirebasePlatform(
+            object : FirebasePlatform() {
+                val storage = mutableMapOf<String, String>()
 
-            override fun log(msg: String) = println(msg)
-            override fun retrieve(key: String) = storage[key]
-            override fun store(key: String, value: String) = storage.set(key, value)
-        })
+                override fun clear(key: String) {
+                    storage.remove(key)
+                }
+
+                override fun log(msg: String) = println(msg)
+
+                override fun retrieve(key: String) = storage[key]
+
+                override fun store(
+                    key: String,
+                    value: String,
+                ) = storage.set(key, value)
+            },
+        )
 
         Firebase.initialize(Application(), options)
 
-        val state = rememberWindowState(
-            size = DpSize(1000.dp, 800.dp),
-            // position = WindowPosition(300.dp, 300.dp)
-        )
+        val state =
+            rememberWindowState(
+                size = DpSize(1000.dp, 800.dp),
+                // position = WindowPosition(300.dp, 300.dp)
+            )
 
         initKoin()
 

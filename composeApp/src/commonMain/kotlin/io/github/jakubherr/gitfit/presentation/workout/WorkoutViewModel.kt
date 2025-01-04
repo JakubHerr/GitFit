@@ -2,8 +2,8 @@ package io.github.jakubherr.gitfit.presentation.workout
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.WorkoutRepository
+import io.github.jakubherr.gitfit.domain.model.Series
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -11,17 +11,19 @@ import kotlinx.coroutines.launch
 class WorkoutViewModel(
     private val workoutRepository: WorkoutRepository,
 ) : ViewModel() {
-    var currentWorkout = workoutRepository.observeCurrentWorkoutOrNull().stateIn(
-        scope = viewModelScope,
-        initialValue = null,
-        started = SharingStarted.WhileSubscribed(5_000L)
-    )
+    var currentWorkout =
+        workoutRepository.observeCurrentWorkoutOrNull().stateIn(
+            scope = viewModelScope,
+            initialValue = null,
+            started = SharingStarted.WhileSubscribed(5_000L),
+        )
 
-    val plannedWorkouts = workoutRepository.getPlannedWorkouts().stateIn(
-        scope = viewModelScope,
-        initialValue = emptyList(),
-        started = SharingStarted.WhileSubscribed(5_000L)
-    )
+    val plannedWorkouts =
+        workoutRepository.getPlannedWorkouts().stateIn(
+            scope = viewModelScope,
+            initialValue = emptyList(),
+            started = SharingStarted.WhileSubscribed(5_000L),
+        )
 
     fun onAction(action: WorkoutAction) {
         when (action) {
@@ -36,8 +38,10 @@ class WorkoutViewModel(
     }
 
     private fun startWorkout() {
-        if (currentWorkout.value == null) viewModelScope.launch {
-            workoutRepository.startNewWorkout()
+        if (currentWorkout.value == null) {
+            viewModelScope.launch {
+                workoutRepository.startNewWorkout()
+            }
         }
     }
 
@@ -49,15 +53,25 @@ class WorkoutViewModel(
         viewModelScope.launch { workoutRepository.deleteWorkout(workoutId) }
     }
 
-    private fun addBlock(workoutId: String, exerciseId: String) {
+    private fun addBlock(
+        workoutId: String,
+        exerciseId: String,
+    ) {
         viewModelScope.launch { workoutRepository.addBlock(workoutId, exerciseId) }
     }
 
-    private fun addSet(workoutId: String, blockId: String, set: Series) {
+    private fun addSet(
+        workoutId: String,
+        blockId: String,
+        set: Series,
+    ) {
         viewModelScope.launch { workoutRepository.addSeries(workoutId, blockId, set) }
     }
 
-    private fun modifySeries(blockId: String, set: Series) {
+    private fun modifySeries(
+        blockId: String,
+        set: Series,
+    ) {
         val workoutId = currentWorkout.value?.id ?: return // TODO error handling
         viewModelScope.launch { workoutRepository.modifySeries(workoutId, blockId, set) }
     }
@@ -65,10 +79,16 @@ class WorkoutViewModel(
 
 sealed interface WorkoutAction {
     object StartWorkout : WorkoutAction
+
     class AddBlock(val workoutId: String, val exerciseId: String) : WorkoutAction
+
     class AddSet(val workoutId: String, val blockId: String, val set: Series) : WorkoutAction
+
     class ModifySeries(val blockId: String, val set: Series) : WorkoutAction
+
     class CompleteWorkout(val workoutId: String) : WorkoutAction
+
     class DeleteWorkout(val workoutId: String) : WorkoutAction
+
     object AskForExercise : WorkoutAction
 }

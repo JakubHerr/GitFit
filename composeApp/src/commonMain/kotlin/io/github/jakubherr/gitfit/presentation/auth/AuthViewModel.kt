@@ -9,18 +9,19 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class AuthViewModel(
-    private val firebase: FirebaseAuthRepository
+    private val firebase: FirebaseAuthRepository,
 ) : ViewModel() {
-    private val _state = firebase.currentUserFlow.map {
-        AuthState(
-            it?.uid ?: "",
-            it != null
+    private val _state =
+        firebase.currentUserFlow.map {
+            AuthState(
+                it?.uid ?: "",
+                it != null,
+            )
+        }.stateIn(
+            scope = viewModelScope,
+            initialValue = AuthState("", false),
+            started = SharingStarted.WhileSubscribed(5_000L),
         )
-    }.stateIn(
-        scope = viewModelScope,
-        initialValue = AuthState("", false),
-        started = SharingStarted.WhileSubscribed(5_000L)
-    )
     val state = _state
 
     fun onAction(action: AuthAction) {
@@ -53,6 +54,8 @@ class AuthViewModel(
 
 sealed interface AuthAction {
     class SignIn(val email: String, val password: String) : AuthAction
+
     class Register(val email: String, val password: String) : AuthAction
+
     object SignOut : AuthAction
 }

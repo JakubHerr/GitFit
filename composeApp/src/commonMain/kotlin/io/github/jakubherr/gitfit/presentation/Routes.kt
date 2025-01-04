@@ -37,4 +37,3 @@ object TrendsRoute
 
 @Serializable
 object SettingsRoute
-

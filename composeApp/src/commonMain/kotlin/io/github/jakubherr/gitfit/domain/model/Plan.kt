@@ -12,4 +12,3 @@ data class Plan(
     // category: upper/lower, PPL, full body
     // progression - increase reps per set, increase weight
 )
-
