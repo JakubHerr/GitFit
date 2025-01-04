@@ -21,6 +21,7 @@
     <string name="cancel">Cancel</string>
     <string name="register">Register</string>
     <string name="sign_in">Sign in</string>
+    <string name="log_out">Log out</string>
     <string name="primary_muscle">Primary muscle</string>
     <string name="secondary_muscle">Secondary muscle</string>
     <string name="planned_workouts">Planned workouts</string>

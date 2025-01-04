@@ -15,24 +15,30 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.planned_workouts
 import gitfit.composeapp.generated.resources.start_unplanned_workout
 import io.github.jakubherr.gitfit.domain.model.Workout
-import io.github.jakubherr.gitfit.domain.model.mockWorkout
+import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun DashboardScreenRoot(
-    // vm: AuthViewModel = koinViewModel(),
+    vm: WorkoutViewModel = koinViewModel(),
     modifier: Modifier = Modifier,
     onAction: (DashboardAction) -> Unit,
 ) {
-    // val state = vm.state.collectAsStateWithLifecycle()
+    val planned by vm.plannedWorkouts.collectAsStateWithLifecycle()
 
-    DashboardScreen(onAction = onAction)
+    DashboardScreen(
+        planned,
+        onAction = onAction
+    )
 }
 
 
@@ -44,18 +50,24 @@ fun DashboardScreenRoot(
 //  show section with exercises
 @Composable
 fun DashboardScreen(
-    // state: AuthState,
+    plannedWorkouts: List<Workout> = emptyList(),
     modifier: Modifier = Modifier,
     onAction: (DashboardAction) -> Unit = { }
 ) {
-
     val scrollState = rememberScrollState()
-    val mockWorkouts = listOf(mockWorkout, mockWorkout)
 
     Column(
         Modifier.fillMaxSize().verticalScroll(scrollState),
     ) {
-        WorkoutSection(mockWorkouts, onAction)
+        WorkoutSection(plannedWorkouts, onAction)
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            Button({ onAction(DashboardAction.UnplannedWorkoutClick) }) {
+                Text(stringResource(Res.string.start_unplanned_workout))
+            }
+        }
     }
 }
 
@@ -71,14 +83,6 @@ fun WorkoutSection(
     ) {
         items(workouts) { workout ->
             WorkoutListItem(workout) { onAction(DashboardAction.PlannedWorkoutClick(workout.id)) }
-        }
-    }
-    Row(
-        Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-    ) {
-        Button({ onAction(DashboardAction.UnplannedWorkoutClick) }) {
-            Text(stringResource(Res.string.start_unplanned_workout))
         }
     }
 }
@@ -102,8 +106,6 @@ fun WorkoutListItem(
         Column {
             Text(workout.id)
             Text(workout.date.toString())
-
-
 
             workout.blocks.forEach { block ->
                 Text(block.exercise.name)

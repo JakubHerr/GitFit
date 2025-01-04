@@ -8,14 +8,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class AuthViewModel : ViewModel() {
-    private val firebase = FirebaseAuthRepository()
-    private val user = firebase.currentUser
-
-    private val _state = user.map {
+class AuthViewModel(
+    private val firebase: FirebaseAuthRepository
+) : ViewModel() {
+    private val _state = firebase.currentUserFlow.map {
         AuthState(
-            it?.email ?: "",
-            true
+            it?.uid ?: "",
+            it != null
         )
     }.stateIn(
         scope = viewModelScope,
@@ -47,13 +46,8 @@ class AuthViewModel : ViewModel() {
     }
 
     private fun signOut() {
+        println("DBG: signing out ${state.value.uid}...")
         viewModelScope.launch { firebase.signOut() }
-    }
-
-    fun authDebug() {
-        viewModelScope.launch {
-            firebase.observeUser()
-        }
     }
 }
 

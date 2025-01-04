@@ -82,6 +82,7 @@ fun CreateExerciseScreen(
                     ExerciseAction.ExerciseCreated(
                         Exercise(
                             "",
+                            "", // TODO add user id to exercise
                             name,
                             description,
                             primaryMuscle.selected,

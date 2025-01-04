@@ -20,7 +20,10 @@ fun main() =
         // TODO implement persistent storage, this only stores in memory
         FirebasePlatform.initializeFirebasePlatform(object : FirebasePlatform() {
             val storage = mutableMapOf<String, String>()
-            override fun clear(key: String) { storage.remove(key) }
+            override fun clear(key: String) {
+                storage.remove(key)
+            }
+
             override fun log(msg: String) = println(msg)
             override fun retrieve(key: String) = storage[key]
             override fun store(key: String, value: String) = storage.set(key, value)

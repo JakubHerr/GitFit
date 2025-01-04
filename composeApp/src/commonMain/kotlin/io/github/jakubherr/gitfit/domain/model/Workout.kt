@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 
 data class Workout(
     val id: String,
+    val userId: String,
     val blocks: List<Block>,
     val date: LocalDate,
     val completed: Boolean = false,
@@ -47,6 +48,7 @@ val mockBlock = Block(
 
 val mockWorkout = Workout(
     id = "mock",
+    userId = "",
     blocks = listOf(mockBlock, mockBlock),
     date = Clock.System.todayIn(TimeZone.currentSystemDefault())
 )

@@ -92,7 +92,7 @@ fun WorkoutScreen(
                 }
 
                 Row(Modifier.fillMaxWidth().padding(16.dp)) {
-                    Button(onClick = { onAction(WorkoutAction.DeleteWorkout(workout.id))}) { // TODO "are you sure?" dialog
+                    Button(onClick = { onAction(WorkoutAction.DeleteWorkout(workout.id)) }) { // TODO "are you sure?" dialog
                         Text(stringResource(Res.string.delete_workout))
                     }
                     Button(onClick = { onAction(WorkoutAction.CompleteWorkout(workout.id)) }) {

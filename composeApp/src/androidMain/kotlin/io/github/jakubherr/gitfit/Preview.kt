@@ -17,7 +17,7 @@ import io.github.jakubherr.gitfit.presentation.workout.WorkoutScreen
 private fun DashboardScreenPreview() {
     MaterialTheme {
         Surface {
-            DashboardScreen {  }
+            DashboardScreen { }
         }
     }
 }
@@ -47,7 +47,7 @@ private fun CreateExerciseScreenPreview() {
     MaterialTheme {
         Surface {
             CreateExerciseScreen(
-                
+
             )
         }
     }

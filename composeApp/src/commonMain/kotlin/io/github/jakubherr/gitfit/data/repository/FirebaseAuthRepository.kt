@@ -4,10 +4,7 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.FirebaseAuthException
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
 
 class FirebaseAuthRepository {
     // TODO add Google SSO (maybe android only)
@@ -52,16 +49,7 @@ class FirebaseAuthRepository {
         }
     }
 
-    fun hasUser() = auth.currentUser != null
+    val currentUserFlow: Flow<FirebaseUser?> = auth.authStateChanged
 
-    val currentUser: Flow<FirebaseUser?> = auth.authStateChanged
-
-    suspend fun observeUser() {
-        withContext(Dispatchers.IO) {
-            currentUser.collect { curr ->
-                if (curr == null) println("DBG: User not logged in")
-                else println(curr.toString())
-            }
-        }
-    }
+    val currentUser = auth.currentUser
 }

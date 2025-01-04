@@ -1,21 +1,25 @@
 package io.github.jakubherr.gitfit.presentation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
 import io.github.jakubherr.gitfit.presentation.auth.LoginScreenRoot
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardAction
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardScreenRoot
 import io.github.jakubherr.gitfit.presentation.exercise.CreateExerciseScreenRoot
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseListScreenRoot
+import io.github.jakubherr.gitfit.presentation.settings.SettingsScreenRoot
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutScreenRoot
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
@@ -30,7 +34,12 @@ fun GitFitNavHost(
     val topLevelDestination = TopLevelDestination.entries.firstOrNull { destination?.hasRoute(it.route) == true }
     var showNavigation by remember { mutableStateOf(true) } // TODO hide navigation when user is doing a workout
 
+    val authViewModel: AuthViewModel = koinViewModel()
+    val auth by authViewModel.state.collectAsStateWithLifecycle()
+
     val workoutViewModel: WorkoutViewModel = koinViewModel()
+
+    LaunchedEffect(auth) { println("DBG: auth state is $auth") }
 
     GitFitScaffold(
         showDestinations = showNavigation,
@@ -41,7 +50,7 @@ fun GitFitNavHost(
     ) {
         NavHost(
             navController = navController,
-            startDestination = DashboardRoute,
+            startDestination = if (auth.loggedIn) DashboardRoute else LoginRoute,
         ) {
             composable<LoginRoute> {
                 LoginScreenRoot { }
@@ -51,9 +60,12 @@ fun GitFitNavHost(
 
             composable<DashboardRoute> {
                 DashboardScreenRoot() { action ->
-                    when(action) {
+                    when (action) {
                         is DashboardAction.PlannedWorkoutClick -> { /* TODO */ }
-                        is DashboardAction.UnplannedWorkoutClick -> navController.navigate(WorkoutRoute)
+                        is DashboardAction.UnplannedWorkoutClick -> {
+                            workoutViewModel.onAction(WorkoutAction.StartWorkout)
+                            navController.navigate(WorkoutRoute)
+                        }
                     }
                 }
             }
@@ -106,6 +118,7 @@ fun GitFitNavHost(
 
             composable<SettingsRoute> {
                 // TODO user should set some preferences during onboarding and then be able to modify them here
+                SettingsScreenRoot()
             }
         }
     }

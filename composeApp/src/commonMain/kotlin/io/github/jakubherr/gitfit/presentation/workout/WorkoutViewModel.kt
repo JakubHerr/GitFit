@@ -17,8 +17,14 @@ class WorkoutViewModel(
         started = SharingStarted.WhileSubscribed(5_000L)
     )
 
+    val plannedWorkouts = workoutRepository.getPlannedWorkouts().stateIn(
+        scope = viewModelScope,
+        initialValue = emptyList(),
+        started = SharingStarted.WhileSubscribed(5_000L)
+    )
+
     fun onAction(action: WorkoutAction) {
-        when(action) {
+        when (action) {
             is WorkoutAction.StartWorkout -> startWorkout()
             is WorkoutAction.CompleteWorkout -> completeWorkout(action.workoutId)
             is WorkoutAction.DeleteWorkout -> deleteWorkout(action.workoutId)
@@ -30,7 +36,9 @@ class WorkoutViewModel(
     }
 
     private fun startWorkout() {
-        if (currentWorkout.value == null) viewModelScope.launch { workoutRepository.startNewWorkout() }
+        if (currentWorkout.value == null) viewModelScope.launch {
+            workoutRepository.startNewWorkout()
+        }
     }
 
     private fun completeWorkout(workoutId: String) {

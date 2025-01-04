@@ -42,7 +42,10 @@ fun GitFitScaffold(
     onDestinationClicked: (TopLevelDestination) -> Unit = {},
     content: @Composable () -> Unit,
 ) {
-    val layoutType = if (showDestinations) NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfo()) else NavigationSuiteType.None
+    val layoutType =
+        if (showDestinations) NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(
+            currentWindowAdaptiveInfo()
+        ) else NavigationSuiteType.None
 
     if (currentDestination != null) {
         NavigationSuiteScaffold(

@@ -21,6 +21,6 @@ interface WorkoutRepository {
     suspend fun modifySeries(workoutId: String, blockId: String, set: Series)
     suspend fun removeSeries(workoutId: String, blockId: String, set: Series)
 
-    suspend fun getCompletedWorkouts()
-    suspend fun getPlannedWorkouts(): List<Workout>
+    fun getCompletedWorkouts(): Flow<List<Workout>>
+    fun getPlannedWorkouts(): Flow<List<Workout>>
 }

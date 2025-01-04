@@ -12,7 +12,6 @@ fun App() {
             // TODO add application-level UI state holder
 
             val navController = rememberNavController()
-
             GitFitNavHost(navController)
         }
     }

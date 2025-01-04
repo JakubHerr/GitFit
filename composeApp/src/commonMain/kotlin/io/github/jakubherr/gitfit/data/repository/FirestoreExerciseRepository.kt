@@ -12,6 +12,7 @@ class FirestoreExerciseRepository: ExerciseRepository {
     private val exerciseRef = Firebase.firestore.collection("EXERCISES")
     private val context = Dispatchers.IO
 
+    // TODO separate into read-only shared exercises that will be cached indefinitely and custom user exercises
     override fun getAllExercises() = flow {
         exerciseRef.snapshots.collect { snapshot ->
             val exercises = snapshot.documents.map {
