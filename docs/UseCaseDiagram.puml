@@ -1,0 +1,42 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+left to right direction
+
+actor Uživatel as User
+
+package Systém {
+    (Naplánování tréninku) as (Plan)
+    (Zaznamenání tréninku) as (Record)
+    (Zobrazení seznamu cviků) as (ShowExercise)
+    (Zobrazení detailu cviku) as (ShowDetail)
+    (Zobrazení výsledků v čase) as (ShowHistory)
+    (Nastavení preferencí) as (Onboarding)
+    (Registrace) as (Register)
+    (Příhlášení) as (Login)
+    (Správa vlastních cviků) as (CustomExercise)
+    (Správa vlastních měření) as (Measure)
+    (Zobrazení profilu) as (Profile)
+}
+
+User --> (Plan)
+User --> (ShowExercise)
+User --> (ShowHistory)
+User --> (Measure)
+User --> (Register)
+User --> (Login)
+(Register) -left-> (Login)
+(Login) -left-> (Onboarding)
+(ShowExercise) --> (ShowDetail)
+(ShowExercise) --> (CustomExercise)
+(Plan) --> (Record)
+(Onboarding) --> (Profile)
+
+note bottom of (Onboarding)
+    Uživatel může, ale nemusí nastavit
+    výšku, váhu, systém měření (Kg, Lbs)
+endnote
+
+note bottom of (Measure)
+    Uživatel může zaznamenávat změny váhy a např. obvodu pasu
+endnote
+@enduml
