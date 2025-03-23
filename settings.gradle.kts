@@ -10,6 +10,7 @@ pluginManagement {
                 includeGroupAndSubgroups("com.google")
             }
         }
+        // mavenLocal()
         mavenCentral()
         gradlePluginPortal()
     }
@@ -17,6 +18,7 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
+        // mavenLocal()
         google {
             mavenContent {
                 includeGroupAndSubgroups("androidx")

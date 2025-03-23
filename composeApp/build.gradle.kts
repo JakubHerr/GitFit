@@ -75,6 +75,7 @@ kotlin {
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+            // implementation(libs.gitlive.java.sdk)
         }
     }
 }
@@ -124,6 +125,12 @@ ktlint {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+
+//    constraints {
+//        implementation("dev.gitlive:firebase-java-sdk:0.4.8-ford") {
+//            because("version 0.4.5 used by gitlive firebase is missing critical features")
+//        }
+//    }
 }
 
 compose.desktop {

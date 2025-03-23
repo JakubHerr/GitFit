@@ -1,15 +1,19 @@
 package io.github.jakubherr.gitfit.data.repository
 
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.AuthCredential
+import dev.gitlive.firebase.auth.EmailAuthProvider
+import dev.gitlive.firebase.auth.FirebaseAuthEmailException
 import dev.gitlive.firebase.auth.FirebaseAuthException
+import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
+import dev.gitlive.firebase.auth.FirebaseAuthWeakPasswordException
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.flow.Flow
 
+// note: all Firebase function calls MUST be in a try-catch block to handle errors and missing features in GitLive SDK
 class FirebaseAuthRepository {
-    // TODO add Google SSO (maybe android only)
     // TODO add support for anonymous user
-    // TODO add error message for actions unsupported on desktop
     private val auth = Firebase.auth
 
     suspend fun registerUser(
@@ -19,7 +23,11 @@ class FirebaseAuthRepository {
         println("Registering user...")
         try {
             val result = auth.createUserWithEmailAndPassword(email, password)
-        } catch (e: FirebaseAuthException) {
+        } catch (e: FirebaseAuthWeakPasswordException) {
+            // TODO notify in UI
+            println("DBG: attempt to register with password that is too weak")
+        }
+        catch (e: FirebaseAuthException) {
             println("Firebase auth failed: ${e.stackTraceToString()}")
         }
     }
@@ -31,6 +39,9 @@ class FirebaseAuthRepository {
         println("Signing in user...")
         try {
             val result = auth.signInWithEmailAndPassword(email, password)
+        } catch (e: FirebaseAuthInvalidCredentialsException) {
+            // TODO notify in UI
+            println("DBG: user entered invalid account credentials")
         } catch (e: FirebaseAuthException) {
             println("Firebase auth failed: ${e.stackTraceToString()}")
         }
@@ -44,18 +55,29 @@ class FirebaseAuthRepository {
         }
     }
 
-    suspend fun deleteUser() {
+    suspend fun deleteUser(password: String) {
         try {
             // TODO official firebase extension deletes all data related to user, but requires pay-as-you-go Blaze plan
             // consider the number of deletes necessary to nuke all user data
             //  how will it work for an anonymous user?
-            Firebase.auth.currentUser?.delete()
+
+            Firebase.auth.currentUser?.let { user ->
+                user.reauthenticate(EmailAuthProvider.credential(email = user.email!!, password = password))
+                user.delete()
+            }
+
         } catch (e: FirebaseAuthException) {
-            println("Firebase auth failed: ${e.stackTraceToString()}")
+            println("DBG: Firebase auth failed: ${e.stackTraceToString()}")
         }
     }
 
-    val currentUserFlow: Flow<FirebaseUser?> = auth.authStateChanged
+    suspend fun sendEmailVerification() {
+        auth.currentUser?.sendEmailVerification()
+    }
 
-    val currentUser = auth.currentUser
+    suspend fun sendPasswordResetEmail(email: String) {
+        auth.sendPasswordResetEmail(email)
+    }
+
+    val currentUserFlow: Flow<FirebaseUser?> = auth.authStateChanged
 }

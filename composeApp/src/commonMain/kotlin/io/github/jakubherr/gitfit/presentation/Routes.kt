@@ -9,6 +9,12 @@ object LoginRoute
 object RegisterRoute
 
 @Serializable
+object ResetPasswordRoute
+
+@Serializable
+object VerifyEmailRoute
+
+@Serializable
 object OnboardingRoute
 
 @Serializable
