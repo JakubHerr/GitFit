@@ -3,6 +3,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
     repositories {
+        mavenLocal()
         google {
             mavenContent {
                 includeGroupAndSubgroups("androidx")
@@ -10,7 +11,6 @@ pluginManagement {
                 includeGroupAndSubgroups("com.google")
             }
         }
-        // mavenLocal()
         mavenCentral()
         gradlePluginPortal()
     }
@@ -18,7 +18,7 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
-        // mavenLocal()
+        mavenLocal()
         google {
             mavenContent {
                 includeGroupAndSubgroups("androidx")
