@@ -8,11 +8,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -28,6 +28,8 @@ import gitfit.composeapp.generated.resources.log_out
 import io.github.jakubherr.gitfit.presentation.auth.AuthAction
 import io.github.jakubherr.gitfit.presentation.auth.AuthState
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
+import io.github.jakubherr.gitfit.presentation.auth.PasswordField
+import io.github.jakubherr.gitfit.presentation.auth.toMessage
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -57,9 +59,9 @@ fun SettingsScreen(
             var password by remember { mutableStateOf("") }
 
             Text("Please confirm account deletion by entering your password")
-            TextField(
-                value = password,
-                onValueChange = { password = it }
+            PasswordField(
+                password = password,
+                onPasswordChange = { password = it }
             )
             Button(onClick = {
                 showPasswordField = false
@@ -86,9 +88,13 @@ fun SettingsScreen(
                 )
             }
 
-            authState?.value?.let {
+            authState?.value?.let { state ->
                 Spacer(Modifier.width(32.dp))
-                Text("DEBUG INFO:\n user id: ${it.user.userId} \n email verified: ${it.user.emailVerified}")
+                Text("DEBUG INFO:\n user id: ${state.user.userId} \n email verified: ${state.user.emailVerified}")
+
+                // TODO some better UI
+                if (state.loading) CircularProgressIndicator()
+                state.error?.let { Text(it.toMessage()) }
             }
         }
     }

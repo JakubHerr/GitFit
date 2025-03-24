@@ -54,7 +54,7 @@ class FirebaseAuthRepository: AuthRepository {
             // TODO official firebase extension deletes all data related to user, but requires pay-as-you-go Blaze plan
             // consider the number of deletes necessary to nuke all user data
             Firebase.auth.currentUser?.let { user ->
-                signInUser(user.email!!, password)
+                signInUser(user.email!!, password).onFailure { return Result.failure(it) }
                 user.delete()
             }
             return Result.success(Unit)
