@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.register
 import gitfit.composeapp.generated.resources.sign_in
+import io.github.jakubherr.gitfit.domain.AuthError
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -75,10 +76,8 @@ fun LoginScreen(
         if (state.loading) {
             CircularProgressIndicator()
         }
-        state.error?.let {
-            // TODO convert errors to custom UI messages
-            Text("Some error occurred :(")
-        }
+        state.error?.let { Text(it.toMessage()) }
+
         TextField(email, onValueChange = { email = it })
         Spacer(Modifier.height(16.dp))
         PasswordField(password, onPasswordChange = { password = it})
@@ -132,4 +131,15 @@ fun PasswordField(
             imeAction = ImeAction.Done
         )
     )
+}
+
+// TODO string resources
+fun AuthError.toMessage() = when (this) {
+    AuthError.EmailInUseAlready -> "Email is used already"
+    AuthError.FailedToSendEmail -> "Failed to send email"
+    AuthError.Generic -> "FirebaseAuthError"
+    AuthError.InvalidCredentials -> "Invalid credentials"
+    AuthError.NoInternet -> "No internet"
+    AuthError.PasswordTooWeak -> "Password too weak"
+    AuthError.Unknown -> "Unknown error"
 }

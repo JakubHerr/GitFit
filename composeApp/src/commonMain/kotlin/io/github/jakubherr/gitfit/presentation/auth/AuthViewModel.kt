@@ -17,6 +17,7 @@ class AuthViewModel(
 ) : ViewModel() {
     private val isLoading = MutableStateFlow(false)
     private val error = MutableStateFlow<AuthError?>(null)
+    val currentUser get() = auth.currentUser
 
     val state: StateFlow<AuthState> = combine(auth.currentUserFlow, error, isLoading) { user, error, loading ->
         AuthState(

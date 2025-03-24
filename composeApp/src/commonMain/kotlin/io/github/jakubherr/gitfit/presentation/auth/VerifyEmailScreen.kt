@@ -7,8 +7,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.delay
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -20,12 +18,9 @@ fun VerifyEmailScreenRoot(
 ) {
     LaunchedEffect(null) {
         while (true) {
-            // TODO abstract Firebase from UI
-            val user = Firebase.auth.currentUser
-            if (user?.isEmailVerified == true) break
-            delay(10_000L)
-            println("DBG: triggered email verification reload for user $user ...")
-            user?.reload() // reload does nothing to user info actually
+            delay(5_000L)
+            println("DBG: Checking for email verification...")
+            if (vm.currentUser.emailVerified) break
         }
         onSkip()
     }
