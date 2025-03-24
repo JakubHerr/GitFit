@@ -19,12 +19,15 @@ fun VerifyEmailScreenRoot(
     onSkip: () -> Unit = {},
 ) {
     LaunchedEffect(null) {
-        while (Firebase.auth.currentUser?.isEmailVerified != true) {
-            delay(10_000L)
+        while (true) {
+            // TODO abstract Firebase from UI
             val user = Firebase.auth.currentUser
+            if (user?.isEmailVerified == true) break
+            delay(10_000L)
             println("DBG: triggered email verification reload for user $user ...")
-            user?.reload()
+            user?.reload() // reload does nothing to user info actually
         }
+        onSkip()
     }
 
     Column(modifier.fillMaxSize()) {

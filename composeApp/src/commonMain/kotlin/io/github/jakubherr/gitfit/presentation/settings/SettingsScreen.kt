@@ -1,7 +1,9 @@
 package io.github.jakubherr.gitfit.presentation.settings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
@@ -12,15 +14,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.delete_account
 import gitfit.composeapp.generated.resources.log_out
 import io.github.jakubherr.gitfit.presentation.auth.AuthAction
+import io.github.jakubherr.gitfit.presentation.auth.AuthState
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -31,7 +37,8 @@ fun SettingsScreenRoot(modifier: Modifier = Modifier) {
 
     SettingsScreen(
         onLogout = { auth.onAction(AuthAction.SignOut) },
-        onDeleteAccount = { auth.onAction(AuthAction.DeleteAccount(it))}
+        onDeleteAccount = { auth.onAction(AuthAction.DeleteAccount(it))},
+        authState = auth.state.collectAsState()
     )
 }
 
@@ -40,7 +47,8 @@ fun SettingsScreen(
     modifier: Modifier = Modifier,
     onLogout: () -> Unit,
     onDeleteAccount: (String) -> Unit,
-) {
+    authState: State<AuthState>? = null,
+    ) {
     var showAccountDeletionDialog by remember { mutableStateOf(false) }
     var showPasswordField by remember { mutableStateOf(false) }
 
@@ -76,6 +84,11 @@ fun SettingsScreen(
                         showPasswordField = true
                     },
                 )
+            }
+
+            authState?.value?.let {
+                Spacer(Modifier.width(32.dp))
+                Text("DEBUG INFO:\n user id: ${it.uid} \n email verified: ${it.emailVerified}")
             }
         }
     }

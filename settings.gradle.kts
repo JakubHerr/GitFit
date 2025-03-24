@@ -31,3 +31,7 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
+
+// This option is used to develop and debug desktop GitLive SDK
+// It assumes both GitFit and the customized java SDK are in the same folder
+// includeBuild("../firebase-java-sdk")
