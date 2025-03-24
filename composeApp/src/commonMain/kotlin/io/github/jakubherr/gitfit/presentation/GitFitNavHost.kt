@@ -50,7 +50,7 @@ fun GitFitNavHost(
                 auth.user.loggedIn && auth.user.emailVerified -> DashboardRoute
                 auth.user.loggedIn && !auth.user.emailVerified -> VerifyEmailRoute
                 else -> LoginRoute
-            } //if (auth.loggedIn) DashboardRoute else LoginRoute,
+            }
         ) {
             authGraph(navController)
 
