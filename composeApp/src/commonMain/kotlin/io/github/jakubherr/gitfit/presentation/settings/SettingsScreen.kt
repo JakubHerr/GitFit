@@ -88,7 +88,7 @@ fun SettingsScreen(
 
             authState?.value?.let {
                 Spacer(Modifier.width(32.dp))
-                Text("DEBUG INFO:\n user id: ${it.uid} \n email verified: ${it.emailVerified}")
+                Text("DEBUG INFO:\n user id: ${it.user.userId} \n email verified: ${it.user.emailVerified}")
             }
         }
     }

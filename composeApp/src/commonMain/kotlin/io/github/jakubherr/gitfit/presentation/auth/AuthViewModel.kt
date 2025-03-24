@@ -2,25 +2,24 @@ package io.github.jakubherr.gitfit.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.jakubherr.gitfit.data.repository.FirebaseAuthRepository
+import io.github.jakubherr.gitfit.domain.AuthRepository
+import io.github.jakubherr.gitfit.domain.model.User
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class AuthViewModel(
-    private val firebase: FirebaseAuthRepository,
+    private val auth: AuthRepository,
 ) : ViewModel() {
     private val _state =
-        firebase.currentUserFlow.map {
+        auth.currentUserFlow.map {
             AuthState(
-                it?.uid ?: "",
-                it != null,
-                it?.isEmailVerified ?: false,
+                it ?: User.LoggedOut,
             )
         }.stateIn(
             scope = viewModelScope,
-            initialValue = AuthState("", false, false),
+            initialValue = AuthState(auth.currentUser),
             started = SharingStarted.WhileSubscribed(5_000L),
         )
     val state = _state
@@ -40,35 +39,37 @@ class AuthViewModel(
         email: String,
         password: String,
     ) {
-        viewModelScope.launch { firebase.registerUser(email, password) }
+        viewModelScope.launch { auth.registerUser(email, password) }
     }
 
     private fun signIn(
         email: String,
         password: String,
     ) {
-        viewModelScope.launch { firebase.signIn(email, password) }
+        viewModelScope.launch {
+            auth.signInUser(email, password)
+        }
     }
 
     private fun signOut() {
-        println("DBG: signing out ${state.value.uid}...")
-        viewModelScope.launch { firebase.signOut() }
+        println("DBG: signing out ${state.value.user.userId}...")
+        viewModelScope.launch { auth.signOut() }
     }
 
     private fun verifyEmail() {
         println("DBG: email verification requested")
         viewModelScope.launch {
-            firebase.sendEmailVerification()
+            auth.sendVerificationEmail()
         }
     }
 
     private fun sendPasswordResetEmail(email: String) {
-        viewModelScope.launch { firebase.sendPasswordResetEmail(email) }
+        viewModelScope.launch { auth.sendPasswordResetEmail(email) }
     }
 
     private fun deleteAccount(password: String) {
-        println("DBG: deleting user ${state.value.uid}")
-        viewModelScope.launch { firebase.deleteUser(password) }
+        println("DBG: deleting user ${state.value.user.userId}")
+        viewModelScope.launch { auth.deleteUser(password) }
     }
 }
 
@@ -81,3 +82,9 @@ sealed interface AuthAction {
     object SignOut : AuthAction
     object VerifyEmail : AuthAction
 }
+
+data class AuthState(
+    val user: User,
+    // TODO error state holder
+    // TODO loading state holder
+)

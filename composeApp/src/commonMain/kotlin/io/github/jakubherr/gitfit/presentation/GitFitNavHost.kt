@@ -47,8 +47,8 @@ fun GitFitNavHost(
         NavHost(
             navController = navController,
             startDestination = when {
-                auth.loggedIn && auth.emailVerified -> DashboardRoute
-                auth.loggedIn && !auth.emailVerified -> VerifyEmailRoute
+                auth.user.loggedIn && auth.user.emailVerified -> DashboardRoute
+                auth.user.loggedIn && !auth.user.emailVerified -> VerifyEmailRoute
                 else -> LoginRoute
             } //if (auth.loggedIn) DashboardRoute else LoginRoute,
         ) {
