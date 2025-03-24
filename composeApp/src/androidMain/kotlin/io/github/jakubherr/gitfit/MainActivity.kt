@@ -7,7 +7,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.google.firebase.FirebaseApp
+import io.github.jakubherr.gitfit.domain.AuthError
+import io.github.jakubherr.gitfit.domain.model.User
 import io.github.jakubherr.gitfit.presentation.App
+import io.github.jakubherr.gitfit.presentation.auth.AuthState
 import io.github.jakubherr.gitfit.presentation.auth.LoginScreen
 
 class MainActivity : ComponentActivity() {
@@ -25,6 +28,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun CommonPreview() {
     MaterialTheme {
-        LoginScreen()
+        LoginScreen(AuthState(User.LoggedOut, AuthError.PasswordTooWeak, true))
     }
 }

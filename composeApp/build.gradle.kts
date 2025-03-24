@@ -107,6 +107,16 @@ android {
     }
 }
 
+configurations.all {
+    // this forces GitLive Firebase to use a customized version of firebase java SDK published in local Maven repository
+    // the reason is that version 0.45 is missing extremely basic features like account creation
+    resolutionStrategy.eachDependency {
+        if (requested.group == "dev.gitlive" && requested.name == "firebase-java-sdk") {
+            useVersion("0.4.8-fork")
+        }
+    }
+}
+
 ktlint {
     verbose.set(true)
     outputToConsole.set(true)

@@ -41,4 +41,5 @@
     <string name="left_calf">left calf</string>
     <string name="right_calf">right calf</string>
     <string name="save_measurement">save measurement</string>
+    <string name="delete_account">delete account</string>
 </resources>

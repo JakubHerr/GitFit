@@ -46,9 +46,13 @@ fun GitFitNavHost(
     ) {
         NavHost(
             navController = navController,
-            startDestination = if (auth.loggedIn) DashboardRoute else LoginRoute,
+            startDestination = when {
+                auth.user.loggedIn && auth.user.emailVerified -> DashboardRoute
+                auth.user.loggedIn && !auth.user.emailVerified -> VerifyEmailRoute
+                else -> LoginRoute
+            }
         ) {
-            authGraph()
+            authGraph(navController)
 
             composable<DashboardRoute> {
                 DashboardScreenRoot { action ->

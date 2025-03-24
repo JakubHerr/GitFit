@@ -4,6 +4,7 @@ import io.github.jakubherr.gitfit.data.repository.FirebaseAuthRepository
 import io.github.jakubherr.gitfit.data.repository.FirestoreExerciseRepository
 import io.github.jakubherr.gitfit.data.repository.FirestoreMeasurementRepository
 import io.github.jakubherr.gitfit.data.repository.FirestoreWorkoutRepository
+import io.github.jakubherr.gitfit.domain.AuthRepository
 import io.github.jakubherr.gitfit.domain.ExerciseRepository
 import io.github.jakubherr.gitfit.domain.MeasurementRepository
 import io.github.jakubherr.gitfit.domain.WorkoutRepository
@@ -27,7 +28,7 @@ private val repositoryModule =
     module {
         singleOf(::FirestoreExerciseRepository).bind<ExerciseRepository>()
         singleOf(::FirestoreWorkoutRepository).bind<WorkoutRepository>()
-        singleOf(::FirebaseAuthRepository).bind<FirebaseAuthRepository>()
+        singleOf(::FirebaseAuthRepository).bind<AuthRepository>()
         singleOf(::FirestoreMeasurementRepository).bind<MeasurementRepository>()
     }
 
