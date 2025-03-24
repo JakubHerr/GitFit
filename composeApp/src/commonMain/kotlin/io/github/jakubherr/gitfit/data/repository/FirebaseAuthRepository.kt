@@ -1,6 +1,7 @@
 package io.github.jakubherr.gitfit.data.repository
 
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.FirebaseNetworkException
 import dev.gitlive.firebase.auth.FirebaseAuthException
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
 import dev.gitlive.firebase.auth.FirebaseAuthWeakPasswordException
@@ -49,6 +50,8 @@ class FirebaseAuthRepository: AuthRepository {
         } catch (e: FirebaseAuthInvalidCredentialsException) {
             println("DBG: user entered invalid account credentials")
             return Result.failure(AuthError.InvalidCredentials)
+        } catch (e: FirebaseNetworkException) {
+            return Result.failure(AuthError.NoInternet)
         } catch (e: FirebaseAuthException) {
             println("Firebase auth failed: ${e.stackTraceToString()}")
             return Result.failure(AuthError.Generic)

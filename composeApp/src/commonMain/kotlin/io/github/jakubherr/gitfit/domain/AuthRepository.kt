@@ -25,5 +25,6 @@ sealed class AuthError : Exception() {
     object EmailInUseAlready : AuthError()
     object InvalidCredentials : AuthError()
     object FailedToSendEmail : AuthError()
+    object NoInternet : AuthError()
     object Generic: AuthError()
 }

@@ -8,12 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -31,12 +31,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.register
 import gitfit.composeapp.generated.resources.sign_in
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import javax.swing.JPasswordField
 
 @Composable
 fun LoginScreenRoot(
@@ -45,8 +45,10 @@ fun LoginScreenRoot(
     onLogin: () -> Unit = {},
     onForgotPassword: () -> Unit = {},
 ) {
-    // val state = vm.state.collectAsStateWithLifecycle()
+    val state = vm.state.collectAsStateWithLifecycle()
+
     LoginScreen(
+        state.value,
         onAction = { action -> vm.onAction(action) },
         onForgotPassword = onForgotPassword,
     )
@@ -54,29 +56,32 @@ fun LoginScreenRoot(
 
 @Composable
 fun LoginScreen(
-    // state: AuthState,
+    state: AuthState,
     onAction: (AuthAction) -> Unit = {},
     onForgotPassword: () -> Unit = {},
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-
     val isValidLogin = remember(email, password) {
         email.isNotBlank() && password.isNotBlank()
     }
-
 
     Column(
         Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
+        if (state.loading) {
+            CircularProgressIndicator()
+        }
+        state.error?.let {
+            // TODO convert errors to custom UI messages
+            Text("Some error occurred :(")
+        }
         TextField(email, onValueChange = { email = it })
         Spacer(Modifier.height(16.dp))
         PasswordField(password, onPasswordChange = { password = it})
-
-
 
         Spacer(Modifier.height(16.dp))
 
@@ -88,7 +93,10 @@ fun LoginScreen(
                 Text(stringResource(Res.string.register))
             }
             Spacer(Modifier.width(16.dp))
-            Button(onClick = { onAction(AuthAction.SignIn(email, password)) }) {
+            Button(
+                onClick = { onAction(AuthAction.SignIn(email, password)) },
+                enabled = isValidLogin
+            ) {
                 Text(stringResource(Res.string.sign_in))
             }
         }
