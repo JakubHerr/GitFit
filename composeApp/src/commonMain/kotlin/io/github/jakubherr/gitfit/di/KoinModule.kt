@@ -1,12 +1,14 @@
 package io.github.jakubherr.gitfit.di
 
 import io.github.jakubherr.gitfit.data.repository.FirebaseAuthRepository
+import io.github.jakubherr.gitfit.data.repository.FirebasePlanRepository
 import io.github.jakubherr.gitfit.data.repository.FirestoreExerciseRepository
 import io.github.jakubherr.gitfit.data.repository.FirestoreMeasurementRepository
 import io.github.jakubherr.gitfit.data.repository.FirestoreWorkoutRepository
 import io.github.jakubherr.gitfit.domain.AuthRepository
 import io.github.jakubherr.gitfit.domain.ExerciseRepository
 import io.github.jakubherr.gitfit.domain.MeasurementRepository
+import io.github.jakubherr.gitfit.domain.PlanRepository
 import io.github.jakubherr.gitfit.domain.WorkoutRepository
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseViewModel
@@ -31,6 +33,7 @@ private val repositoryModule =
         singleOf(::FirestoreWorkoutRepository).bind<WorkoutRepository>()
         singleOf(::FirebaseAuthRepository).bind<AuthRepository>()
         singleOf(::FirestoreMeasurementRepository).bind<MeasurementRepository>()
+        singleOf(::FirebasePlanRepository).bind<PlanRepository>()
     }
 
 expect val platformModule: Module

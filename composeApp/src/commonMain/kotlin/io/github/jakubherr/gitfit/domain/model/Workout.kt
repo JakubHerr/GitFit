@@ -16,11 +16,30 @@ data class Workout(
     val inProgress: Boolean = false,
 )
 
+@Serializable
 data class WorkoutPlan(
     val name: String = "",
     val idx: Int,
     val blocks: List<Block>,
 )
+
+data class ProgressionSettings(
+    val incrementWeightByKg: Double,
+    val incrementReps: Int,
+    val type: ProgressionType,
+    val trigger: ProgressionTrigger,
+    val threshold: Int,
+)
+
+enum class ProgressionType {
+    INCREASE_REPS,
+    INCREASE_WEIGHT,
+}
+
+enum class ProgressionTrigger {
+    MINIMUM_REPS_EVERY_SET,
+    EVERY_WORKOUT,
+}
 
 @Serializable
 data class Block(

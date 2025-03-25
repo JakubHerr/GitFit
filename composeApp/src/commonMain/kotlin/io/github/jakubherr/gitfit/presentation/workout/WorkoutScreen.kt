@@ -122,7 +122,7 @@ fun BlockItem(
                 SetHeader()
                 Spacer(Modifier.height(16.dp))
                 block.series.forEachIndexed { idx, set ->
-                    SetItem(idx + 1, set) { weight, reps ->
+                    CheckableSetInput(idx + 1, set) { weight, reps ->
                         onAction(
                             WorkoutAction.ModifySeries(
                                 blockId = block.id,
@@ -157,7 +157,7 @@ fun SetHeader(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SetItem(
+fun CheckableSetInput(
     index: Int,
     set: Series = mockSeries,
     modifier: Modifier = Modifier,
