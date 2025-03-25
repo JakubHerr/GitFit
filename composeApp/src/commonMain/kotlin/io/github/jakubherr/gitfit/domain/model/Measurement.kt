@@ -8,8 +8,6 @@ import kotlinx.serialization.Serializable
 // if a measurement already exists for the current day, it should overwrite the old instead of adding a new one
 @Serializable
 data class Measurement(
-    val id: String,
-    val userId: String,
     val date: LocalDate,
     // TODO units
     val neck: Double?,

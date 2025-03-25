@@ -5,7 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Exercise(
     val id: String,
-    val userId: String?,
     val name: String,
     val description: String?,
     val primaryMuscle: List<MuscleGroup> = emptyList(),
@@ -26,7 +25,6 @@ enum class MuscleGroup {
 val mockExercise =
     Exercise(
         "mock",
-        null,
         "Bench press",
         "",
         listOf(MuscleGroup.CHEST),

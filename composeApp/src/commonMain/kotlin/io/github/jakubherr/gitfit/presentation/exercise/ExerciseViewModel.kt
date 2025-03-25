@@ -2,14 +2,16 @@ package io.github.jakubherr.gitfit.presentation.exercise
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.jakubherr.gitfit.data.repository.FirebaseAuthRepository
 import io.github.jakubherr.gitfit.domain.ExerciseRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import kotlinx.coroutines.launch
 
 class ExerciseViewModel(
     private val exerciseRepository: ExerciseRepository,
+    private val authRepository: FirebaseAuthRepository,
 ) : ViewModel() {
-    val flow = exerciseRepository.getAllExercises()
+    val flow = exerciseRepository.getDefaultExercises()
 
     fun onAction(action: ExerciseAction) {
         when (action) {
@@ -20,7 +22,7 @@ class ExerciseViewModel(
 
     private fun createExercise(exercise: Exercise) {
         viewModelScope.launch {
-            exerciseRepository.createExercise(exercise)
+            exerciseRepository.addCustomExercise(authRepository.currentUser.id, exercise)
         }
     }
 

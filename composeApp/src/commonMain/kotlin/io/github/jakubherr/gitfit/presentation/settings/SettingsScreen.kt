@@ -90,7 +90,7 @@ fun SettingsScreen(
 
             authState?.value?.let { state ->
                 Spacer(Modifier.width(32.dp))
-                Text("DEBUG INFO:\n user id: ${state.user.userId} \n email verified: ${state.user.emailVerified}")
+                Text("DEBUG INFO:\n user id: ${state.user.id} \n email verified: ${state.user.emailVerified}")
 
                 // TODO some better UI
                 if (state.loading) CircularProgressIndicator()

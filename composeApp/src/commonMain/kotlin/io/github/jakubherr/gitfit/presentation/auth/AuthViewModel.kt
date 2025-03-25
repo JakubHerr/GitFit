@@ -57,7 +57,7 @@ class AuthViewModel(
     }
 
     private fun signOut() {
-        println("DBG: signing out ${state.value.user.userId}...")
+        println("DBG: signing out ${state.value.user.id}...")
         launch { auth.signOut() }
     }
 
@@ -71,7 +71,7 @@ class AuthViewModel(
     }
 
     private fun deleteAccount(password: String) {
-        println("DBG: deleting user ${state.value.user.userId}")
+        println("DBG: deleting user ${state.value.user.id}")
         launch { auth.deleteUser(password) }
     }
 
