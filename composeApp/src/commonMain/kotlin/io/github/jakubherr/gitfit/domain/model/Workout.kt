@@ -9,19 +9,27 @@ import kotlinx.serialization.Serializable
 data class Workout(
     val id: String,
     val userId: String,
+    val name: String = "",
     val blocks: List<Block>,
     val date: LocalDate,
     val completed: Boolean = false,
     val inProgress: Boolean = false,
 )
 
+data class WorkoutPlan(
+    val name: String = "",
+    val idx: Int,
+    val blocks: List<Block>,
+)
+
 @Serializable
 data class Block(
     // TODO consider using index since it is inside a subcollection anyway
     val id: String,
+    val idx: Int,
     val exercise: Exercise,
     val series: List<Series> = emptyList(),
-    val restTimeSeconds: Long?,
+    val restTimeSeconds: Long? = null,
 )
 
 // this should be named Set but is named series because of name conflict with Set collection
@@ -45,6 +53,7 @@ val mockSeries =
 val mockBlock =
     Block(
         id = "mock",
+        idx = 0,
         exercise = mockExercise,
         series = listOf(mockSeries),
         restTimeSeconds = 69,

@@ -7,6 +7,7 @@ data class Plan(
     val userId: String?,
     val name: String,
     val description: String,
+    val workouts: List<WorkoutPlan> = emptyList()
     // difficulty
     // required equipment
     // category: upper/lower, PPL, full body

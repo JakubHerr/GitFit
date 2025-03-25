@@ -124,6 +124,7 @@ class FirestoreWorkoutRepository : WorkoutRepository {
             val block =
                 Block(
                     id,
+                    0, // TODO solve indexing on unplanned workouts!
                     exercise,
                     emptyList(),
                     null,

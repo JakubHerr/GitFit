@@ -11,6 +11,7 @@ import io.github.jakubherr.gitfit.domain.WorkoutRepository
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseViewModel
 import io.github.jakubherr.gitfit.presentation.measurement.MeasurementViewModel
+import io.github.jakubherr.gitfit.presentation.planning.PlanningViewModel
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -40,6 +41,7 @@ private val viewmodelModule =
         viewModelOf(::WorkoutViewModel)
         viewModelOf(::ExerciseViewModel)
         viewModelOf(::MeasurementViewModel)
+        viewModelOf(::PlanningViewModel)
     }
 
 private val sharedModules = listOf(viewmodelModule, repositoryModule, apiModule)

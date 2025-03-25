@@ -19,6 +19,7 @@ import io.github.jakubherr.gitfit.presentation.dashboard.DashboardAction
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardScreenRoot
 import io.github.jakubherr.gitfit.presentation.exercise.exerciseNavigation
 import io.github.jakubherr.gitfit.presentation.measurement.MeasurementScreenRoot
+import io.github.jakubherr.gitfit.presentation.planning.PlanningScreenRoot
 import io.github.jakubherr.gitfit.presentation.settings.SettingsScreenRoot
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutScreenRoot
 import org.koin.compose.viewmodel.koinViewModel
@@ -76,7 +77,7 @@ fun GitFitNavHost(
             exerciseNavigation(navController)
 
             composable<PlanningRoute> {
-                // TODO
+                PlanningScreenRoot()
             }
 
             composable<MeasurementRoute> {
