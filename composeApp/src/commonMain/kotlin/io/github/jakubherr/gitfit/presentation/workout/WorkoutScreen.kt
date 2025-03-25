@@ -87,7 +87,7 @@ fun WorkoutScreen(
                             block,
                             onAction = onAction,
                             onAddSetClicked = {
-                                val set = Series(block.series.size.toString(), null, null, false)
+                                val set = Series(block.series.size.toString(), 0,null, null, false) // TODO solve indexing!
                                 onAction(WorkoutAction.AddSet(workout.id, block.id, set))
                             },
                         )

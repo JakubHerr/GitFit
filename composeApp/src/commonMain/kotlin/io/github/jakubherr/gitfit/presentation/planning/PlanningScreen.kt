@@ -116,7 +116,6 @@ fun PlanListItem(
             Text(workout.name)
             Text(workout.blocks.joinToString())
         }
-
     }
 }
 
@@ -135,10 +134,12 @@ fun PlanWorkoutDetail(
     }
 
     LazyColumn {
-        items(workout.blocks) {
-            BlockItem(it) {
-                // TODO add set to block
-                onAction(PlanAction.addSet)
+        items(workout.blocks) { block ->
+            BlockItem(
+                block,
+                onAction = { onAction(PlanAction.RemoveExercise(workout, block)) }
+            ) {
+                onAction(PlanAction.AddSet(workout, block))
             }
         }
     }
@@ -154,5 +155,3 @@ fun PlanWorkoutDetail(
         )
     }
 }
-
-

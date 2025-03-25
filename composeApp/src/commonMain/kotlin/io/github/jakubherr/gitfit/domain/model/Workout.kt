@@ -36,6 +36,7 @@ data class Block(
 @Serializable
 data class Series(
     val id: String,
+    val idx: Int,
     val repetitions: Long?,
     // TODO weight should be double
     val weight: Long?,
@@ -45,6 +46,7 @@ data class Series(
 val mockSeries =
     Series(
         id = "mock",
+        0,
         repetitions = 3,
         weight = 40,
         completed = false,
