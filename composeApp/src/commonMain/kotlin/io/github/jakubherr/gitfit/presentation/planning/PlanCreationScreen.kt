@@ -1,7 +1,9 @@
 package io.github.jakubherr.gitfit.presentation.planning
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -10,9 +12,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 
@@ -24,16 +27,19 @@ fun PlanCreationScreen(
     onWorkoutSelected: (Int) -> Unit = {},
     onAction: (PlanAction) -> Unit = {},
 ) {
-    var planName by remember { mutableStateOf("") }
+    var planName by rememberSaveable { mutableStateOf("") }
 
     Column(modifier.fillMaxSize()) {
         Text("Creating a new plan")
         Text("Plan name")
-        TextField(value = plan.name, onValueChange = { planName = it })
+        TextField(value = planName, onValueChange = { planName = it })
 
+        Spacer(Modifier.width(16.dp))
+
+        Text("Workout days")
         LazyColumn {
             items(plan.workouts) { workout ->
-                PlanListItem(workout) {
+                WorkoutListItem(workout) {
                     onWorkoutSelected(workout.idx)
                 }
             }
@@ -51,8 +57,8 @@ fun PlanCreationScreen(
         }
 
         Button({
-            onAction(PlanAction.SavePlan)
-            onFinished()
+            onAction(PlanAction.SavePlan(planName))
+            onFinished() // TODO navigate only if plan saving was sucessfull
         }) {
             Text("Save plan")
         }

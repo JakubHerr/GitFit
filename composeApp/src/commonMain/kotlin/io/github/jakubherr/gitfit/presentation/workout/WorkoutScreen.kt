@@ -195,6 +195,7 @@ fun NumberInputField(
     label: String? = null,
     modifier: Modifier = Modifier,
     placeholder: Int = 0,
+    isError: Boolean = false,
     onValueChange: (String) -> Unit,
 ) {
     OutlinedTextField(
@@ -203,6 +204,7 @@ fun NumberInputField(
         placeholder = { Text(placeholder.toString(), modifier.alpha(0.6f)) },
         modifier = Modifier.width(64.dp),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        isError = isError,
         singleLine = true,
     )
 }

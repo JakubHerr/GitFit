@@ -43,7 +43,6 @@ enum class ProgressionTrigger {
 
 @Serializable
 data class Block(
-    // TODO consider using index since it is inside a subcollection anyway
     val id: String,
     val idx: Int,
     val exercise: Exercise,
@@ -57,7 +56,7 @@ data class Series(
     val id: String,
     val idx: Int,
     val repetitions: Long?,
-    // TODO weight should be double
+    // TODO weight should be double!!
     val weight: Long?,
     val completed: Boolean,
 )

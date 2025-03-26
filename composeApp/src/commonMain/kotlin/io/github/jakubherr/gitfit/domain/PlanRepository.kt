@@ -5,7 +5,9 @@ import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 import kotlinx.coroutines.flow.Flow
 
 interface PlanRepository {
-    suspend fun getPredefinedPlans()
+    fun getPredefinedPlans(): Flow<List<Plan>>
+
+    fun getCustomPlans(userId: String): Flow<List<Plan>>
 
     suspend fun saveCustomPlan(userId: String, plan: Plan)
 

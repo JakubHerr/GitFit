@@ -13,41 +13,46 @@ import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.ProgressionSettings
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 class PlanningViewModel(
     private val planRepository: PlanRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 ): ViewModel() {
-    var plan by mutableStateOf(Plan("","","",""))
-        private set
+    var plan: Plan by mutableStateOf(Plan("","","",""))
 
-    val userWorkouts = planRepository.getCustomWorkouts(authRepository.currentUser.id)
+    val userWorkouts get()  =
+        if (authRepository.currentUser.loggedIn) planRepository.getCustomWorkouts(authRepository.currentUser.id)
+        else emptyFlow()
+
+    val userPlans get() =
+        if (authRepository.currentUser.loggedIn) planRepository.getCustomPlans(authRepository.currentUser.id)
+        else emptyFlow()
+
+    val predefinedPlans = planRepository.getPredefinedPlans()
 
     fun onAction(action: PlanAction) {
         when (action) {
-            is PlanAction.SavePlan -> savePlan()
+            is PlanAction.SavePlan -> savePlan(action.name)
             is PlanAction.AddWorkout -> addWorkout(action.workout)
-            is PlanAction.RenamePlan -> renamePlan(action.name)
             is PlanAction.SaveWorkout -> saveWorkout(action.workout)
             is PlanAction.AddExercise -> addExercise(action.workoutIdx, action.exercise)
             is PlanAction.RemoveExercise -> removeBlock(action.workout, action.block)
             is PlanAction.AddSet -> addSet(action.workout, action.block)
+            is PlanAction.EditSet -> updateSet(action.workout, action.block, action.set)
         }
     }
 
-    private fun renamePlan(name: String) {
-        plan = plan.copy(name = name)
-    }
-
-    private fun savePlan() {
+    private fun savePlan(name: String) {
         val user = authRepository.currentUser
         if (!user.loggedIn) return
 
         // TODO: validate entire plan before saving
+        // validate name is not blank
 
         viewModelScope.launch {
-            planRepository.saveCustomPlan(user.id, plan)
+            planRepository.saveCustomPlan(user.id, plan.copy(name = name))
         }
     }
 
@@ -107,11 +112,11 @@ class PlanningViewModel(
 }
 
 sealed interface PlanAction {
-    object SavePlan : PlanAction
-    class RenamePlan(val name: String) : PlanAction
+    class SavePlan(val name: String) : PlanAction
     class AddWorkout(val workout: WorkoutPlan) : PlanAction
     class SaveWorkout(val workout: WorkoutPlan) : PlanAction
     class AddExercise(val workoutIdx: Int, val exercise: Exercise) : PlanAction
     class RemoveExercise(val workout: WorkoutPlan, val block: Block) : PlanAction
     class AddSet(val workout: WorkoutPlan, val block: Block) : PlanAction
+    class EditSet(val workout: WorkoutPlan, val block: Block, val set: Series) : PlanAction
 }

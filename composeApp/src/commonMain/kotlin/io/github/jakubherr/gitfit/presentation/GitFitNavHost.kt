@@ -37,6 +37,7 @@ fun GitFitNavHost(
     val authViewModel: AuthViewModel = koinViewModel()
     val auth by authViewModel.state.collectAsStateWithLifecycle()
 
+    // this prevents data loss of in-memory plan
     val planViewModel: PlanningViewModel = koinViewModel()
 
     LaunchedEffect(auth) { println("DBG: auth state is $auth") }
@@ -77,7 +78,7 @@ fun GitFitNavHost(
                 )
             }
 
-            exerciseNavigation(navController, planViewModel) // TODO: evaluate if this is a good idea
+            exerciseNavigation(navController) // TODO: evaluate if this is a good idea
             planningGraph(navController, planViewModel)
 
             composable<MeasurementRoute> {

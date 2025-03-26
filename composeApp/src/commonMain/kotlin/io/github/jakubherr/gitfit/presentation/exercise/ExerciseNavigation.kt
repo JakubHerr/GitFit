@@ -4,20 +4,16 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import io.github.jakubherr.gitfit.presentation.AddExerciseToPlanRoute
 import io.github.jakubherr.gitfit.presentation.AddExerciseToWorkoutRoute
 import io.github.jakubherr.gitfit.presentation.CreateExerciseRoute
 import io.github.jakubherr.gitfit.presentation.ExerciseDetailRoute
 import io.github.jakubherr.gitfit.presentation.ExerciseListRoute
-import io.github.jakubherr.gitfit.presentation.planning.PlanAction
-import io.github.jakubherr.gitfit.presentation.planning.PlanningViewModel
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 fun NavGraphBuilder.exerciseNavigation(
     navController: NavHostController,
-    planningViewModel: PlanningViewModel,
 ) {
     composable<ExerciseListRoute> {
         ExerciseListScreenRoot(
@@ -25,6 +21,7 @@ fun NavGraphBuilder.exerciseNavigation(
             onExerciseClick = { /* TODO navigate to exercise detail */ },
         )
     }
+
     composable<AddExerciseToWorkoutRoute> { backStackEntry ->
         val route: AddExerciseToWorkoutRoute = backStackEntry.toRoute()
         val workoutViewModel: WorkoutViewModel = koinViewModel()
@@ -33,18 +30,6 @@ fun NavGraphBuilder.exerciseNavigation(
             onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
             onExerciseClick = { exercise ->
                 workoutViewModel.onAction(WorkoutAction.AddBlock(route.workoutId, exercise.id))
-                navController.popBackStack()
-            },
-        )
-    }
-
-    composable<AddExerciseToPlanRoute> { backstackEntry ->
-        val idx = backstackEntry.toRoute<AddExerciseToPlanRoute>().workoutIdx
-
-        ExerciseListScreenRoot(
-            onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
-            onExerciseClick = { exercise ->
-                planningViewModel.onAction(PlanAction.AddExercise(idx, exercise))
                 navController.popBackStack()
             },
         )

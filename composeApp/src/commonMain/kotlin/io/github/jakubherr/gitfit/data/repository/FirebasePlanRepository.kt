@@ -17,8 +17,16 @@ class FirebasePlanRepository: PlanRepository {
     private fun userWorkoutPlanRef(userId: String) = firestore.collection("USERS").document(userId).collection("WORKOUT_PLANS")
     private val context = Dispatchers.IO
 
-    override suspend fun getPredefinedPlans() {
-        TODO("Not yet implemented")
+    override fun getPredefinedPlans(): Flow<List<Plan>> {
+        return planRef.snapshots.map { snapshot ->
+            snapshot.documents.map { it.data<Plan>() }
+        }
+    }
+
+    override fun getCustomPlans(userId: String): Flow<List<Plan>> {
+        return userPlanRef(userId).snapshots.map { snapshot ->
+            snapshot.documents.map { it.data<Plan>() }
+        }
     }
 
     override suspend fun saveCustomPlan(userId: String, plan: Plan) {

@@ -1,5 +1,6 @@
 package io.github.jakubherr.gitfit.presentation
 
+import io.github.jakubherr.gitfit.domain.model.Plan
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -43,6 +44,9 @@ object MeasurementRoute
 
 @Serializable
 object PlanOverviewRoute
+
+@Serializable
+class PlanDetailRoute(val planId: String)
 
 @Serializable
 object PlanCreationRoute

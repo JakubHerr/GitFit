@@ -27,10 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.add_set
+import io.github.jakubherr.gitfit.domain.isPositiveDouble
+import io.github.jakubherr.gitfit.domain.isPositiveLong
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
-import io.github.jakubherr.gitfit.domain.model.mockSeries
 import io.github.jakubherr.gitfit.presentation.workout.NumberInputField
 import io.github.jakubherr.gitfit.presentation.workout.SetHeader
 import org.jetbrains.compose.resources.stringResource
@@ -43,15 +44,15 @@ fun PlanWorkoutDetailScreen(
     onAddExerciseClick: (Int) -> Unit = {},
 ) {
     LazyColumn {
-        item {
-            Button(onClick = { onAddExerciseClick(workout.idx) }) { Text("Add exercise") }
-        }
         items(workout.blocks) { block ->
             PlanBlockItem(
                 block,
-            ) {
-                onAction(PlanAction.AddSet(workout, block))
-            }
+                onAddSetClicked = { onAction(PlanAction.AddSet(workout, block)) },
+                onValidSetEntered = { onAction(PlanAction.EditSet(workout, block, it)) }
+            )
+        }
+        item {
+            Button(onClick = { onAddExerciseClick(workout.idx) }) { Text("Add exercise") }
         }
         item {
             Button({ onAction(PlanAction.SaveWorkout(workout)) }) { Text("Save workout") }
@@ -64,6 +65,7 @@ fun PlanBlockItem(
     block: Block,
     modifier: Modifier = Modifier,
     onAddSetClicked: () -> Unit = {},
+    onValidSetEntered: (Series) -> Unit = {},
 ) {
     Card(Modifier.fillMaxWidth().padding(16.dp)) {
         Column(Modifier.padding(8.dp)) {
@@ -78,7 +80,9 @@ fun PlanBlockItem(
                 SetHeader()
                 Spacer(Modifier.height(16.dp))
                 block.series.forEachIndexed { idx, set ->
-                    PlanSetInput(idx + 1, set)
+                    PlanSetInput(idx + 1, set) {
+                        onValidSetEntered(it)
+                    }
                 }
             }
             Spacer(modifier.height(8.dp))
@@ -92,8 +96,9 @@ fun PlanBlockItem(
 @Composable
 fun PlanSetInput(
     index: Int,
-    set: Series = mockSeries,
+    set: Series,
     modifier: Modifier = Modifier,
+    onValidSetEntered: (Series) -> Unit,
 ) {
     var weight by remember { mutableStateOf(set.weight?.toString() ?: "") }
     var reps by remember { mutableStateOf(set.repetitions?.toString() ?: "") }
@@ -105,7 +110,25 @@ fun PlanSetInput(
     ) {
         Text(index.toString())
 
-        NumberInputField(weight, onValueChange = { weight = it })
-        NumberInputField(reps, onValueChange = { reps = it })
+        NumberInputField(
+            weight,
+            isError = !weight.isPositiveDouble(),
+            onValueChange = {
+                weight = it
+                if (weight.isPositiveDouble() && reps.isPositiveLong()) {
+                    onValidSetEntered(set.copy(weight = weight.toLong(), repetitions = reps.toLong()))
+                }
+            }
+        )
+        NumberInputField(
+            reps,
+            isError = !reps.isPositiveLong(),
+            onValueChange = {
+                reps = it
+                if (weight.isPositiveDouble() && reps.isPositiveLong()) {
+                    onValidSetEntered(set.copy(weight = weight.toLong(), repetitions = reps.toLong()))
+                }
+            }
+        )
     }
 }
