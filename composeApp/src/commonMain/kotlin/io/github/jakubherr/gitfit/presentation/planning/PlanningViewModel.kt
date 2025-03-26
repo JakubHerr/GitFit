@@ -20,7 +20,7 @@ class PlanningViewModel(
     private val planRepository: PlanRepository,
     private val authRepository: AuthRepository,
 ): ViewModel() {
-    var plan: Plan by mutableStateOf(Plan("","","",""))
+    var plan: Plan by mutableStateOf(Plan.Empty)
 
     val userWorkouts get()  =
         if (authRepository.currentUser.loggedIn) planRepository.getCustomWorkouts(authRepository.currentUser.id)
@@ -35,12 +35,19 @@ class PlanningViewModel(
     fun onAction(action: PlanAction) {
         when (action) {
             is PlanAction.SavePlan -> savePlan(action.name)
+            is PlanAction.DiscardPlan -> discardPlan()
+            is PlanAction.DeletePlan -> TODO() // delete a completed plan
+
             is PlanAction.AddWorkout -> addWorkout(action.workout)
             is PlanAction.SaveWorkout -> saveWorkout(action.workout)
+            is PlanAction.DeleteWorkout -> removeWorkout(action.workout)
+
             is PlanAction.AddExercise -> addExercise(action.workoutIdx, action.exercise)
             is PlanAction.RemoveExercise -> removeBlock(action.workout, action.block)
+
             is PlanAction.AddSet -> addSet(action.workout, action.block)
             is PlanAction.EditSet -> updateSet(action.workout, action.block, action.set)
+            is PlanAction.RemoveSet -> removeSet(action.workout, action.block, action.set)
         }
     }
 
@@ -56,6 +63,14 @@ class PlanningViewModel(
         }
     }
 
+    private fun discardPlan() {
+        plan = Plan.Empty
+    }
+
+    private fun deletePlan() {
+        TODO()
+    }
+
     private fun addWorkout(workout: WorkoutPlan) {
         plan = plan.copy(workouts = plan.workouts + workout)
     }
@@ -66,12 +81,19 @@ class PlanningViewModel(
         plan = plan.copy(workouts = workouts)
     }
 
+    private fun removeWorkout(workout: WorkoutPlan) {
+        val newWorkout = plan.workouts - workout
+        plan = plan.copy(workouts = newWorkout)
+    }
+
     private fun saveWorkout(workout: WorkoutPlan) {
         val user = authRepository.currentUser
         if (!user.loggedIn) return
 
         // TODO validate all fields in workout before saving
-        // for now, i will save single workouts first, TODO save collections of workouts as plans
+        //  all exercises have at least one set
+        //  all sets have a valid weight and rep value
+
         println("DBG: Saving workout plan...")
         viewModelScope.launch {
             planRepository.saveCustomWorkout(user.id, workout)
@@ -104,6 +126,10 @@ class PlanningViewModel(
         updateBlock(workout, newBlock)
     }
 
+    private fun removeSet(workout: WorkoutPlan, block: Block, set: Series) {
+        updateBlock(workout, block.copy(series = block.series - set))
+    }
+
     private fun updateSet(workout: WorkoutPlan, block: Block, set: Series) {
         val newSeries = plan.workouts[workout.idx].blocks[block.idx].series.toMutableList()
         newSeries[set.idx] = set
@@ -113,10 +139,17 @@ class PlanningViewModel(
 
 sealed interface PlanAction {
     class SavePlan(val name: String) : PlanAction
+    object DiscardPlan : PlanAction
+    class DeletePlan : PlanAction
+
     class AddWorkout(val workout: WorkoutPlan) : PlanAction
     class SaveWorkout(val workout: WorkoutPlan) : PlanAction
+    class DeleteWorkout(val workout: WorkoutPlan) : PlanAction
+
     class AddExercise(val workoutIdx: Int, val exercise: Exercise) : PlanAction
     class RemoveExercise(val workout: WorkoutPlan, val block: Block) : PlanAction
+
     class AddSet(val workout: WorkoutPlan, val block: Block) : PlanAction
     class EditSet(val workout: WorkoutPlan, val block: Block, val set: Series) : PlanAction
+    class RemoveSet(val workout: WorkoutPlan, val block: Block, val set: Series) : PlanAction
 }

@@ -1,8 +1,11 @@
 package io.github.jakubherr.gitfit.presentation.planning
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -39,9 +42,11 @@ fun PlanCreationScreen(
         Text("Workout days")
         LazyColumn {
             items(plan.workouts) { workout ->
-                WorkoutListItem(workout) {
-                    onWorkoutSelected(workout.idx)
-                }
+                WorkoutListItem(
+                    workout,
+                    onClick = { onWorkoutSelected(workout.idx) },
+                    onDeleteClicked = { onAction(PlanAction.DeleteWorkout(workout))}
+                )
             }
         }
 
@@ -56,14 +61,23 @@ fun PlanCreationScreen(
             Text("Add workout day")
         }
 
-        Button({
-            onAction(PlanAction.SavePlan(planName))
-            onFinished() // TODO navigate only if plan saving was sucessfull
-        }) {
-            Text("Save plan")
-        }
-        Button({ /* TODO */ }) {
-            Text("Cancel")
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Button({
+                onAction(PlanAction.SavePlan(planName))
+                onFinished() // TODO navigate only if plan saving was sucessfull
+            }) {
+                Text("Save plan")
+            }
+
+            Button({
+                onAction(PlanAction.DiscardPlan)
+                onFinished()
+            }) {
+                Text("Discard plan")
+            }
         }
     }
 }

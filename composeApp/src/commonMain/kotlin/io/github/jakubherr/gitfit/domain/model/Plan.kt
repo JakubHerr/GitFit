@@ -15,4 +15,8 @@ data class Plan(
     // required equipment (maybe calculation based on present exercises would be nice)
     // category: upper/lower, PPL, full body
     // progression - increase reps per set, increase weight
-)
+) {
+    companion object {
+        val Empty = Plan("","","","")
+    }
+}

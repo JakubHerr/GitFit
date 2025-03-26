@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -48,7 +49,8 @@ fun PlanWorkoutDetailScreen(
             PlanBlockItem(
                 block,
                 onAddSetClicked = { onAction(PlanAction.AddSet(workout, block)) },
-                onValidSetEntered = { onAction(PlanAction.EditSet(workout, block, it)) }
+                onValidSetEntered = { onAction(PlanAction.EditSet(workout, block, it)) },
+                onDeleteSet =  { onAction(PlanAction.RemoveSet(workout, block, it))}
             )
         }
         item {
@@ -66,6 +68,7 @@ fun PlanBlockItem(
     modifier: Modifier = Modifier,
     onAddSetClicked: () -> Unit = {},
     onValidSetEntered: (Series) -> Unit = {},
+    onDeleteSet: (Series) -> Unit = {},
 ) {
     Card(Modifier.fillMaxWidth().padding(16.dp)) {
         Column(Modifier.padding(8.dp)) {
@@ -80,9 +83,11 @@ fun PlanBlockItem(
                 SetHeader()
                 Spacer(Modifier.height(16.dp))
                 block.series.forEachIndexed { idx, set ->
-                    PlanSetInput(idx + 1, set) {
-                        onValidSetEntered(it)
-                    }
+                    PlanSetInput(
+                        idx + 1, set,
+                        onValidSetEntered = { onValidSetEntered(it) },
+                        onDeleteSet = { onDeleteSet(set) }
+                    )
                 }
             }
             Spacer(modifier.height(8.dp))
@@ -98,7 +103,8 @@ fun PlanSetInput(
     index: Int,
     set: Series,
     modifier: Modifier = Modifier,
-    onValidSetEntered: (Series) -> Unit,
+    onValidSetEntered: (Series) -> Unit = {},
+    onDeleteSet: () -> Unit = {}
 ) {
     var weight by remember { mutableStateOf(set.weight?.toString() ?: "") }
     var reps by remember { mutableStateOf(set.repetitions?.toString() ?: "") }
@@ -130,5 +136,9 @@ fun PlanSetInput(
                 }
             }
         )
+
+        IconButton(onDeleteSet) {
+            Icon(Icons.Default.Delete, "")
+        }
     }
 }
