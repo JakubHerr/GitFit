@@ -33,7 +33,7 @@ enum class TopLevelDestination(
     DASHBOARD(Res.string.dashboard, Icons.Default.Home, DashboardRoute::class),
     TRENDS(Res.string.trends, Icons.Default.Timeline, TrendsRoute::class),
     MEASUREMENT(Res.string.measurement, Icons.Default.SettingsAccessibility, MeasurementRoute::class),
-    PLAN(Res.string.plan, Icons.Default.EditCalendar, PlanningRoute::class),
+    PLAN(Res.string.plan, Icons.Default.EditCalendar, PlanOverviewRoute::class),
     PROFILE(Res.string.profile, Icons.Default.AccountBox, SettingsRoute::class),
 }
 

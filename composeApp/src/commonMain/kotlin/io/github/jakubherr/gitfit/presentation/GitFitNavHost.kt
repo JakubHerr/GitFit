@@ -19,7 +19,8 @@ import io.github.jakubherr.gitfit.presentation.dashboard.DashboardAction
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardScreenRoot
 import io.github.jakubherr.gitfit.presentation.exercise.exerciseNavigation
 import io.github.jakubherr.gitfit.presentation.measurement.MeasurementScreenRoot
-import io.github.jakubherr.gitfit.presentation.planning.PlanningScreenRoot
+import io.github.jakubherr.gitfit.presentation.planning.PlanningViewModel
+import io.github.jakubherr.gitfit.presentation.planning.planningGraph
 import io.github.jakubherr.gitfit.presentation.settings.SettingsScreenRoot
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutScreenRoot
 import org.koin.compose.viewmodel.koinViewModel
@@ -35,6 +36,8 @@ fun GitFitNavHost(
 
     val authViewModel: AuthViewModel = koinViewModel()
     val auth by authViewModel.state.collectAsStateWithLifecycle()
+
+    val planViewModel: PlanningViewModel = koinViewModel()
 
     LaunchedEffect(auth) { println("DBG: auth state is $auth") }
 
@@ -74,11 +77,8 @@ fun GitFitNavHost(
                 )
             }
 
-            exerciseNavigation(navController)
-
-            composable<PlanningRoute> {
-                PlanningScreenRoot()
-            }
+            exerciseNavigation(navController, planViewModel) // TODO: evaluate if this is a good idea
+            planningGraph(navController, planViewModel)
 
             composable<MeasurementRoute> {
                 MeasurementScreenRoot()
@@ -102,7 +102,7 @@ private fun NavHostController.navigateToTopLevelDestination(destination: TopLeve
             TopLevelDestination.DASHBOARD -> DashboardRoute
             TopLevelDestination.TRENDS -> TrendsRoute
             TopLevelDestination.MEASUREMENT -> MeasurementRoute
-            TopLevelDestination.PLAN -> PlanningRoute
+            TopLevelDestination.PLAN -> PlanOverviewRoute
             TopLevelDestination.PROFILE -> SettingsRoute
         }
     navigate(route) {

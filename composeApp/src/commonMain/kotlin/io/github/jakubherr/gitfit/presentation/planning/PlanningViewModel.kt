@@ -26,11 +26,11 @@ class PlanningViewModel(
 
     fun onAction(action: PlanAction) {
         when (action) {
-            is PlanAction.SavePlan -> TODO()
+            is PlanAction.SavePlan -> savePlan()
             is PlanAction.AddWorkout -> addWorkout(action.workout)
             is PlanAction.RenamePlan -> renamePlan(action.name)
             is PlanAction.SaveWorkout -> saveWorkout(action.workout)
-            is PlanAction.AddExercise -> addBlock(action.workout, action.exercise)
+            is PlanAction.AddExercise -> addExercise(action.workoutIdx, action.exercise)
             is PlanAction.RemoveExercise -> removeBlock(action.workout, action.block)
             is PlanAction.AddSet -> addSet(action.workout, action.block)
         }
@@ -41,7 +41,14 @@ class PlanningViewModel(
     }
 
     private fun savePlan() {
+        val user = authRepository.currentUser
+        if (!user.loggedIn) return
 
+        // TODO: validate entire plan before saving
+
+        viewModelScope.launch {
+            planRepository.saveCustomPlan(user.id, plan)
+        }
     }
 
     private fun addWorkout(workout: WorkoutPlan) {
@@ -66,7 +73,8 @@ class PlanningViewModel(
         }
     }
 
-    private fun addBlock(workout: WorkoutPlan, exercise: Exercise) {
+    private fun addExercise(workoutIdx: Int, exercise: Exercise) {
+        val workout = plan.workouts[workoutIdx]
         val updated = workout.copy(blocks = workout.blocks + Block("", workout.blocks.size, exercise))
         updateWorkout(updated)
     }
@@ -103,7 +111,7 @@ sealed interface PlanAction {
     class RenamePlan(val name: String) : PlanAction
     class AddWorkout(val workout: WorkoutPlan) : PlanAction
     class SaveWorkout(val workout: WorkoutPlan) : PlanAction
-    class AddExercise(val workout: WorkoutPlan, val exercise: Exercise) : PlanAction
+    class AddExercise(val workoutIdx: Int, val exercise: Exercise) : PlanAction
     class RemoveExercise(val workout: WorkoutPlan, val block: Block) : PlanAction
     class AddSet(val workout: WorkoutPlan, val block: Block) : PlanAction
 }
