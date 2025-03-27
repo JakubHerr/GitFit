@@ -1,5 +1,6 @@
 package io.github.jakubherr.gitfit.presentation
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,9 +43,12 @@ fun GitFitNavHost(
 
     LaunchedEffect(auth) { println("DBG: auth state is $auth") }
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
     GitFitScaffold(
         showDestinations = showNavigation,
         currentDestination = topLevelDestination,
+        snackbarHostState = snackbarHostState,
         onDestinationClicked = {
             navController.navigateToTopLevelDestination(it)
         },
@@ -78,8 +82,8 @@ fun GitFitNavHost(
                 )
             }
 
-            exerciseNavigation(navController) // TODO: evaluate if this is a good idea
-            planningGraph(navController, planViewModel)
+            exerciseNavigation(navController)
+            planningGraph(navController, planViewModel, snackbarHostState)
 
             composable<MeasurementRoute> {
                 MeasurementScreenRoot()

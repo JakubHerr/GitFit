@@ -26,16 +26,18 @@ import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 fun PlanCreationScreen(
     plan: Plan,
     modifier: Modifier = Modifier,
-    onFinished: () -> Unit = {},
+    onSave: () -> Unit = {},
+    onDiscard: () -> Unit = {},
     onWorkoutSelected: (Int) -> Unit = {},
     onAction: (PlanAction) -> Unit = {},
 ) {
-    var planName by rememberSaveable { mutableStateOf("") }
-
     Column(modifier.fillMaxSize()) {
         Text("Creating a new plan")
         Text("Plan name")
-        TextField(value = planName, onValueChange = { planName = it })
+        TextField(
+            value = plan.name,
+            onValueChange = { onAction(PlanAction.RenamePlan(it)) }
+        )
 
         Spacer(Modifier.width(16.dp))
 
@@ -66,15 +68,15 @@ fun PlanCreationScreen(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Button({
-                onAction(PlanAction.SavePlan(planName))
-                onFinished() // TODO navigate only if plan saving was sucessfull
+                onAction(PlanAction.SavePlan)
+                onSave()
             }) {
                 Text("Save plan")
             }
 
             Button({
                 onAction(PlanAction.DiscardPlan)
-                onFinished()
+                onDiscard()
             }) {
                 Text("Discard plan")
             }

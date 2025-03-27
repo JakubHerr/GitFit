@@ -1,5 +1,7 @@
 package io.github.jakubherr.gitfit.presentation.planning
 
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -12,11 +14,22 @@ import io.github.jakubherr.gitfit.presentation.PlanDetailRoute
 import io.github.jakubherr.gitfit.presentation.PlanOverviewRoute
 import io.github.jakubherr.gitfit.presentation.PlanningWorkoutRoute
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseListScreenRoot
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.planningGraph(
     navController: NavHostController,
     viewModel: PlanningViewModel,
+    snackbarHostState: SnackbarHostState,
 ) {
+    fun handleError(error: PlanError?, scope: CoroutineScope) {
+        if (error == null) navController.popBackStack()
+        else scope.launch {
+            snackbarHostState.showSnackbar(error.message)
+            viewModel.onAction(PlanAction.ErrorHandled)
+        }
+    }
+
     composable<PlanOverviewRoute> {
         PlanOverviewScreenRoot(
             vm = viewModel,
@@ -52,25 +65,30 @@ fun NavGraphBuilder.planningGraph(
     }
 
     composable<PlanCreationRoute> {
+        val scope = rememberCoroutineScope()
+
         PlanCreationScreen(
             viewModel.plan,
             onAction = { viewModel.onAction(it) },
             onWorkoutSelected = { workoutIdx ->
                 navController.navigate(PlanningWorkoutRoute(workoutIdx))
             },
-            onFinished = { navController.popBackStack() }
+            onSave = { handleError(viewModel.error, scope) },
+            onDiscard = { navController.popBackStack() }
         )
     }
 
     composable<PlanningWorkoutRoute> { backstackEntry ->
         val idx = backstackEntry.toRoute<PlanningWorkoutRoute>().workoutIdx
+        val scope = rememberCoroutineScope()
 
         PlanWorkoutDetailScreen(
             workout = viewModel.plan.workouts[idx],
             onAction = { viewModel.onAction(it) },
             onAddExerciseClick = { workoutIdx ->
                 navController.navigate(AddExerciseToPlanRoute(workoutIdx))
-            }
+            },
+            onSave = { handleError(viewModel.error, scope) }
         )
     }
 }

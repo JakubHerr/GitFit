@@ -17,11 +17,13 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,6 +45,7 @@ fun PlanWorkoutDetailScreen(
     modifier: Modifier = Modifier,
     onAction: (PlanAction) -> Unit = {},
     onAddExerciseClick: (Int) -> Unit = {},
+    onSave: () -> Unit = {},
 ) {
     LazyColumn {
         items(workout.blocks) { block ->
@@ -57,7 +60,10 @@ fun PlanWorkoutDetailScreen(
             Button(onClick = { onAddExerciseClick(workout.idx) }) { Text("Add exercise") }
         }
         item {
-            Button({ onAction(PlanAction.SaveWorkout(workout)) }) { Text("Save workout") }
+            Button({
+                onAction(PlanAction.SaveWorkout(workout))
+                onSave()
+            }) { Text("Save workout") }
         }
     }
 }

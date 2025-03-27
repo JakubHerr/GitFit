@@ -21,6 +21,7 @@ class PlanningViewModel(
     private val authRepository: AuthRepository,
 ): ViewModel() {
     var plan: Plan by mutableStateOf(Plan.Empty)
+    var error: PlanError? by mutableStateOf(null)
 
     val userWorkouts get()  =
         if (authRepository.currentUser.loggedIn) planRepository.getCustomWorkouts(authRepository.currentUser.id)
@@ -34,7 +35,8 @@ class PlanningViewModel(
 
     fun onAction(action: PlanAction) {
         when (action) {
-            is PlanAction.SavePlan -> savePlan(action.name)
+            is PlanAction.SavePlan -> savePlan()
+            is PlanAction.RenamePlan -> plan = plan.copy(name = action.name)
             is PlanAction.DiscardPlan -> discardPlan()
             is PlanAction.DeletePlan -> TODO() // delete a completed plan
 
@@ -48,18 +50,21 @@ class PlanningViewModel(
             is PlanAction.AddSet -> addSet(action.workout, action.block)
             is PlanAction.EditSet -> updateSet(action.workout, action.block, action.set)
             is PlanAction.RemoveSet -> removeSet(action.workout, action.block, action.set)
+
+            PlanAction.ErrorHandled -> error = null
+
         }
     }
 
-    private fun savePlan(name: String) {
+    private fun savePlan() {
         val user = authRepository.currentUser
         if (!user.loggedIn) return
 
-        // TODO: validate entire plan before saving
-        // validate name is not blank
+        error = validatePlan(plan)
+        if (error != null) return
 
         viewModelScope.launch {
-            planRepository.saveCustomPlan(user.id, plan.copy(name = name))
+            planRepository.saveCustomPlan(user.id, plan)
         }
     }
 
@@ -87,17 +92,7 @@ class PlanningViewModel(
     }
 
     private fun saveWorkout(workout: WorkoutPlan) {
-        val user = authRepository.currentUser
-        if (!user.loggedIn) return
-
-        // TODO validate all fields in workout before saving
-        //  all exercises have at least one set
-        //  all sets have a valid weight and rep value
-
-        println("DBG: Saving workout plan...")
-        viewModelScope.launch {
-            planRepository.saveCustomWorkout(user.id, workout)
-        }
+        error = validateWorkout(workout)
     }
 
     private fun addExercise(workoutIdx: Int, exercise: Exercise) {
@@ -135,10 +130,29 @@ class PlanningViewModel(
         newSeries[set.idx] = set
         updateBlock(workout, block.copy(series = newSeries))
     }
+
+    private fun validateWorkout(workout: WorkoutPlan): PlanError? = when {
+        workout.blocks.isEmpty() -> PlanError.NoExerciseInWorkout
+        workout.blocks.any { block -> block.series.isEmpty() } -> PlanError.NoSetInExercise
+        workout.blocks.any { block -> block.series.any { series -> series.weight == null || series.repetitions == null } } -> PlanError.EmptySetInExercise
+        else -> null
+    }
+
+    private fun validatePlan(plan: Plan): PlanError? {
+        val workoutError = plan.workouts.find { validateWorkout(it) is PlanError }
+
+        return when {
+            plan.name.isBlank() -> PlanError.InvalidPlanName
+            plan.workouts.isEmpty() -> PlanError.NoWorkoutInPlan
+            workoutError != null -> validateWorkout(workoutError)
+            else -> null
+        }
+    }
 }
 
 sealed interface PlanAction {
-    class SavePlan(val name: String) : PlanAction
+    object SavePlan : PlanAction
+    class RenamePlan(val name: String) : PlanAction
     object DiscardPlan : PlanAction
     class DeletePlan : PlanAction
 
@@ -152,4 +166,14 @@ sealed interface PlanAction {
     class AddSet(val workout: WorkoutPlan, val block: Block) : PlanAction
     class EditSet(val workout: WorkoutPlan, val block: Block, val set: Series) : PlanAction
     class RemoveSet(val workout: WorkoutPlan, val block: Block, val set: Series) : PlanAction
+
+    object ErrorHandled : PlanAction
+}
+
+sealed class PlanError(val message: String) {
+    object InvalidPlanName: PlanError("Plan name can not be blank")
+    object NoWorkoutInPlan: PlanError("Plan has no workout days")
+    object NoExerciseInWorkout: PlanError("Workout has no exercises")
+    object NoSetInExercise: PlanError("Some exercise has no sets")
+    object EmptySetInExercise: PlanError("Some set has invalid values")
 }
