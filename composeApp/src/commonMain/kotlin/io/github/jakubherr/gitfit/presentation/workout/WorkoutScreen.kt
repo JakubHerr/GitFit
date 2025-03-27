@@ -87,8 +87,8 @@ fun WorkoutScreen(
                             block,
                             onAction = onAction,
                             onAddSetClicked = {
-                                val set = Series(block.series.size.toString(), 0,null, null, false) // TODO solve indexing!
-                                onAction(WorkoutAction.AddSet(workout.id, block.id, set))
+                                val set = Series(block.series.size, null, null, false)
+                                onAction(WorkoutAction.AddSet(workout.id, block.idx, set))
                             },
                         )
                     }
@@ -125,7 +125,7 @@ fun BlockItem(
                     CheckableSetInput(idx + 1, set) { weight, reps ->
                         onAction(
                             WorkoutAction.ModifySeries(
-                                blockId = block.id,
+                                blockIdx = block.idx,
                                 set =
                                     set.copy(
                                         weight = weight.toLong(),

@@ -44,7 +44,6 @@ enum class ProgressionTrigger {
 
 @Serializable
 data class Block(
-    val id: String,
     val idx: Int,
     val exercise: Exercise,
     val series: List<Series> = emptyList(),
@@ -54,7 +53,6 @@ data class Block(
 // this should be named Set but is named series because of name conflict with Set collection
 @Serializable
 data class Series(
-    val id: String,
     val idx: Int,
     val repetitions: Long?,
     // TODO weight should be double!!
@@ -64,7 +62,6 @@ data class Series(
 
 val mockSeries =
     Series(
-        id = "mock",
         0,
         repetitions = 3,
         weight = 40,
@@ -73,7 +70,6 @@ val mockSeries =
 
 val mockBlock =
     Block(
-        id = "mock",
         idx = 0,
         exercise = mockExercise,
         series = listOf(mockSeries),

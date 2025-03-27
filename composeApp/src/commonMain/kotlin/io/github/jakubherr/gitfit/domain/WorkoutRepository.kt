@@ -23,30 +23,30 @@ interface WorkoutRepository {
 
     suspend fun removeBlock(
         workoutId: String,
-        blockId: String,
+        blockIdx: Int,
     )
 
     suspend fun setBlockTimer(
         workoutId: String,
-        blockId: String,
+        blockIdx: Int,
         seconds: Long?,
     )
 
     suspend fun addSeries(
         workoutId: String,
-        blockId: String,
+        blockIdx: Int,
         set: Series,
     )
 
     suspend fun modifySeries(
         workoutId: String,
-        blockId: String,
+        blockIdx: Int,
         set: Series,
     )
 
     suspend fun removeSeries(
         workoutId: String,
-        blockId: String,
+        blockIdx: Int,
         set: Series,
     )
 

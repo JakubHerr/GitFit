@@ -96,7 +96,7 @@ class PlanningViewModel(
 
     private fun addExercise(workoutIdx: Int, exercise: Exercise) {
         val workout = plan.workouts[workoutIdx]
-        val updated = workout.copy(blocks = workout.blocks + Block("", workout.blocks.size, exercise))
+        val updated = workout.copy(blocks = workout.blocks + Block(workout.blocks.size, exercise))
         updateWorkout(updated)
     }
 
@@ -116,7 +116,7 @@ class PlanningViewModel(
     }
 
     private fun addSet(workout: WorkoutPlan, block: Block) {
-        val newBlock = block.copy(series = block.series + Series("", block.series.size, null, null, false))
+        val newBlock = block.copy(series = block.series + Series(block.series.size, null, null, false))
         updateBlock(workout, newBlock)
     }
 
