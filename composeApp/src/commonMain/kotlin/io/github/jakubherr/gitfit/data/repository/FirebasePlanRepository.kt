@@ -36,6 +36,14 @@ class FirebasePlanRepository: PlanRepository {
         }
     }
 
+    override suspend fun getCustomWorkout(userId: String, planId: String, workoutIdx: Int): WorkoutPlan {
+        return withContext(context) {
+            val plan = userPlanRef(userId).document(planId).get().data<Plan>()
+            val workout = plan.workouts.find { it.idx == workoutIdx }
+            return@withContext workout!! // TODO error checking
+        }
+    }
+
     override suspend fun saveCustomWorkout(userId: String, workoutPlan: WorkoutPlan) {
         withContext(context) {
             val id = userWorkoutPlanRef(userId).document.id

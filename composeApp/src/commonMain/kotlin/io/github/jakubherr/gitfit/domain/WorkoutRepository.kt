@@ -10,7 +10,7 @@ interface WorkoutRepository {
 
     suspend fun startNewWorkout()
 
-    suspend fun startPlannedWorkout(workoutId: String)
+    suspend fun startWorkoutFromPlan(planId: String, workoutIdx: Int)
 
     suspend fun completeWorkout(workoutId: String)
 

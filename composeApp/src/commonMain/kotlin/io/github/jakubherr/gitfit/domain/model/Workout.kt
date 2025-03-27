@@ -6,12 +6,13 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import kotlinx.serialization.Serializable
 
+@Serializable
 data class Workout(
     val id: String,
     val userId: String,
     val name: String = "",
     val blocks: List<Block>,
-    val date: LocalDate,
+    val date: LocalDate = Clock.System.todayIn(TimeZone.currentSystemDefault()),
     val completed: Boolean = false,
     val inProgress: Boolean = false,
 )

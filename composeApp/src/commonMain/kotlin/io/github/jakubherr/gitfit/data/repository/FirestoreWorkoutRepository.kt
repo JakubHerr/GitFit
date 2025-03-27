@@ -1,9 +1,10 @@
 package io.github.jakubherr.gitfit.data.repository
 
 import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.FieldValue
 import dev.gitlive.firebase.firestore.firestore
+import io.github.jakubherr.gitfit.domain.AuthRepository
+import io.github.jakubherr.gitfit.domain.PlanRepository
 import io.github.jakubherr.gitfit.domain.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Exercise
@@ -45,9 +46,11 @@ private data class WorkoutDTO(
 
 // TODO handle uncached data, null value when something is not found
 //  maybe store unfinished workouts locally and only upload them on completion
-class FirestoreWorkoutRepository : WorkoutRepository {
+class FirestoreWorkoutRepository(
+    private val authRepository: AuthRepository,
+    private val planRepository: PlanRepository
+) : WorkoutRepository {
     private val firestore = Firebase.firestore
-    private val auth = Firebase.auth
     private val dispatcher = Dispatchers.IO
     private val workoutRef = firestore.collection("WORKOUTS")
 
@@ -69,7 +72,7 @@ class FirestoreWorkoutRepository : WorkoutRepository {
 
     override suspend fun startNewWorkout() {
         withContext(dispatcher) {
-            val userId = auth.currentUser?.uid ?: return@withContext // TODO notify of failure
+            val userId = authRepository.currentUser.id.ifBlank { return@withContext } // TODO notify of failure
 
             val id = workoutRef.document.id
             println("DBG: starting new workout with id $id")
@@ -86,10 +89,24 @@ class FirestoreWorkoutRepository : WorkoutRepository {
         }
     }
 
-    override suspend fun startPlannedWorkout(workoutId: String) {
-        println("DBG: starting planned workout $workoutId")
+    override suspend fun startWorkoutFromPlan(planId: String, workoutIdx: Int) {
+        val uid = authRepository.currentUser.id.ifBlank { return }
+        println("DBG: starting planned workout with index $workoutIdx from plan $planId")
+
+        val plan = planRepository.getCustomWorkout(uid, planId, workoutIdx)
+
         withContext(dispatcher) {
-            workoutRef.document(workoutId).update("inProgress" to true)
+            val id = workoutRef.document.id
+
+            val workout = Workout(
+                id = id,
+                userId = uid,
+                blocks = plan.blocks,
+                completed = false,
+                inProgress = true,
+            )
+
+            workoutRef.document(id).set(workout)
         }
     }
 
@@ -185,7 +202,7 @@ class FirestoreWorkoutRepository : WorkoutRepository {
     }
 
     override fun getCompletedWorkouts(): Flow<List<Workout>> {
-        val uid = auth.currentUser?.uid ?: return emptyFlow()
+        val uid = authRepository.currentUser.id.ifBlank { return emptyFlow() }
 
         return workoutRef
             .where {
@@ -200,7 +217,7 @@ class FirestoreWorkoutRepository : WorkoutRepository {
     }
 
     override fun getPlannedWorkouts(): Flow<List<Workout>> {
-        val uid = auth.currentUser?.uid ?: return emptyFlow()
+        val uid = authRepository.currentUser.id.ifBlank { return emptyFlow() }
 
         return workoutRef
             .where {
@@ -223,7 +240,7 @@ class FirestoreWorkoutRepository : WorkoutRepository {
             }
 
     private fun observeCurrentWorkout(): Flow<WorkoutDTO?> {
-        val uid = auth.currentUser?.uid ?: return emptyFlow()
+        val uid = authRepository.currentUser.id.ifBlank { return emptyFlow() }
 
         return workoutRef
             .where {

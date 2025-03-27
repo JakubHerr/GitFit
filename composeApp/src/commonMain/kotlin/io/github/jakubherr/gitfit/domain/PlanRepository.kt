@@ -11,6 +11,8 @@ interface PlanRepository {
 
     suspend fun saveCustomPlan(userId: String, plan: Plan)
 
+    suspend fun getCustomWorkout(userId: String, planId: String, workoutIdx: Int): WorkoutPlan
+
     suspend fun saveCustomWorkout(userId: String, workoutPlan: WorkoutPlan)
 
     fun getCustomWorkouts(userId: String): Flow<List<WorkoutPlan>>

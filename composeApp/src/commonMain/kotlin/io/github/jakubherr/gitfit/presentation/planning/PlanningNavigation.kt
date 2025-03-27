@@ -13,9 +13,13 @@ import io.github.jakubherr.gitfit.presentation.PlanCreationRoute
 import io.github.jakubherr.gitfit.presentation.PlanDetailRoute
 import io.github.jakubherr.gitfit.presentation.PlanOverviewRoute
 import io.github.jakubherr.gitfit.presentation.PlanningWorkoutRoute
+import io.github.jakubherr.gitfit.presentation.WorkoutInProgressRoute
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseListScreenRoot
+import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
+import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
 fun NavGraphBuilder.planningGraph(
     navController: NavHostController,
@@ -45,13 +49,17 @@ fun NavGraphBuilder.planningGraph(
         // TODO differentiate user and predefined plan
         val userPlan = userPlans.value.find { it.id == planId }
 
+        val workoutViewModel: WorkoutViewModel = koinViewModel()
+
         userPlan?.let { plan ->
             PlanDetailScreen(
                 plan,
-                onWorkoutSelected = {
-                /* TODO navigation event that will start a new workout from plan */
-                    // should handle edge case where user already has a workout in progress
-                    println("DBG: Plan selected")
+                onWorkoutSelected = { workout ->
+                    // TODO should handle edge case where user already has a workout in progress
+                    println("DBG: Plan selected: ${plan.id}, workout index ${workout.idx}")
+                    workoutViewModel.onAction(WorkoutAction.StartPlannedWorkout(plan.id, workout.idx))
+                    navController.navigate(WorkoutInProgressRoute)
+
                 }
             )
         }
