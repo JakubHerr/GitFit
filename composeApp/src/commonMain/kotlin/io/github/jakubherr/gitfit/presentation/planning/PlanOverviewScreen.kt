@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -18,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
@@ -39,11 +42,16 @@ fun PlanOverviewScreenRoot(
 
     Column(modifier.fillMaxSize()) {
 
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier.padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             item { Text("Your plans") }
             items(userPlans) { plan ->
-                PlanListItem(plan) {
-                    // TODO ask to start selected workout and execute choice
+                PlanListItem(
+                    plan,
+                    modifier = Modifier.padding(16.dp)
+                ) {
                     onPlanSelected(plan)
                 }
             }
@@ -73,7 +81,7 @@ fun PlanListItem(
     // TODO card for a complete plan
     // name of plan
     Card(onPlanClicked) {
-        Column(Modifier.fillMaxWidth()) {
+        Column(modifier.fillMaxWidth()) {
             Text(plan.name)
             plan.workouts.forEach { workout ->
                 Text(workout.name, fontWeight = FontWeight.SemiBold)
@@ -102,7 +110,8 @@ fun PlanDetailScreen(
             items(plan.workouts) { workout ->
                 WorkoutListItem(
                     workout,
-                    onClick = { }
+                    onActionClicked = { onWorkoutSelected(workout) },
+                    actionSlot = { Icon(Icons.Default.PlayArrow, "") }
                 )
             }
         }
@@ -118,18 +127,23 @@ fun PlanDetailScreen(
 fun WorkoutListItem(
     workout: WorkoutPlan,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {},
-    onDeleteClicked: () -> Unit = {},
+    onItemClicked: () -> Unit = {},
+    actionSlot: @Composable () -> Unit = { Icon(Icons.Default.Delete, "") },
+    onActionClicked: () -> Unit = {},
 ) {
-    Card(onClick) {
+    Card(
+        onItemClicked,
+        modifier.padding(16.dp)
+    ) {
         Column {
             Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(workout.name)
-                IconButton(onDeleteClicked) {
-                    Icon(Icons.Default.Delete, "")
+
+                IconButton(onActionClicked) {
+                    actionSlot()
                 }
             }
 

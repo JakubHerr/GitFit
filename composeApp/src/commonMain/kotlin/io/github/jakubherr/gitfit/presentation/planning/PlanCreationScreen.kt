@@ -13,10 +13,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.jakubherr.gitfit.domain.model.Plan
@@ -26,10 +22,8 @@ import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 fun PlanCreationScreen(
     plan: Plan,
     modifier: Modifier = Modifier,
-    onSave: () -> Unit = {},
-    onDiscard: () -> Unit = {},
-    onWorkoutSelected: (Int) -> Unit = {},
     onAction: (PlanAction) -> Unit = {},
+    onWorkoutSelected: (Int) -> Unit = {},
 ) {
     Column(modifier.fillMaxSize()) {
         Text("Creating a new plan")
@@ -46,8 +40,8 @@ fun PlanCreationScreen(
             items(plan.workouts) { workout ->
                 WorkoutListItem(
                     workout,
-                    onClick = { onWorkoutSelected(workout.idx) },
-                    onDeleteClicked = { onAction(PlanAction.DeleteWorkout(workout))}
+                    onItemClicked = { onWorkoutSelected(workout.idx) },
+                    onActionClicked = { onAction(PlanAction.DeleteWorkout(workout))}
                 )
             }
         }
@@ -67,19 +61,9 @@ fun PlanCreationScreen(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Button({
-                onAction(PlanAction.SavePlan)
-                onSave()
-            }) {
-                Text("Save plan")
-            }
+            Button({ onAction(PlanAction.SavePlan) }) { Text("Save plan") }
 
-            Button({
-                onAction(PlanAction.DiscardPlan)
-                onDiscard()
-            }) {
-                Text("Discard plan")
-            }
+            Button({ onAction(PlanAction.DiscardPlan) }) { Text("Discard plan") }
         }
     }
 }

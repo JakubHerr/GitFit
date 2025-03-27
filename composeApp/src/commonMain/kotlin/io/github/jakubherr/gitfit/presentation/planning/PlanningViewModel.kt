@@ -52,7 +52,6 @@ class PlanningViewModel(
             is PlanAction.RemoveSet -> removeSet(action.workout, action.block, action.set)
 
             PlanAction.ErrorHandled -> error = null
-
         }
     }
 

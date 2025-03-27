@@ -47,7 +47,12 @@ fun NavGraphBuilder.planningGraph(
 
         userPlan?.let { plan ->
             PlanDetailScreen(
-                plan
+                plan,
+                onWorkoutSelected = {
+                /* TODO navigation event that will start a new workout from plan */
+                    // should handle edge case where user already has a workout in progress
+                    println("DBG: Plan selected")
+                }
             )
         }
     }
@@ -69,12 +74,17 @@ fun NavGraphBuilder.planningGraph(
 
         PlanCreationScreen(
             viewModel.plan,
-            onAction = { viewModel.onAction(it) },
+            onAction = { action ->
+                viewModel.onAction(action)
+                when (action) {
+                    PlanAction.DiscardPlan -> navController.popBackStack()
+                    PlanAction.SavePlan -> handleError(viewModel.error, scope)
+                    else -> {}
+                }
+           },
             onWorkoutSelected = { workoutIdx ->
                 navController.navigate(PlanningWorkoutRoute(workoutIdx))
             },
-            onSave = { handleError(viewModel.error, scope) },
-            onDiscard = { navController.popBackStack() }
         )
     }
 
