@@ -61,6 +61,7 @@ class PlanningViewModel(
 
         viewModelScope.launch {
             planRepository.saveCustomPlan(user.id, plan)
+            plan = Plan.Empty
         }
     }
 
