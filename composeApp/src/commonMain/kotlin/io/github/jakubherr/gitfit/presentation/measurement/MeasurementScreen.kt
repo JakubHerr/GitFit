@@ -89,8 +89,6 @@ fun MeasurementScreenRoot(
 
             val measurement =
                 Measurement(
-                    id = "",
-                    userId = "",
                     date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
                     measurements[0].value(),
                     measurements[1].value(),

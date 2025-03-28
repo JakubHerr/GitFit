@@ -28,13 +28,13 @@ class WorkoutViewModel(
     fun onAction(action: WorkoutAction) {
         when (action) {
             is WorkoutAction.StartNewWorkout -> startNewWorkout()
-            is WorkoutAction.StartPlannedWorkout -> startPlannedWorkout(action.workoutId)
+            is WorkoutAction.StartPlannedWorkout -> startPlannedWorkout(action.planId, action.workoutIdx)
             is WorkoutAction.CompleteWorkout -> completeWorkout(action.workoutId)
             is WorkoutAction.DeleteWorkout -> deleteWorkout(action.workoutId)
             is WorkoutAction.AskForExercise -> { }
             is WorkoutAction.AddBlock -> addBlock(action.workoutId, action.exerciseId)
-            is WorkoutAction.AddSet -> addSet(action.workoutId, action.blockId, action.set)
-            is WorkoutAction.ModifySeries -> modifySeries(action.blockId, action.set)
+            is WorkoutAction.AddSet -> addSet(action.workoutId, action.blockIdx, action.set)
+            is WorkoutAction.ModifySeries -> modifySeries(action.blockIdx, action.set)
         }
     }
 
@@ -46,10 +46,10 @@ class WorkoutViewModel(
         }
     }
 
-    private fun startPlannedWorkout(workoutId: String) {
+    private fun startPlannedWorkout(planId: String, workoutIdx: Int) {
         if (currentWorkout.value == null) {
             viewModelScope.launch {
-                workoutRepository.startPlannedWorkout(workoutId)
+                workoutRepository.startWorkoutFromPlan(planId, workoutIdx)
             }
         }
     }
@@ -71,31 +71,31 @@ class WorkoutViewModel(
 
     private fun addSet(
         workoutId: String,
-        blockId: String,
+        blockIdx: Int,
         set: Series,
     ) {
-        viewModelScope.launch { workoutRepository.addSeries(workoutId, blockId, set) }
+        viewModelScope.launch { workoutRepository.addSeries(workoutId, blockIdx, set) }
     }
 
     private fun modifySeries(
-        blockId: String,
+        blockIdx: Int,
         set: Series,
     ) {
         val workoutId = currentWorkout.value?.id ?: return // TODO error handling
-        viewModelScope.launch { workoutRepository.modifySeries(workoutId, blockId, set) }
+        viewModelScope.launch { workoutRepository.modifySeries(workoutId, blockIdx, set) }
     }
 }
 
 sealed interface WorkoutAction {
     object StartNewWorkout : WorkoutAction
 
-    class StartPlannedWorkout(val workoutId: String) : WorkoutAction
+    class StartPlannedWorkout(val planId: String, val workoutIdx: Int) : WorkoutAction
 
     class AddBlock(val workoutId: String, val exerciseId: String) : WorkoutAction
 
-    class AddSet(val workoutId: String, val blockId: String, val set: Series) : WorkoutAction
+    class AddSet(val workoutId: String, val blockIdx: Int, val set: Series) : WorkoutAction
 
-    class ModifySeries(val blockId: String, val set: Series) : WorkoutAction
+    class ModifySeries(val blockIdx: Int, val set: Series) : WorkoutAction
 
     class CompleteWorkout(val workoutId: String) : WorkoutAction
 

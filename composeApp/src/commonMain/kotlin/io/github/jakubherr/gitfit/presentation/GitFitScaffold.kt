@@ -7,6 +7,9 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.SettingsAccessibility
 import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -33,7 +36,7 @@ enum class TopLevelDestination(
     DASHBOARD(Res.string.dashboard, Icons.Default.Home, DashboardRoute::class),
     TRENDS(Res.string.trends, Icons.Default.Timeline, TrendsRoute::class),
     MEASUREMENT(Res.string.measurement, Icons.Default.SettingsAccessibility, MeasurementRoute::class),
-    PLAN(Res.string.plan, Icons.Default.EditCalendar, PlanningRoute::class),
+    PLAN(Res.string.plan, Icons.Default.EditCalendar, PlanOverviewRoute::class),
     PROFILE(Res.string.profile, Icons.Default.AccountBox, SettingsRoute::class),
 }
 
@@ -43,6 +46,7 @@ fun GitFitScaffold(
     showDestinations: Boolean = true,
     currentDestination: TopLevelDestination?,
     onDestinationClicked: (TopLevelDestination) -> Unit = {},
+    snackbarHostState: SnackbarHostState = SnackbarHostState(),
     content: @Composable () -> Unit,
 ) {
     val layoutType =
@@ -73,9 +77,15 @@ fun GitFitScaffold(
             },
             layoutType = layoutType,
             modifier = modifier,
-            content = content,
+            content = {
+                Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) {
+                    content()
+                }
+            },
         )
     } else {
-        content()
+        Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) {
+            content()
+        }
     }
 }

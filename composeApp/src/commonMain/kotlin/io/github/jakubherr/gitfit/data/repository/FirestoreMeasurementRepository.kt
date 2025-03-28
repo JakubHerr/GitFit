@@ -1,31 +1,27 @@
 package io.github.jakubherr.gitfit.data.repository
 
 import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
 import io.github.jakubherr.gitfit.domain.MeasurementRepository
 import io.github.jakubherr.gitfit.domain.model.Measurement
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 class FirestoreMeasurementRepository : MeasurementRepository {
-    private val auth = Firebase.auth
-    private val measurementsRef = Firebase.firestore.collection("MEASUREMENTS")
+    private fun measurementsRef(userId: String) = Firebase.firestore.collection("USERS").document(userId).collection("MEASUREMENTS")
+    private val today get() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
 
     override suspend fun getAllMeasurements(userId: String): List<Measurement> {
-        val uid = auth.currentUser?.uid ?: return emptyList()
-
-        return measurementsRef.where {
-            "userId" equalTo uid
-        }.get().documents.map { it.data<Measurement>() }
+        return measurementsRef(userId).get().documents.map { it.data<Measurement>() }
     }
 
-    override suspend fun addMeasurement(measurement: Measurement) {
-        val uid = auth.currentUser?.uid ?: return
-        val id = measurementsRef.document.id
-        measurementsRef.document(id).set(measurement.copy(id = id, userId = uid))
+    override suspend fun addMeasurement(userId: String, measurement: Measurement) {
+        measurementsRef(userId).document(today).set(measurement)
     }
 
-    override suspend fun deleteMeasurement(measurementId: String) {
-        measurementsRef.document(measurementId).delete()
+    override suspend fun deleteMeasurement(userId: String, measurementId: String) {
+        measurementsRef(userId).document(measurementId).delete()
     }
 
     override suspend fun deleteAll(userId: String) {

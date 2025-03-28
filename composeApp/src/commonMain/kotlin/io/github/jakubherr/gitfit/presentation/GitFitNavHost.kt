@@ -1,5 +1,6 @@
 package io.github.jakubherr.gitfit.presentation
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,6 +20,8 @@ import io.github.jakubherr.gitfit.presentation.dashboard.DashboardAction
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardScreenRoot
 import io.github.jakubherr.gitfit.presentation.exercise.exerciseNavigation
 import io.github.jakubherr.gitfit.presentation.measurement.MeasurementScreenRoot
+import io.github.jakubherr.gitfit.presentation.planning.PlanningViewModel
+import io.github.jakubherr.gitfit.presentation.planning.planningGraph
 import io.github.jakubherr.gitfit.presentation.settings.SettingsScreenRoot
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutScreenRoot
 import org.koin.compose.viewmodel.koinViewModel
@@ -35,11 +38,17 @@ fun GitFitNavHost(
     val authViewModel: AuthViewModel = koinViewModel()
     val auth by authViewModel.state.collectAsStateWithLifecycle()
 
+    // this prevents data loss of in-memory plan
+    val planViewModel: PlanningViewModel = koinViewModel()
+
     LaunchedEffect(auth) { println("DBG: auth state is $auth") }
+
+    val snackbarHostState = remember { SnackbarHostState() }
 
     GitFitScaffold(
         showDestinations = showNavigation,
         currentDestination = topLevelDestination,
+        snackbarHostState = snackbarHostState,
         onDestinationClicked = {
             navController.navigateToTopLevelDestination(it)
         },
@@ -74,10 +83,7 @@ fun GitFitNavHost(
             }
 
             exerciseNavigation(navController)
-
-            composable<PlanningRoute> {
-                // TODO
-            }
+            planningGraph(navController, planViewModel, snackbarHostState)
 
             composable<MeasurementRoute> {
                 MeasurementScreenRoot()
@@ -101,7 +107,7 @@ private fun NavHostController.navigateToTopLevelDestination(destination: TopLeve
             TopLevelDestination.DASHBOARD -> DashboardRoute
             TopLevelDestination.TRENDS -> TrendsRoute
             TopLevelDestination.MEASUREMENT -> MeasurementRoute
-            TopLevelDestination.PLAN -> PlanningRoute
+            TopLevelDestination.PLAN -> PlanOverviewRoute
             TopLevelDestination.PROFILE -> SettingsRoute
         }
     navigate(route) {

@@ -4,13 +4,12 @@ import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
 import kotlinx.coroutines.flow.Flow
 
-// TODO pagination
 interface WorkoutRepository {
     fun observeCurrentWorkoutOrNull(): Flow<Workout?>
 
     suspend fun startNewWorkout()
 
-    suspend fun startPlannedWorkout(workoutId: String)
+    suspend fun startWorkoutFromPlan(planId: String, workoutIdx: Int)
 
     suspend fun completeWorkout(workoutId: String)
 
@@ -23,30 +22,30 @@ interface WorkoutRepository {
 
     suspend fun removeBlock(
         workoutId: String,
-        blockId: String,
+        blockIdx: Int,
     )
 
     suspend fun setBlockTimer(
         workoutId: String,
-        blockId: String,
+        blockIdx: Int,
         seconds: Long?,
     )
 
     suspend fun addSeries(
         workoutId: String,
-        blockId: String,
+        blockIdx: Int,
         set: Series,
     )
 
     suspend fun modifySeries(
         workoutId: String,
-        blockId: String,
+        blockIdx: Int,
         set: Series,
     )
 
     suspend fun removeSeries(
         workoutId: String,
-        blockId: String,
+        blockIdx: Int,
         set: Series,
     )
 

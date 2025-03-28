@@ -1,14 +1,19 @@
 package io.github.jakubherr.gitfit.domain
 
 import io.github.jakubherr.gitfit.domain.model.Plan
+import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
+import kotlinx.coroutines.flow.Flow
 
 interface PlanRepository {
-    suspend fun getPredefinedPlans()
+    fun getPredefinedPlans(): Flow<List<Plan>>
 
-    suspend fun createCustomPlan(plan: Plan)
+    fun getCustomPlans(userId: String): Flow<List<Plan>>
 
-    // modify existing plan?
-    suspend fun deleteCustomPlan(planId: String)
+    suspend fun saveCustomPlan(userId: String, plan: Plan)
 
-    suspend fun deleteAllCustomPlans(userId: String)
+    suspend fun deleteCustomPlan(userId: String, planId: String)
+
+    suspend fun deleteCustomPlans(userId: String)
+
+    suspend fun getCustomWorkout(userId: String, planId: String, workoutIdx: Int): WorkoutPlan
 }

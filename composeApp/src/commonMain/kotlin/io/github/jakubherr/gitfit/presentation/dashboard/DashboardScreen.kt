@@ -44,7 +44,7 @@ fun DashboardScreenRoot(
     ) { action ->
         when (action) {
             is DashboardAction.UnplannedWorkoutClick -> vm.onAction(WorkoutAction.StartNewWorkout)
-            is DashboardAction.PlannedWorkoutClick -> vm.onAction(WorkoutAction.StartPlannedWorkout(action.workoutId))
+            // is DashboardAction.PlannedWorkoutClick -> vm.onAction(WorkoutAction.StartPlannedWorkout(action.workoutId))
             else -> {}
         }
         onAction(action)

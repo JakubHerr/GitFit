@@ -1,5 +1,6 @@
 package io.github.jakubherr.gitfit.presentation
 
+import io.github.jakubherr.gitfit.domain.model.Plan
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -30,6 +31,9 @@ object ExerciseListRoute
 class AddExerciseToWorkoutRoute(val workoutId: String)
 
 @Serializable
+class AddExerciseToPlanRoute(val workoutIdx: Int)
+
+@Serializable
 data class ExerciseDetailRoute(val id: String)
 
 @Serializable
@@ -39,7 +43,16 @@ object CreateExerciseRoute
 object MeasurementRoute
 
 @Serializable
-object PlanningRoute
+object PlanOverviewRoute
+
+@Serializable
+class PlanDetailRoute(val planId: String)
+
+@Serializable
+object PlanCreationRoute
+
+@Serializable
+class PlanningWorkoutRoute(val workoutIdx: Int)
 
 @Serializable
 object TrendsRoute

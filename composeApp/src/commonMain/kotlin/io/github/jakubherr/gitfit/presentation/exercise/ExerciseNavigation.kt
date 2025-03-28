@@ -12,16 +12,20 @@ import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
-fun NavGraphBuilder.exerciseNavigation(navController: NavHostController) {
+fun NavGraphBuilder.exerciseNavigation(
+    navController: NavHostController,
+) {
     composable<ExerciseListRoute> {
         ExerciseListScreenRoot(
             onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
             onExerciseClick = { /* TODO navigate to exercise detail */ },
         )
     }
+
     composable<AddExerciseToWorkoutRoute> { backStackEntry ->
         val route: AddExerciseToWorkoutRoute = backStackEntry.toRoute()
         val workoutViewModel: WorkoutViewModel = koinViewModel()
+
         ExerciseListScreenRoot(
             onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
             onExerciseClick = { exercise ->
@@ -30,6 +34,7 @@ fun NavGraphBuilder.exerciseNavigation(navController: NavHostController) {
             },
         )
     }
+
     composable<ExerciseDetailRoute> {
         // TODO
     }
