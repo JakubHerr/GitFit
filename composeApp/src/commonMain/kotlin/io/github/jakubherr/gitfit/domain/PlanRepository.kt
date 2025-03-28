@@ -11,11 +11,9 @@ interface PlanRepository {
 
     suspend fun saveCustomPlan(userId: String, plan: Plan)
 
-    suspend fun getCustomWorkout(userId: String, planId: String, workoutIdx: Int): WorkoutPlan
-
-    // TODO edit existing plan
-
     suspend fun deleteCustomPlan(userId: String, planId: String)
 
     suspend fun deleteCustomPlans(userId: String)
+
+    suspend fun getCustomWorkout(userId: String, planId: String, workoutIdx: Int): WorkoutPlan
 }
