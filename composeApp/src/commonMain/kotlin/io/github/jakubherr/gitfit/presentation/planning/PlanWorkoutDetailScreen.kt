@@ -53,7 +53,8 @@ fun PlanWorkoutDetailScreen(
                 block,
                 onAddSetClicked = { onAction(PlanAction.AddSet(workout, block)) },
                 onValidSetEntered = { onAction(PlanAction.EditSet(workout, block, it)) },
-                onDeleteSet =  { onAction(PlanAction.RemoveSet(workout, block, it))}
+                onDeleteSet =  { onAction(PlanAction.RemoveSet(workout, block, it)) },
+                onDeleteExercise = { onAction(PlanAction.RemoveExercise(workout, block)) },
             )
         }
         item {
@@ -75,13 +76,14 @@ fun PlanBlockItem(
     onAddSetClicked: () -> Unit = {},
     onValidSetEntered: (Series) -> Unit = {},
     onDeleteSet: (Series) -> Unit = {},
+    onDeleteExercise: (Block) -> Unit = {},
 ) {
     Card(Modifier.fillMaxWidth().padding(16.dp)) {
         Column(Modifier.padding(8.dp)) {
             Row {
                 Text(block.exercise.name, style = MaterialTheme.typography.titleLarge)
-                IconButton({}) {
-                    Icon(Icons.Default.MoreVert, "")
+                IconButton({ onDeleteExercise(block) }) {
+                    Icon(Icons.Default.Delete, "")
                 }
             }
             Spacer(Modifier.height(16.dp))
