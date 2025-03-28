@@ -19,6 +19,7 @@ import io.github.jakubherr.gitfit.presentation.auth.authGraph
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardAction
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardScreenRoot
 import io.github.jakubherr.gitfit.presentation.exercise.exerciseNavigation
+import io.github.jakubherr.gitfit.presentation.graph.GraphScreenRoot
 import io.github.jakubherr.gitfit.presentation.measurement.MeasurementScreenRoot
 import io.github.jakubherr.gitfit.presentation.planning.PlanningViewModel
 import io.github.jakubherr.gitfit.presentation.planning.planningGraph
@@ -90,7 +91,7 @@ fun GitFitNavHost(
             }
 
             composable<TrendsRoute> {
-                // TODO
+                GraphScreenRoot()
             }
 
             composable<SettingsRoute> {

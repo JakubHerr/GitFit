@@ -22,6 +22,7 @@ gitlive = "2.1.0"
 firebase = "33.2.0"
 gms = "4.4.2"
 crashlytics-plugin = "3.0.2"
+koalaplot = "0.8.0" # https://github.com/KoalaPlot/koalaplot-core https://koalaplot.github.io/docs/
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -43,6 +44,8 @@ material3-adaptive = { group = "org.jetbrains.compose.material3.adaptive", name 
 material3-adaptive-layout = { group = "org.jetbrains.compose.material3.adaptive", name = "adaptive-layout", version.ref = "material3-adaptive" }
 material3-adaptive-navigation = { group = "org.jetbrains.compose.material3.adaptive", name = "adaptive-navigation", version.ref = "material3-adaptive" }
 material3-windowSizeClass = { group = "org.jetbrains.compose.material3", name = "material3-window-size-class", version.ref = "compose-multiplatform" }
+
+koalaplot = { group = "io.github.koalaplot", name = "koalaplot-core", version.ref = "koalaplot" }
 
 firebase = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase" }
 gitlive-firebase-firestore = { group = "dev.gitlive", name = "firebase-firestore", version.ref = "gitlive" }
