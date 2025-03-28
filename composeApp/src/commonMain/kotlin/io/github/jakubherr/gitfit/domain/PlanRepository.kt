@@ -13,11 +13,8 @@ interface PlanRepository {
 
     suspend fun getCustomWorkout(userId: String, planId: String, workoutIdx: Int): WorkoutPlan
 
-    suspend fun saveCustomWorkout(userId: String, workoutPlan: WorkoutPlan)
+    // TODO edit existing plan
 
-    fun getCustomWorkouts(userId: String): Flow<List<WorkoutPlan>>
-
-    // modify existing plan?
     suspend fun deleteCustomPlan(userId: String, planId: String)
 
     suspend fun deleteCustomPlans(userId: String)

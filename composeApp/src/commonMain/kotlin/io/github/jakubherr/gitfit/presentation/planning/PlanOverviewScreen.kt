@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -34,11 +33,8 @@ fun PlanOverviewScreenRoot(
     onCreateNewPlan: () -> Unit = {},
     onPlanSelected: (Plan) -> Unit = {},
 ) {
-    val userWorkouts by vm.userWorkouts.collectAsStateWithLifecycle(emptyList())
     val userPlans by vm.userPlans.collectAsStateWithLifecycle(emptyList())
     val predefinedPlans by vm.predefinedPlans.collectAsStateWithLifecycle(emptyList())
-
-    println("DBG: number of user workout plans: ${userWorkouts.size}")
 
     Column(modifier.fillMaxSize()) {
 
@@ -93,34 +89,6 @@ fun PlanListItem(
     // list of workout days it contains?
     // for each workout day list name and exercises? (limited to fit card)
 
-}
-
-@Composable
-fun PlanDetailScreen(
-    plan: Plan,
-    modifier: Modifier = Modifier,
-    onWorkoutSelected: (WorkoutPlan) -> Unit = {},
-    onPlanSelected: () -> Unit = {}, // TODO User can add a predefined plan to his plans, where he can edit it etc.
-) {
-    // TODO: Detail that is shown when a plan is selected from a list
-    Column(modifier.fillMaxSize()) {
-        Text(plan.name.ifBlank { "Unnamed plan" } )
-
-        LazyColumn {
-            items(plan.workouts) { workout ->
-                WorkoutListItem(
-                    workout,
-                    onActionClicked = { onWorkoutSelected(workout) },
-                    actionSlot = { Icon(Icons.Default.PlayArrow, "") }
-                )
-            }
-        }
-    }
-
-    //  should show a name, some metadata and a list of workouts that are part of the plan
-    //  user should have the ability to start tracking a workout selected by clicking
-    //  user should be able to edit the plan
-    // nice to have: user has the ability to schedule a workout for a certain date
 }
 
 @Composable

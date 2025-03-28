@@ -12,10 +12,9 @@ import kotlinx.coroutines.withContext
 
 class FirebasePlanRepository: PlanRepository {
     private val firestore = Firebase.firestore
+    private val context = Dispatchers.IO
     private val planRef = firestore.collection("PLANS")
     private fun userPlanRef(userId: String) = firestore.collection("USERS").document(userId).collection("PLANS")
-    private fun userWorkoutPlanRef(userId: String) = firestore.collection("USERS").document(userId).collection("WORKOUT_PLANS")
-    private val context = Dispatchers.IO
 
     override fun getPredefinedPlans(): Flow<List<Plan>> {
         return planRef.snapshots.map { snapshot ->
@@ -29,9 +28,10 @@ class FirebasePlanRepository: PlanRepository {
         }
     }
 
+    // if a plan is already associated with an id, it will get overwritten
     override suspend fun saveCustomPlan(userId: String, plan: Plan) {
         withContext(context) {
-            val id = userPlanRef(userId).document.id
+            val id = plan.id.ifBlank { userPlanRef(userId).document.id }
             userPlanRef(userId).document(id).set(plan.copy(id = id))
         }
     }
@@ -44,21 +44,10 @@ class FirebasePlanRepository: PlanRepository {
         }
     }
 
-    override suspend fun saveCustomWorkout(userId: String, workoutPlan: WorkoutPlan) {
-        withContext(context) {
-            val id = userWorkoutPlanRef(userId).document.id
-            userWorkoutPlanRef(userId).document(id).set(workoutPlan.copy())
-        }
-    }
-
-    override fun getCustomWorkouts(userId: String): Flow<List<WorkoutPlan>> {
-        return userWorkoutPlanRef(userId).snapshots.map { snapshot ->
-            snapshot.documents.map { it.data<WorkoutPlan>() }
-        }
-    }
-
     override suspend fun deleteCustomPlan(userId: String, planId: String) {
-        TODO("Not yet implemented")
+        withContext(context) {
+            userPlanRef(userId).document(planId).delete()
+        }
     }
 
     override suspend fun deleteCustomPlans(userId: String) {

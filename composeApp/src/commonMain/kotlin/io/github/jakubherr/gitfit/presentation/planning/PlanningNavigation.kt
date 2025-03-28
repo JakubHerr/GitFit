@@ -60,6 +60,11 @@ fun NavGraphBuilder.planningGraph(
                     workoutViewModel.onAction(WorkoutAction.StartPlannedWorkout(plan.id, workout.idx))
                     navController.navigate(WorkoutInProgressRoute)
 
+                },
+                onAction = { action ->
+                    viewModel.onAction(action)
+                    if (action is PlanAction.DeletePlan) navController.popBackStack()
+                    if (action is PlanAction.EditPlan) navController.navigate(PlanCreationRoute)
                 }
             )
         }

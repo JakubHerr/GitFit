@@ -23,10 +23,6 @@ class PlanningViewModel(
     var plan: Plan by mutableStateOf(Plan.Empty)
     var error: PlanError? by mutableStateOf(null)
 
-    val userWorkouts get()  =
-        if (authRepository.currentUser.loggedIn) planRepository.getCustomWorkouts(authRepository.currentUser.id)
-        else emptyFlow()
-
     val userPlans get() =
         if (authRepository.currentUser.loggedIn) planRepository.getCustomPlans(authRepository.currentUser.id)
         else emptyFlow()
@@ -37,8 +33,9 @@ class PlanningViewModel(
         when (action) {
             is PlanAction.SavePlan -> savePlan()
             is PlanAction.RenamePlan -> plan = plan.copy(name = action.name)
+            is PlanAction.EditPlan -> plan = action.plan
             is PlanAction.DiscardPlan -> discardPlan()
-            is PlanAction.DeletePlan -> TODO() // delete a completed plan
+            is PlanAction.DeletePlan -> deletePlan(action.planId)
 
             is PlanAction.AddWorkout -> addWorkout(action.workout)
             is PlanAction.SaveWorkout -> saveWorkout(action.workout)
@@ -71,8 +68,11 @@ class PlanningViewModel(
         plan = Plan.Empty
     }
 
-    private fun deletePlan() {
-        TODO()
+    private fun deletePlan(planId: String) {
+        val user = authRepository.currentUser
+        if (!user.loggedIn) return
+
+        viewModelScope.launch { planRepository.deleteCustomPlan(user.id, planId) }
     }
 
     private fun addWorkout(workout: WorkoutPlan) {
@@ -152,8 +152,9 @@ class PlanningViewModel(
 sealed interface PlanAction {
     object SavePlan : PlanAction
     class RenamePlan(val name: String) : PlanAction
+    class EditPlan(val plan: Plan) : PlanAction
     object DiscardPlan : PlanAction
-    class DeletePlan : PlanAction
+    class DeletePlan(val planId: String) : PlanAction
 
     class AddWorkout(val workout: WorkoutPlan) : PlanAction
     class SaveWorkout(val workout: WorkoutPlan) : PlanAction
