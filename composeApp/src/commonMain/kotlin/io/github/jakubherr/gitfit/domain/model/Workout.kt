@@ -55,8 +55,7 @@ data class Block(
 data class Series(
     val idx: Int,
     val repetitions: Long?,
-    // TODO weight should be double!!
-    val weight: Long?,
+    val weight: Double?,
     val completed: Boolean,
 )
 
@@ -64,7 +63,7 @@ val mockSeries =
     Series(
         0,
         repetitions = 3,
-        weight = 40,
+        weight = 40.0,
         completed = false,
     )
 

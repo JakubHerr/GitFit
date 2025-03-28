@@ -41,6 +41,7 @@ import gitfit.composeapp.generated.resources.kg
 import gitfit.composeapp.generated.resources.reps
 import gitfit.composeapp.generated.resources.save_workout
 import gitfit.composeapp.generated.resources.set
+import io.github.jakubherr.gitfit.domain.isPositiveDouble
 import io.github.jakubherr.gitfit.domain.isPositiveLong
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Series
@@ -128,7 +129,7 @@ fun BlockItem(
                                 blockIdx = block.idx,
                                 set =
                                     set.copy(
-                                        weight = weight.toLong(),
+                                        weight = weight.toDouble(),
                                         repetitions = reps.toLong(),
                                         completed = !set.completed,
                                     ),
@@ -173,13 +174,22 @@ fun CheckableSetInput(
     ) {
         Text(index.toString())
 
-        NumberInputField(weight, onValueChange = { weight = it })
+        NumberInputField(
+            weight,
+            onValueChange = { newWeight ->
+                // limits the number of decimal points to 2
+                val decimals = newWeight.substringAfter(".", "")
+                if (decimals.length < 3) {
+                    weight = newWeight
+                }
+            }
+        )
         NumberInputField(reps, onValueChange = { reps = it })
 
         Checkbox(
             set.completed,
             onCheckedChange = {
-                if (weight.isPositiveLong() && reps.isPositiveLong()) {
+                if (weight.isPositiveDouble() && reps.isPositiveLong()) {
                     onToggle(weight, reps)
                 } else {
                     println("DBG: either weight: $weight or reps $reps is not a valid Long") // TODO show error in ui

@@ -4,7 +4,6 @@ import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
 import kotlinx.coroutines.flow.Flow
 
-// TODO pagination
 interface WorkoutRepository {
     fun observeCurrentWorkoutOrNull(): Flow<Workout?>
 

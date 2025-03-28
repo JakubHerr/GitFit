@@ -125,10 +125,16 @@ fun PlanSetInput(
         NumberInputField(
             weight,
             isError = !weight.isPositiveDouble(),
-            onValueChange = {
-                weight = it
-                if (weight.isPositiveDouble() && reps.isPositiveLong()) {
-                    onValidSetEntered(set.copy(weight = weight.toLong(), repetitions = reps.toLong()))
+            onValueChange = { newWeight ->
+                // limits the number of decimal points to 2
+                val decimals = newWeight.substringAfter(".", "")
+
+                if (decimals.length <= 2) {
+                    weight = newWeight
+
+                    if (weight.isPositiveDouble() && reps.isPositiveLong()) {
+                        onValidSetEntered(set.copy(weight = weight.toDouble(), repetitions = reps.toLong()))
+                    }
                 }
             }
         )
@@ -138,7 +144,7 @@ fun PlanSetInput(
             onValueChange = {
                 reps = it
                 if (weight.isPositiveDouble() && reps.isPositiveLong()) {
-                    onValidSetEntered(set.copy(weight = weight.toLong(), repetitions = reps.toLong()))
+                    onValidSetEntered(set.copy(weight = weight.toDouble(), repetitions = reps.toLong()))
                 }
             }
         )
