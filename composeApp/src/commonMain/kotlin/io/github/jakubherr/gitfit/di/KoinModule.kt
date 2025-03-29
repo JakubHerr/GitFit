@@ -12,6 +12,7 @@ import io.github.jakubherr.gitfit.domain.PlanRepository
 import io.github.jakubherr.gitfit.domain.WorkoutRepository
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseViewModel
+import io.github.jakubherr.gitfit.presentation.graph.GraphViewModel
 import io.github.jakubherr.gitfit.presentation.measurement.MeasurementViewModel
 import io.github.jakubherr.gitfit.presentation.planning.PlanningViewModel
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
@@ -45,6 +46,7 @@ private val viewmodelModule =
         viewModelOf(::ExerciseViewModel)
         viewModelOf(::MeasurementViewModel)
         viewModelOf(::PlanningViewModel)
+        viewModelOf(::GraphViewModel)
     }
 
 private val sharedModules = listOf(viewmodelModule, repositoryModule, apiModule)
