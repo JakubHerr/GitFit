@@ -6,7 +6,6 @@ import io.github.jakubherr.gitfit.domain.MeasurementRepository
 import io.github.jakubherr.gitfit.domain.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.MuscleGroup
-import io.github.jakubherr.gitfit.domain.model.Workout
 import kotlinx.coroutines.launch
 
 class GraphViewModel(
@@ -30,28 +29,13 @@ class GraphViewModel(
                 println("DBG: collected ${workouts.size} workouts")
 
                 workouts.forEach { workout ->
-                    getExerciseHeaviestWeight(workout, debugExercise)
+                    workout.getExerciseHeaviestWeight(debugExercise.id)
+                    workout.getExerciseBestSetVolume(debugExercise.id)
+                    workout.getExerciseTotalWorkoutVolume(debugExercise.id)
+                    workout.getExerciseTotalRepetitions(debugExercise.id)
                 }
             }
         }
-    }
-
-    private fun getExerciseHeaviestWeight(workout: Workout, exercise: Exercise) {
-        val exerciseSeries = workout.blocks.filter { it.exercise.id == exercise.id }.map { it.series }.flatten()
-        val heaviestSet = exerciseSeries.maxByOrNull { it.weight ?: 0.0 }
-        println("DBG: Workout ${workout.id}, exercise ${exercise.name}, heaviest weight: ${heaviestSet?.weight}")
-    }
-
-    private fun getExerciseBestSetVolume(workout: Workout, exercise: Exercise) {
-        TODO()
-    }
-
-    private fun getExerciseTotalWorkoutVolume(workout: Workout, exercise: Exercise) {
-        TODO()
-    }
-
-    private fun getExerciseTotalRepetitions(workout: Workout, exercise: Exercise) {
-        TODO()
     }
 
     // measurement data

@@ -15,7 +15,45 @@ data class Workout(
     val date: LocalDate = Clock.System.todayIn(TimeZone.currentSystemDefault()),
     val completed: Boolean = false,
     val inProgress: Boolean = false,
-)
+) {
+    // aggregates all completed series of an exercise
+    // if there are no valid series of exercise in workout, return null
+    private fun getExerciseSeries(exerciseId: String): List<Series>? = blocks
+        .filter { it.exercise.id == exerciseId }
+        .flatMap { it.series }
+        .filter { it.completed }
+        .ifEmpty { null }
+
+    fun getExerciseHeaviestWeight(exerciseId: String): Double? {
+        val series = getExerciseSeries(exerciseId) ?: return null
+        val heaviestSet = series.maxByOrNull { if (it.repetitions == 0L) return 0.0 else it.weight ?: 0.0 }
+        println("DBG: Workout $id, exercise ${exerciseId}, heaviest weight: ${heaviestSet?.weight}")
+        return heaviestSet?.weight
+    }
+
+    fun getExerciseBestSetVolume(exerciseId: String): Double? {
+        val series = getExerciseSeries(exerciseId) ?: return null
+        val bestVolume = series.mapNotNull { it.volume }.maxOrNull()
+        println("DBG: Workout $id, exercise ${exerciseId}, best volume: $bestVolume")
+        return bestVolume
+    }
+
+    fun getExerciseTotalWorkoutVolume(exerciseId: String): Double? {
+        val series = getExerciseSeries(exerciseId) ?: return null
+        val totalVolume = series.mapNotNull { it.volume }.sum()
+        println("DBG: Workout $id, exercise ${exerciseId}, total volume: $totalVolume")
+        return totalVolume
+    }
+
+    fun getExerciseTotalRepetitions(exerciseId: String): Long? {
+        val series = getExerciseSeries(exerciseId) ?: return null
+        val reps = series.sumOf { it.repetitions ?: 0 }
+        println("DBG: Workout $id, exercise ${exerciseId}, total reps: $reps")
+        return reps
+    }
+
+    // TODO move workout validation function here
+}
 
 @Serializable
 data class WorkoutPlan(
@@ -57,7 +95,9 @@ data class Series(
     val repetitions: Long?,
     val weight: Double?,
     val completed: Boolean,
-)
+) {
+    val volume = if (weight == null || repetitions == null) null else weight * repetitions
+}
 
 val mockSeries =
     Series(
