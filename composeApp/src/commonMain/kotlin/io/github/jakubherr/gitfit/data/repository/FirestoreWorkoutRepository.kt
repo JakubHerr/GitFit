@@ -49,7 +49,6 @@ class FirestoreWorkoutRepository(
             println("DBG: starting new workout with id $id")
             val workout = Workout(
                 id = id,
-                userId = userId,
                 date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
                 blocks = emptyList(),
                 completed = false,
@@ -71,7 +70,6 @@ class FirestoreWorkoutRepository(
 
             val workout = Workout(
                 id = id,
-                userId = userId,
                 blocks = plan.blocks,
                 completed = false,
                 inProgress = true,

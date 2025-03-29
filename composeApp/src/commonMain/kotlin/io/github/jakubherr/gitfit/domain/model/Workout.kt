@@ -9,8 +9,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Workout(
     val id: String,
-    val userId: String,
-    val name: String = "",
     val blocks: List<Block>,
     val date: LocalDate = Clock.System.todayIn(TimeZone.currentSystemDefault()),
     val completed: Boolean = false,
@@ -52,7 +50,18 @@ data class Workout(
         return reps
     }
 
-    // TODO move workout validation function here
+    val error: Error? get() = when {
+        blocks.isEmpty() -> Error.NoExerciseInWorkout
+        blocks.any { block -> block.series.isEmpty() } -> Error.NoSetInExercise
+        blocks.any { block -> block.series.any { series -> series.weight == null || series.repetitions == null } } -> Error.EmptySetInExercise
+        else -> null
+    }
+
+    sealed class Error(val message: String) {
+        object NoExerciseInWorkout: Error("Workout has no exercises")
+        object NoSetInExercise: Error("Some exercise has no sets")
+        object EmptySetInExercise: Error("Some set has invalid values")
+    }
 }
 
 @Serializable
@@ -60,7 +69,14 @@ data class WorkoutPlan(
     val name: String = "",
     val idx: Int,
     val blocks: List<Block>,
-)
+) {
+    fun toWorkout() = Workout(
+        id = "",
+        blocks = blocks,
+        completed = false,
+        inProgress = false,
+    )
+}
 
 data class ProgressionSettings(
     val incrementWeightByKg: Double,
@@ -118,7 +134,6 @@ val mockBlock =
 val mockWorkout =
     Workout(
         id = "mock",
-        userId = "",
         blocks = listOf(mockBlock, mockBlock),
         date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
     )

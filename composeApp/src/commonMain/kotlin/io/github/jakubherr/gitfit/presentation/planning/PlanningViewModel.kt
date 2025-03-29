@@ -21,7 +21,7 @@ class PlanningViewModel(
     private val authRepository: AuthRepository,
 ): ViewModel() {
     var plan: Plan by mutableStateOf(Plan.Empty)
-    var error: PlanError? by mutableStateOf(null)
+    var error: Plan.Error? by mutableStateOf(null)
 
     val userPlans get() =
         if (authRepository.currentUser.loggedIn) planRepository.getCustomPlans(authRepository.currentUser.id)
@@ -56,7 +56,7 @@ class PlanningViewModel(
         val user = authRepository.currentUser
         if (!user.loggedIn) return
 
-        error = validatePlan(plan)
+        error = plan.error
         if (error != null) return
 
         viewModelScope.launch {
@@ -92,7 +92,8 @@ class PlanningViewModel(
     }
 
     private fun saveWorkout(workout: WorkoutPlan) {
-        error = validateWorkout(workout)
+        val workoutError = workout.toWorkout().error ?: return
+        error = Plan.Error.InvalidWorkout(workoutError)
     }
 
     private fun addExercise(workoutIdx: Int, exercise: Exercise) {
@@ -130,24 +131,6 @@ class PlanningViewModel(
         newSeries[set.idx] = set
         updateBlock(workout, block.copy(series = newSeries))
     }
-
-    private fun validateWorkout(workout: WorkoutPlan): PlanError? = when {
-        workout.blocks.isEmpty() -> PlanError.NoExerciseInWorkout
-        workout.blocks.any { block -> block.series.isEmpty() } -> PlanError.NoSetInExercise
-        workout.blocks.any { block -> block.series.any { series -> series.weight == null || series.repetitions == null } } -> PlanError.EmptySetInExercise
-        else -> null
-    }
-
-    private fun validatePlan(plan: Plan): PlanError? {
-        val workoutError = plan.workouts.find { validateWorkout(it) is PlanError }
-
-        return when {
-            plan.name.isBlank() -> PlanError.InvalidPlanName
-            plan.workouts.isEmpty() -> PlanError.NoWorkoutInPlan
-            workoutError != null -> validateWorkout(workoutError)
-            else -> null
-        }
-    }
 }
 
 sealed interface PlanAction {
@@ -171,10 +154,4 @@ sealed interface PlanAction {
     object ErrorHandled : PlanAction
 }
 
-sealed class PlanError(val message: String) {
-    object InvalidPlanName: PlanError("Plan name can not be blank")
-    object NoWorkoutInPlan: PlanError("Plan has no workout days")
-    object NoExerciseInWorkout: PlanError("Workout has no exercises")
-    object NoSetInExercise: PlanError("Some exercise has no sets")
-    object EmptySetInExercise: PlanError("Some set has invalid values")
-}
+
