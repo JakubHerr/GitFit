@@ -25,28 +25,24 @@ data class Workout(
     fun getExerciseHeaviestWeight(exerciseId: String): Double? {
         val series = getExerciseSeries(exerciseId) ?: return null
         val heaviestSet = series.maxByOrNull { if (it.repetitions == 0L) return 0.0 else it.weight ?: 0.0 }
-        println("DBG: Workout $id, exercise ${exerciseId}, heaviest weight: ${heaviestSet?.weight}")
         return heaviestSet?.weight
     }
 
     fun getExerciseBestSetVolume(exerciseId: String): Double? {
         val series = getExerciseSeries(exerciseId) ?: return null
         val bestVolume = series.mapNotNull { it.volume }.maxOrNull()
-        println("DBG: Workout $id, exercise ${exerciseId}, best volume: $bestVolume")
         return bestVolume
     }
 
     fun getExerciseTotalWorkoutVolume(exerciseId: String): Double? {
         val series = getExerciseSeries(exerciseId) ?: return null
         val totalVolume = series.mapNotNull { it.volume }.sum()
-        println("DBG: Workout $id, exercise ${exerciseId}, total volume: $totalVolume")
         return totalVolume
     }
 
     fun getExerciseTotalRepetitions(exerciseId: String): Long? {
         val series = getExerciseSeries(exerciseId) ?: return null
         val reps = series.sumOf { it.repetitions ?: 0 }
-        println("DBG: Workout $id, exercise ${exerciseId}, total reps: $reps")
         return reps
     }
 

@@ -3,13 +3,10 @@ package io.github.jakubherr.gitfit.domain.model
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
-// it should be possible to track changes over time
-// a measurement needs some unit - at least metric
-// if a measurement already exists for the current day, it should overwrite the old instead of adding a new one
+// for now, all measurements are assumed to be in cm and kg
 @Serializable
 data class Measurement(
     val date: LocalDate,
-    // TODO units
     val neck: Double?,
     val chest: Double?,
     val leftArm: Double?,
