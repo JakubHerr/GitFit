@@ -26,7 +26,14 @@ class FirestoreMeasurementRepository : MeasurementRepository {
         }
     }
 
-    override suspend fun addMeasurement(userId: String, measurement: Measurement) {
+    override fun todayMeasurementFlow(userId: String): Flow<Measurement?> {
+        if (userId.isBlank()) return emptyFlow()
+        return measurementsRef(userId).document(today).snapshots.map {
+            if (it.exists) it.data<Measurement>() else null
+        }
+    }
+
+    override suspend fun saveMeasurement(userId: String, measurement: Measurement) {
         measurementsRef(userId).document(today).set(measurement)
     }
 

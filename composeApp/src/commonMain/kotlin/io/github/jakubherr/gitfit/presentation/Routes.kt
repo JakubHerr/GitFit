@@ -42,6 +42,9 @@ object CreateExerciseRoute
 object MeasurementRoute
 
 @Serializable
+object MeasurementAddEditRoute
+
+@Serializable
 object PlanOverviewRoute
 
 @Serializable

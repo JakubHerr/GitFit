@@ -8,7 +8,9 @@ interface MeasurementRepository {
 
     fun userMeasurementFlow(userId: String) : Flow<List<Measurement>>
 
-    suspend fun addMeasurement(userId: String, measurement: Measurement)
+    fun todayMeasurementFlow(userId: String): Flow<Measurement?>
+
+    suspend fun saveMeasurement(userId: String, measurement: Measurement)
 
     suspend fun deleteMeasurement(userId: String, measurementId: String)
 

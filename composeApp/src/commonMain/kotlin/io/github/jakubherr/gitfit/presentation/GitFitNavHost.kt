@@ -21,7 +21,8 @@ import io.github.jakubherr.gitfit.presentation.dashboard.DashboardAction
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardScreenRoot
 import io.github.jakubherr.gitfit.presentation.exercise.exerciseNavigation
 import io.github.jakubherr.gitfit.presentation.graph.GraphScreenRoot
-import io.github.jakubherr.gitfit.presentation.measurement.MeasurementScreenRoot
+import io.github.jakubherr.gitfit.presentation.measurement.measurementGraph
+import io.github.jakubherr.gitfit.presentation.planning.PlanAction
 import io.github.jakubherr.gitfit.presentation.planning.PlanningViewModel
 import io.github.jakubherr.gitfit.presentation.planning.planningGraph
 import io.github.jakubherr.gitfit.presentation.settings.SettingsScreenRoot
@@ -38,7 +39,7 @@ fun GitFitNavHost(
 ) {
     val destination = navController.currentBackStackEntryAsState().value?.destination
     val topLevelDestination = TopLevelDestination.entries.firstOrNull { destination?.hasRoute(it.route) == true }
-    var showNavigation by remember { mutableStateOf(true) } // TODO hide navigation when user is doing a workout
+    var showNavigation by remember { mutableStateOf(true) }
 
     val authViewModel: AuthViewModel = koinViewModel()
     val auth by authViewModel.state.collectAsStateWithLifecycle()
@@ -46,7 +47,10 @@ fun GitFitNavHost(
     // this prevents data loss of in-memory plan
     val planViewModel: PlanningViewModel = koinViewModel()
 
-    LaunchedEffect(auth) { println("DBG: auth state is $auth") }
+    LaunchedEffect(auth) {
+        println("DBG: auth state is ${auth.user.loggedIn}")
+        planViewModel.onAction(PlanAction.DiscardPlan)
+    }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -104,11 +108,12 @@ fun GitFitNavHost(
             }
 
             exerciseNavigation(navController)
+
+            measurementGraph(navController, snackbarHostState)
+
             planningGraph(navController, planViewModel, snackbarHostState)
 
-            composable<MeasurementRoute> {
-                MeasurementScreenRoot()
-            }
+
 
             composable<TrendsRoute> {
                 GraphScreenRoot() {
