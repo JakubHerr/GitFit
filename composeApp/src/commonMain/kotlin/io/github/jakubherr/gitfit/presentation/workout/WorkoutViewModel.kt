@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.jakubherr.gitfit.domain.WorkoutRepository
+import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
 import kotlinx.coroutines.flow.SharingStarted
@@ -39,7 +40,7 @@ class WorkoutViewModel(
             is WorkoutAction.CompleteCurrentWorkout -> completeCurrentWorkout(action.workoutId)
             is WorkoutAction.DeleteWorkout -> deleteWorkout(action.workoutId)
             is WorkoutAction.AskForExercise -> { }
-            is WorkoutAction.AddBlock -> addBlock(action.workoutId, action.exerciseId)
+            is WorkoutAction.AddBlock -> addBlock(action.workoutId, action.exercise)
             is WorkoutAction.AddSet -> addSet(action.workoutId, action.blockIdx, action.set)
             is WorkoutAction.ModifySeries -> modifySeries(action.blockIdx, action.set)
             is WorkoutAction.ErrorHandled -> error = null
@@ -74,9 +75,9 @@ class WorkoutViewModel(
 
     private fun addBlock(
         workoutId: String,
-        exerciseId: String,
+        exercise: Exercise,
     ) {
-        viewModelScope.launch { workoutRepository.addBlock(workoutId, exerciseId) }
+        viewModelScope.launch { workoutRepository.addBlock(workoutId, exercise) }
     }
 
     private fun addSet(
@@ -101,7 +102,7 @@ sealed interface WorkoutAction {
 
     class StartPlannedWorkout(val planId: String, val workoutIdx: Int) : WorkoutAction
 
-    class AddBlock(val workoutId: String, val exerciseId: String) : WorkoutAction
+    class AddBlock(val workoutId: String, val exercise: Exercise) : WorkoutAction
 
     class AddSet(val workoutId: String, val blockIdx: Int, val set: Series) : WorkoutAction
 

@@ -30,7 +30,7 @@ fun NavGraphBuilder.exerciseNavigation(
         ExerciseListScreenRoot(
             onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
             onExerciseClick = { exercise ->
-                workoutViewModel.onAction(WorkoutAction.AddBlock(route.workoutId, exercise.id))
+                workoutViewModel.onAction(WorkoutAction.AddBlock(route.workoutId, exercise))
                 navController.popBackStack()
             },
         )

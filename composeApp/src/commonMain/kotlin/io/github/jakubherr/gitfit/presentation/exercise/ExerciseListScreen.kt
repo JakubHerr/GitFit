@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -44,10 +45,11 @@ fun ExerciseListScreenRoot(
     onExerciseClick: (Exercise) -> Unit = {},
     onCreateExerciseClick: () -> Unit = {},
 ) {
-    val state = vm.defaultExercises.collectAsStateWithLifecycle(emptyList())
+    val default by vm.defaultExercises.collectAsStateWithLifecycle(emptyList())
+    val custom by vm.customExercises.collectAsStateWithLifecycle(emptyList())
 
     ExerciseListScreen(
-        state = state.value,
+        exerciseList = default + custom,
     ) { action ->
         if (action is ExerciseAction.CreateExerciseSelected) onCreateExerciseClick()
         if (action is ExerciseAction.ExerciseSelected) onExerciseClick(action.exercise)
@@ -56,7 +58,7 @@ fun ExerciseListScreenRoot(
 
 @Composable
 fun ExerciseListScreen(
-    state: List<Exercise>,
+    exerciseList: List<Exercise>,
     modifier: Modifier = Modifier,
     onAction: (ExerciseAction) -> Unit = {},
 ) {
@@ -64,6 +66,7 @@ fun ExerciseListScreen(
         Modifier.fillMaxSize().statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        // TODO implement basic search and filtering based on category
         SearchBar(
             "",
             onQueryChange = {},
@@ -71,7 +74,7 @@ fun ExerciseListScreen(
         )
         Spacer(Modifier.height(32.dp))
 
-        if (state.isEmpty()) {
+        if (exerciseList.isEmpty()) {
             Column(
                 Modifier.fillMaxSize().weight(1f),
                 verticalArrangement = Arrangement.Center,
@@ -85,7 +88,7 @@ fun ExerciseListScreen(
                 Modifier.weight(1f),
                 contentPadding = PaddingValues(16.dp),
             ) {
-                items(state) { exercise ->
+                items(exerciseList) { exercise ->
                     ExerciseListItem(exercise) { onAction(ExerciseAction.ExerciseSelected(exercise)) }
                     HorizontalDivider(Modifier.height(1.dp))
                 }

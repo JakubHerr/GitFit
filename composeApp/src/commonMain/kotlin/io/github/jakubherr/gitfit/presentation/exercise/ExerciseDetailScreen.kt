@@ -35,8 +35,6 @@ fun ExerciseDetailScreenRoot(
     val exercise = exerciseViewModel.lastFetchedExercise
 
     if (exercise != null) {
-
-
         ExerciseDetailScreen(
             exercise = exercise,
             graphData = data,

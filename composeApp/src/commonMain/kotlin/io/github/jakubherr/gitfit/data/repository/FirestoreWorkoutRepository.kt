@@ -101,15 +101,11 @@ class FirestoreWorkoutRepository(
 
     override suspend fun addBlock(
         workoutId: String,
-        exerciseId: String,
+        exercise: Exercise,
     ) {
         val userId = authRepository.currentUser.id.ifBlank { return }
 
         withContext(dispatcher) {
-            // TODO this implementation assumes the workout only uses predefined exercises, FIX
-            //  maybe just send workout and exercise as objects?
-            val exercise = firestore.collection("EXERCISES").document(exerciseId).get().data<Exercise>()
-
             val workout = getWorkout(userId, workoutId)
 
             val block = Block(

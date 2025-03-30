@@ -15,6 +15,7 @@ class ExerciseViewModel(
     private val authRepository: FirebaseAuthRepository,
 ) : ViewModel() {
     val defaultExercises = exerciseRepository.getDefaultExercises()
+    val customExercises = exerciseRepository.getCustomExercises(authRepository.currentUser.id)
 
     // TODO add loading/error/result state
     var lastFetchedExercise by mutableStateOf<Exercise?>(null)

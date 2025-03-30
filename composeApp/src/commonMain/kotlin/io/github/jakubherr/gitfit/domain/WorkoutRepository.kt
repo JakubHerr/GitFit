@@ -1,5 +1,6 @@
 package io.github.jakubherr.gitfit.domain
 
+import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +20,7 @@ interface WorkoutRepository {
 
     suspend fun addBlock(
         workoutId: String,
-        exerciseId: String,
+        exercise: Exercise,
     )
 
     suspend fun removeBlock(
