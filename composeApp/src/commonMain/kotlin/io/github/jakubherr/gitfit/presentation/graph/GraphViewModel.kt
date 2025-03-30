@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.jakubherr.gitfit.domain.AuthRepository
 import io.github.jakubherr.gitfit.domain.MeasurementRepository
 import io.github.jakubherr.gitfit.domain.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.model.Workout
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 class GraphViewModel(
     private val workoutRepository: WorkoutRepository,
     private val measurementRepository: MeasurementRepository,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
     var selectedMetric by mutableStateOf(ExerciseMetric.HEAVIEST_WEIGHT)
         private set
@@ -29,6 +31,8 @@ class GraphViewModel(
         initialValue = emptyList(),
         started = SharingStarted.WhileSubscribed(5_000L),
     )
+
+    val allUserMeasurements = measurementRepository.userMeasurementFlow(authRepository.currentUser.id)
 
     private val _dataPoints: MutableStateFlow<List<DefaultPoint<String, Int>>> = MutableStateFlow(emptyList())
     val dataPoints: StateFlow<List<DefaultPoint<String, Int>>> = _dataPoints
@@ -83,4 +87,5 @@ class GraphViewModel(
 
 sealed interface GraphAction {
     class ExerciseMetricSelected(val exerciseId: String, val metric: ExerciseMetric) : GraphAction
+    // class MeasurementMetricSelected(val userId: String) : GraphAction // TODO measurement type selection
 }

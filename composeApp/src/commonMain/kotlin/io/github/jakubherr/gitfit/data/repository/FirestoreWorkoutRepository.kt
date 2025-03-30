@@ -19,7 +19,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 
 // TODO handle uncached data, null value when something is not found
-//  maybe store unfinished workouts locally and only upload them on completion
 class FirestoreWorkoutRepository(
     private val authRepository: AuthRepository,
     private val planRepository: PlanRepository
@@ -76,6 +75,15 @@ class FirestoreWorkoutRepository(
             )
 
             workoutRef(userId).document(id).set(workout)
+        }
+    }
+
+    override suspend fun getWorkout(workoutId: String): Workout? {
+        val userId = authRepository.currentUser.id.ifBlank { return null }
+
+        return withContext(dispatcher) {
+            val workout = workoutRef(userId).document(workoutId).get()
+            if (workout.exists) workout.data<Workout>() else null
         }
     }
 

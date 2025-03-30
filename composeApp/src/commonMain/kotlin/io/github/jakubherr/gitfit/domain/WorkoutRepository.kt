@@ -11,6 +11,8 @@ interface WorkoutRepository {
 
     suspend fun startWorkoutFromPlan(planId: String, workoutIdx: Int)
 
+    suspend fun getWorkout(workoutId: String): Workout?
+
     suspend fun completeWorkout(workoutId: String)
 
     suspend fun deleteWorkout(workoutId: String)

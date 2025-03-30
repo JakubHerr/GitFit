@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -24,7 +25,10 @@ import io.github.jakubherr.gitfit.presentation.measurement.MeasurementScreenRoot
 import io.github.jakubherr.gitfit.presentation.planning.PlanningViewModel
 import io.github.jakubherr.gitfit.presentation.planning.planningGraph
 import io.github.jakubherr.gitfit.presentation.settings.SettingsScreenRoot
+import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutScreenRoot
+import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -75,11 +79,27 @@ fun GitFitNavHost(
             }
 
             composable<WorkoutInProgressRoute> {
+                val scope = rememberCoroutineScope()
+                val workoutVm: WorkoutViewModel = koinViewModel()
+
                 WorkoutScreenRoot(
-                    onAddExerciseClick = { workoutId ->
-                        navController.navigate(AddExerciseToWorkoutRoute(workoutId))
+                    onAction = { action ->
+                        if (action !is WorkoutAction.CompleteCurrentWorkout) workoutVm.onAction(action)
+
+                        when (action) {
+                            is WorkoutAction.AskForExercise -> navController.navigate(AddExerciseToWorkoutRoute(action.workoutId))
+                            is WorkoutAction.DeleteWorkout -> navController.popBackStack()
+                            is WorkoutAction.CompleteCurrentWorkout -> {
+                                val error = workoutVm.currentWorkout.value?.error
+                                if (error == null) {
+                                    workoutVm.onAction(action)
+                                    navController.popBackStack()
+                                }
+                                else scope.launch { snackbarHostState.showSnackbar(error.message) }
+                            }
+                            else -> { }
+                        }
                     },
-                    onWorkoutFinished = { navController.popBackStack() },
                 )
             }
 
