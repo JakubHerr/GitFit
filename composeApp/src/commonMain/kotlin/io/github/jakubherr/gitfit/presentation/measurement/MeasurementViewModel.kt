@@ -19,6 +19,8 @@ class MeasurementViewModel(
         started = SharingStarted.WhileSubscribed(5_000L),
     )
 
+    val allUserMeasurements = measurementRepository.userMeasurementFlow(authRepository.currentUser.id)
+
     fun onAction(action: MeasurementAction) {
         when (action) {
             is MeasurementAction.SaveMeasurement -> saveMeasurement(action.measurement)

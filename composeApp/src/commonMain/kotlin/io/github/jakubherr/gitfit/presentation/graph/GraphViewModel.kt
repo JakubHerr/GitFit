@@ -32,8 +32,6 @@ class GraphViewModel(
         started = SharingStarted.WhileSubscribed(5_000L),
     )
 
-    val allUserMeasurements = measurementRepository.userMeasurementFlow(authRepository.currentUser.id)
-
     private val _dataPoints: MutableStateFlow<List<DefaultPoint<String, Int>>> = MutableStateFlow(emptyList())
     val dataPoints: StateFlow<List<DefaultPoint<String, Int>>> = _dataPoints
 

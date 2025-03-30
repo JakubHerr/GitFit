@@ -4,14 +4,20 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,6 +47,7 @@ import gitfit.composeapp.generated.resources.waist
 import gitfit.composeapp.generated.resources.weight
 import io.github.jakubherr.gitfit.domain.isPositiveDouble
 import io.github.jakubherr.gitfit.domain.model.Measurement
+import io.github.jakubherr.gitfit.presentation.graph.MeasurementLineGraph
 import io.github.jakubherr.gitfit.presentation.workout.NumberInputField
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -86,12 +93,66 @@ fun MeasurementScreenRoot(
     onRequestAddEditMeasurement: () -> Unit = {},
 ) {
     val todaysMeasurement by vm.todayMeasurement.collectAsStateWithLifecycle(null)
+    val measurements by vm.allUserMeasurements.collectAsStateWithLifecycle(emptyList())
+    var selectedMeasurementType by remember { mutableStateOf(MeasurementType.CHEST) }
 
-    // TODO graphs with current values
-    Button(onRequestAddEditMeasurement) {
-        val text = if (todaysMeasurement == null) "Add today's measurement" else "Edit today's measurement"
-        Text(text)
+    Column(
+        modifier.fillMaxSize()
+    ) {
+
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text("Latest measurements")
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(stringResource(selectedMeasurementType.label))
+                IconButton({ }) {
+                    // TODO show dropdown menu to select different measurement type
+                    Icon(Icons.Default.KeyboardArrowDown, "")
+                }
+            }
+        }
+
+
+
+        MeasurementLineGraph(
+            measurements,
+            selectedMeasurementType,
+            modifier = Modifier.fillMaxHeight(0.5f)
+        )
+
+        Row(
+            modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text("Latest measurements")
+            Text("See all") // TODO
+        }
+        LazyColumn(
+            modifier.weight(1.0f)
+        ) {
+            items(measurements) { measurement ->
+                Text(measurement.date.toString())
+            }
+        }
+
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Button(onRequestAddEditMeasurement) {
+                val text = if (todaysMeasurement == null) "Add today's measurement" else "Edit today's measurement"
+                Text(text)
+            }
+        }
     }
+
+
 }
 
 @Composable
