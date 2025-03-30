@@ -46,6 +46,17 @@ class FirestoreExerciseRepository : ExerciseRepository {
         }
     }
 
-    // consider what to do with all existing workouts that already use this exercise
-    // fun deleteCustomExercise()
+    override suspend fun getExerciseById(exerciseId: String): Exercise? {
+        return withContext(context) {
+            val result = exerciseRef.document(exerciseId).get()
+            if (result.exists) result.data<Exercise>() else null
+        }
+    }
+
+    override suspend fun getCustomExerciseById(userId: String, exerciseId: String): Exercise? {
+        return withContext(context) {
+            val result = userExerciseRef(userId).document(exerciseId).get()
+            if (result.exists) result.data<Exercise>() else null
+        }
+    }
 }

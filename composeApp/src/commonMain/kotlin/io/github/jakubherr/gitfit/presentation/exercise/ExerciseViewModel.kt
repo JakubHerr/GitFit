@@ -1,5 +1,8 @@
 package io.github.jakubherr.gitfit.presentation.exercise
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.jakubherr.gitfit.data.repository.FirebaseAuthRepository
@@ -11,11 +14,16 @@ class ExerciseViewModel(
     private val exerciseRepository: ExerciseRepository,
     private val authRepository: FirebaseAuthRepository,
 ) : ViewModel() {
-    val flow = exerciseRepository.getDefaultExercises()
+    val defaultExercises = exerciseRepository.getDefaultExercises()
+
+    // TODO add loading/error/result state
+    var lastFetchedExercise by mutableStateOf<Exercise?>(null)
+        private set
 
     fun onAction(action: ExerciseAction) {
         when (action) {
             is ExerciseAction.ExerciseCreated -> createExercise(action.exercise)
+            is ExerciseAction.FetchExercise -> fetchExercise(action.exerciseId)
             else -> { }
         }
     }
@@ -26,15 +34,20 @@ class ExerciseViewModel(
         }
     }
 
-    private fun getExerciseHistory(exercise: Exercise) {
-        // TODO
+    private fun fetchExercise(exerciseId: String) {
+        viewModelScope.launch {
+            lastFetchedExercise =
+                exerciseRepository.getExerciseById(exerciseId) ?:
+                exerciseRepository.getCustomExerciseById(authRepository.currentUser.id, exerciseId)
+        }
     }
 }
 
 sealed interface ExerciseAction {
+    // TODO delete custom exercise
+    // TODO edit custom exercise
     class ExerciseSelected(val exercise: Exercise) : ExerciseAction
-
     object CreateExerciseSelected : ExerciseAction
-
     class ExerciseCreated(val exercise: Exercise) : ExerciseAction
+    class FetchExercise(val exerciseId: String) : ExerciseAction
 }

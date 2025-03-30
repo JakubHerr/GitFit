@@ -44,7 +44,7 @@ fun ExerciseListScreenRoot(
     onExerciseClick: (Exercise) -> Unit = {},
     onCreateExerciseClick: () -> Unit = {},
 ) {
-    val state = vm.flow.collectAsStateWithLifecycle(emptyList())
+    val state = vm.defaultExercises.collectAsStateWithLifecycle(emptyList())
 
     ExerciseListScreen(
         state = state.value,

@@ -56,7 +56,7 @@ private fun CreateExerciseScreenPreview() {
 private fun ExerciseDetailScreenPreview() {
     MaterialTheme {
         Surface {
-            ExerciseDetailScreen()
+            // ExerciseDetailScreen()
         }
     }
 }

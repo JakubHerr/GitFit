@@ -7,8 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.jakubherr.gitfit.domain.MeasurementRepository
 import io.github.jakubherr.gitfit.domain.WorkoutRepository
-import io.github.jakubherr.gitfit.domain.model.Exercise
-import io.github.jakubherr.gitfit.domain.model.MuscleGroup
 import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.koalaplot.core.xygraph.DefaultPoint
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,19 +33,10 @@ class GraphViewModel(
     private val _dataPoints: MutableStateFlow<List<DefaultPoint<String, Int>>> = MutableStateFlow(emptyList())
     val dataPoints: StateFlow<List<DefaultPoint<String, Int>>> = _dataPoints
 
-    private val debugExercise = Exercise(
-        id = "9GwK3U2bLiQFdsFXo1nI",
-        name = "Overhead Press",
-        description = null,
-        primaryMuscle = listOf(MuscleGroup.SHOULDERS),
-        secondaryMuscle = listOf(MuscleGroup.ARMS),
-    )
-
     init {
         viewModelScope.launch {
             lastTen.collect { workouts ->
                 println("DBG: collected ${workouts.size} workouts")
-                changeExerciseMetric(selectedMetric)
             }
         }
     }
@@ -56,19 +45,19 @@ class GraphViewModel(
 
     fun onAction(action: GraphAction) {
         when (action) {
-            is GraphAction.ExerciseMetricSelected -> changeExerciseMetric(action.metric)
+            is GraphAction.ExerciseMetricSelected -> changeExerciseMetric(action.exerciseId, action.metric)
         }
     }
 
-    private fun changeExerciseMetric(metric: ExerciseMetric) {
+    private fun changeExerciseMetric(exerciseId: String, metric: ExerciseMetric) {
         selectedMetric = metric
 
         viewModelScope.launch {
             val list = when (metric) {
-                ExerciseMetric.HEAVIEST_WEIGHT -> lastTen.value.toDataPoints { it.getExerciseHeaviestWeight(debugExercise.id)?.toInt() }
-                ExerciseMetric.BEST_SET_VOLUME -> lastTen.value.toDataPoints { it.getExerciseBestSetVolume(debugExercise.id)?.toInt() }
-                ExerciseMetric.TOTAL_WORKOUT_VOLUME -> lastTen.value.toDataPoints { it.getExerciseTotalWorkoutVolume(debugExercise.id)?.toInt() }
-                ExerciseMetric.TOTAL_REPETITIONS -> lastTen.value.toDataPoints { it.getExerciseTotalRepetitions(debugExercise.id)?.toInt() }
+                ExerciseMetric.HEAVIEST_WEIGHT -> lastTen.value.toDataPoints { it.getExerciseHeaviestWeight(exerciseId)?.toInt() }
+                ExerciseMetric.BEST_SET_VOLUME -> lastTen.value.toDataPoints { it.getExerciseBestSetVolume(exerciseId)?.toInt() }
+                ExerciseMetric.TOTAL_WORKOUT_VOLUME -> lastTen.value.toDataPoints { it.getExerciseTotalWorkoutVolume(exerciseId)?.toInt() }
+                ExerciseMetric.TOTAL_REPETITIONS -> lastTen.value.toDataPoints { it.getExerciseTotalRepetitions(exerciseId)?.toInt() }
             }
 
             _dataPoints.emit(list)
@@ -93,5 +82,5 @@ class GraphViewModel(
 }
 
 sealed interface GraphAction {
-    class ExerciseMetricSelected(val metric: ExerciseMetric) : GraphAction
+    class ExerciseMetricSelected(val exerciseId: String, val metric: ExerciseMetric) : GraphAction
 }

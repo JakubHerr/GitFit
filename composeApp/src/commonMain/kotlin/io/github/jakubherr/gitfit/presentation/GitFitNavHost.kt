@@ -91,7 +91,9 @@ fun GitFitNavHost(
             }
 
             composable<TrendsRoute> {
-                GraphScreenRoot()
+                GraphScreenRoot() {
+                    navController.navigate(ExerciseListRoute)
+                }
             }
 
             composable<SettingsRoute> {
