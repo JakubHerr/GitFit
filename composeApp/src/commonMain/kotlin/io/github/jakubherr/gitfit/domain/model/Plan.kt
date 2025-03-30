@@ -19,4 +19,21 @@ data class Plan(
     companion object {
         val Empty = Plan("","","","")
     }
+
+    val error: Error? get() {
+        val invalidWorkout = workouts.map { it.toWorkout() }.find { it.error != null }
+
+        return when {
+            name.isBlank() -> Error.InvalidPlanName
+            workouts.isEmpty() -> Error.NoWorkoutInPlan
+            invalidWorkout != null -> Error.InvalidWorkout(invalidWorkout.error!!)
+            else -> null
+        }
+    }
+
+    sealed class Error(val message: String) {
+        object InvalidPlanName: Error("Plan name can not be blank")
+        object NoWorkoutInPlan: Error("Plan has no workout days")
+        class InvalidWorkout(val error: Workout.Error): Error(error.message)
+    }
 }

@@ -7,6 +7,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.presentation.AddExerciseToPlanRoute
 import io.github.jakubherr.gitfit.presentation.CreateExerciseRoute
 import io.github.jakubherr.gitfit.presentation.PlanCreationRoute
@@ -26,7 +27,7 @@ fun NavGraphBuilder.planningGraph(
     viewModel: PlanningViewModel,
     snackbarHostState: SnackbarHostState,
 ) {
-    fun handleError(error: PlanError?, scope: CoroutineScope) {
+    fun handleError(error: Plan.Error?, scope: CoroutineScope) {
         if (error == null) navController.popBackStack()
         else scope.launch {
             snackbarHostState.showSnackbar(error.message)

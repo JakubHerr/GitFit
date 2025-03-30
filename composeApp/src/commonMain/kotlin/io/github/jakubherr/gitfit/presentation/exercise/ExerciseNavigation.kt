@@ -8,6 +8,7 @@ import io.github.jakubherr.gitfit.presentation.AddExerciseToWorkoutRoute
 import io.github.jakubherr.gitfit.presentation.CreateExerciseRoute
 import io.github.jakubherr.gitfit.presentation.ExerciseDetailRoute
 import io.github.jakubherr.gitfit.presentation.ExerciseListRoute
+import io.github.jakubherr.gitfit.presentation.graph.GraphViewModel
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -18,7 +19,7 @@ fun NavGraphBuilder.exerciseNavigation(
     composable<ExerciseListRoute> {
         ExerciseListScreenRoot(
             onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
-            onExerciseClick = { /* TODO navigate to exercise detail */ },
+            onExerciseClick = { navController.navigate(ExerciseDetailRoute(it.id)) },
         )
     }
 
@@ -29,14 +30,21 @@ fun NavGraphBuilder.exerciseNavigation(
         ExerciseListScreenRoot(
             onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
             onExerciseClick = { exercise ->
-                workoutViewModel.onAction(WorkoutAction.AddBlock(route.workoutId, exercise.id))
+                workoutViewModel.onAction(WorkoutAction.AddBlock(route.workoutId, exercise))
                 navController.popBackStack()
             },
         )
     }
 
-    composable<ExerciseDetailRoute> {
-        // TODO
+    composable<ExerciseDetailRoute> { backstackEntry ->
+        val exerciseId = backstackEntry.toRoute<ExerciseDetailRoute>().exerciseId
+        val exerciseVm: ExerciseViewModel = koinViewModel()
+        exerciseVm.onAction(ExerciseAction.FetchExercise(exerciseId))
+        val graphVm: GraphViewModel = koinViewModel()
+
+        ExerciseDetailScreenRoot(
+            graphViewModel = graphVm
+        )
     }
     composable<CreateExerciseRoute> {
         CreateExerciseScreenRoot {

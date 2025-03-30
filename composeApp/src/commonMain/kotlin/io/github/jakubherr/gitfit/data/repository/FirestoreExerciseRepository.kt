@@ -6,7 +6,9 @@ import io.github.jakubherr.gitfit.domain.ExerciseRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class FirestoreExerciseRepository : ExerciseRepository {
@@ -32,10 +34,11 @@ class FirestoreExerciseRepository : ExerciseRepository {
         }
     }
 
-    override fun getCustomExercises(userId: String): Flow<List<Exercise>> = flow {
-        userExerciseRef(userId).snapshots.collect { snapshot ->
-            val exercises = snapshot.documents.map { it.data<Exercise>() }
-            emit(exercises)
+    override fun getCustomExercises(userId: String): Flow<List<Exercise>> {
+        if (userId.isBlank()) return emptyFlow()
+
+        return userExerciseRef(userId).snapshots.map { snapshot ->
+            snapshot.documents.map { it.data<Exercise>() }
         }
     }
 
@@ -46,6 +49,17 @@ class FirestoreExerciseRepository : ExerciseRepository {
         }
     }
 
-    // consider what to do with all existing workouts that already use this exercise
-    // fun deleteCustomExercise()
+    override suspend fun getExerciseById(exerciseId: String): Exercise? {
+        return withContext(context) {
+            val result = exerciseRef.document(exerciseId).get()
+            if (result.exists) result.data<Exercise>() else null
+        }
+    }
+
+    override suspend fun getCustomExerciseById(userId: String, exerciseId: String): Exercise? {
+        return withContext(context) {
+            val result = userExerciseRef(userId).document(exerciseId).get()
+            if (result.exists) result.data<Exercise>() else null
+        }
+    }
 }

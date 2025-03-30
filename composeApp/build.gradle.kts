@@ -71,6 +71,8 @@ kotlin {
 
             implementation(libs.gitlive.firebase.firestore)
             implementation(libs.gitlive.firebase.auth)
+
+            implementation(libs.koalaplot)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

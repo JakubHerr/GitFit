@@ -19,7 +19,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 
 // TODO handle uncached data, null value when something is not found
-//  maybe store unfinished workouts locally and only upload them on completion
 class FirestoreWorkoutRepository(
     private val authRepository: AuthRepository,
     private val planRepository: PlanRepository
@@ -49,7 +48,6 @@ class FirestoreWorkoutRepository(
             println("DBG: starting new workout with id $id")
             val workout = Workout(
                 id = id,
-                userId = userId,
                 date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
                 blocks = emptyList(),
                 completed = false,
@@ -71,13 +69,21 @@ class FirestoreWorkoutRepository(
 
             val workout = Workout(
                 id = id,
-                userId = userId,
                 blocks = plan.blocks,
                 completed = false,
                 inProgress = true,
             )
 
             workoutRef(userId).document(id).set(workout)
+        }
+    }
+
+    override suspend fun getWorkout(workoutId: String): Workout? {
+        val userId = authRepository.currentUser.id.ifBlank { return null }
+
+        return withContext(dispatcher) {
+            val workout = workoutRef(userId).document(workoutId).get()
+            if (workout.exists) workout.data<Workout>() else null
         }
     }
 
@@ -95,15 +101,11 @@ class FirestoreWorkoutRepository(
 
     override suspend fun addBlock(
         workoutId: String,
-        exerciseId: String,
+        exercise: Exercise,
     ) {
         val userId = authRepository.currentUser.id.ifBlank { return }
 
         withContext(dispatcher) {
-            // TODO this implementation assumes the workout only uses predefined exercises, FIX
-            //  maybe just send workout and exercise as objects?
-            val exercise = firestore.collection("EXERCISES").document(exerciseId).get().data<Exercise>()
-
             val workout = getWorkout(userId, workoutId)
 
             val block = Block(

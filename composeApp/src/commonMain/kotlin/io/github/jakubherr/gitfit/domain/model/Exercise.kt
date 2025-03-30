@@ -10,7 +10,6 @@ data class Exercise(
     val primaryMuscle: List<MuscleGroup> = emptyList(),
     val secondaryMuscle: List<MuscleGroup> = emptyList(),
 )
-// some strength standards for each exercise?
 
 enum class MuscleGroup {
     ARMS,

@@ -54,8 +54,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun WorkoutScreenRoot(
     vm: WorkoutViewModel = koinViewModel(),
-    onWorkoutFinished: () -> Unit = {},
-    onAddExerciseClick: (String) -> Unit = {},
+    onAction: (WorkoutAction) -> Unit = {},
 ) {
     val workout by vm.currentWorkout.collectAsStateWithLifecycle(null)
 
@@ -63,9 +62,7 @@ fun WorkoutScreenRoot(
         CircularProgressIndicator()
     } else {
         WorkoutScreen(workout!!) { action ->
-            if (action is WorkoutAction.AskForExercise) onAddExerciseClick(workout!!.id)
-            vm.onAction(action)
-            if (action is WorkoutAction.CompleteWorkout || action is WorkoutAction.DeleteWorkout) onWorkoutFinished()
+            onAction(action)
         }
     }
 }
@@ -78,7 +75,7 @@ fun WorkoutScreen(
     Scaffold { padding ->
         Surface {
             Column(Modifier.padding(padding)) {
-                Button({ onAction(WorkoutAction.AskForExercise) }) {
+                Button({ onAction(WorkoutAction.AskForExercise(workout.id)) }) {
                     Text(stringResource(Res.string.add_exercise))
                 }
 
@@ -99,7 +96,7 @@ fun WorkoutScreen(
                     Button(onClick = { onAction(WorkoutAction.DeleteWorkout(workout.id)) }) { // TODO "are you sure?" dialog
                         Text(stringResource(Res.string.delete_workout))
                     }
-                    Button(onClick = { onAction(WorkoutAction.CompleteWorkout(workout.id)) }) {
+                    Button(onClick = { onAction(WorkoutAction.CompleteCurrentWorkout(workout.id)) }) {
                         Text(stringResource(Res.string.save_workout))
                     }
                 }

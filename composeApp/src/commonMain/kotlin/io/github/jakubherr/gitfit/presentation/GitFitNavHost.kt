@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -19,11 +20,16 @@ import io.github.jakubherr.gitfit.presentation.auth.authGraph
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardAction
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardScreenRoot
 import io.github.jakubherr.gitfit.presentation.exercise.exerciseNavigation
-import io.github.jakubherr.gitfit.presentation.measurement.MeasurementScreenRoot
+import io.github.jakubherr.gitfit.presentation.graph.GraphScreenRoot
+import io.github.jakubherr.gitfit.presentation.measurement.measurementGraph
+import io.github.jakubherr.gitfit.presentation.planning.PlanAction
 import io.github.jakubherr.gitfit.presentation.planning.PlanningViewModel
 import io.github.jakubherr.gitfit.presentation.planning.planningGraph
 import io.github.jakubherr.gitfit.presentation.settings.SettingsScreenRoot
+import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutScreenRoot
+import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -33,7 +39,7 @@ fun GitFitNavHost(
 ) {
     val destination = navController.currentBackStackEntryAsState().value?.destination
     val topLevelDestination = TopLevelDestination.entries.firstOrNull { destination?.hasRoute(it.route) == true }
-    var showNavigation by remember { mutableStateOf(true) } // TODO hide navigation when user is doing a workout
+    var showNavigation by remember { mutableStateOf(true) }
 
     val authViewModel: AuthViewModel = koinViewModel()
     val auth by authViewModel.state.collectAsStateWithLifecycle()
@@ -41,7 +47,10 @@ fun GitFitNavHost(
     // this prevents data loss of in-memory plan
     val planViewModel: PlanningViewModel = koinViewModel()
 
-    LaunchedEffect(auth) { println("DBG: auth state is $auth") }
+    LaunchedEffect(auth) {
+        println("DBG: auth state is ${auth.user.loggedIn}")
+        planViewModel.onAction(PlanAction.DiscardPlan)
+    }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -74,23 +83,42 @@ fun GitFitNavHost(
             }
 
             composable<WorkoutInProgressRoute> {
+                val scope = rememberCoroutineScope()
+                val workoutVm: WorkoutViewModel = koinViewModel()
+
                 WorkoutScreenRoot(
-                    onAddExerciseClick = { workoutId ->
-                        navController.navigate(AddExerciseToWorkoutRoute(workoutId))
+                    onAction = { action ->
+                        if (action !is WorkoutAction.CompleteCurrentWorkout) workoutVm.onAction(action)
+
+                        when (action) {
+                            is WorkoutAction.AskForExercise -> navController.navigate(AddExerciseToWorkoutRoute(action.workoutId))
+                            is WorkoutAction.DeleteWorkout -> navController.popBackStack()
+                            is WorkoutAction.CompleteCurrentWorkout -> {
+                                val error = workoutVm.currentWorkout.value?.error
+                                if (error == null) {
+                                    workoutVm.onAction(action)
+                                    navController.popBackStack()
+                                }
+                                else scope.launch { snackbarHostState.showSnackbar(error.message) }
+                            }
+                            else -> { }
+                        }
                     },
-                    onWorkoutFinished = { navController.popBackStack() },
                 )
             }
 
             exerciseNavigation(navController)
+
+            measurementGraph(navController, snackbarHostState)
+
             planningGraph(navController, planViewModel, snackbarHostState)
 
-            composable<MeasurementRoute> {
-                MeasurementScreenRoot()
-            }
+
 
             composable<TrendsRoute> {
-                // TODO
+                GraphScreenRoot() {
+                    navController.navigate(ExerciseListRoute)
+                }
             }
 
             composable<SettingsRoute> {
