@@ -53,9 +53,11 @@ fun MeasurementLineGraph(
         }.filter { it.second != null }
         .map { DefaultPoint(it.first.toString(), it.second!!) }
 
+    val title = if (data.isNotEmpty()) "last measurement: ${data.last().y} ${measurementType.unit}" else "No data"
+
     ChartLayout(
         modifier.padding(16.dp),
-        title = { Text(stringResource(measurementType.label)) }
+        title = { Text(title) }
     ) {
         XYGraph(
             CategoryAxisModel(data.map { it.x }),

@@ -16,6 +16,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -107,13 +109,14 @@ fun MeasurementScreenRoot(
         ) {
             Text("Latest measurements")
 
+
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(stringResource(selectedMeasurementType.label))
-                IconButton({ }) {
-                    // TODO show dropdown menu to select different measurement type
-                    Icon(Icons.Default.KeyboardArrowDown, "")
+
+                MeasurementSelectionDropdown {
+                    selectedMeasurementType = it
                 }
             }
         }
@@ -223,6 +226,33 @@ fun MeasurementInputField(
             NumberInputField(value, onValueChange = onValueChange)
             Spacer(Modifier.width(12.dp))
             Text(unit)
+        }
+    }
+}
+
+@Composable
+fun MeasurementSelectionDropdown(
+    modifier: Modifier = Modifier,
+    onSelected: (MeasurementType) -> Unit = {},
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    IconButton({ expanded = !expanded }) {
+        Icon(Icons.Default.KeyboardArrowDown, "")
+    }
+
+    DropdownMenu(
+        expanded,
+        onDismissRequest = { expanded = false }
+    ) {
+        MeasurementType.entries.forEach { type ->
+            DropdownMenuItem(
+                text = { Text(stringResource(type.label)) },
+                onClick = {
+                    onSelected(type)
+                    expanded = false
+                }
+            )
         }
     }
 }
