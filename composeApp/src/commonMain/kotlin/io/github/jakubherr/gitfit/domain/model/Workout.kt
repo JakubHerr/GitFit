@@ -13,6 +13,8 @@ data class Workout(
     val date: LocalDate = Clock.System.todayIn(TimeZone.currentSystemDefault()),
     val completed: Boolean = false,
     val inProgress: Boolean = false,
+    val planId: String? = null,
+    val planWorkoutIdx: Int? = null,
 ) {
     // aggregates all completed series of an exercise
     // if there are no valid series of exercise in workout, return null

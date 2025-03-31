@@ -72,6 +72,8 @@ class FirestoreWorkoutRepository(
                 blocks = plan.blocks,
                 completed = false,
                 inProgress = true,
+                planId = planId,
+                planWorkoutIdx = workoutIdx,
             )
 
             workoutRef(userId).document(id).set(workout)

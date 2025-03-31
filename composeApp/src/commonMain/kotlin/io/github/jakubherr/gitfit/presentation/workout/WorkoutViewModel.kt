@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.jakubherr.gitfit.domain.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
+import io.github.jakubherr.gitfit.domain.model.ProgressionType
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
 import kotlinx.coroutines.flow.SharingStarted
@@ -66,6 +67,41 @@ class WorkoutViewModel(
     private fun completeCurrentWorkout(workoutId: String) {
         viewModelScope.launch {
             if (error == null) workoutRepository.completeWorkout(workoutId)
+            handleProgression(workoutId)
+        }
+    }
+
+    private suspend fun handleProgression(workoutId: String) {
+        val workout = workoutRepository.getWorkout(workoutId)
+
+        println("DBG: progressing workout: ${workout?.id}")
+
+        workout?.let {
+            val isFromPlan = workout.planId != null && workout.planWorkoutIdx != null
+            if (!isFromPlan) return
+
+            val blocksWithProgression = workout.blocks.filter { it.progressionSettings != null }.ifEmpty { return }
+            println("DBG: workout has ${blocksWithProgression.size} blocks with progression")
+
+            blocksWithProgression.forEach { block ->
+                val settings = block.progressionSettings!!
+                val minimumReps = settings.repThreshold
+
+                val shouldProgress = block.series.all { series ->
+                    series.completed && series.weight!! >= settings.weightThreshold && series.repetitions!! >= settings.repThreshold
+                }
+
+                println("DBG: block with valid progression detected")
+
+                if (shouldProgress) {
+                    when (settings.type) {
+                        ProgressionType.INCREASE_WEIGHT-> { /* TODO increase weight of all series + weight threshold */ }
+                        ProgressionType.INCREASE_REPS -> { /* TODO increase reps of all series + rep threshold*/ }
+                    }
+                }
+            }
+
+            // TODO modify WorkoutPlan based on updated values
         }
     }
 
