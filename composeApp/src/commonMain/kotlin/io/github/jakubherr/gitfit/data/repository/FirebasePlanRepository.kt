@@ -2,7 +2,7 @@ package io.github.jakubherr.gitfit.data.repository
 
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
-import io.github.jakubherr.gitfit.domain.PlanRepository
+import io.github.jakubherr.gitfit.domain.repository.PlanRepository
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 import kotlinx.coroutines.Dispatchers
@@ -52,5 +52,14 @@ class FirebasePlanRepository: PlanRepository {
 
     override suspend fun deleteCustomPlans(userId: String) {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun getCustomPlan(userId: String, planId: String): Plan? {
+        if (userId.isBlank()) return null
+
+        return withContext(context) {
+            val plan = userPlanRef(userId).document(planId).get()
+            if (plan.exists) plan.data<Plan>() else null
+        }
     }
 }

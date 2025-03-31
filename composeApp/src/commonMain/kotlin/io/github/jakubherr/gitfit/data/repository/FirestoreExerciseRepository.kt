@@ -2,7 +2,7 @@ package io.github.jakubherr.gitfit.data.repository
 
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
-import io.github.jakubherr.gitfit.domain.ExerciseRepository
+import io.github.jakubherr.gitfit.domain.repository.ExerciseRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

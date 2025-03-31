@@ -2,9 +2,9 @@ package io.github.jakubherr.gitfit.data.repository
 
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
-import io.github.jakubherr.gitfit.domain.AuthRepository
-import io.github.jakubherr.gitfit.domain.PlanRepository
-import io.github.jakubherr.gitfit.domain.WorkoutRepository
+import io.github.jakubherr.gitfit.domain.repository.AuthRepository
+import io.github.jakubherr.gitfit.domain.repository.PlanRepository
+import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.Series

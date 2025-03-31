@@ -97,13 +97,15 @@ fun GitFitNavHost(
                                 val error = workoutVm.currentWorkout.value?.error
                                 if (error == null) {
                                     workoutVm.onAction(action)
-                                    navController.popBackStack()
+                                    // navController.popBackStack()
                                 }
                                 else scope.launch { snackbarHostState.showSnackbar(error.message) }
                             }
                             else -> { }
                         }
                     },
+                    onSaveComplete = { navController.popBackStack() }
+
                 )
             }
 

@@ -19,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,8 +52,14 @@ import org.koin.compose.viewmodel.koinViewModel
 fun WorkoutScreenRoot(
     vm: WorkoutViewModel = koinViewModel(),
     onAction: (WorkoutAction) -> Unit = {},
+    onSaveComplete: () -> Unit = {}, // this mainly prevents cancelling viewmodel before it handles progression
 ) {
     val workout by vm.currentWorkout.collectAsStateWithLifecycle(null)
+    val workoutSaved = vm.workoutSaved
+
+    LaunchedEffect(workoutSaved) {
+        if (workoutSaved) onSaveComplete()
+    }
 
     if (workout == null) {
         CircularProgressIndicator()

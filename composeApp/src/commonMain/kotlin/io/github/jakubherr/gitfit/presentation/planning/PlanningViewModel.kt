@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.jakubherr.gitfit.domain.AuthRepository
-import io.github.jakubherr.gitfit.domain.PlanRepository
+import io.github.jakubherr.gitfit.domain.repository.AuthRepository
+import io.github.jakubherr.gitfit.domain.repository.PlanRepository
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.Plan

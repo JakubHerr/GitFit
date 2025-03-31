@@ -27,7 +27,7 @@ data class Plan(
 
     fun addWorkoutPlan(workoutPlan: WorkoutPlan): Plan = copy(workoutPlans = workoutPlans + workoutPlan)
 
-    private fun updateWorkoutPlan(workoutPlan: WorkoutPlan): Plan {
+    fun updateWorkoutPlan(workoutPlan: WorkoutPlan): Plan {
         val workouts = workoutPlans.toMutableList()
         workouts[workoutPlan.idx] = workoutPlan
         return copy(workoutPlans = workouts)

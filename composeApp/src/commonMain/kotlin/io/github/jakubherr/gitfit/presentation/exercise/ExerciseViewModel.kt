@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.jakubherr.gitfit.data.repository.FirebaseAuthRepository
-import io.github.jakubherr.gitfit.domain.ExerciseRepository
+import io.github.jakubherr.gitfit.domain.repository.ExerciseRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import kotlinx.coroutines.launch
 

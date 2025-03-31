@@ -1,4 +1,4 @@
-package io.github.jakubherr.gitfit.domain
+package io.github.jakubherr.gitfit.domain.repository
 
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
@@ -14,6 +14,8 @@ interface PlanRepository {
     suspend fun deleteCustomPlan(userId: String, planId: String)
 
     suspend fun deleteCustomPlans(userId: String)
+
+    suspend fun getCustomPlan(userId: String, planId: String) : Plan?
 
     suspend fun getCustomWorkout(userId: String, planId: String, workoutIdx: Int): WorkoutPlan
 }

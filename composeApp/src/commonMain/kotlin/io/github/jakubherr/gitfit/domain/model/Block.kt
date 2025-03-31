@@ -19,6 +19,24 @@ data class Block(
     }
 
     fun removeSeries(series: Series): Block = copy(series = this.series - series)
+
+    fun progressWeight(increment: Double): Block {
+        val newSeries = series.toMutableList()
+        newSeries.forEachIndexed { idx, series ->
+            newSeries[idx] = series.copy(weight = (series.weight ?: 0.0) + increment, completed = false)
+        }
+        val newProgression = progressionSettings?.copy(weightThreshold = progressionSettings.weightThreshold + increment)
+        return copy(series = newSeries, progressionSettings = newProgression)
+    }
+
+    fun progressReps(increment: Int): Block {
+        val newSeries = series.toMutableList()
+        newSeries.forEachIndexed { idx, series ->
+            newSeries[idx] = series.copy(repetitions = (series.repetitions ?: 0) + increment, completed = false)
+        }
+        val newProgression = progressionSettings?.copy(repThreshold = progressionSettings.repThreshold + increment)
+        return copy(series = newSeries, progressionSettings = newProgression)
+    }
 }
 
 val mockBlock =

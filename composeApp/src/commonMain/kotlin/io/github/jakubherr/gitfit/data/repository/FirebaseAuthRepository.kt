@@ -8,8 +8,8 @@ import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
 import dev.gitlive.firebase.auth.FirebaseAuthWeakPasswordException
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
-import io.github.jakubherr.gitfit.domain.AuthError
-import io.github.jakubherr.gitfit.domain.AuthRepository
+import io.github.jakubherr.gitfit.domain.repository.AuthError
+import io.github.jakubherr.gitfit.domain.repository.AuthRepository
 import io.github.jakubherr.gitfit.domain.model.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

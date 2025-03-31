@@ -1,4 +1,4 @@
-package io.github.jakubherr.gitfit.domain
+package io.github.jakubherr.gitfit.domain.repository
 
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.Series

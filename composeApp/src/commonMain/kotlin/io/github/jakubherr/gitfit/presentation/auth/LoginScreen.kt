@@ -25,7 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.register
 import gitfit.composeapp.generated.resources.sign_in
-import io.github.jakubherr.gitfit.domain.AuthError
+import io.github.jakubherr.gitfit.domain.repository.AuthError
 import io.github.jakubherr.gitfit.presentation.shared.PasswordInputField
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel

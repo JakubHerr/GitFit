@@ -2,8 +2,8 @@ package io.github.jakubherr.gitfit.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.jakubherr.gitfit.domain.AuthError
-import io.github.jakubherr.gitfit.domain.AuthRepository
+import io.github.jakubherr.gitfit.domain.repository.AuthError
+import io.github.jakubherr.gitfit.domain.repository.AuthRepository
 import io.github.jakubherr.gitfit.domain.model.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

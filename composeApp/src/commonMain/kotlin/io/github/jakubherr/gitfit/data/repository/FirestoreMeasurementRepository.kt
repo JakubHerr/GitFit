@@ -2,7 +2,7 @@ package io.github.jakubherr.gitfit.data.repository
 
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
-import io.github.jakubherr.gitfit.domain.MeasurementRepository
+import io.github.jakubherr.gitfit.domain.repository.MeasurementRepository
 import io.github.jakubherr.gitfit.domain.model.Measurement
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
