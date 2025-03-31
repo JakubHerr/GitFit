@@ -21,7 +21,7 @@ import io.github.jakubherr.gitfit.presentation.graph.BasicLineGraph
 import io.github.jakubherr.gitfit.presentation.graph.ExerciseMetric
 import io.github.jakubherr.gitfit.presentation.graph.GraphAction
 import io.github.jakubherr.gitfit.presentation.graph.GraphViewModel
-import io.github.jakubherr.gitfit.presentation.graph.SingleChoiceChipSelection
+import io.github.jakubherr.gitfit.presentation.shared.SingleChoiceChipSelection
 import io.github.koalaplot.core.xygraph.DefaultPoint
 import org.koin.compose.viewmodel.koinViewModel
 

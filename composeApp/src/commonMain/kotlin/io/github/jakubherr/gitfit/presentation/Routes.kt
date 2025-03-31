@@ -57,6 +57,9 @@ object PlanCreationRoute
 class PlanningWorkoutRoute(val workoutIdx: Int)
 
 @Serializable
+class EditProgressionRoute(val workoutIdx: Int, val blockIdx: Int)
+
+@Serializable
 object TrendsRoute
 
 @Serializable

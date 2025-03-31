@@ -74,24 +74,6 @@ data class WorkoutPlan(
     )
 }
 
-data class ProgressionSettings(
-    val incrementWeightByKg: Double,
-    val incrementReps: Int,
-    val type: ProgressionType,
-    val trigger: ProgressionTrigger,
-    val threshold: Int,
-)
-
-enum class ProgressionType {
-    INCREASE_REPS,
-    INCREASE_WEIGHT,
-}
-
-enum class ProgressionTrigger {
-    MINIMUM_REPS_EVERY_SET,
-    EVERY_WORKOUT,
-}
-
 @Serializable
 data class Block(
     val idx: Int,

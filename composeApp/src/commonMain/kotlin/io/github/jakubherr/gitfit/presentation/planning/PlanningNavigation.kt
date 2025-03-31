@@ -1,6 +1,7 @@
 package io.github.jakubherr.gitfit.presentation.planning
 
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -10,6 +11,7 @@ import androidx.navigation.toRoute
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.presentation.AddExerciseToPlanRoute
 import io.github.jakubherr.gitfit.presentation.CreateExerciseRoute
+import io.github.jakubherr.gitfit.presentation.EditProgressionRoute
 import io.github.jakubherr.gitfit.presentation.PlanCreationRoute
 import io.github.jakubherr.gitfit.presentation.PlanDetailRoute
 import io.github.jakubherr.gitfit.presentation.PlanOverviewRoute
@@ -112,7 +114,24 @@ fun NavGraphBuilder.planningGraph(
             onAddExerciseClick = { workoutIdx ->
                 navController.navigate(AddExerciseToPlanRoute(workoutIdx))
             },
-            onSave = { handleError(viewModel.error, scope) }
+            onSave = { handleError(viewModel.error, scope) },
+            onEditProgression = { block -> navController.navigate(EditProgressionRoute(idx, block.idx)) }
         )
+    }
+
+    composable<EditProgressionRoute> { backstackEntry ->
+        val entry = backstackEntry.toRoute<EditProgressionRoute>()
+        val block = viewModel.plan.workouts.getOrNull(entry.workoutIdx)?.blocks?.getOrNull(entry.blockIdx)
+
+        if (block == null) {
+            Text("Error: block not found")
+        } else {
+            EditProgressionScreenRoot(
+                block,
+                onCancel = { navController.popBackStack() },
+                onDelete = { /* TODO */ },
+                onSave = { /* TODO */ }
+            )
+        }
     }
 }

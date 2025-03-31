@@ -49,6 +49,9 @@ class PlanningViewModel(
             is PlanAction.RemoveSet -> removeSet(action.workout, action.block, action.set)
 
             PlanAction.ErrorHandled -> error = null
+
+            is PlanAction.DeleteProgression -> TODO()
+            is PlanAction.SaveProgression -> TODO()
         }
     }
 
@@ -150,6 +153,9 @@ sealed interface PlanAction {
     class AddSet(val workout: WorkoutPlan, val block: Block) : PlanAction
     class EditSet(val workout: WorkoutPlan, val block: Block, val set: Series) : PlanAction
     class RemoveSet(val workout: WorkoutPlan, val block: Block, val set: Series) : PlanAction
+
+    class SaveProgression(val workout: WorkoutPlan, val block: Block, val progression: ProgressionSettings) : PlanAction
+    class DeleteProgression(val workout: WorkoutPlan, val block: Block) : PlanAction
 
     object ErrorHandled : PlanAction
 }

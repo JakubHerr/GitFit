@@ -1,6 +1,7 @@
 package io.github.jakubherr.gitfit.presentation.planning
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,28 +15,29 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.add_set
-import io.github.jakubherr.gitfit.domain.isPositiveDouble
-import io.github.jakubherr.gitfit.domain.isPositiveLong
+import io.github.jakubherr.gitfit.domain.isNonNegativeDouble
+import io.github.jakubherr.gitfit.domain.isNonNegativeLong
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
-import io.github.jakubherr.gitfit.presentation.workout.NumberInputField
+import io.github.jakubherr.gitfit.presentation.shared.NumberInputField
 import io.github.jakubherr.gitfit.presentation.workout.SetHeader
 import org.jetbrains.compose.resources.stringResource
 
@@ -46,6 +48,7 @@ fun PlanWorkoutDetailScreen(
     onAction: (PlanAction) -> Unit = {},
     onAddExerciseClick: (Int) -> Unit = {},
     onSave: () -> Unit = {},
+    onEditProgression: (Block) -> Unit = {},
 ) {
     LazyColumn {
         items(workout.blocks) { block ->
@@ -55,6 +58,7 @@ fun PlanWorkoutDetailScreen(
                 onValidSetEntered = { onAction(PlanAction.EditSet(workout, block, it)) },
                 onDeleteSet =  { onAction(PlanAction.RemoveSet(workout, block, it)) },
                 onDeleteExercise = { onAction(PlanAction.RemoveExercise(workout, block)) },
+                onEditProgression = { onEditProgression(block) }
             )
         }
         item {
@@ -76,17 +80,25 @@ fun PlanBlockItem(
     onAddSetClicked: () -> Unit = {},
     onValidSetEntered: (Series) -> Unit = {},
     onDeleteSet: (Series) -> Unit = {},
-    onDeleteExercise: (Block) -> Unit = {},
+    onDeleteExercise: () -> Unit = {},
+    onEditProgression: () -> Unit = {},
 ) {
     Card(Modifier.fillMaxWidth().padding(16.dp)) {
-        Column(Modifier.padding(8.dp)) {
-            Row {
-                Text(block.exercise.name, style = MaterialTheme.typography.titleLarge)
-                IconButton({ onDeleteExercise(block) }) {
-                    Icon(Icons.Default.Delete, "")
+        Column(Modifier.padding(16.dp)) {
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Row(Modifier.weight(1.0f)) {
+                    Text(block.exercise.name, style = MaterialTheme.typography.titleLarge)
                 }
+
+                BlockItemDropdownMenu(
+                    onDeleteExercise = { onDeleteExercise() },
+                    onEditProgression = { onEditProgression() }
+                )
             }
-            Spacer(Modifier.height(16.dp))
+            HorizontalDivider(Modifier.padding(8.dp))
             Column {
                 SetHeader()
                 Spacer(Modifier.height(16.dp))
@@ -102,6 +114,35 @@ fun PlanBlockItem(
             Button(onClick = onAddSetClicked) {
                 Text(stringResource(Res.string.add_set))
             }
+        }
+    }
+}
+
+@Composable
+fun BlockItemDropdownMenu(
+    modifier: Modifier = Modifier,
+    onDeleteExercise: () -> Unit = {},
+    onEditProgression: () -> Unit = {},
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box {
+        IconButton({ expanded = !expanded }) {
+            Icon(Icons.Default.MoreVert, "")
+        }
+
+        DropdownMenu(
+            expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text("Delete exercise") },
+                onClick = { onDeleteExercise() }
+            )
+            DropdownMenuItem(
+                text = { Text("Edit progression") },
+                onClick = { onEditProgression() }
+            )
         }
     }
 }
@@ -126,7 +167,7 @@ fun PlanSetInput(
 
         NumberInputField(
             weight,
-            isError = !weight.isPositiveDouble(),
+            isError = !weight.isNonNegativeDouble(),
             onValueChange = { newWeight ->
                 // limits the number of decimal points to 2
                 val decimals = newWeight.substringAfter(".", "")
@@ -134,7 +175,7 @@ fun PlanSetInput(
                 if (decimals.length <= 2) {
                     weight = newWeight
 
-                    if (weight.isPositiveDouble() && reps.isPositiveLong()) {
+                    if (weight.isNonNegativeDouble() && reps.isNonNegativeLong()) {
                         onValidSetEntered(set.copy(weight = weight.toDouble(), repetitions = reps.toLong()))
                     }
                 }
@@ -142,10 +183,10 @@ fun PlanSetInput(
         )
         NumberInputField(
             reps,
-            isError = !reps.isPositiveLong(),
+            isError = !reps.isNonNegativeLong(),
             onValueChange = {
                 reps = it
-                if (weight.isPositiveDouble() && reps.isPositiveLong()) {
+                if (weight.isNonNegativeDouble() && reps.isNonNegativeLong()) {
                     onValidSetEntered(set.copy(weight = weight.toDouble(), repetitions = reps.toLong()))
                 }
             }

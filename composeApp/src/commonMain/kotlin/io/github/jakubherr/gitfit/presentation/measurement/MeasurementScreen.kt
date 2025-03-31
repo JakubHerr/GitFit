@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -47,10 +46,9 @@ import gitfit.composeapp.generated.resources.right_thigh
 import gitfit.composeapp.generated.resources.save_measurement
 import gitfit.composeapp.generated.resources.waist
 import gitfit.composeapp.generated.resources.weight
-import io.github.jakubherr.gitfit.domain.isPositiveDouble
 import io.github.jakubherr.gitfit.domain.model.Measurement
 import io.github.jakubherr.gitfit.presentation.graph.MeasurementLineGraph
-import io.github.jakubherr.gitfit.presentation.workout.NumberInputField
+import io.github.jakubherr.gitfit.presentation.shared.NumberInputField
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
