@@ -1,11 +1,15 @@
 package io.github.jakubherr.gitfit.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class ProgressionSettings(
     val incrementWeightByKg: Double,
-    val incrementReps: Int,
+    val incrementRepsBy: Int,
     val type: ProgressionType,
     val trigger: ProgressionTrigger,
-    val threshold: Int,
+    val weightThreshold: Double,
+    val repThreshold: Int,
 )
 
 enum class ProgressionType {
@@ -15,7 +19,7 @@ enum class ProgressionType {
 
 // increase every workout is a bad idea
 enum class ProgressionTrigger {
-    MINIMUM_REPS_EVERY_SET,
+    MINIMUM_REPS_AND_WEIGHT_EVERY_SET,
 }
 
 // a workout can progress by EITHER increasing reps OR adding weight

@@ -50,8 +50,8 @@ class PlanningViewModel(
 
             PlanAction.ErrorHandled -> error = null
 
-            is PlanAction.DeleteProgression -> TODO()
-            is PlanAction.SaveProgression -> TODO()
+            is PlanAction.DeleteProgression -> setProgression(action.workout, action.block, null)
+            is PlanAction.SaveProgression -> setProgression(action.workout, action.block, action.progression)
         }
     }
 
@@ -111,8 +111,9 @@ class PlanningViewModel(
         updateWorkout(workout.copy(blocks = newBlocks))
     }
 
-    private fun setProgression(workout: WorkoutPlan, block: Block, progression: ProgressionSettings) {
-        // TODO implement progression saving and evaluation
+    private fun setProgression(workout: WorkoutPlan, block: Block, progression: ProgressionSettings?) {
+        val newBlock = block.copy(progressionSettings = progression)
+        updateBlock(workout,newBlock)
     }
 
     private fun removeBlock(workout: WorkoutPlan, block: Block) {

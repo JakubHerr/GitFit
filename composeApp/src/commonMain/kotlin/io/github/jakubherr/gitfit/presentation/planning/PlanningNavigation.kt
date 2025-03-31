@@ -97,7 +97,7 @@ fun NavGraphBuilder.planningGraph(
                     PlanAction.SavePlan -> handleError(viewModel.error, scope)
                     else -> {}
                 }
-           },
+            },
             onWorkoutSelected = { workoutIdx ->
                 navController.navigate(PlanningWorkoutRoute(workoutIdx))
             },
@@ -121,7 +121,8 @@ fun NavGraphBuilder.planningGraph(
 
     composable<EditProgressionRoute> { backstackEntry ->
         val entry = backstackEntry.toRoute<EditProgressionRoute>()
-        val block = viewModel.plan.workouts.getOrNull(entry.workoutIdx)?.blocks?.getOrNull(entry.blockIdx)
+        val workout = viewModel.plan.workouts.getOrNull(entry.workoutIdx)
+        val block = workout?.blocks?.getOrNull(entry.blockIdx)
 
         if (block == null) {
             Text("Error: block not found")
@@ -129,8 +130,14 @@ fun NavGraphBuilder.planningGraph(
             EditProgressionScreenRoot(
                 block,
                 onCancel = { navController.popBackStack() },
-                onDelete = { /* TODO */ },
-                onSave = { /* TODO */ }
+                onDelete = {
+                    viewModel.onAction(PlanAction.DeleteProgression(workout, block))
+                    navController.popBackStack()
+                },
+                onSave = {
+                    viewModel.onAction(PlanAction.SaveProgression(workout, block, it))
+                    navController.popBackStack()
+                }
             )
         }
     }

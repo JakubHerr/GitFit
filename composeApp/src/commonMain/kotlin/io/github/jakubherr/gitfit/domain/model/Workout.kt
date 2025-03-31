@@ -80,6 +80,7 @@ data class Block(
     val exercise: Exercise,
     val series: List<Series> = emptyList(),
     val restTimeSeconds: Long? = null,
+    val progressionSettings: ProgressionSettings? = null
 )
 
 // this should be named Set but is named series because of name conflict with Set collection

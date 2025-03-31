@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
@@ -28,6 +27,8 @@ import io.github.jakubherr.gitfit.domain.isNonNegativeDouble
 import io.github.jakubherr.gitfit.domain.isPositiveDouble
 import io.github.jakubherr.gitfit.domain.isPositiveInt
 import io.github.jakubherr.gitfit.domain.model.Block
+import io.github.jakubherr.gitfit.domain.model.ProgressionSettings
+import io.github.jakubherr.gitfit.domain.model.ProgressionTrigger
 import io.github.jakubherr.gitfit.domain.model.ProgressionType
 import io.github.jakubherr.gitfit.presentation.shared.NumberInputField
 import io.github.jakubherr.gitfit.presentation.shared.SingleChoiceChipSelection
@@ -38,12 +39,14 @@ fun EditProgressionScreenRoot(
     modifier: Modifier = Modifier,
     onCancel: () -> Unit = {},
     onDelete: () -> Unit = {},
-    onSave: () -> Unit = {},
+    onSave: (ProgressionSettings) -> Unit = {},
 ) {
-    // TODO initialize with existing values if block has progression already
+    val initialWeight = block.progressionSettings?.weightThreshold.let { it?.toString() ?: "" }
+    val initialReps = block.progressionSettings?.repThreshold ?: 12
+
     var selectedProgressionType by remember { mutableStateOf(ProgressionType.INCREASE_WEIGHT) }
-    var minimumReps by remember { mutableStateOf(12) }
-    var minimumWeight by remember { mutableStateOf("") }
+    var minimumReps by remember { mutableStateOf(initialReps) }
+    var minimumWeight by remember { mutableStateOf(initialWeight) }
 
     var weightIncrease by remember { mutableStateOf("") }
     var repIncrease by remember { mutableStateOf("") }
@@ -109,18 +112,33 @@ fun EditProgressionScreenRoot(
             modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Button({
+            Button(
+                enabled = validateInputs(selectedProgressionType, minimumWeight, weightIncrease, repIncrease),
+                onClick = {
+                    // TODO test
+                    val settings = ProgressionSettings(
+                        incrementWeightByKg = weightIncrease.toDoubleOrNull() ?: 0.0,
+                        incrementRepsBy = repIncrease.toIntOrNull() ?: 0,
+                        type = selectedProgressionType,
+                        weightThreshold = minimumWeight.toDouble(),
+                        repThreshold = minimumReps,
+                        trigger = ProgressionTrigger.MINIMUM_REPS_AND_WEIGHT_EVERY_SET
+                    )
 
-            }) {
+                    println("DBG: saving progression: $settings")
+                    onSave(settings)
+                }
+            ) {
                 Text("Save")
             }
             Button(onCancel) {
                 Text("Cancel")
             }
 
-            // TODO only visible if block already has a progression
-            Button({ }) {
-                Text("Delete")
+            if (block.progressionSettings != null) {
+                Button(onDelete) {
+                    Text("Delete")
+                }
             }
         }
     }
