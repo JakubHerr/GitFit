@@ -109,7 +109,7 @@ fun NavGraphBuilder.planningGraph(
         val scope = rememberCoroutineScope()
 
         PlanWorkoutDetailScreen(
-            workout = viewModel.plan.workouts[idx],
+            workout = viewModel.plan.workoutPlans[idx],
             onAction = { viewModel.onAction(it) },
             onAddExerciseClick = { workoutIdx ->
                 navController.navigate(AddExerciseToPlanRoute(workoutIdx))
@@ -121,7 +121,7 @@ fun NavGraphBuilder.planningGraph(
 
     composable<EditProgressionRoute> { backstackEntry ->
         val entry = backstackEntry.toRoute<EditProgressionRoute>()
-        val workout = viewModel.plan.workouts.getOrNull(entry.workoutIdx)
+        val workout = viewModel.plan.workoutPlans.getOrNull(entry.workoutIdx)
         val block = workout?.blocks?.getOrNull(entry.blockIdx)
 
         if (block == null) {

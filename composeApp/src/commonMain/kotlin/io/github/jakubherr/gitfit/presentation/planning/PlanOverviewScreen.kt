@@ -79,7 +79,7 @@ fun PlanListItem(
     Card(onPlanClicked) {
         Column(modifier.fillMaxWidth()) {
             Text(plan.name)
-            plan.workouts.forEach { workout ->
+            plan.workoutPlans.forEach { workout ->
                 Text(workout.name, fontWeight = FontWeight.SemiBold)
                 val exerciseList = workout.blocks.joinToString { it.exercise.name }
                 Text("-\t$exerciseList")

@@ -37,7 +37,7 @@ fun PlanCreationScreen(
 
         Text("Workout days")
         LazyColumn {
-            items(plan.workouts) { workout ->
+            items(plan.workoutPlans) { workout ->
                 WorkoutListItem(
                     workout,
                     onItemClicked = { onWorkoutSelected(workout.idx) },
@@ -49,7 +49,7 @@ fun PlanCreationScreen(
         Button({
             val workout = WorkoutPlan(
                 "New workout",
-                plan.workouts.size,
+                plan.workoutPlans.size,
                 emptyList(),
             )
             onAction(PlanAction.AddWorkout(workout))

@@ -39,7 +39,7 @@ class FirebasePlanRepository: PlanRepository {
     override suspend fun getCustomWorkout(userId: String, planId: String, workoutIdx: Int): WorkoutPlan {
         return withContext(context) {
             val plan = userPlanRef(userId).document(planId).get().data<Plan>()
-            val workout = plan.workouts.find { it.idx == workoutIdx }
+            val workout = plan.workoutPlans.find { it.idx == workoutIdx }
             return@withContext workout!! // TODO error checking
         }
     }

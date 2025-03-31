@@ -17,7 +17,6 @@ enum class ProgressionType {
     INCREASE_REPS,
 }
 
-// increase every workout is a bad idea
 enum class ProgressionTrigger {
     MINIMUM_REPS_AND_WEIGHT_EVERY_SET,
 }

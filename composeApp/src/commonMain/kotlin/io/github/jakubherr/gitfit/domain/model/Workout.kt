@@ -6,6 +6,9 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import kotlinx.serialization.Serializable
 
+// Important: never rename existing variable names, it will create problems with existing records in database
+// TODO solution: Add abstraction to data layer that will translate domain models to DTO
+
 @Serializable
 data class Workout(
     val id: String,
@@ -61,56 +64,6 @@ data class Workout(
         object EmptySetInExercise: Error("Some set has invalid values")
     }
 }
-
-@Serializable
-data class WorkoutPlan(
-    val name: String = "",
-    val idx: Int,
-    val blocks: List<Block>,
-) {
-    fun toWorkout() = Workout(
-        id = "",
-        blocks = blocks,
-        completed = false,
-        inProgress = false,
-    )
-}
-
-@Serializable
-data class Block(
-    val idx: Int,
-    val exercise: Exercise,
-    val series: List<Series> = emptyList(),
-    val restTimeSeconds: Long? = null,
-    val progressionSettings: ProgressionSettings? = null
-)
-
-// this should be named Set but is named series because of name conflict with Set collection
-@Serializable
-data class Series(
-    val idx: Int,
-    val repetitions: Long?,
-    val weight: Double?,
-    val completed: Boolean,
-) {
-    val volume = if (weight == null || repetitions == null) null else weight * repetitions
-}
-
-val mockSeries =
-    Series(
-        0,
-        repetitions = 3,
-        weight = 40.0,
-        completed = false,
-    )
-
-val mockBlock =
-    Block(
-        idx = 0,
-        exercise = mockExercise,
-        series = listOf(mockSeries),
-        restTimeSeconds = 69,
-    )
 
 val mockWorkout =
     Workout(
