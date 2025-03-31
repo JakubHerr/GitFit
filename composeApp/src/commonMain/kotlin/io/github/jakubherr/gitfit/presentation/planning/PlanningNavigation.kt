@@ -2,6 +2,7 @@ package io.github.jakubherr.gitfit.presentation.planning
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -48,20 +49,27 @@ fun NavGraphBuilder.planningGraph(
     composable<PlanDetailRoute> { backstackEntry ->
         val planId = backstackEntry.toRoute<PlanDetailRoute>().planId
         val userPlans = viewModel.userPlans.collectAsStateWithLifecycle(emptyList())
+        val scope = rememberCoroutineScope()
 
         // TODO differentiate user and predefined plan
         val userPlan = userPlans.value.find { it.id == planId }
 
         val workoutViewModel: WorkoutViewModel = koinViewModel()
+        val currentWorkout by workoutViewModel.currentWorkout.collectAsStateWithLifecycle()
 
         userPlan?.let { plan ->
             PlanDetailScreen(
                 plan,
                 onWorkoutSelected = { workout ->
-                    // TODO should handle edge case where user already has a workout in progress
                     println("DBG: Plan selected: ${plan.id}, workout index ${workout.idx}")
-                    workoutViewModel.onAction(WorkoutAction.StartPlannedWorkout(plan.id, workout.idx))
-                    navController.navigate(WorkoutInProgressRoute)
+                    if (currentWorkout == null) {
+                        workoutViewModel.onAction(WorkoutAction.StartPlannedWorkout(plan.id, workout.idx))
+                        navController.navigate(WorkoutInProgressRoute)
+                    } else {
+                        scope.launch {
+                            snackbarHostState.showSnackbar("A different workout is already in progress!")
+                        }
+                    }
 
                 },
                 onAction = { action ->

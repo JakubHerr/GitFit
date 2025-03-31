@@ -126,8 +126,7 @@ class WorkoutViewModel(
                     when (settings.type) {
                         ProgressionType.INCREASE_WEIGHT-> {
                             println("DBG: progressing ${block.exercise.name} by ${settings.weightThreshold}")
-                            val newBlock = block.progressWeight(settings.incrementWeightByKg)
-                            workoutPlanCopy = workoutPlanCopy.updateBlock(newBlock)
+                            workoutPlanCopy = workoutPlanCopy.updateBlock(block.progressWeight(settings.incrementWeightByKg))
                         }
                         ProgressionType.INCREASE_REPS -> {
                             println("DBG: progressing ${block.exercise.name} by ${settings.incrementRepsBy}")
