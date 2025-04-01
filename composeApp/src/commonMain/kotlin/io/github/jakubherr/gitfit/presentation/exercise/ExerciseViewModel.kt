@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.jakubherr.gitfit.data.repository.FirebaseAuthRepository
-import io.github.jakubherr.gitfit.domain.ExerciseRepository
+import io.github.jakubherr.gitfit.domain.repository.ExerciseRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import kotlinx.coroutines.launch
 
@@ -24,7 +24,7 @@ class ExerciseViewModel(
     fun onAction(action: ExerciseAction) {
         when (action) {
             is ExerciseAction.ExerciseCreated -> createExercise(action.exercise)
-            is ExerciseAction.FetchExercise -> fetchExercise(action.exerciseId)
+            is ExerciseAction.FetchExercise -> fetchExercise(action.exerciseId) // TODO fetch will fail/hang offline!
             else -> { }
         }
     }
@@ -38,7 +38,7 @@ class ExerciseViewModel(
     private fun fetchExercise(exerciseId: String) {
         viewModelScope.launch {
             lastFetchedExercise =
-                exerciseRepository.getExerciseById(exerciseId) ?:
+                exerciseRepository.getExerciseById(exerciseId) ?: // this will hang offline?
                 exerciseRepository.getCustomExerciseById(authRepository.currentUser.id, exerciseId)
         }
     }

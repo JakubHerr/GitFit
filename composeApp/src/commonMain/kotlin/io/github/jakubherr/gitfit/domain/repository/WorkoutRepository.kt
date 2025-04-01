@@ -1,4 +1,4 @@
-package io.github.jakubherr.gitfit.domain
+package io.github.jakubherr.gitfit.domain.repository
 
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.Series
@@ -15,6 +15,8 @@ interface WorkoutRepository {
     suspend fun getWorkout(workoutId: String): Workout?
 
     suspend fun completeWorkout(workoutId: String)
+
+    suspend fun completeWorkout(workout: Workout)
 
     suspend fun deleteWorkout(workoutId: String)
 

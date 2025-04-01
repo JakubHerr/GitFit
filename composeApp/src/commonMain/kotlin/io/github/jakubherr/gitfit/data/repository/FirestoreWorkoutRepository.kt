@@ -2,9 +2,9 @@ package io.github.jakubherr.gitfit.data.repository
 
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
-import io.github.jakubherr.gitfit.domain.AuthRepository
-import io.github.jakubherr.gitfit.domain.PlanRepository
-import io.github.jakubherr.gitfit.domain.WorkoutRepository
+import io.github.jakubherr.gitfit.domain.repository.AuthRepository
+import io.github.jakubherr.gitfit.domain.repository.PlanRepository
+import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.Series
@@ -72,6 +72,8 @@ class FirestoreWorkoutRepository(
                 blocks = plan.blocks,
                 completed = false,
                 inProgress = true,
+                planId = planId,
+                planWorkoutIdx = workoutIdx,
             )
 
             workoutRef(userId).document(id).set(workout)
@@ -88,9 +90,20 @@ class FirestoreWorkoutRepository(
     }
 
     override suspend fun completeWorkout(workoutId: String) {
-        val userId = authRepository.currentUser.id.ifBlank { return }
         withContext(dispatcher) {
+            val userId = authRepository.currentUser.id.ifBlank { return@withContext }
+            println("DBG: completing workout $workoutId of user $userId")
             workoutRef(userId).document(workoutId).update("completed" to true, "inProgress" to false)
+        }
+    }
+
+    override suspend fun completeWorkout(workout: Workout) {
+        withContext(dispatcher) {
+            val userId = authRepository.currentUser.id.ifBlank { return@withContext }
+            println("DBG: completing workout ${workout.id} of user $userId")
+
+            val newWorkout = workout.copy(completed = true, inProgress = false)
+            workoutRef(userId).document(workout.id).set(newWorkout)
         }
     }
 
@@ -117,7 +130,9 @@ class FirestoreWorkoutRepository(
 
             val newWorkout = workout.copy(blocks = workout.blocks + block)
 
+            println("DBG: Adding new block to workout $workoutId with set")
             workoutRef(userId).document(workoutId).set(newWorkout)
+
         }
     }
 

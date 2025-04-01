@@ -28,7 +28,7 @@ import gitfit.composeapp.generated.resources.log_out
 import io.github.jakubherr.gitfit.presentation.auth.AuthAction
 import io.github.jakubherr.gitfit.presentation.auth.AuthState
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
-import io.github.jakubherr.gitfit.presentation.auth.PasswordField
+import io.github.jakubherr.gitfit.presentation.shared.PasswordInputField
 import io.github.jakubherr.gitfit.presentation.auth.toMessage
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -59,7 +59,7 @@ fun SettingsScreen(
             var password by remember { mutableStateOf("") }
 
             Text("Please confirm account deletion by entering your password")
-            PasswordField(
+            PasswordInputField(
                 password = password,
                 onPasswordChange = { password = it }
             )

@@ -2,7 +2,7 @@ package io.github.jakubherr.gitfit.data.repository
 
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
-import io.github.jakubherr.gitfit.domain.ExerciseRepository
+import io.github.jakubherr.gitfit.domain.repository.ExerciseRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -50,6 +50,7 @@ class FirestoreExerciseRepository : ExerciseRepository {
     }
 
     override suspend fun getExerciseById(exerciseId: String): Exercise? {
+        println("DBG: fetching default exercise")
         return withContext(context) {
             val result = exerciseRef.document(exerciseId).get()
             if (result.exists) result.data<Exercise>() else null
@@ -57,6 +58,7 @@ class FirestoreExerciseRepository : ExerciseRepository {
     }
 
     override suspend fun getCustomExerciseById(userId: String, exerciseId: String): Exercise? {
+        println("DBG: fetching custom exercise")
         return withContext(context) {
             val result = userExerciseRef(userId).document(exerciseId).get()
             if (result.exists) result.data<Exercise>() else null

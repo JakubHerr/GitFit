@@ -1,4 +1,4 @@
-package io.github.jakubherr.gitfit.domain
+package io.github.jakubherr.gitfit.domain.repository
 
 import io.github.jakubherr.gitfit.domain.model.Measurement
 import kotlinx.coroutines.flow.Flow

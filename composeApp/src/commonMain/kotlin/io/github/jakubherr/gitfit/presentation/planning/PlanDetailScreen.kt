@@ -51,7 +51,7 @@ fun PlanDetailScreen(
         }
 
         LazyColumn {
-            items(plan.workouts) { workout ->
+            items(plan.workoutPlans) { workout ->
                 WorkoutListItem(
                     workout,
                     onActionClicked = { onWorkoutSelected(workout) },

@@ -5,11 +5,11 @@ import io.github.jakubherr.gitfit.data.repository.FirebasePlanRepository
 import io.github.jakubherr.gitfit.data.repository.FirestoreExerciseRepository
 import io.github.jakubherr.gitfit.data.repository.FirestoreMeasurementRepository
 import io.github.jakubherr.gitfit.data.repository.FirestoreWorkoutRepository
-import io.github.jakubherr.gitfit.domain.AuthRepository
-import io.github.jakubherr.gitfit.domain.ExerciseRepository
-import io.github.jakubherr.gitfit.domain.MeasurementRepository
-import io.github.jakubherr.gitfit.domain.PlanRepository
-import io.github.jakubherr.gitfit.domain.WorkoutRepository
+import io.github.jakubherr.gitfit.domain.repository.AuthRepository
+import io.github.jakubherr.gitfit.domain.repository.ExerciseRepository
+import io.github.jakubherr.gitfit.domain.repository.MeasurementRepository
+import io.github.jakubherr.gitfit.domain.repository.PlanRepository
+import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseViewModel
 import io.github.jakubherr.gitfit.presentation.graph.GraphViewModel

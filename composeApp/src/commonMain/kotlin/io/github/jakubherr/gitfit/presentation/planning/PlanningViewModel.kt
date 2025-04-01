@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.jakubherr.gitfit.domain.AuthRepository
-import io.github.jakubherr.gitfit.domain.PlanRepository
+import io.github.jakubherr.gitfit.domain.repository.AuthRepository
+import io.github.jakubherr.gitfit.domain.repository.PlanRepository
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.Plan
@@ -34,19 +34,22 @@ class PlanningViewModel(
             is PlanAction.SavePlan -> savePlan()
             is PlanAction.RenamePlan -> plan = plan.copy(name = action.name)
             is PlanAction.EditPlan -> plan = action.plan
-            is PlanAction.DiscardPlan -> discardPlan()
+            is PlanAction.DiscardPlan -> plan = Plan.Empty
             is PlanAction.DeletePlan -> deletePlan(action.planId)
 
-            is PlanAction.AddWorkout -> addWorkout(action.workout)
-            is PlanAction.SaveWorkout -> saveWorkout(action.workout)
-            is PlanAction.DeleteWorkout -> removeWorkout(action.workout)
+            is PlanAction.AddWorkout -> plan = plan.addWorkoutPlan(action.workout)
+            is PlanAction.SaveWorkout -> validateWorkoutPlan(action.workout)
+            is PlanAction.DeleteWorkout -> plan = plan.removeWorkoutPlan(action.workout)
 
-            is PlanAction.AddExercise -> addExercise(action.workoutIdx, action.exercise)
-            is PlanAction.RemoveExercise -> removeBlock(action.workout, action.block)
+            is PlanAction.AddExercise -> plan = plan.addExercise(action.workoutIdx, action.exercise)
+            is PlanAction.RemoveExercise -> plan = plan.removeBlock(action.workout, action.block)
 
-            is PlanAction.AddSet -> addSet(action.workout, action.block)
-            is PlanAction.EditSet -> updateSet(action.workout, action.block, action.set)
-            is PlanAction.RemoveSet -> removeSet(action.workout, action.block, action.set)
+            is PlanAction.AddSet -> plan = plan.addSeries(action.workout, action.block)
+            is PlanAction.EditSet -> plan = plan.updateSeries(action.workout, action.block, action.set)
+            is PlanAction.RemoveSet -> plan = plan.removeSeries(action.workout, action.block, action.set)
+
+            is PlanAction.DeleteProgression -> plan = plan.setProgression(action.workout, action.block, null)
+            is PlanAction.SaveProgression -> plan = plan.setProgression(action.workout, action.block, action.progression)
 
             PlanAction.ErrorHandled -> error = null
         }
@@ -65,10 +68,6 @@ class PlanningViewModel(
         }
     }
 
-    private fun discardPlan() {
-        plan = Plan.Empty
-    }
-
     private fun deletePlan(planId: String) {
         val user = authRepository.currentUser
         if (!user.loggedIn) return
@@ -76,60 +75,9 @@ class PlanningViewModel(
         viewModelScope.launch { planRepository.deleteCustomPlan(user.id, planId) }
     }
 
-    private fun addWorkout(workout: WorkoutPlan) {
-        plan = plan.copy(workouts = plan.workouts + workout)
-    }
-
-    private fun updateWorkout(workout: WorkoutPlan) {
-        val workouts = plan.workouts.toMutableList()
-        workouts[workout.idx] = workout
-        plan = plan.copy(workouts = workouts)
-    }
-
-    private fun removeWorkout(workout: WorkoutPlan) {
-        val newWorkout = plan.workouts - workout
-        plan = plan.copy(workouts = newWorkout)
-    }
-
-    private fun saveWorkout(workout: WorkoutPlan) {
-        val workoutError = workout.toWorkout().error ?: return
+    private fun validateWorkoutPlan(workoutPlan: WorkoutPlan) {
+        val workoutError = workoutPlan.toWorkout().error ?: return
         error = Plan.Error.InvalidWorkout(workoutError)
-    }
-
-    private fun addExercise(workoutIdx: Int, exercise: Exercise) {
-        val workout = plan.workouts[workoutIdx]
-        val updated = workout.copy(blocks = workout.blocks + Block(workout.blocks.size, exercise))
-        updateWorkout(updated)
-    }
-
-    private fun updateBlock(workout: WorkoutPlan, block: Block) {
-        val newBlocks = workout.blocks.toMutableList()
-        newBlocks[block.idx] = block
-        updateWorkout(workout.copy(blocks = newBlocks))
-    }
-
-    private fun setProgression(workout: WorkoutPlan, block: Block, progression: ProgressionSettings) {
-        // TODO implement progression saving and evaluation
-    }
-
-    private fun removeBlock(workout: WorkoutPlan, block: Block) {
-        val newWorkout = workout.copy(blocks = workout.blocks - block)
-        updateWorkout(newWorkout)
-    }
-
-    private fun addSet(workout: WorkoutPlan, block: Block) {
-        val newBlock = block.copy(series = block.series + Series(block.series.size, null, null, false))
-        updateBlock(workout, newBlock)
-    }
-
-    private fun removeSet(workout: WorkoutPlan, block: Block, set: Series) {
-        updateBlock(workout, block.copy(series = block.series - set))
-    }
-
-    private fun updateSet(workout: WorkoutPlan, block: Block, set: Series) {
-        val newSeries = plan.workouts[workout.idx].blocks[block.idx].series.toMutableList()
-        newSeries[set.idx] = set
-        updateBlock(workout, block.copy(series = newSeries))
     }
 }
 
@@ -151,7 +99,8 @@ sealed interface PlanAction {
     class EditSet(val workout: WorkoutPlan, val block: Block, val set: Series) : PlanAction
     class RemoveSet(val workout: WorkoutPlan, val block: Block, val set: Series) : PlanAction
 
+    class SaveProgression(val workout: WorkoutPlan, val block: Block, val progression: ProgressionSettings) : PlanAction
+    class DeleteProgression(val workout: WorkoutPlan, val block: Block) : PlanAction
+
     object ErrorHandled : PlanAction
 }
-
-

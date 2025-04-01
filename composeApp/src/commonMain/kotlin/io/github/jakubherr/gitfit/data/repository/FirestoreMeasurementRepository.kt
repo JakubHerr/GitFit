@@ -2,11 +2,13 @@ package io.github.jakubherr.gitfit.data.repository
 
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
-import io.github.jakubherr.gitfit.domain.MeasurementRepository
+import io.github.jakubherr.gitfit.domain.repository.MeasurementRepository
 import io.github.jakubherr.gitfit.domain.model.Measurement
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -14,6 +16,7 @@ import kotlinx.datetime.toLocalDateTime
 class FirestoreMeasurementRepository : MeasurementRepository {
     private fun measurementsRef(userId: String) = Firebase.firestore.collection("USERS").document(userId).collection("MEASUREMENTS")
     private val today get() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
+    private val dispatcher = Dispatchers.IO
 
     override fun getAllMeasurements(userId: String): Flow<List<Measurement>> {
         if (userId.isBlank()) return emptyFlow()
@@ -38,7 +41,9 @@ class FirestoreMeasurementRepository : MeasurementRepository {
     }
 
     override suspend fun saveMeasurement(userId: String, measurement: Measurement) {
-        measurementsRef(userId).document(today).set(measurement)
+        withContext(dispatcher) {
+            measurementsRef(userId).document(today).set(measurement)
+        }
     }
 
     override suspend fun deleteMeasurement(userId: String, measurementId: String) {
