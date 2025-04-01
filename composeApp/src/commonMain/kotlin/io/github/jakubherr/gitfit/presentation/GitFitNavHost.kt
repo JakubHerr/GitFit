@@ -119,9 +119,6 @@ fun GitFitNavHost(
             measurementGraph(navController, snackbarHostState)
 
             planningGraph(navController, planViewModel, snackbarHostState)
-
-
-
             composable<TrendsRoute> {
                 GraphScreenRoot() {
                     navController.navigate(ExerciseListRoute)

@@ -50,12 +50,7 @@ fun PlanCreationScreen(
             Text("Workout days")
 
             Button({
-                val workout = WorkoutPlan(
-                    "New workout",
-                    plan.workoutPlans.size,
-                    emptyList(),
-                )
-                onAction(PlanAction.AddWorkout(workout))
+                onAction(PlanAction.AddWorkout(WorkoutPlan.Empty(plan.workoutPlans.size)))
             }) {
                 Text("Add workout day")
             }

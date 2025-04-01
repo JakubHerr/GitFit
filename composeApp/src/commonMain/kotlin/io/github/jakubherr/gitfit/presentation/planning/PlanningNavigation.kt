@@ -118,7 +118,7 @@ fun NavGraphBuilder.planningGraph(
         val scope = rememberCoroutineScope()
 
         PlanWorkoutCreationScreen(
-            workout = viewModel.plan.workoutPlans[idx],
+            workoutPlan = viewModel.plan.workoutPlans[idx],
             onAction = { viewModel.onAction(it) },
             onAddExerciseClick = { workoutIdx ->
                 navController.navigate(AddExerciseToPlanRoute(workoutIdx))

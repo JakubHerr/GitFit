@@ -1,6 +1,8 @@
 package io.github.jakubherr.gitfit.presentation.planning
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -17,38 +19,52 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 import io.github.jakubherr.gitfit.presentation.shared.PlanBlockItem
+import io.github.jakubherr.gitfit.presentation.shared.StringInputField
 
 @Composable
 fun PlanWorkoutCreationScreen(
-    workout: WorkoutPlan,
+    workoutPlan: WorkoutPlan,
     modifier: Modifier = Modifier,
     onAction: (PlanAction) -> Unit = {},
     onAddExerciseClick: (Int) -> Unit = {},
     onSave: () -> Unit = {},
     onEditProgression: (Block) -> Unit = {},
 ) {
-    LazyColumn {
-        items(workout.blocks) { block ->
-            PlanBlockItem(
-                block,
-                onAddSetClicked = { onAction(PlanAction.AddSet(workout, block)) },
-                onValidSetEntered = { onAction(PlanAction.EditSet(workout, block, it)) },
-                onDeleteSeries =  { onAction(PlanAction.RemoveSet(workout, block, it)) },
-                onDeleteExercise = { onAction(PlanAction.RemoveExercise(workout, block)) },
-                onEditProgression = { onEditProgression(block) }
-            )
-        }
-        item {
-            Button(onClick = { onAddExerciseClick(workout.idx) }) { Text("Add exercise") }
-        }
-        item {
-            Button({
-                onAction(PlanAction.SaveWorkout(workout))
-                onSave()
-            }) { Text("Save workout") }
+    Column(
+        modifier.padding(16.dp)
+    ) {
+        StringInputField(
+            value = workoutPlan.name,
+            onValueChange = { onAction(PlanAction.RenamePlan(it)) },
+            maxLength = 20,
+            label = { Text("Plan name") },
+            isError = workoutPlan.name.isBlank()
+        )
+
+        LazyColumn {
+            items(workoutPlan.blocks) { block ->
+                PlanBlockItem(
+                    block,
+                    onAddSetClicked = { onAction(PlanAction.AddSet(workoutPlan, block)) },
+                    onValidSetEntered = { onAction(PlanAction.EditSet(workoutPlan, block, it)) },
+                    onDeleteSeries = { onAction(PlanAction.RemoveSet(workoutPlan, block, it)) },
+                    onDeleteExercise = { onAction(PlanAction.RemoveExercise(workoutPlan, block)) },
+                    onEditProgression = { onEditProgression(block) }
+                )
+            }
+            item {
+                Button(onClick = { onAddExerciseClick(workoutPlan.idx) }) { Text("Add exercise") }
+            }
+            item {
+                Button({
+                    onAction(PlanAction.SaveWorkout(workoutPlan))
+                    onSave()
+                }) { Text("Save workout") }
+            }
         }
     }
 }

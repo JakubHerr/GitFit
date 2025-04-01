@@ -13,7 +13,6 @@ The application has the following major features and use cases:
 - start and finish a planned workout with progression
 - log out of their account
 
-
 # Authentication
 
 ##### User registration
@@ -82,7 +81,7 @@ The application has the following major features and use cases:
 - String User input is generally limited to 20 characters with exception for email and password fields
 - User measurement and weight input are all limited to 6 digits, including 2 decimal places
 - repetition count is limited to a whole number
-- TODO Plan, exercise and workout name must not be blank! 
+- Plan, exercise and workout name must not be blank! 
 
 #### Auth
 - User's password must be at least 12 characters long
@@ -110,4 +109,4 @@ The application has the following major features and use cases:
 - User can navigate between top-level destinations using a navigation bar
 - TODO user can navigate to the previous destination using a back button
 - User can start a predefined workout by clicking on a plan and selecting a workout day
-
+- TODO handle back navigation when user is exiting an operation with unsaved progress (workout plan)

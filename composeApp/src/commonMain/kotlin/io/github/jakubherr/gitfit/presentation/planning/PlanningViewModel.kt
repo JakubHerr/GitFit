@@ -38,6 +38,7 @@ class PlanningViewModel(
             is PlanAction.DeletePlan -> deletePlan(action.planId)
 
             is PlanAction.AddWorkout -> plan = plan.addWorkoutPlan(action.workout)
+            is PlanAction.UpdateWorkout -> plan.updateWorkoutPlan(action.workout)
             is PlanAction.SaveWorkout -> validateWorkoutPlan(action.workout)
             is PlanAction.DeleteWorkout -> plan = plan.removeWorkoutPlan(action.workout)
 
@@ -89,6 +90,7 @@ sealed interface PlanAction {
     class DeletePlan(val planId: String) : PlanAction
 
     class AddWorkout(val workout: WorkoutPlan) : PlanAction
+    class UpdateWorkout(val workout: WorkoutPlan) : PlanAction // TODO will this break validation?
     class SaveWorkout(val workout: WorkoutPlan) : PlanAction
     class DeleteWorkout(val workout: WorkoutPlan) : PlanAction
 

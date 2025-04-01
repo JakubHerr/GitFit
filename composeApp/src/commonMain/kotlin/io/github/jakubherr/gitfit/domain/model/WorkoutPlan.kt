@@ -31,4 +31,12 @@ data class WorkoutPlan(
         }
         return copy(blocks = newBlocks)
     }
+
+    companion object {
+        fun Empty(idx: Int) = WorkoutPlan(
+            "New workout",
+            idx,
+            emptyList(),
+        )
+    }
 }
