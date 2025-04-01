@@ -105,4 +105,5 @@ fun AuthError.toMessage() = when (this) {
     AuthError.NoInternet -> "No internet"
     AuthError.PasswordTooWeak -> "Password too weak"
     AuthError.Unknown -> "Unknown error"
+    AuthError.UserLoggedOut -> "User is logged out"
 }

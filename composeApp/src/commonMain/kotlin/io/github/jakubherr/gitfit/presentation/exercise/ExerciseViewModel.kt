@@ -5,20 +5,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.jakubherr.gitfit.data.repository.FirebaseAuthRepository
 import io.github.jakubherr.gitfit.domain.repository.ExerciseRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
+import io.github.jakubherr.gitfit.domain.repository.AuthRepository
 import kotlinx.coroutines.launch
 
 class ExerciseViewModel(
     private val exerciseRepository: ExerciseRepository,
-    private val authRepository: FirebaseAuthRepository,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
     val defaultExercises = exerciseRepository.getDefaultExercises()
     val customExercises = exerciseRepository.getCustomExercises(authRepository.currentUser.id)
 
-    // TODO add loading/error/result state
-    var lastFetchedExercise by mutableStateOf<Exercise?>(null)
+    var fetchedExercise by mutableStateOf<ExerciseFetchResult>(ExerciseFetchResult.Loading)
         private set
 
     fun onAction(action: ExerciseAction) {
@@ -36,15 +35,25 @@ class ExerciseViewModel(
     }
 
     private fun fetchExercise(exerciseId: String) {
+        println("DBG: fetch exercise called")
+        fetchedExercise = ExerciseFetchResult.Loading
         viewModelScope.launch {
-            exerciseRepository.getDefaultExerciseById(exerciseId)
-                .onSuccess { lastFetchedExercise = it }
+            exerciseRepository.getDefaultExercise(exerciseId)
+                .onSuccess { fetchedExercise = ExerciseFetchResult.Success(it) }
                 .onFailure {
-                    val custom = exerciseRepository.getCustomExerciseById(authRepository.currentUser.id, exerciseId)
-                    custom.onSuccess { lastFetchedExercise = it }
+                    val custom = exerciseRepository.getCustomExercise(authRepository.currentUser.id, exerciseId)
+                    custom
+                        .onSuccess { fetchedExercise = ExerciseFetchResult.Success(it) }
+                        .onFailure { ExerciseFetchResult.Failure(it) }
                 }
         }
     }
+}
+
+sealed class ExerciseFetchResult {
+    object Loading : ExerciseFetchResult()
+    class Success(val exercise: Exercise) : ExerciseFetchResult()
+    class Failure(val e: Throwable) : ExerciseFetchResult()
 }
 
 sealed interface ExerciseAction {

@@ -28,4 +28,5 @@ sealed class AuthError : Exception() {
     object NoInternet : AuthError()
     object Generic: AuthError()
     object Unknown: AuthError()
+    object UserLoggedOut: AuthError()
 }

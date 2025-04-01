@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,7 +17,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.jakubherr.gitfit.domain.model.Exercise
-import io.github.jakubherr.gitfit.domain.model.mockExercise
 import io.github.jakubherr.gitfit.presentation.graph.BasicLineGraph
 import io.github.jakubherr.gitfit.presentation.graph.ExerciseMetric
 import io.github.jakubherr.gitfit.presentation.graph.GraphAction
@@ -32,17 +32,19 @@ fun ExerciseDetailScreenRoot(
     exerciseViewModel: ExerciseViewModel = koinViewModel(),
 ) {
     val data by graphViewModel.dataPoints.collectAsStateWithLifecycle()
-    val exercise = exerciseViewModel.lastFetchedExercise
+    val exerciseFetch = exerciseViewModel.fetchedExercise
 
-    if (exercise != null) {
-        ExerciseDetailScreen(
-            exercise = exercise,
-            graphData = data,
-            selectedMetric = graphViewModel.selectedMetric,
-            onAction = { graphViewModel.onAction(it) }
-        )
-    } else {
-        // TODO: loading/exercise not found UI
+    when (exerciseFetch) {
+        is ExerciseFetchResult.Loading -> CircularProgressIndicator()
+        is ExerciseFetchResult.Failure -> Text("Some error occurred")
+        is ExerciseFetchResult.Success -> {
+            ExerciseDetailScreen(
+                exercise = exerciseFetch.exercise,
+                graphData = data,
+                selectedMetric = graphViewModel.selectedMetric,
+                onAction = { graphViewModel.onAction(it) }
+            )
+        }
     }
 }
 

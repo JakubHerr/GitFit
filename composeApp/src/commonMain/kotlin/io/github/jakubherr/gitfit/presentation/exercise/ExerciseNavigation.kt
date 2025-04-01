@@ -1,5 +1,6 @@
 package io.github.jakubherr.gitfit.presentation.exercise
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -39,7 +40,10 @@ fun NavGraphBuilder.exerciseNavigation(
     composable<ExerciseDetailRoute> { backstackEntry ->
         val exerciseId = backstackEntry.toRoute<ExerciseDetailRoute>().exerciseId
         val exerciseVm: ExerciseViewModel = koinViewModel()
-        exerciseVm.onAction(ExerciseAction.FetchExercise(exerciseId))
+
+        LaunchedEffect(true) {
+            exerciseVm.onAction(ExerciseAction.FetchExercise(exerciseId))
+        }
         val graphVm: GraphViewModel = koinViewModel()
 
         ExerciseDetailScreenRoot(
