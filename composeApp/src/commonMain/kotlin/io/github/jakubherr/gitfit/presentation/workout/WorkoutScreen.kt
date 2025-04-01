@@ -1,20 +1,22 @@
 package io.github.jakubherr.gitfit.presentation.workout
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,25 +32,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.add_exercise
-import gitfit.composeapp.generated.resources.add_set
 import gitfit.composeapp.generated.resources.delete_workout
 import gitfit.composeapp.generated.resources.done
 import gitfit.composeapp.generated.resources.kg
 import gitfit.composeapp.generated.resources.reps
 import gitfit.composeapp.generated.resources.save_workout
 import gitfit.composeapp.generated.resources.set
-import io.github.jakubherr.gitfit.domain.isNonNegative
-import io.github.jakubherr.gitfit.domain.isNonNegativeDouble
-import io.github.jakubherr.gitfit.domain.isNonNegativeInt
-import io.github.jakubherr.gitfit.domain.isNonNegativeLong
-import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
-import io.github.jakubherr.gitfit.domain.model.mockSeries
-import io.github.jakubherr.gitfit.presentation.shared.CheckableSetInput
-import io.github.jakubherr.gitfit.presentation.shared.DoubleInputField
-import io.github.jakubherr.gitfit.presentation.shared.IntegerInputField
-import io.github.jakubherr.gitfit.presentation.shared.SetInput
+import io.github.jakubherr.gitfit.presentation.shared.WorkoutBlockItem
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -96,13 +88,24 @@ fun WorkoutScreen(
 
                 LazyColumn(Modifier.fillMaxSize().weight(1f)) {
                     items(workout.blocks) { block ->
-                        BlockItem(
+                        WorkoutBlockItem(
                             block,
                             onAction = onAction,
                             onAddSetClicked = {
                                 val set = Series(block.series.size, null, null, false)
                                 onAction(WorkoutAction.AddSet(workout.id, block.idx, set))
                             },
+                            dropdownMenu = {
+                                WorkoutBlockItemDropdownMenu(
+                                    onDeleteExercise = { onAction(WorkoutAction.RemoveBlock(workout.id, block.idx) )},
+                                    onDeleteSet = {
+                                        val series = block.series.lastOrNull()
+                                        series?.let {
+                                            onAction(WorkoutAction.DeleteLastSeries(workout.id, block.idx, it))
+                                        }
+                                    }
+                                )
+                            }
                         )
                     }
                 }
@@ -121,43 +124,36 @@ fun WorkoutScreen(
 }
 
 @Composable
-fun BlockItem(
-    block: Block,
+fun WorkoutBlockItemDropdownMenu(
     modifier: Modifier = Modifier,
-    onAction: (WorkoutAction) -> Unit = {},
-    onAddSetClicked: () -> Unit = {},
+    onDeleteExercise: () -> Unit = {},
+    onDeleteSet: () -> Unit = {},
 ) {
-    Card(Modifier.fillMaxWidth().padding(16.dp)) {
-        Column(Modifier.padding(8.dp)) {
-            Text(block.exercise.name, style = MaterialTheme.typography.titleLarge)
-            Spacer(Modifier.height(16.dp))
-            Column {
-                SetHeader()
-                Spacer(Modifier.height(16.dp))
+    var expanded by remember { mutableStateOf(false) }
 
-                block.series.forEachIndexed { seriesIdx, series ->
-                    CheckableSetInput(
-                        seriesIdx,
-                        series,
-                        onToggle = { weight, reps ->
-                            onAction(
-                                WorkoutAction.ModifySeries(
-                                    block.idx,
-                                    series.copy(
-                                        weight = weight.toDouble(),
-                                        repetitions = reps.toLong(),
-                                        completed = !series.completed,
-                                    ),
-                                ),
-                            )
-                        },
-                    )
+    Box {
+        IconButton({ expanded = !expanded }) {
+            Icon(Icons.Default.MoreVert, "")
+        }
+
+        DropdownMenu(
+            expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text("Delete exercise") },
+                onClick = {
+                    expanded = false
+                    onDeleteExercise()
                 }
-            }
-            Spacer(modifier.height(8.dp))
-            Button(onClick = onAddSetClicked) {
-                Text(stringResource(Res.string.add_set))
-            }
+            )
+            DropdownMenuItem(
+                text = { Text("Delete last set") },
+                onClick = {
+                    expanded = false
+                    onDeleteSet()
+                }
+            )
         }
     }
 }

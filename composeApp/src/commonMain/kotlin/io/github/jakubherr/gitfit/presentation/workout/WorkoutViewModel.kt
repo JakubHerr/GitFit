@@ -45,14 +45,21 @@ class WorkoutViewModel(
     fun onAction(action: WorkoutAction) {
         when (action) {
             is WorkoutAction.StartNewWorkout -> startNewWorkout()
-            // TODO prevent user from starting a planned workout if one workout is already in progress!
             is WorkoutAction.StartPlannedWorkout -> startPlannedWorkout(action.planId, action.workoutIdx)
             is WorkoutAction.CompleteCurrentWorkout -> completeCurrentWorkout()
             is WorkoutAction.DeleteWorkout -> deleteWorkout(action.workoutId)
             is WorkoutAction.AskForExercise -> { }
             is WorkoutAction.AddBlock -> addBlock(action.workoutId, action.exercise)
-            is WorkoutAction.AddSet -> addSet(action.workoutId, action.blockIdx, action.set)
-            is WorkoutAction.ModifySeries -> modifySeries(action.blockIdx, action.set)
+            is WorkoutAction.RemoveBlock -> removeBlock(action.workoutId, action.blockIdx)
+            is WorkoutAction.AddSet -> addSeries(action.workoutId, action.blockIdx, action.series)
+            is WorkoutAction.ModifySeries -> modifySeries(action.blockIdx, action.series)
+            is WorkoutAction.DeleteLastSeries -> deleteLastSeries(action.workoutId, action.blockIdx, action.series)
+        }
+    }
+
+    private fun removeBlock(workoutId: String, blockIdx: Int) {
+        viewModelScope.launch {
+            workoutRepository.removeBlock(workoutId, blockIdx)
         }
     }
 
@@ -157,21 +164,27 @@ class WorkoutViewModel(
         }
     }
 
-    private fun addSet(
+    private fun addSeries(
         workoutId: String,
         blockIdx: Int,
-        set: Series,
+        series: Series,
     ) {
-        viewModelScope.launch { workoutRepository.addSeries(workoutId, blockIdx, set) }
+        viewModelScope.launch { workoutRepository.addSeries(workoutId, blockIdx, series) }
     }
 
     private fun modifySeries(
         blockIdx: Int,
-        set: Series,
+        series: Series,
     ) {
-        println("DBG: saving series $set to database")
+        println("DBG: saving series $series to database")
         val workoutId = currentWorkout.value?.id ?: return // TODO error handling
-        viewModelScope.launch { workoutRepository.modifySeries(workoutId, blockIdx, set) }
+        viewModelScope.launch { workoutRepository.modifySeries(workoutId, blockIdx, series) }
+    }
+
+    private fun deleteLastSeries(workoutId: String, blockIdx: Int, series: Series) {
+        viewModelScope.launch {
+            workoutRepository.removeSeries(workoutId, blockIdx, series)
+        }
     }
 }
 
@@ -182,11 +195,11 @@ sealed interface WorkoutAction {
     class DeleteWorkout(val workoutId: String) : WorkoutAction
 
     class AddBlock(val workoutId: String, val exercise: Exercise) : WorkoutAction
-    // TODO Remove block
+    class RemoveBlock(val workoutId: String, val blockIdx: Int) : WorkoutAction
 
-    class AddSet(val workoutId: String, val blockIdx: Int, val set: Series) : WorkoutAction
-    class ModifySeries(val blockIdx: Int, val set: Series) : WorkoutAction
-    // TODO remove series
+    class AddSet(val workoutId: String, val blockIdx: Int, val series: Series) : WorkoutAction
+    class ModifySeries(val blockIdx: Int, val series: Series) : WorkoutAction
+    class DeleteLastSeries(val workoutId: String, val blockIdx: Int, val series: Series) : WorkoutAction
 
     class AskForExercise(val workoutId: String) : WorkoutAction
 }

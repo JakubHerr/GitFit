@@ -59,10 +59,10 @@ The application has the following major features and use cases:
 ### Workout recording
 - Start a new unplanned workout or select one from a created plan
 - Add predefined or custom exercise to workout
-- TODO remove exercise from workout
+- remove exercise from workout
 - Add work sets to each exercise
 - Input weight, repetitions and toggle completion on each set
-- TODO User can remove set from exercise
+- User can remove last set from exercise
 - Discard in-progress workout
 - Save finished workout to database
 
@@ -79,7 +79,10 @@ The application has the following major features and use cases:
 
 # User input validation
 - all user input must be validated
-- TODO limit string input lenght for plan name, exercise name etc.
+- String User input is generally limited to 20 characters with exception for email and password fields
+- User measurement and weight input are all limited to 6 digits, including 2 decimal places
+- repetition count is limited to a whole number
+- TODO Plan, exercise and workout name must not be blank! 
 
 #### Auth
 - User's password must be at least 12 characters long
@@ -93,12 +96,12 @@ The application has the following major features and use cases:
 - valid weight is a non-negative number with up to two decimal points
 - User can define progressive overoad settings for each exercise block in workout day
 - overload is optional
-- TODO valid repetition is a positive whole number
+- valid repetition is a whole number (user wants to record failed lift)
 
 #### Measurement
 - all measurements are currently in cm and kg
 - valid measurement is a non-negative number
-- TODO measurement input is limited to two decimal points
+- measurement input is limited to two decimal points
 - currently, all measurement values must be input to be a valid record
 
 ### Navigation

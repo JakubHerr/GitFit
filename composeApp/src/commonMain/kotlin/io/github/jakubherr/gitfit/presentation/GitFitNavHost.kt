@@ -50,7 +50,6 @@ fun GitFitNavHost(
     LaunchedEffect(auth) {
         println("DBG: auth state is ${auth.user.loggedIn}")
         planViewModel.onAction(PlanAction.DiscardPlan)
-        if (!auth.user.loggedIn) navController.navigate(LoginRoute)
     }
 
     val snackbarHostState = remember { SnackbarHostState() }
