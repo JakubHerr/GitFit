@@ -1,6 +1,7 @@
 package io.github.jakubherr.gitfit.data.repository
 
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.FirebaseException
 import dev.gitlive.firebase.firestore.firestore
 import io.github.jakubherr.gitfit.domain.repository.ExerciseRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
@@ -49,19 +50,33 @@ class FirestoreExerciseRepository : ExerciseRepository {
         }
     }
 
-    override suspend fun getExerciseById(exerciseId: String): Exercise? {
+    // offline-first: if id is not found in cache, it will search server -> exception
+    // not finding an exercise could either mean the exercise is custom or the user is offline
+    override suspend fun getDefaultExerciseById(exerciseId: String): Result<Exercise> {
         println("DBG: fetching default exercise")
         return withContext(context) {
-            val result = exerciseRef.document(exerciseId).get()
-            if (result.exists) result.data<Exercise>() else null
+            try {
+                val exercise = exerciseRef.document(exerciseId).get()
+                return@withContext Result.success(exercise.data<Exercise>())
+            } catch (e: FirebaseException) {
+                if (e.message?.contains("offline") == true) {
+                    println("DBG: client is offline!")
+                }
+                println("DBG: exercise fetch failed, ${e.stackTraceToString()}")
+                return@withContext Result.failure(e)
+            }
         }
     }
 
-    override suspend fun getCustomExerciseById(userId: String, exerciseId: String): Exercise? {
+    override suspend fun getCustomExerciseById(userId: String, exerciseId: String): Result<Exercise> {
         println("DBG: fetching custom exercise")
         return withContext(context) {
-            val result = userExerciseRef(userId).document(exerciseId).get()
-            if (result.exists) result.data<Exercise>() else null
+            try {
+                val result = userExerciseRef(userId).document(exerciseId).get()
+                return@withContext Result.success(result.data<Exercise>())
+            } catch (e: FirebaseException) {
+                return@withContext Result.failure(e)
+            }
         }
     }
 }

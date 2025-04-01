@@ -49,7 +49,7 @@ fun ExerciseDetailScreenRoot(
 // use case: show a detail of exercise and records, graphs
 @Composable
 fun ExerciseDetailScreen(
-    exercise: Exercise = mockExercise,
+    exercise: Exercise,
     graphData: List<DefaultPoint<String, Int>>,
     selectedMetric: ExerciseMetric,
     modifier: Modifier = Modifier,

@@ -24,7 +24,7 @@ class ExerciseViewModel(
     fun onAction(action: ExerciseAction) {
         when (action) {
             is ExerciseAction.ExerciseCreated -> createExercise(action.exercise)
-            is ExerciseAction.FetchExercise -> fetchExercise(action.exerciseId) // TODO fetch will fail/hang offline!
+            is ExerciseAction.FetchExercise -> fetchExercise(action.exerciseId)
             else -> { }
         }
     }
@@ -37,9 +37,12 @@ class ExerciseViewModel(
 
     private fun fetchExercise(exerciseId: String) {
         viewModelScope.launch {
-            lastFetchedExercise =
-                exerciseRepository.getExerciseById(exerciseId) ?: // this will hang offline?
-                exerciseRepository.getCustomExerciseById(authRepository.currentUser.id, exerciseId)
+            exerciseRepository.getDefaultExerciseById(exerciseId)
+                .onSuccess { lastFetchedExercise = it }
+                .onFailure {
+                    val custom = exerciseRepository.getCustomExerciseById(authRepository.currentUser.id, exerciseId)
+                    custom.onSuccess { lastFetchedExercise = it }
+                }
         }
     }
 }

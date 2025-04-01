@@ -8,15 +8,15 @@ interface ExerciseRepository {
 
     fun getCustomExercises(userId: String): Flow<List<Exercise>>
 
-    suspend fun addCustomExercise(userId: String, exercise: Exercise) // TODO use results?
+    suspend fun addCustomExercise(userId: String, exercise: Exercise) // TODO use results
 
     // TODO edit custom exercise
     // TODO delete custom exercise
     // consider what to do with all existing workouts that already use this exercise
 
-    suspend fun getExerciseById(exerciseId: String): Exercise?
+    suspend fun getDefaultExerciseById(exerciseId: String): Result<Exercise>
 
-    suspend fun getCustomExerciseById(userId: String, exerciseId: String): Exercise?
+    suspend fun getCustomExerciseById(userId: String, exerciseId: String): Result<Exercise>
 
     // TODO use to fill Firebase with predefined exercises and remove
     suspend fun addDefaultExercise(exercise: Exercise)
