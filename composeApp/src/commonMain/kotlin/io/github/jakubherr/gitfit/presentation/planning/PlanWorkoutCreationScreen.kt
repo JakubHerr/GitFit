@@ -36,7 +36,7 @@ fun PlanWorkoutCreationScreen(
                 block,
                 onAddSetClicked = { onAction(PlanAction.AddSet(workout, block)) },
                 onValidSetEntered = { onAction(PlanAction.EditSet(workout, block, it)) },
-                onDeleteSet =  { onAction(PlanAction.RemoveSet(workout, block, it)) },
+                onDeleteSeries =  { onAction(PlanAction.RemoveSet(workout, block, it)) },
                 onDeleteExercise = { onAction(PlanAction.RemoveExercise(workout, block)) },
                 onEditProgression = { onEditProgression(block) }
             )

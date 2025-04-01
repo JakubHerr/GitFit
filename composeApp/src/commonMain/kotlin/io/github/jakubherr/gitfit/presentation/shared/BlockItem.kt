@@ -76,7 +76,7 @@ fun PlanBlockItem(
     modifier: Modifier = Modifier,
     onAddSetClicked: () -> Unit = {},
     onValidSetEntered: (Series) -> Unit = {},
-    onDeleteSet: (Series) -> Unit = {},
+    onDeleteSeries: (Series) -> Unit = {},
     onDeleteExercise: () -> Unit = {},
     onEditProgression: () -> Unit = {},
 ) {
@@ -91,15 +91,15 @@ fun PlanBlockItem(
             )
         },
         seriesItems = {
-            block.series.forEachIndexed { idx, set ->
+            block.series.forEachIndexed { seriesIdx, series ->
                 SetInput(
-                    idx,
-                    set,
+                    seriesIdx,
+                    series,
                     Modifier,
                     validator = { weight, reps -> weight.isNonNegativeDouble() && reps.isNonNegativeLong() },
                     onValidSetEntered = { onValidSetEntered(it) },
                     actionSlot = {
-                        IconButton({ onDeleteSet(set) }) {
+                        IconButton({ onDeleteSeries(series) }) {
                             Icon(Icons.Default.Delete, "")
                         }
                     }

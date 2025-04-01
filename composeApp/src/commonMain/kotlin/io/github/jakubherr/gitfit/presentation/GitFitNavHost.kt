@@ -88,18 +88,23 @@ fun GitFitNavHost(
 
                 WorkoutScreenRoot(
                     onAction = { action ->
-                        if (action !is WorkoutAction.CompleteCurrentWorkout) workoutVm.onAction(action)
+                        if (action !is WorkoutAction.CompleteCurrentWorkout && action !is WorkoutAction.RemoveBlock) workoutVm.onAction(action)
 
                         when (action) {
                             is WorkoutAction.AskForExercise -> navController.navigate(AddExerciseToWorkoutRoute(action.workoutId))
                             is WorkoutAction.DeleteWorkout -> navController.popBackStack()
                             is WorkoutAction.CompleteCurrentWorkout -> {
                                 val error = workoutVm.currentWorkout.value?.error
-                                if (error == null) {
-                                    workoutVm.onAction(action)
-                                    // navController.popBackStack()
-                                }
+                                if (error == null) workoutVm.onAction(action)
                                 else scope.launch { snackbarHostState.showSnackbar(error.message) }
+                            }
+                            is WorkoutAction.RemoveBlock -> {
+                                if (action.block.progressionSettings != null) {
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("Blocks with progression can not be removed")
+                                    }
+                                }
+                                else workoutVm.onAction(action)
                             }
                             else -> { }
                         }

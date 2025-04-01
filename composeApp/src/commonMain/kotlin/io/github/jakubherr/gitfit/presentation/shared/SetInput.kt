@@ -25,8 +25,8 @@ fun SetInput(
     onValidSetEntered: (Series) -> Unit = {},
     actionSlot: @Composable () -> Unit = {},
 ) {
-    var weight by remember { mutableStateOf(set.weight?.toString() ?: "") }
-    var reps by remember { mutableStateOf(set.repetitions?.toString() ?: "") }
+    var weight by remember(set) { mutableStateOf(set.weight?.toPrettyString() ?: "") }
+    var reps by remember(set) { mutableStateOf(set.repetitions?.toString() ?: "") }
 
     Row(
         modifier.fillMaxWidth(),
@@ -68,7 +68,7 @@ fun CheckableSetInput(
     modifier: Modifier = Modifier,
     onToggle: (String, String) -> Unit,
 ) {
-    var weight by remember { mutableStateOf(set.weight?.toString() ?: "") }
+    var weight by remember { mutableStateOf(set.weight?.toPrettyString() ?: "") }
     var reps by remember { mutableStateOf(set.repetitions?.toString() ?: "") }
 
     Row(

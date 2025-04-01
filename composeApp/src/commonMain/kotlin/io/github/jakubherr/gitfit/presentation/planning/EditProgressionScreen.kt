@@ -31,6 +31,7 @@ import io.github.jakubherr.gitfit.domain.model.ProgressionTrigger
 import io.github.jakubherr.gitfit.domain.model.ProgressionType
 import io.github.jakubherr.gitfit.presentation.shared.DoubleInputField
 import io.github.jakubherr.gitfit.presentation.shared.SingleChoiceChipSelection
+import io.github.jakubherr.gitfit.presentation.shared.toPrettyString
 
 @Composable
 fun EditProgressionScreenRoot(
@@ -40,7 +41,7 @@ fun EditProgressionScreenRoot(
     onDelete: () -> Unit = {},
     onSave: (ProgressionSettings) -> Unit = {},
 ) {
-    val initialWeight = block.progressionSettings?.weightThreshold.let { it?.toString() ?: "" }
+    val initialWeight = block.progressionSettings?.weightThreshold.let { it?.toPrettyString() ?: "" }
     val initialReps = block.progressionSettings?.repThreshold ?: 12
 
     var selectedProgressionType by remember { mutableStateOf(ProgressionType.INCREASE_WEIGHT) }
@@ -113,7 +114,6 @@ fun EditProgressionScreenRoot(
             Button(
                 enabled = validateInputs(selectedProgressionType, minimumWeight, weightIncrease, repIncrease),
                 onClick = {
-                    // TODO test
                     val settings = ProgressionSettings(
                         incrementWeightByKg = weightIncrease.toDoubleOrNull() ?: 0.0,
                         incrementRepsBy = repIncrease.toIntOrNull() ?: 0,

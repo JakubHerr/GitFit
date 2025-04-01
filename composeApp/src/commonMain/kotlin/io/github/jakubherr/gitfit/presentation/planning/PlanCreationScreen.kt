@@ -33,8 +33,6 @@ fun PlanCreationScreen(
         modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Creating a new plan")
-
         StringInputField(
             value = plan.name,
             onValueChange = { onAction(PlanAction.RenamePlan(it)) },
@@ -84,7 +82,7 @@ fun PlanCreationScreen(
         ) {
             Button({ onAction(PlanAction.SavePlan) }) { Text("Save plan") }
 
-            Button({ onAction(PlanAction.DiscardPlan) }) { Text("Discard plan") }
+            Button({ onAction(PlanAction.DiscardPlan) }) { Text("Discard changes") }
         }
     }
 }

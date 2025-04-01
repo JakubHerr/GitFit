@@ -96,7 +96,7 @@ fun WorkoutScreen(
                             },
                             dropdownMenu = {
                                 WorkoutBlockItemDropdownMenu(
-                                    onDeleteExercise = { onAction(WorkoutAction.RemoveBlock(workout.id, block.idx) )},
+                                    onDeleteExercise = { onAction(WorkoutAction.RemoveBlock(workout.id, block) )},
                                     onDeleteSet = {
                                         val series = block.series.lastOrNull()
                                         series?.let {

@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.repository.AuthRepository
 import io.github.jakubherr.gitfit.domain.repository.PlanRepository
 import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
@@ -50,16 +51,16 @@ class WorkoutViewModel(
             is WorkoutAction.DeleteWorkout -> deleteWorkout(action.workoutId)
             is WorkoutAction.AskForExercise -> { }
             is WorkoutAction.AddBlock -> addBlock(action.workoutId, action.exercise)
-            is WorkoutAction.RemoveBlock -> removeBlock(action.workoutId, action.blockIdx)
+            is WorkoutAction.RemoveBlock -> removeBlock(action.workoutId, action.block)
             is WorkoutAction.AddSet -> addSeries(action.workoutId, action.blockIdx, action.series)
             is WorkoutAction.ModifySeries -> modifySeries(action.blockIdx, action.series)
             is WorkoutAction.DeleteLastSeries -> deleteLastSeries(action.workoutId, action.blockIdx, action.series)
         }
     }
 
-    private fun removeBlock(workoutId: String, blockIdx: Int) {
+    private fun removeBlock(workoutId: String, block: Block) {
         viewModelScope.launch {
-            workoutRepository.removeBlock(workoutId, blockIdx)
+            workoutRepository.removeBlock(workoutId, block.idx)
         }
     }
 
@@ -118,27 +119,30 @@ class WorkoutViewModel(
             println("DBG: workout has ${blocksWithProgression.size} blocks with progression")
 
             // check every recorded block with progression for progress threshold criteria
-            blocksWithProgression.forEach { block ->
-                val settings = block.progressionSettings!!
-                val shouldProgress = block.series.all { series ->
+            blocksWithProgression.forEach { recordedBlock ->
+                val settings = recordedBlock.progressionSettings!!
+                val shouldProgress = recordedBlock.series.all { series ->
                     series.completed && series.weight!! >= settings.weightThreshold && series.repetitions!! >= settings.repThreshold
                 }
 
                 // if criteria was met
                 if (shouldProgress) {
                     println("DBG: block with valid progression detected")
+                    val planBlock = workoutPlanCopy.blocks[recordedBlock.idx]
+
                     // increment all block weight/reps by increment
                     // increment value in progression setting
                     // save block to workout plan and then save it to plan
                     when (settings.type) {
                         ProgressionType.INCREASE_WEIGHT-> {
-                            println("DBG: progressing ${block.exercise.name} by ${settings.weightThreshold}")
-                            workoutPlanCopy = workoutPlanCopy.updateBlock(block.progressWeight(settings.incrementWeightByKg))
+                            println("DBG: progressing ${recordedBlock.exercise.name} by ${settings.weightThreshold}")
+
+                            workoutPlanCopy = workoutPlanCopy.updateBlock(planBlock.progressWeight(settings.incrementWeightByKg))
                         }
                         ProgressionType.INCREASE_REPS -> {
-                            println("DBG: progressing ${block.exercise.name} by ${settings.incrementRepsBy}")
+                            println("DBG: progressing ${recordedBlock.exercise.name} by ${settings.incrementRepsBy}")
 
-                            workoutPlanCopy = workoutPlanCopy.updateBlock(block.progressReps(settings.incrementRepsBy))
+                            workoutPlanCopy = workoutPlanCopy.updateBlock(planBlock.progressReps(settings.incrementRepsBy))
                         }
                     }
                 }
@@ -195,7 +199,7 @@ sealed interface WorkoutAction {
     class DeleteWorkout(val workoutId: String) : WorkoutAction
 
     class AddBlock(val workoutId: String, val exercise: Exercise) : WorkoutAction
-    class RemoveBlock(val workoutId: String, val blockIdx: Int) : WorkoutAction
+    class RemoveBlock(val workoutId: String, val block: Block) : WorkoutAction
 
     class AddSet(val workoutId: String, val blockIdx: Int, val series: Series) : WorkoutAction
     class ModifySeries(val blockIdx: Int, val series: Series) : WorkoutAction
