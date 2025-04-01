@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -26,25 +25,29 @@ import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.MuscleGroup
 import io.github.jakubherr.gitfit.presentation.shared.MultipleChoiceChipSelection
 import io.github.jakubherr.gitfit.presentation.shared.SingleChoiceChipSelection
+import io.github.jakubherr.gitfit.presentation.shared.StringInputField
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CreateExerciseScreenRoot(
     modifier: Modifier = Modifier,
     onExerciseCreated: (Exercise) -> Unit = {},
+    onCancel: () -> Unit = {}
 ) {
-    CreateExerciseScreen(Modifier.fillMaxSize()) { exercise ->
-        onExerciseCreated(exercise)
-    }
+    CreateExerciseScreen(
+        Modifier.fillMaxSize(),
+        onExerciseCreated = { onExerciseCreated(it) },
+        onCancel = onCancel
+    )
 }
 
 @Composable
 fun CreateExerciseScreen(
     modifier: Modifier = Modifier,
     onExerciseCreated: (Exercise) -> Unit = {},
+    onCancel: () -> Unit = {},
 ) {
     var name by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
     var selectedPrimaryMuscle by remember { mutableStateOf(MuscleGroup.entries.first()) }
     val selectedSecondaryMuscle = remember { mutableStateListOf<MuscleGroup>() }
 
@@ -52,10 +55,11 @@ fun CreateExerciseScreen(
         Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        TextField(
-            name,
-            { name = it },
+        StringInputField(
+            value = name,
+            onValueChange = { name = it },
             label = { Text(stringResource(Res.string.name)) },
+            maxLength = 20,
         )
 
         Text(stringResource(Res.string.primary_muscle))
@@ -78,7 +82,7 @@ fun CreateExerciseScreen(
                     Exercise(
                         "",
                         name,
-                        description,
+                        "",
                         selectedPrimaryMuscle,
                         selectedSecondaryMuscle,
                     ),
@@ -86,7 +90,7 @@ fun CreateExerciseScreen(
             }) {
                 Text(stringResource(Res.string.save_exercise))
             }
-            Button({}) {
+            Button(onCancel) {
                 Text(stringResource(Res.string.cancel))
             }
         }

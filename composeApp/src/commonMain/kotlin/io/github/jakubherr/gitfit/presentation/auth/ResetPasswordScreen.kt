@@ -31,7 +31,8 @@ fun ResetPasswordScreenRoot(
 
         TextField(
             email,
-            onValueChange = { email = it }
+            onValueChange = { email = it },
+            singleLine = true
         )
 
         // TODO rate limit in UI

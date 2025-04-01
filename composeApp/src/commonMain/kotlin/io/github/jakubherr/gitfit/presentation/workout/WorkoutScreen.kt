@@ -43,7 +43,8 @@ import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.domain.model.mockSeries
-import io.github.jakubherr.gitfit.presentation.shared.NumberInputField
+import io.github.jakubherr.gitfit.presentation.shared.DoubleInputField
+import io.github.jakubherr.gitfit.presentation.shared.IntegerInputField
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -181,17 +182,11 @@ fun CheckableSetInput(
     ) {
         Text(index.toString())
 
-        NumberInputField(
+        DoubleInputField(
             weight,
-            onValueChange = { newWeight ->
-                // limits the number of decimal points to 2
-                val decimals = newWeight.substringAfter(".", "")
-                if (decimals.length < 3) {
-                    weight = newWeight
-                }
-            }
+            onValueChange = { weight = it }
         )
-        NumberInputField(reps, onValueChange = { reps = it })
+        IntegerInputField(reps, onValueChange = { reps = it })
 
         Checkbox(
             set.completed,

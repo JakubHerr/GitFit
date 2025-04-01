@@ -11,12 +11,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
+import io.github.jakubherr.gitfit.presentation.shared.StringInputField
 
 @Composable
 fun PlanCreationScreen(
@@ -28,9 +28,11 @@ fun PlanCreationScreen(
     Column(modifier.fillMaxSize()) {
         Text("Creating a new plan")
         Text("Plan name")
-        TextField(
+
+        StringInputField(
             value = plan.name,
-            onValueChange = { onAction(PlanAction.RenamePlan(it)) }
+            onValueChange = { onAction(PlanAction.RenamePlan(it)) },
+            maxLength = 20
         )
 
         Spacer(Modifier.width(16.dp))

@@ -37,7 +37,8 @@ import io.github.jakubherr.gitfit.domain.isNonNegativeLong
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
-import io.github.jakubherr.gitfit.presentation.shared.NumberInputField
+import io.github.jakubherr.gitfit.presentation.shared.DoubleInputField
+import io.github.jakubherr.gitfit.presentation.shared.IntegerInputField
 import io.github.jakubherr.gitfit.presentation.workout.SetHeader
 import org.jetbrains.compose.resources.stringResource
 
@@ -165,25 +166,18 @@ fun PlanSetInput(
     ) {
         Text(index.toString())
 
-        NumberInputField(
+        DoubleInputField(
             weight,
-            isError = !weight.isNonNegativeDouble(),
             onValueChange = { newWeight ->
-                // limits the number of decimal points to 2
-                val decimals = newWeight.substringAfter(".", "")
+                weight = newWeight
 
-                if (decimals.length <= 2) {
-                    weight = newWeight
-
-                    if (weight.isNonNegativeDouble() && reps.isNonNegativeLong()) {
-                        onValidSetEntered(set.copy(weight = weight.toDouble(), repetitions = reps.toLong()))
-                    }
+                if (weight.isNonNegativeDouble() && reps.isNonNegativeLong()) {
+                    onValidSetEntered(set.copy(weight = weight.toDouble(), repetitions = reps.toLong()))
                 }
             }
         )
-        NumberInputField(
+        IntegerInputField(
             reps,
-            isError = !reps.isNonNegativeLong(),
             onValueChange = {
                 reps = it
                 if (weight.isNonNegativeDouble() && reps.isNonNegativeLong()) {
