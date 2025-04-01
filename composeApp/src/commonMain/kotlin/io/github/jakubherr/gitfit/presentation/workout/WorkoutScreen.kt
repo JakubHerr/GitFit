@@ -62,7 +62,13 @@ fun WorkoutScreenRoot(
     }
 
     if (workout == null) {
-        CircularProgressIndicator()
+        Column(
+            Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            CircularProgressIndicator()
+        }
     } else {
         WorkoutScreen(workout!!) { action ->
             onAction(action)
@@ -99,7 +105,7 @@ fun WorkoutScreen(
                     Button(onClick = { onAction(WorkoutAction.DeleteWorkout(workout.id)) }) { // TODO "are you sure?" dialog
                         Text(stringResource(Res.string.delete_workout))
                     }
-                    Button(onClick = { onAction(WorkoutAction.CompleteCurrentWorkout(workout.id)) }) {
+                    Button(onClick = { onAction(WorkoutAction.CompleteCurrentWorkout) }) {
                         Text(stringResource(Res.string.save_workout))
                     }
                 }

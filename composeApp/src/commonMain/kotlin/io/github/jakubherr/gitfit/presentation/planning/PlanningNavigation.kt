@@ -62,6 +62,7 @@ fun NavGraphBuilder.planningGraph(
                 plan,
                 onWorkoutSelected = { workout ->
                     println("DBG: Plan selected: ${plan.id}, workout index ${workout.idx}")
+
                     if (currentWorkout == null) {
                         workoutViewModel.onAction(WorkoutAction.StartPlannedWorkout(plan.id, workout.idx))
                         navController.navigate(WorkoutInProgressRoute)

@@ -12,6 +12,7 @@ import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.ProgressionType
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -46,13 +47,12 @@ class WorkoutViewModel(
             is WorkoutAction.StartNewWorkout -> startNewWorkout()
             // TODO prevent user from starting a planned workout if one workout is already in progress!
             is WorkoutAction.StartPlannedWorkout -> startPlannedWorkout(action.planId, action.workoutIdx)
-            is WorkoutAction.CompleteCurrentWorkout -> completeCurrentWorkout(action.workoutId)
+            is WorkoutAction.CompleteCurrentWorkout -> completeCurrentWorkout()
             is WorkoutAction.DeleteWorkout -> deleteWorkout(action.workoutId)
             is WorkoutAction.AskForExercise -> { }
             is WorkoutAction.AddBlock -> addBlock(action.workoutId, action.exercise)
             is WorkoutAction.AddSet -> addSet(action.workoutId, action.blockIdx, action.set)
             is WorkoutAction.ModifySeries -> modifySeries(action.blockIdx, action.set)
-            is WorkoutAction.ErrorHandled -> error = null
         }
     }
 
@@ -72,28 +72,28 @@ class WorkoutViewModel(
         }
     }
 
-    private fun completeCurrentWorkout(workoutId: String) {
-        viewModelScope.launch {
-            if (error == null) {
-                handleProgression(workoutId)
-                workoutRepository.completeWorkout(workoutId)
+    private fun completeCurrentWorkout() {
+        val workout = currentWorkout.value ?: return
+
+        if (workout.error == null) {
+            // This is a hack to fix offline-first saving
+            // if the device is offline, GitLive will suspend coroutine indefinitely until the record is synchronized
+            // to check for success, it is necessary to observe completion indirectly through flow
+            viewModelScope.launch { workoutRepository.completeWorkout(workout) }
+            viewModelScope.launch { handleProgression(workout) }
+            viewModelScope.launch {
+                while (currentWorkout.value != null) delay(1000)
                 workoutSaved = true
             }
         }
     }
 
-    private suspend fun handleProgression(workoutId: String) {
-        // get workout record that was finished
-        val workout = workoutRepository.getWorkout(workoutId)
-        if (workout == null) {
-            println("DBG: failed to fetch workout $workoutId!")
-            return
-        }
-
+    private suspend fun handleProgression(workout: Workout) {
         println("DBG: progressing workout: ${workout.id}")
         workout.let {
             // if not part of plan, exit
             val isFromPlan = workout.planId != null && workout.planWorkoutIdx != null
+            println("DBG: workout is from plan: $isFromPlan")
             if (!isFromPlan) return
 
             // fetch plan that workout record was based on and its workout plan
@@ -152,7 +152,9 @@ class WorkoutViewModel(
         workoutId: String,
         exercise: Exercise,
     ) {
-        viewModelScope.launch { workoutRepository.addBlock(workoutId, exercise) }
+        viewModelScope.launch {
+            workoutRepository.addBlock(workoutId, exercise)
+        }
     }
 
     private fun addSet(
@@ -175,7 +177,7 @@ class WorkoutViewModel(
 sealed interface WorkoutAction {
     object StartNewWorkout : WorkoutAction
     class StartPlannedWorkout(val planId: String, val workoutIdx: Int) : WorkoutAction
-    class CompleteCurrentWorkout(val workoutId: String) : WorkoutAction
+    object CompleteCurrentWorkout : WorkoutAction
     class DeleteWorkout(val workoutId: String) : WorkoutAction
 
     class AddBlock(val workoutId: String, val exercise: Exercise) : WorkoutAction
@@ -186,5 +188,4 @@ sealed interface WorkoutAction {
     // TODO remove series
 
     class AskForExercise(val workoutId: String) : WorkoutAction
-    object ErrorHandled : WorkoutAction
 }

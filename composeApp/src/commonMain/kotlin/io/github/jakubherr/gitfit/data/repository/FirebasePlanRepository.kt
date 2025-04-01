@@ -59,6 +59,7 @@ class FirebasePlanRepository: PlanRepository {
 
         return withContext(context) {
             val plan = userPlanRef(userId).document(planId).get()
+            println("DBG: custom plan exists: ${plan.exists}")
             if (plan.exists) plan.data<Plan>() else null
         }
     }

@@ -50,6 +50,7 @@ class FirestoreExerciseRepository : ExerciseRepository {
     }
 
     override suspend fun getExerciseById(exerciseId: String): Exercise? {
+        println("DBG: fetching default exercise")
         return withContext(context) {
             val result = exerciseRef.document(exerciseId).get()
             if (result.exists) result.data<Exercise>() else null
@@ -57,6 +58,7 @@ class FirestoreExerciseRepository : ExerciseRepository {
     }
 
     override suspend fun getCustomExerciseById(userId: String, exerciseId: String): Exercise? {
+        println("DBG: fetching custom exercise")
         return withContext(context) {
             val result = userExerciseRef(userId).document(exerciseId).get()
             if (result.exists) result.data<Exercise>() else null

@@ -5,6 +5,8 @@ The application has the following major features and use cases:
 - Application uses Google Firebase for authentication and data synchronization
 - The majority of features will work with no internet connection on mobile devices
 - On desktop, Google Firebase SDK does not currently support offline-first and internet connection is required
+- without internet connection, the user can do the following actions:
+- **TODO workout completion gets stuck with no internet**
 
 # Authentication
 
@@ -28,7 +30,8 @@ The application has the following major features and use cases:
 #### Plan creation
 - User can create a custom plan
 - A plan is made of one or many workout plans/days
-- Workout day consists of exercises with sets
+- Workout day consists of blocks of exercises with sets
+- TODO user can rename workout day
 - User can save a created plan to database
 - User can start a new workout record from a workout day in a plan
 - User can delete workout days in a plan or the entire plan
@@ -83,6 +86,8 @@ The application has the following major features and use cases:
 - every exercise block must contain at least one set that is not empty
 - every set must contain valid input for weight and repetitions
 - valid weight is a non-negative number with up to two decimal points
+- User can define progressive overoad settings for each exercise block in workout day
+- overload is optional
 - TODO valid repetition is a positive whole number
 
 #### Measurement
@@ -92,5 +97,9 @@ The application has the following major features and use cases:
 - currently, all measurement values must be input to be a valid record
 
 ### Navigation
-- TODO
+- If user is not signed-in, the app starts with a login screen
+- (mobile only) If a user was signed-in already, the app starts with a dashboard scren
+- User can navigate between top-level destinations using a navigation bar
+- TODO user can navigate to the previous destination using a back button
+- User can start a predefined workout by clicking on a plan and selecting a workout day
 

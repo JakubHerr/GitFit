@@ -90,9 +90,20 @@ class FirestoreWorkoutRepository(
     }
 
     override suspend fun completeWorkout(workoutId: String) {
-        val userId = authRepository.currentUser.id.ifBlank { return }
         withContext(dispatcher) {
+            val userId = authRepository.currentUser.id.ifBlank { return@withContext }
+            println("DBG: completing workout $workoutId of user $userId")
             workoutRef(userId).document(workoutId).update("completed" to true, "inProgress" to false)
+        }
+    }
+
+    override suspend fun completeWorkout(workout: Workout) {
+        withContext(dispatcher) {
+            val userId = authRepository.currentUser.id.ifBlank { return@withContext }
+            println("DBG: completing workout ${workout.id} of user $userId")
+
+            val newWorkout = workout.copy(completed = true, inProgress = false)
+            workoutRef(userId).document(workout.id).set(newWorkout)
         }
     }
 
@@ -119,7 +130,9 @@ class FirestoreWorkoutRepository(
 
             val newWorkout = workout.copy(blocks = workout.blocks + block)
 
+            println("DBG: Adding new block to workout $workoutId with set")
             workoutRef(userId).document(workoutId).set(newWorkout)
+
         }
     }
 
