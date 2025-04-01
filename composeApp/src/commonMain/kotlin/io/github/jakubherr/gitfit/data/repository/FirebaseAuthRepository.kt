@@ -11,14 +11,25 @@ import dev.gitlive.firebase.auth.auth
 import io.github.jakubherr.gitfit.domain.repository.AuthError
 import io.github.jakubherr.gitfit.domain.repository.AuthRepository
 import io.github.jakubherr.gitfit.domain.model.User
+import io.github.jakubherr.gitfit.domain.repository.ExerciseRepository
+import io.github.jakubherr.gitfit.domain.repository.MeasurementRepository
+import io.github.jakubherr.gitfit.domain.repository.PlanRepository
+import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 // note: all Firebase function calls MUST be in a try-catch block to handle errors and missing features in GitLive SDK
-class FirebaseAuthRepository: AuthRepository {
+class FirebaseAuthRepository(
+    private val workoutRepository: WorkoutRepository,
+    private val measurementRepository: MeasurementRepository,
+    private val planRepository: PlanRepository,
+    private val exerciseRepository: ExerciseRepository
+): AuthRepository {
     private val auth = Firebase.auth
     override val currentUser: User get() = auth.currentUser?.toUser() ?: User.LoggedOut
     override val currentUserFlow: Flow<User?> = auth.authStateChanged.map { it?.toUser() }
+    private val dispatcher = Dispatchers.IO
 
     override suspend fun registerUser(
         email: String,
@@ -51,10 +62,18 @@ class FirebaseAuthRepository: AuthRepository {
 
     override suspend fun deleteUser(password: String): Result<Unit> {
         try {
-            // TODO official firebase extension deletes all data related to user, but requires pay-as-you-go Blaze plan
-            // consider the number of deletes necessary to nuke all user data
             Firebase.auth.currentUser?.let { user ->
                 signInUser(user.email!!, password).onFailure { return Result.failure(it) }
+
+                // nuke all user workouts
+                workoutRepository.deleteAllWorkouts(user.uid).onFailure { return Result.failure(it) }
+                // nuke all user plans
+                planRepository.deleteAllCustomPlans(user.uid).onFailure { return Result.failure(it) }
+                // nuke all user measurements
+                measurementRepository.deleteAllMeasurements(user.uid).onFailure { return Result.failure(it) }
+                // nuke all user custom exercises
+                exerciseRepository.removeAllCustomExercises(user.uid).onFailure { return Result.failure(it) }
+
                 user.delete()
             }
             return Result.success(Unit)

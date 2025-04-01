@@ -109,6 +109,21 @@ class FirestoreWorkoutRepository(
         withContext(dispatcher) { workoutRef(userId).document(workoutId).delete() }
     }
 
+    override suspend fun deleteAllWorkouts(userId: String): Result<Unit> {
+        userId.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
+
+        return withContext(dispatcher) {
+            workoutRef(userId).get().documents.forEach { document ->
+                try {
+                    workoutRef(userId).document(document.id).delete()
+                } catch (e: Exception) {
+                    return@withContext Result.failure(e)
+                }
+            }
+            Result.success(Unit)
+        }
+    }
+
     override suspend fun addBlock(
         workoutId: String,
         exercise: Exercise,

@@ -13,7 +13,7 @@ interface PlanRepository {
 
     suspend fun deleteCustomPlan(userId: String, planId: String)
 
-    suspend fun deleteCustomPlans(userId: String)
+    suspend fun deleteAllCustomPlans(userId: String): Result<Unit>
 
     suspend fun getCustomPlan(userId: String, planId: String) : Plan?
 

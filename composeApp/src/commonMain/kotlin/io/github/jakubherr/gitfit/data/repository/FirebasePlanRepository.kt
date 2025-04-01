@@ -5,6 +5,7 @@ import dev.gitlive.firebase.firestore.firestore
 import io.github.jakubherr.gitfit.domain.repository.PlanRepository
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
+import io.github.jakubherr.gitfit.domain.repository.AuthError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -50,8 +51,19 @@ class FirebasePlanRepository: PlanRepository {
         }
     }
 
-    override suspend fun deleteCustomPlans(userId: String) {
-        TODO("Not yet implemented")
+    override suspend fun deleteAllCustomPlans(userId: String): Result<Unit> {
+        userId.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
+
+        return withContext(context) {
+            userPlanRef(userId).get().documents.forEach { document ->
+                try {
+                    userPlanRef(userId).document(document.id).delete()
+                } catch (e: Exception) {
+                    return@withContext Result.failure(e)
+                }
+            }
+            Result.success(Unit)
+        }
     }
 
     override suspend fun getCustomPlan(userId: String, planId: String): Plan? {

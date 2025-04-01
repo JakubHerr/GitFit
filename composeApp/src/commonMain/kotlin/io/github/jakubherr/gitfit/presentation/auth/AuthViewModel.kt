@@ -72,7 +72,11 @@ class AuthViewModel(
 
     private fun deleteAccount(password: String) {
         println("DBG: deleting user ${state.value.user.id}")
-        launch { auth.deleteUser(password) }
+        launch {
+            auth.deleteUser(password).onFailure {
+                println("DBG: Failed to delete user, cause ${it.stackTraceToString()}")
+            }
+        }
     }
 
     private fun <T> launch(block: suspend () -> Result<T>) {

@@ -14,6 +14,8 @@ interface ExerciseRepository {
 
     suspend fun removeCustomExercise(userId: String, exerciseId: String): Result<Unit>
 
+    suspend fun removeAllCustomExercises(userId: String): Result<Unit>
+
     suspend fun getDefaultExercise(exerciseId: String): Result<Exercise>
 
     suspend fun getCustomExercise(userId: String, exerciseId: String): Result<Exercise>

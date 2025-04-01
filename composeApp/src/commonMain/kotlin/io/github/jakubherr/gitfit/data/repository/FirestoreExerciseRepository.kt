@@ -64,6 +64,21 @@ class FirestoreExerciseRepository : ExerciseRepository {
         }
     }
 
+    override suspend fun removeAllCustomExercises(userId: String): Result<Unit> {
+        userId.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
+
+        return withContext(context) {
+            userExerciseRef(userId).get().documents.forEach { document ->
+                try {
+                    userExerciseRef(userId).document(document.id).delete()
+                } catch (e: Exception) {
+                    return@withContext Result.failure(e)
+                }
+            }
+            Result.success(Unit)
+        }
+    }
+
     override suspend fun addDefaultExercise(exercise: Exercise) {
         withContext(context) {
             val id = defaultExerciseRef.document.id

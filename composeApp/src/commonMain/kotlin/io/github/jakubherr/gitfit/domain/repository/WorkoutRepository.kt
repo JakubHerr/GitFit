@@ -18,6 +18,8 @@ interface WorkoutRepository {
 
     suspend fun deleteWorkout(workoutId: String)
 
+    suspend fun deleteAllWorkouts(userId: String): Result<Unit>
+
     suspend fun addBlock(
         workoutId: String,
         exercise: Exercise,

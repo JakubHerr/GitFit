@@ -14,5 +14,5 @@ interface MeasurementRepository {
 
     suspend fun deleteMeasurement(userId: String, measurementId: String)
 
-    suspend fun deleteAll(userId: String)
+    suspend fun deleteAllMeasurements(userId: String): Result<Unit>
 }
