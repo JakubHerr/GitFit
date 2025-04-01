@@ -20,12 +20,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 // note: all Firebase function calls MUST be in a try-catch block to handle errors and missing features in GitLive SDK
-class FirebaseAuthRepository(
-    private val workoutRepository: WorkoutRepository,
-    private val measurementRepository: MeasurementRepository,
-    private val planRepository: PlanRepository,
-    private val exerciseRepository: ExerciseRepository
-): AuthRepository {
+class FirebaseAuthRepository: AuthRepository {
     private val auth = Firebase.auth
     override val currentUser: User get() = auth.currentUser?.toUser() ?: User.LoggedOut
     override val currentUserFlow: Flow<User?> = auth.authStateChanged.map { it?.toUser() }
@@ -60,20 +55,11 @@ class FirebaseAuthRepository(
         }
     }
 
-    override suspend fun deleteUser(password: String): Result<Unit> {
+    override suspend fun deleteUser(password: String, beforeDelete: suspend (String) -> Result<Unit>): Result<Unit> {
         try {
             Firebase.auth.currentUser?.let { user ->
                 signInUser(user.email!!, password).onFailure { return Result.failure(it) }
-
-                // nuke all user workouts
-                workoutRepository.deleteAllWorkouts(user.uid).onFailure { return Result.failure(it) }
-                // nuke all user plans
-                planRepository.deleteAllCustomPlans(user.uid).onFailure { return Result.failure(it) }
-                // nuke all user measurements
-                measurementRepository.deleteAllMeasurements(user.uid).onFailure { return Result.failure(it) }
-                // nuke all user custom exercises
-                exerciseRepository.removeAllCustomExercises(user.uid).onFailure { return Result.failure(it) }
-
+                beforeDelete(user.uid).onFailure { return Result.failure(it) }
                 user.delete()
             }
             return Result.success(Unit)

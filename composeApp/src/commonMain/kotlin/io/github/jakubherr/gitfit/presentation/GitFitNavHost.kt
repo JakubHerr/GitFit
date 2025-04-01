@@ -50,6 +50,7 @@ fun GitFitNavHost(
     LaunchedEffect(auth) {
         println("DBG: auth state is ${auth.user.loggedIn}")
         planViewModel.onAction(PlanAction.DiscardPlan)
+        if (!auth.user.loggedIn) navController.navigate(LoginRoute)
     }
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -124,7 +125,6 @@ fun GitFitNavHost(
             }
 
             composable<SettingsRoute> {
-                // TODO user should set some preferences during onboarding and then be able to modify them here
                 SettingsScreenRoot()
             }
         }

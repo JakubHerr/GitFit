@@ -4,9 +4,15 @@ The application has the following major features and use cases:
 # Offline-first data synchronization
 - Application uses Google Firebase for authentication and data synchronization
 - The majority of features will work with no internet connection on mobile devices
-- On desktop, Google Firebase SDK does not currently support offline-first and internet connection is required
+- On desktop, Google Firebase SDK does not currently support caching and internet connection is required at least for login
+- User MUST be connected to the internet when deleting their account to clear online database
 - without internet connection, the user can do the following actions:
-- **TODO workout completion gets stuck with no internet**
+- start and finish an unplanned workout without internet
+- create custom exercise
+- create custom plan
+- start and finish a planned workout with progression
+- log out of their account
+
 
 # Authentication
 
@@ -20,8 +26,7 @@ The application has the following major features and use cases:
 
 ##### User deletion
 - User can delete their account from their profile
-- TODO on account deletion, all user data is deleted
-- TODO for obvious reasons, user must be connected to the internet to delete data from database
+- on account deletion, all user data is deleted
 - TODO User can request account deletion from outside of the application
 
 
