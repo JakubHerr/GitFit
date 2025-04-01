@@ -169,6 +169,7 @@ class WorkoutViewModel(
         blockIdx: Int,
         set: Series,
     ) {
+        println("DBG: saving series $set to database")
         val workoutId = currentWorkout.value?.id ?: return // TODO error handling
         viewModelScope.launch { workoutRepository.modifySeries(workoutId, blockIdx, set) }
     }

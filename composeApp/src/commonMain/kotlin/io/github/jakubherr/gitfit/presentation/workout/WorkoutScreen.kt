@@ -37,14 +37,18 @@ import gitfit.composeapp.generated.resources.kg
 import gitfit.composeapp.generated.resources.reps
 import gitfit.composeapp.generated.resources.save_workout
 import gitfit.composeapp.generated.resources.set
+import io.github.jakubherr.gitfit.domain.isNonNegative
 import io.github.jakubherr.gitfit.domain.isNonNegativeDouble
+import io.github.jakubherr.gitfit.domain.isNonNegativeInt
 import io.github.jakubherr.gitfit.domain.isNonNegativeLong
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.domain.model.mockSeries
+import io.github.jakubherr.gitfit.presentation.shared.CheckableSetInput
 import io.github.jakubherr.gitfit.presentation.shared.DoubleInputField
 import io.github.jakubherr.gitfit.presentation.shared.IntegerInputField
+import io.github.jakubherr.gitfit.presentation.shared.SetInput
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -130,20 +134,24 @@ fun BlockItem(
             Column {
                 SetHeader()
                 Spacer(Modifier.height(16.dp))
-                block.series.forEachIndexed { idx, set ->
-                    CheckableSetInput(idx + 1, set) { weight, reps ->
-                        onAction(
-                            WorkoutAction.ModifySeries(
-                                blockIdx = block.idx,
-                                set =
-                                    set.copy(
+
+                block.series.forEachIndexed { seriesIdx, series ->
+                    CheckableSetInput(
+                        seriesIdx,
+                        series,
+                        onToggle = { weight, reps ->
+                            onAction(
+                                WorkoutAction.ModifySeries(
+                                    block.idx,
+                                    series.copy(
                                         weight = weight.toDouble(),
                                         repetitions = reps.toLong(),
-                                        completed = !set.completed,
+                                        completed = !series.completed,
                                     ),
-                            ),
-                        )
-                    }
+                                ),
+                            )
+                        },
+                    )
                 }
             }
             Spacer(modifier.height(8.dp))
@@ -162,41 +170,5 @@ fun SetHeader(modifier: Modifier = Modifier) {
         Text(stringResource(Res.string.kg))
         Text(stringResource(Res.string.reps))
         Text(stringResource(Res.string.done))
-    }
-}
-
-@Composable
-fun CheckableSetInput(
-    index: Int,
-    set: Series = mockSeries,
-    modifier: Modifier = Modifier,
-    onToggle: (String, String) -> Unit,
-) {
-    var weight by remember { mutableStateOf(set.weight?.toString() ?: "") }
-    var reps by remember { mutableStateOf(set.repetitions?.toString() ?: "") }
-
-    Row(
-        modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Text(index.toString())
-
-        DoubleInputField(
-            weight,
-            onValueChange = { weight = it }
-        )
-        IntegerInputField(reps, onValueChange = { reps = it })
-
-        Checkbox(
-            set.completed,
-            onCheckedChange = {
-                if (weight.isNonNegativeDouble() && reps.isNonNegativeLong()) {
-                    onToggle(weight, reps)
-                } else {
-                    println("DBG: either weight: $weight or reps $reps is not a valid Long") // TODO show error in ui
-                }
-            },
-        )
     }
 }

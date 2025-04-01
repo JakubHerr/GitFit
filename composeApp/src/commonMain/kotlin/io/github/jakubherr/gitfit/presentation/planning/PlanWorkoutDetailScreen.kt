@@ -1,6 +1,5 @@
 package io.github.jakubherr.gitfit.presentation.planning
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,8 +36,7 @@ import io.github.jakubherr.gitfit.domain.isNonNegativeLong
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
-import io.github.jakubherr.gitfit.presentation.shared.DoubleInputField
-import io.github.jakubherr.gitfit.presentation.shared.IntegerInputField
+import io.github.jakubherr.gitfit.presentation.shared.SetInput
 import io.github.jakubherr.gitfit.presentation.workout.SetHeader
 import org.jetbrains.compose.resources.stringResource
 
@@ -94,7 +92,7 @@ fun PlanBlockItem(
                     Text(block.exercise.name, style = MaterialTheme.typography.titleLarge)
                 }
 
-                BlockItemDropdownMenu(
+                PlanBlockItemDropdownMenu(
                     onDeleteExercise = { onDeleteExercise() },
                     onEditProgression = { onEditProgression() }
                 )
@@ -104,10 +102,17 @@ fun PlanBlockItem(
                 SetHeader()
                 Spacer(Modifier.height(16.dp))
                 block.series.forEachIndexed { idx, set ->
-                    PlanSetInput(
-                        idx + 1, set,
+                    SetInput(
+                        idx,
+                        set,
+                        modifier,
+                        validator = { weight, reps -> weight.isNonNegativeDouble() && reps.isNonNegativeLong()},
                         onValidSetEntered = { onValidSetEntered(it) },
-                        onDeleteSet = { onDeleteSet(set) }
+                        actionSlot = {
+                            IconButton({ onDeleteSet(set) }) {
+                                Icon(Icons.Default.Delete, "")
+                            }
+                        }
                     )
                 }
             }
@@ -120,7 +125,7 @@ fun PlanBlockItem(
 }
 
 @Composable
-fun BlockItemDropdownMenu(
+fun PlanBlockItemDropdownMenu(
     modifier: Modifier = Modifier,
     onDeleteExercise: () -> Unit = {},
     onEditProgression: () -> Unit = {},
@@ -144,50 +149,6 @@ fun BlockItemDropdownMenu(
                 text = { Text("Edit progression") },
                 onClick = { onEditProgression() }
             )
-        }
-    }
-}
-
-@Composable
-fun PlanSetInput(
-    index: Int,
-    set: Series,
-    modifier: Modifier = Modifier,
-    onValidSetEntered: (Series) -> Unit = {},
-    onDeleteSet: () -> Unit = {}
-) {
-    var weight by remember { mutableStateOf(set.weight?.toString() ?: "") }
-    var reps by remember { mutableStateOf(set.repetitions?.toString() ?: "") }
-
-    Row(
-        modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Text(index.toString())
-
-        DoubleInputField(
-            weight,
-            onValueChange = { newWeight ->
-                weight = newWeight
-
-                if (weight.isNonNegativeDouble() && reps.isNonNegativeLong()) {
-                    onValidSetEntered(set.copy(weight = weight.toDouble(), repetitions = reps.toLong()))
-                }
-            }
-        )
-        IntegerInputField(
-            reps,
-            onValueChange = {
-                reps = it
-                if (weight.isNonNegativeDouble() && reps.isNonNegativeLong()) {
-                    onValidSetEntered(set.copy(weight = weight.toDouble(), repetitions = reps.toLong()))
-                }
-            }
-        )
-
-        IconButton(onDeleteSet) {
-            Icon(Icons.Default.Delete, "")
         }
     }
 }
