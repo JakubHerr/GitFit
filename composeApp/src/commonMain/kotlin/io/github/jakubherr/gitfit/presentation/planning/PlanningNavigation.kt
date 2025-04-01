@@ -39,7 +39,7 @@ fun NavGraphBuilder.planningGraph(
     }
 
     composable<PlanOverviewRoute> {
-        PlanOverviewScreenRoot(
+        PlanListScreenRoot(
             vm = viewModel,
             onCreateNewPlan = { navController.navigate(PlanCreationRoute) },
             onPlanSelected = { navController.navigate(PlanDetailRoute(it.id)) }
@@ -117,7 +117,7 @@ fun NavGraphBuilder.planningGraph(
         val idx = backstackEntry.toRoute<PlanningWorkoutRoute>().workoutIdx
         val scope = rememberCoroutineScope()
 
-        PlanWorkoutDetailScreen(
+        PlanWorkoutCreationScreen(
             workout = viewModel.plan.workoutPlans[idx],
             onAction = { viewModel.onAction(it) },
             onAddExerciseClick = { workoutIdx ->

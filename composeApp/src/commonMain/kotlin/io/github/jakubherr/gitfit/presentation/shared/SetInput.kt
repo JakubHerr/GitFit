@@ -33,7 +33,7 @@ fun SetInput(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(index.toString())
+        Text((index + 1).toString())
 
         DoubleInputField(
             weight,

@@ -8,8 +8,9 @@ import androidx.compose.ui.Modifier
 fun StringInputField(
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
     maxLength: Int,
+    modifier: Modifier = Modifier,
+    isError: Boolean = value.isBlank(),
     label: @Composable (() -> Unit)? = null,
 ) {
     TextField(
@@ -17,6 +18,7 @@ fun StringInputField(
         onValueChange = { if (it.length <= maxLength) onValueChange(it) },
         modifier,
         singleLine = true,
-        label = label
+        label = label,
+        isError = isError
     )
 }

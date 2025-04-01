@@ -29,12 +29,12 @@ import io.github.jakubherr.gitfit.presentation.shared.StringInputField
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun CreateExerciseScreenRoot(
+fun ExerciseCreateScreenRoot(
     modifier: Modifier = Modifier,
     onExerciseCreated: (Exercise) -> Unit = {},
     onCancel: () -> Unit = {}
 ) {
-    CreateExerciseScreen(
+    ExerciseCreateScreen(
         Modifier.fillMaxSize(),
         onExerciseCreated = { onExerciseCreated(it) },
         onCancel = onCancel
@@ -42,7 +42,7 @@ fun CreateExerciseScreenRoot(
 }
 
 @Composable
-fun CreateExerciseScreen(
+fun ExerciseCreateScreen(
     modifier: Modifier = Modifier,
     onExerciseCreated: (Exercise) -> Unit = {},
     onCancel: () -> Unit = {},

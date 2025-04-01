@@ -82,11 +82,10 @@ fun WorkoutScreen(
     Scaffold { padding ->
         Surface {
             Column(Modifier.padding(padding)) {
-                Button({ onAction(WorkoutAction.AskForExercise(workout.id)) }) {
-                    Text(stringResource(Res.string.add_exercise))
-                }
-
-                LazyColumn(Modifier.fillMaxSize().weight(1f)) {
+                LazyColumn(
+                    Modifier.fillMaxSize().weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     items(workout.blocks) { block ->
                         WorkoutBlockItem(
                             block,
@@ -107,6 +106,11 @@ fun WorkoutScreen(
                                 )
                             }
                         )
+                    }
+                    item {
+                        Button({ onAction(WorkoutAction.AskForExercise(workout.id)) }) {
+                            Text(stringResource(Res.string.add_exercise))
+                        }
                     }
                 }
 

@@ -158,6 +158,9 @@ class FirestoreWorkoutRepository(
             val workout = getWorkout(userId, workoutId)
             val newBlocks = workout.blocks.toMutableList()
             newBlocks.removeAt(blockIdx)
+            newBlocks.forEachIndexed { idx, block ->
+                newBlocks[idx] = block.copy(idx = idx)
+            }
             workoutRef(userId).document(workoutId).set(workout.copy(blocks = newBlocks))
         }
     }

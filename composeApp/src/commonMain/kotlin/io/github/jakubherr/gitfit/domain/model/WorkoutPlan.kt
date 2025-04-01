@@ -23,5 +23,12 @@ data class WorkoutPlan(
         return copy(blocks = newBlocks)
     }
 
-    fun removeBlock(block: Block): WorkoutPlan = copy(blocks = blocks - block)
+    fun removeBlock(block: Block): WorkoutPlan {
+        val newBlocks = blocks.toMutableList()
+        newBlocks.remove(block)
+        newBlocks.forEachIndexed { idx, oldBlock ->
+            newBlocks[idx] = oldBlock.copy(idx = idx)
+        }
+        return copy(blocks = newBlocks)
+    }
 }

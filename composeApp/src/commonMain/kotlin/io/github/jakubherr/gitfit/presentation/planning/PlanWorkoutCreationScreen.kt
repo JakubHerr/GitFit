@@ -22,7 +22,7 @@ import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 import io.github.jakubherr.gitfit.presentation.shared.PlanBlockItem
 
 @Composable
-fun PlanWorkoutDetailScreen(
+fun PlanWorkoutCreationScreen(
     workout: WorkoutPlan,
     modifier: Modifier = Modifier,
     onAction: (PlanAction) -> Unit = {},
@@ -72,11 +72,17 @@ fun PlanBlockItemDropdownMenu(
         ) {
             DropdownMenuItem(
                 text = { Text("Delete exercise") },
-                onClick = { onDeleteExercise() }
+                onClick = {
+                    onDeleteExercise()
+                    expanded = false
+                }
             )
             DropdownMenuItem(
                 text = { Text("Edit progression") },
-                onClick = { onEditProgression() }
+                onClick = {
+                    onEditProgression()
+                    expanded = false
+                }
             )
         }
     }
