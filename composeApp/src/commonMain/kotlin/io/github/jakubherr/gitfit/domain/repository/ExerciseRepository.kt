@@ -10,9 +10,9 @@ interface ExerciseRepository {
 
     suspend fun addCustomExercise(userId: String, exercise: Exercise): Result<Unit>
 
-    // TODO edit custom exercise
-    // TODO delete custom exercise
-    // consider what to do with all existing workouts that already use this exercise
+    suspend fun editCustomExercise(userId: String, exercise: Exercise): Result<Unit>
+
+    suspend fun removeCustomExercise(userId: String, exerciseId: String): Result<Unit>
 
     suspend fun getDefaultExercise(exerciseId: String): Result<Exercise>
 

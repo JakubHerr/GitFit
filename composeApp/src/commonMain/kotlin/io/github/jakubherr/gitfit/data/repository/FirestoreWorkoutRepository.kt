@@ -9,6 +9,7 @@ import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
+import io.github.jakubherr.gitfit.domain.repository.AuthError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -32,17 +33,17 @@ class FirestoreWorkoutRepository(
 
         return workoutRef(userId)
             .where {
-                ("completed" equalTo false) and
-                        ("inProgress" equalTo true)
+                ("completed" equalTo false) and ("inProgress" equalTo true)
             }
             .snapshots.map { workoutSnapshot ->
-                workoutSnapshot.documents.firstOrNull()?.data<Workout>()
+                runCatching { workoutSnapshot.documents.firstOrNull()?.data<Workout>() }.getOrNull()
             }
     }
 
-    override suspend fun startNewWorkout() {
-        withContext(dispatcher) {
-            val userId = authRepository.currentUser.id.ifBlank { return@withContext } // TODO notify of failure
+    override suspend fun startNewWorkout(): Result<Unit> {
+        val userId = authRepository.currentUser.id.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
+
+        return withContext(dispatcher) {
             val id = workoutRef(userId).document.id
 
             println("DBG: starting new workout with id $id")
@@ -55,21 +56,23 @@ class FirestoreWorkoutRepository(
             )
 
             workoutRef(userId).document(id).set(workout)
+            Result.success(Unit)
         }
     }
 
-    override suspend fun startWorkoutFromPlan(planId: String, workoutIdx: Int) {
-        val userId = authRepository.currentUser.id.ifBlank { return }
+    override suspend fun startWorkoutFromPlan(planId: String, workoutIdx: Int): Result<Unit> {
+        val userId = authRepository.currentUser.id.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
         println("DBG: starting planned workout with index $workoutIdx from plan $planId")
 
-        val plan = planRepository.getCustomWorkout(userId, planId, workoutIdx)
+        // TODO result check
+        val workoutPlan = planRepository.getCustomWorkout(userId, planId, workoutIdx)
 
-        withContext(dispatcher) {
+        return withContext(dispatcher) {
             val id = workoutRef(userId).document.id
 
             val workout = Workout(
                 id = id,
-                blocks = plan.blocks,
+                blocks = workoutPlan.blocks,
                 completed = false,
                 inProgress = true,
                 planId = planId,
@@ -77,29 +80,23 @@ class FirestoreWorkoutRepository(
             )
 
             workoutRef(userId).document(id).set(workout)
-        }
-    }
-
-    override suspend fun getWorkout(workoutId: String): Workout? {
-        val userId = authRepository.currentUser.id.ifBlank { return null }
-
-        return withContext(dispatcher) {
-            val workout = workoutRef(userId).document(workoutId).get()
-            if (workout.exists) workout.data<Workout>() else null
+            Result.success(Unit)
         }
     }
 
     override suspend fun completeWorkout(workoutId: String) {
+        val userId = authRepository.currentUser.id.ifBlank { return}
+
         withContext(dispatcher) {
-            val userId = authRepository.currentUser.id.ifBlank { return@withContext }
             println("DBG: completing workout $workoutId of user $userId")
             workoutRef(userId).document(workoutId).update("completed" to true, "inProgress" to false)
         }
     }
 
     override suspend fun completeWorkout(workout: Workout) {
+        val userId = authRepository.currentUser.id.ifBlank { return }
+
         withContext(dispatcher) {
-            val userId = authRepository.currentUser.id.ifBlank { return@withContext }
             println("DBG: completing workout ${workout.id} of user $userId")
 
             val newWorkout = workout.copy(completed = true, inProgress = false)

@@ -22,15 +22,28 @@ class ExerciseViewModel(
 
     fun onAction(action: ExerciseAction) {
         when (action) {
-            is ExerciseAction.ExerciseCreated -> createExercise(action.exercise)
+            is ExerciseAction.CreateExercise -> createExercise(action.exercise)
+            is ExerciseAction.EditCustomExercise -> editExercise(action.exercise)
+            is ExerciseAction.DeleteCustomExercise -> deleteCustomExercise(action.exerciseId)
             is ExerciseAction.FetchExercise -> fetchExercise(action.exerciseId)
-            else -> { }
         }
     }
 
     private fun createExercise(exercise: Exercise) {
         viewModelScope.launch {
             exerciseRepository.addCustomExercise(authRepository.currentUser.id, exercise)
+        }
+    }
+
+    private fun editExercise(exercise: Exercise) {
+        viewModelScope.launch {
+            exerciseRepository.editCustomExercise(authRepository.currentUser.id, exercise)
+        }
+    }
+
+    private fun deleteCustomExercise(exerciseId: String) {
+        viewModelScope.launch {
+            exerciseRepository.removeCustomExercise(authRepository.currentUser.id, exerciseId)
         }
     }
 
@@ -57,10 +70,8 @@ sealed class ExerciseFetchResult {
 }
 
 sealed interface ExerciseAction {
-    // TODO delete custom exercise
-    // TODO edit custom exercise
-    class ExerciseSelected(val exercise: Exercise) : ExerciseAction
-    object CreateExerciseSelected : ExerciseAction
-    class ExerciseCreated(val exercise: Exercise) : ExerciseAction
+    class CreateExercise(val exercise: Exercise) : ExerciseAction
+    class EditCustomExercise(val exercise: Exercise) : ExerciseAction
+    class DeleteCustomExercise(val exerciseId: String) : ExerciseAction
     class FetchExercise(val exerciseId: String) : ExerciseAction
 }

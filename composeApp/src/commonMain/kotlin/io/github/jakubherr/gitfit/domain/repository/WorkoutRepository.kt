@@ -8,11 +8,9 @@ import kotlinx.coroutines.flow.Flow
 interface WorkoutRepository {
     fun observeCurrentWorkoutOrNull(): Flow<Workout?>
 
-    suspend fun startNewWorkout()
+    suspend fun startNewWorkout(): Result<Unit>
 
-    suspend fun startWorkoutFromPlan(planId: String, workoutIdx: Int)
-
-    suspend fun getWorkout(workoutId: String): Workout?
+    suspend fun startWorkoutFromPlan(planId: String, workoutIdx: Int): Result<Unit>
 
     suspend fun completeWorkout(workoutId: String)
 

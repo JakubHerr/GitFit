@@ -7,7 +7,7 @@ data class Exercise(
     val id: String,
     val name: String,
     val description: String?,
-    val primaryMuscle: List<MuscleGroup> = emptyList(),
+    val primaryMuscle: MuscleGroup,
     val secondaryMuscle: List<MuscleGroup> = emptyList(),
 )
 
@@ -26,6 +26,6 @@ val mockExercise =
         "mock",
         "Bench press",
         "",
-        listOf(MuscleGroup.CHEST),
+        MuscleGroup.CHEST,
         listOf(MuscleGroup.SHOULDERS),
     )

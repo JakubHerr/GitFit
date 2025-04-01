@@ -64,7 +64,7 @@ fun ExerciseDetailScreen(
     // name, description, primary, secondary muscle etc.
     Column(modifier.fillMaxSize()) {
         Text(exercise.name)
-        Text(exercise.primaryMuscle.joinToString(), fontWeight = FontWeight.Bold)
+        Text(exercise.primaryMuscle.name, fontWeight = FontWeight.Bold)
         if (exercise.secondaryMuscle.isNotEmpty()) Text(exercise.secondaryMuscle.joinToString())
 
         Spacer(Modifier.height(16.dp))

@@ -45,6 +45,25 @@ class FirestoreExerciseRepository : ExerciseRepository {
         }
     }
 
+    // note: editing or removing exercise will not impact existing workout records for performance and security reasons
+    override suspend fun editCustomExercise(userId: String, exercise: Exercise): Result<Unit> {
+        if (userId.isBlank()) return Result.failure(AuthError.UserLoggedOut)
+
+        return withContext(context) {
+            userExerciseRef(userId).document(exercise.id).set(exercise)
+            Result.success(Unit)
+        }
+    }
+
+    override suspend fun removeCustomExercise(userId: String, exerciseId: String): Result<Unit> {
+        if (userId.isBlank()) return Result.failure(AuthError.UserLoggedOut)
+
+        return withContext(context) {
+            userExerciseRef(userId).document(exerciseId).delete()
+            Result.success(Unit)
+        }
+    }
+
     override suspend fun addDefaultExercise(exercise: Exercise) {
         withContext(context) {
             val id = defaultExerciseRef.document.id

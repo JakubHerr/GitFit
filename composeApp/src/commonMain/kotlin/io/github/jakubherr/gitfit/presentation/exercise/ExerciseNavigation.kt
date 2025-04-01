@@ -51,7 +51,10 @@ fun NavGraphBuilder.exerciseNavigation(
         )
     }
     composable<CreateExerciseRoute> {
+        val exerciseVm: ExerciseViewModel = koinViewModel()
+
         CreateExerciseScreenRoot {
+            exerciseVm.onAction(ExerciseAction.CreateExercise(it))
             navController.popBackStack()
         }
     }

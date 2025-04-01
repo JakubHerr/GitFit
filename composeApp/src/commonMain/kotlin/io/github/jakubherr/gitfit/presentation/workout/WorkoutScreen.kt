@@ -54,6 +54,7 @@ fun WorkoutScreenRoot(
     onAction: (WorkoutAction) -> Unit = {},
     onSaveComplete: () -> Unit = {}, // this mainly prevents cancelling viewmodel before it handles progression
 ) {
+    // TODO loading indicator when workout modification hangs
     val workout by vm.currentWorkout.collectAsStateWithLifecycle(null)
     val workoutSaved = vm.workoutSaved
 

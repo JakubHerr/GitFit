@@ -21,6 +21,7 @@ fun NavGraphBuilder.authGraph(
         )
     }
 
+    // TODO skip to dashboard after email is sent successfully
     composable<VerifyEmailRoute> { VerifyEmailScreenRoot { navController.navigate(DashboardRoute) } }
 
     composable<ResetPasswordRoute> { ResetPasswordScreenRoot() }
