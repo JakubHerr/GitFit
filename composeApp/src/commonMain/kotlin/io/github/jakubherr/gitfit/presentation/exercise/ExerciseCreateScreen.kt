@@ -85,6 +85,7 @@ fun ExerciseCreateScreen(
                         "",
                         name,
                         "",
+                        isCustom = true,
                         selectedPrimaryMuscle,
                         selectedSecondaryMuscle,
                     ),

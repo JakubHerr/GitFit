@@ -1,5 +1,6 @@
 package io.github.jakubherr.gitfit.presentation.exercise
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -7,11 +8,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -30,6 +36,7 @@ fun ExerciseDetailScreenRoot(
     modifier: Modifier = Modifier,
     graphViewModel: GraphViewModel = koinViewModel(),
     exerciseViewModel: ExerciseViewModel = koinViewModel(),
+    onBack: () -> Unit = {},
 ) {
     val data by graphViewModel.dataPoints.collectAsStateWithLifecycle()
     val exerciseFetch = exerciseViewModel.fetchedExercise
@@ -42,7 +49,11 @@ fun ExerciseDetailScreenRoot(
                 exercise = exerciseFetch.exercise,
                 graphData = data,
                 selectedMetric = graphViewModel.selectedMetric,
-                onAction = { graphViewModel.onAction(it) }
+                onGraphAction = { graphViewModel.onAction(it) },
+                onExerciseAction = {
+                    exerciseViewModel.onAction(it)
+                    onBack()
+                }
             )
         }
     }
@@ -55,15 +66,29 @@ fun ExerciseDetailScreen(
     graphData: List<DefaultPoint<String, Int>>,
     selectedMetric: ExerciseMetric,
     modifier: Modifier = Modifier,
-    onAction: (GraphAction) -> Unit = {},
+    onGraphAction: (GraphAction) -> Unit = {},
+    onExerciseAction: (ExerciseAction) -> Unit = {}
 ) {
     LaunchedEffect(exercise) {
-        onAction(GraphAction.ExerciseMetricSelected(exercise.id, ExerciseMetric.HEAVIEST_WEIGHT))
+        onGraphAction(GraphAction.ExerciseMetricSelected(exercise.id, ExerciseMetric.HEAVIEST_WEIGHT))
     }
 
     // name, description, primary, secondary muscle etc.
     Column(modifier.fillMaxSize()) {
-        Text(exercise.name)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(exercise.name)
+
+            // TODO: are you sure? dialog
+            if (exercise.isCustom) {
+                IconButton({ onExerciseAction(ExerciseAction.DeleteCustomExercise(exercise.id)) }) {
+                    Icon(Icons.Default.Delete, "")
+                }
+            }
+        }
+
         Text(exercise.primaryMuscle.name, fontWeight = FontWeight.Bold)
         if (exercise.secondaryMuscle.isNotEmpty()) Text(exercise.secondaryMuscle.joinToString())
 
@@ -90,7 +115,7 @@ fun ExerciseDetailScreen(
             modifier = Modifier.padding(16.dp),
             onChoiceSelected = { metric ->
                 println("DBG: ${metric.name} selected")
-                onAction(GraphAction.ExerciseMetricSelected(exercise.id, metric))
+                onGraphAction(GraphAction.ExerciseMetricSelected(exercise.id, metric))
             }
         )
     }

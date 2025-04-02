@@ -47,7 +47,8 @@ fun NavGraphBuilder.exerciseNavigation(
         val graphVm: GraphViewModel = koinViewModel()
 
         ExerciseDetailScreenRoot(
-            graphViewModel = graphVm
+            graphViewModel = graphVm,
+            onBack = { navController.popBackStack() }
         )
     }
 
