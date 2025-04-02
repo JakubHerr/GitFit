@@ -62,6 +62,7 @@ data class Workout(
         object NoExerciseInWorkout: Error("Workout has no exercises")
         object NoSetInExercise: Error("Some exercise has no sets")
         object EmptySetInExercise: Error("Some set has invalid values")
+        object BlankName: Error("Workout plan has no name")
     }
 }
 

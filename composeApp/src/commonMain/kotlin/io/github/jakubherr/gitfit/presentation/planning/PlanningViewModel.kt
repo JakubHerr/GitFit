@@ -38,8 +38,8 @@ class PlanningViewModel(
             is PlanAction.DeletePlan -> deletePlan(action.planId)
 
             is PlanAction.AddWorkout -> plan = plan.addWorkoutPlan(action.workout)
-            is PlanAction.UpdateWorkout -> plan.updateWorkoutPlan(action.workout)
-            is PlanAction.SaveWorkout -> validateWorkoutPlan(action.workout)
+            is PlanAction.RenameWorkout -> renameWorkoutPlan(action.workout, action.name)
+            is PlanAction.ValidateWorkout -> validateWorkoutPlan(action.workout)
             is PlanAction.DeleteWorkout -> plan = plan.removeWorkoutPlan(action.workout)
 
             is PlanAction.AddExercise -> plan = plan.addExercise(action.workoutIdx, action.exercise)
@@ -76,8 +76,12 @@ class PlanningViewModel(
         viewModelScope.launch { planRepository.deleteCustomPlan(user.id, planId) }
     }
 
+    private fun renameWorkoutPlan(workoutPlan: WorkoutPlan, name: String) {
+        plan = plan.updateWorkoutPlan(workoutPlan.copy(name = name))
+    }
+
     private fun validateWorkoutPlan(workoutPlan: WorkoutPlan) {
-        val workoutError = workoutPlan.toWorkout().error ?: return
+        val workoutError = workoutPlan.error ?: return
         error = Plan.Error.InvalidWorkout(workoutError)
     }
 }
@@ -90,8 +94,8 @@ sealed interface PlanAction {
     class DeletePlan(val planId: String) : PlanAction
 
     class AddWorkout(val workout: WorkoutPlan) : PlanAction
-    class UpdateWorkout(val workout: WorkoutPlan) : PlanAction // TODO will this break validation?
-    class SaveWorkout(val workout: WorkoutPlan) : PlanAction
+    class RenameWorkout(val workout: WorkoutPlan, val name: String) : PlanAction // TODO will this break validation?
+    class ValidateWorkout(val workout: WorkoutPlan) : PlanAction
     class DeleteWorkout(val workout: WorkoutPlan) : PlanAction
 
     class AddExercise(val workoutIdx: Int, val exercise: Exercise) : PlanAction

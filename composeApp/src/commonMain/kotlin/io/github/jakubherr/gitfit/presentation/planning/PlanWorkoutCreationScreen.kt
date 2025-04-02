@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
@@ -39,9 +40,10 @@ fun PlanWorkoutCreationScreen(
     ) {
         StringInputField(
             value = workoutPlan.name,
-            onValueChange = { onAction(PlanAction.RenamePlan(it)) },
+            onValueChange = { onAction(PlanAction.RenameWorkout(workoutPlan, it)) },
             maxLength = 20,
             label = { Text("Plan name") },
+            // placeholder = { Text(workoutPlan.name, Modifier.alpha(0.5f)) },
             isError = workoutPlan.name.isBlank()
         )
 
@@ -61,7 +63,7 @@ fun PlanWorkoutCreationScreen(
             }
             item {
                 Button({
-                    onAction(PlanAction.SaveWorkout(workoutPlan))
+                    onAction(PlanAction.ValidateWorkout(workoutPlan))
                     onSave()
                 }) { Text("Save workout") }
             }

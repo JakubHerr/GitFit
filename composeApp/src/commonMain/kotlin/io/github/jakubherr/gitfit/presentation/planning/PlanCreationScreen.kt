@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
@@ -37,7 +38,8 @@ fun PlanCreationScreen(
             value = plan.name,
             onValueChange = { onAction(PlanAction.RenamePlan(it)) },
             maxLength = 20,
-            label = { Text("Plan name") }
+            label = { Text("Plan name") },
+            placeholder = { Text(plan.name, Modifier.alpha(0.5f)) }
         )
 
         Spacer(Modifier.height(16.dp))

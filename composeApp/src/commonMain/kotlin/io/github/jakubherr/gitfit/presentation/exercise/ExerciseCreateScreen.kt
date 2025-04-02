@@ -78,6 +78,8 @@ fun ExerciseCreateScreen(
 
         Row {
             Button({
+                if (name.isBlank()) return@Button
+
                 onExerciseCreated(
                     Exercise(
                         "",

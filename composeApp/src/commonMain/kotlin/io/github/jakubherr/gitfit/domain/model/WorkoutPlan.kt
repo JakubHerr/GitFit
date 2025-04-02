@@ -1,5 +1,6 @@
 package io.github.jakubherr.gitfit.domain.model
 
+import io.github.jakubherr.gitfit.domain.model.Workout.Error
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -8,6 +9,14 @@ data class WorkoutPlan(
     val idx: Int,
     val blocks: List<Block>,
 ) {
+    val error: Error? get() = when {
+        name.isBlank() -> Error.BlankName
+        blocks.isEmpty() -> Error.NoExerciseInWorkout
+        blocks.any { block -> block.series.isEmpty() } -> Error.NoSetInExercise
+        blocks.any { block -> block.series.any { series -> series.weight == null || series.repetitions == null } } -> Error.EmptySetInExercise
+        else -> null
+    }
+
     fun toWorkout() = Workout(
         id = "",
         blocks = blocks,
