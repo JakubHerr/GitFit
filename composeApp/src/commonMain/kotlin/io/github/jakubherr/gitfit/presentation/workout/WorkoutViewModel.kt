@@ -37,6 +37,15 @@ class WorkoutViewModel(
             started = SharingStarted.WhileSubscribed(5_000L),
         )
 
+    val completedWorkouts =
+        workoutRepository.getCompletedWorkouts().stateIn(
+            scope = viewModelScope,
+            initialValue = emptyList(),
+            started = SharingStarted.WhileSubscribed(5_000L),
+        )
+
+
+
     var workoutSaved by mutableStateOf(false)
         private set
 

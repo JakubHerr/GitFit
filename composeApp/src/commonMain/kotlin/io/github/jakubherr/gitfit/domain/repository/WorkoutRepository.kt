@@ -16,6 +16,8 @@ interface WorkoutRepository {
 
     suspend fun completeWorkout(workout: Workout)
 
+    suspend fun getWorkout(workoutId: String): Result<Workout>
+
     suspend fun deleteWorkout(workoutId: String)
 
     suspend fun deleteAllWorkouts(userId: String): Result<Unit>

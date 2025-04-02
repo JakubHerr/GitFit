@@ -24,6 +24,7 @@ import gitfit.composeapp.generated.resources.planned_workouts
 import gitfit.composeapp.generated.resources.resume_workout
 import gitfit.composeapp.generated.resources.start_unplanned_workout
 import io.github.jakubherr.gitfit.domain.model.Workout
+import io.github.jakubherr.gitfit.presentation.shared.WorkoutListItem
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
 import org.jetbrains.compose.resources.stringResource
@@ -108,22 +109,3 @@ fun WorkoutListHeader(modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-fun WorkoutListItem(
-    workout: Workout,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-) {
-    Card(
-        modifier.clickable { onClick() },
-    ) {
-        Column {
-            Text(workout.id)
-            Text(workout.date.toString())
-
-            workout.blocks.forEach { block ->
-                Text(block.exercise.name)
-            }
-        }
-    }
-}

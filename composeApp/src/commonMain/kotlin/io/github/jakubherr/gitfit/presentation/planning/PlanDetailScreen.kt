@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
-import io.github.jakubherr.gitfit.presentation.shared.WorkoutListItem
+import io.github.jakubherr.gitfit.presentation.shared.WorkoutPlanListItem
 
 @Composable
 fun PlanDetailScreen(
@@ -60,7 +60,7 @@ fun PlanDetailScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             items(plan.workoutPlans) { workout ->
-                WorkoutListItem(
+                WorkoutPlanListItem(
                     workout,
                     onActionClicked = { onWorkoutSelected(workout) },
                     actionSlot = { Icon(Icons.Default.PlayArrow, "") }

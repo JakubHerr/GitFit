@@ -46,7 +46,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 // use case: track a workout while in the gym
 @Composable
-fun WorkoutScreenRoot(
+fun WorkoutInProgressScreenRoot(
     vm: WorkoutViewModel = koinViewModel(),
     onAction: (WorkoutAction) -> Unit = {},
     onSaveComplete: () -> Unit = {}, // this mainly prevents cancelling viewmodel before it handles progression
@@ -68,14 +68,14 @@ fun WorkoutScreenRoot(
             CircularProgressIndicator()
         }
     } else {
-        WorkoutScreen(workout!!) { action ->
+        WorkoutInProgressScreen(workout!!) { action ->
             onAction(action)
         }
     }
 }
 
 @Composable
-fun WorkoutScreen(
+fun WorkoutInProgressScreen(
     workout: Workout,
     onAction: (WorkoutAction) -> Unit = {},
 ) {

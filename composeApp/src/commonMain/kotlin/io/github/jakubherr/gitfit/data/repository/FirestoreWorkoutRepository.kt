@@ -104,6 +104,14 @@ class FirestoreWorkoutRepository(
         }
     }
 
+    override suspend fun getWorkout(workoutId: String): Result<Workout> {
+        val userId = authRepository.currentUser.id.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
+
+        return withContext(dispatcher) {
+            runCatching { getWorkout(userId, workoutId) }
+        }
+    }
+
     override suspend fun deleteWorkout(workoutId: String) {
         val userId = authRepository.currentUser.id.ifBlank { return }
         withContext(dispatcher) { workoutRef(userId).document(workoutId).delete() }

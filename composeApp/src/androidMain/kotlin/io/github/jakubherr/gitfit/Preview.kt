@@ -9,7 +9,7 @@ import io.github.jakubherr.gitfit.domain.model.mockWorkout
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardScreen
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseCreateScreen
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseListScreen
-import io.github.jakubherr.gitfit.presentation.workout.WorkoutScreen
+import io.github.jakubherr.gitfit.presentation.workout.WorkoutInProgressScreen
 
 @Preview
 @Composable
@@ -24,7 +24,7 @@ private fun DashboardScreenPreview() {
 @Preview
 @Composable
 private fun WorkoutScreenPreview() {
-    WorkoutScreen(mockWorkout) {}
+    WorkoutInProgressScreen(mockWorkout) {}
 }
 
 @Preview

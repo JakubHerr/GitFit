@@ -7,23 +7,31 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import io.github.jakubherr.gitfit.domain.model.Workout
+import io.github.jakubherr.gitfit.domain.model.Block
+import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 
 @Composable
-fun WorkoutListItem(
-    workout: Workout,
+fun WorkoutPlanListItem(
+    workout: WorkoutPlan,
     modifier: Modifier = Modifier,
-    onClick: (String) -> Unit = {},
+    onItemClicked: () -> Unit = {},
+    actionSlot: @Composable () -> Unit = { Icon(Icons.Default.Delete, "") },
+    onActionClicked: () -> Unit = {},
 ) {
     Card(
-        onClick = { onClick(workout.id) },
+        onItemClicked,
         modifier
     ) {
         Column(
@@ -34,7 +42,11 @@ fun WorkoutListItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(workout.date.toString(), fontWeight = FontWeight.Bold)
+                Text(workout.name, fontWeight = FontWeight.Bold)
+
+                IconButton(onActionClicked) {
+                    actionSlot()
+                }
             }
 
             Spacer(Modifier.height(4.dp))
@@ -44,4 +56,16 @@ fun WorkoutListItem(
             }
         }
     }
+}
+
+@Composable
+fun ExerciseNames(
+    blockList: List<Block>,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        if (blockList.isNotEmpty()) blockList.joinToString { it.exercise.name } else "Click to add exercise",
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 2,
+    )
 }

@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 import io.github.jakubherr.gitfit.presentation.shared.StringInputField
-import io.github.jakubherr.gitfit.presentation.shared.WorkoutListItem
+import io.github.jakubherr.gitfit.presentation.shared.WorkoutPlanListItem
 
 @Composable
 fun PlanCreationScreen(
@@ -64,7 +64,7 @@ fun PlanCreationScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             items(plan.workoutPlans) { workout ->
-                WorkoutListItem(
+                WorkoutPlanListItem(
                     workout,
                     onItemClicked = { onWorkoutSelected(workout.idx) },
                     onActionClicked = { onAction(PlanAction.DeleteWorkout(workout))}

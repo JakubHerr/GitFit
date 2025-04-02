@@ -1,6 +1,7 @@
 package io.github.jakubherr.gitfit.presentation
 
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -15,19 +16,21 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.toRoute
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
 import io.github.jakubherr.gitfit.presentation.auth.authGraph
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardAction
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardScreenRoot
 import io.github.jakubherr.gitfit.presentation.exercise.exerciseNavigation
-import io.github.jakubherr.gitfit.presentation.graph.GraphScreenRoot
+import io.github.jakubherr.gitfit.presentation.graph.HistoryScreenRoot
 import io.github.jakubherr.gitfit.presentation.measurement.measurementGraph
 import io.github.jakubherr.gitfit.presentation.planning.PlanAction
 import io.github.jakubherr.gitfit.presentation.planning.PlanningViewModel
 import io.github.jakubherr.gitfit.presentation.planning.planningGraph
 import io.github.jakubherr.gitfit.presentation.settings.SettingsScreenRoot
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
-import io.github.jakubherr.gitfit.presentation.workout.WorkoutScreenRoot
+import io.github.jakubherr.gitfit.presentation.workout.WorkoutListScreen
+import io.github.jakubherr.gitfit.presentation.workout.WorkoutInProgressScreenRoot
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
@@ -86,7 +89,7 @@ fun GitFitNavHost(
                 val scope = rememberCoroutineScope()
                 val workoutVm: WorkoutViewModel = koinViewModel()
 
-                WorkoutScreenRoot(
+                WorkoutInProgressScreenRoot(
                     onAction = { action ->
                         if (action !is WorkoutAction.CompleteCurrentWorkout && action !is WorkoutAction.RemoveBlock) workoutVm.onAction(action)
 
@@ -119,10 +122,36 @@ fun GitFitNavHost(
             measurementGraph(navController, snackbarHostState)
 
             planningGraph(navController, planViewModel, snackbarHostState)
-            composable<TrendsRoute> {
-                GraphScreenRoot() {
-                    navController.navigate(ExerciseListRoute)
+
+            composable<HistoryRoute> {
+                HistoryScreenRoot(
+                    onBrowseWorkoutData = {
+                        navController.navigate(WorkoutHistoryRoute)
+                    },
+                    onBrowseExerciseData = { navController.navigate(ExerciseListRoute) }
+                )
+            }
+
+            composable<WorkoutHistoryRoute> {
+                val vm: WorkoutViewModel = koinViewModel()
+                val completedWorkouts by vm.completedWorkouts.collectAsStateWithLifecycle()
+
+                if (completedWorkouts.isEmpty()) {
+                    // TODO screen
+                    Text("No workout history")
+                } else {
+                    WorkoutListScreen(
+                        completedWorkouts,
+                        onWorkoutSelected = { navController.navigate(WorkoutDetailRoute(it)) }
+                    )
                 }
+            }
+
+            composable<WorkoutDetailRoute> { backstackEntry ->
+                val workoutId = backstackEntry.toRoute<WorkoutDetailRoute>().workoutId
+                val vm: WorkoutViewModel = koinViewModel()
+
+
             }
 
             composable<SettingsRoute> {
@@ -136,7 +165,7 @@ private fun NavHostController.navigateToTopLevelDestination(destination: TopLeve
     val route: Any =
         when (destination) {
             TopLevelDestination.DASHBOARD -> DashboardRoute
-            TopLevelDestination.TRENDS -> TrendsRoute
+            TopLevelDestination.HISTORY -> HistoryRoute
             TopLevelDestination.MEASUREMENT -> MeasurementRoute
             TopLevelDestination.PLAN -> PlanOverviewRoute
             TopLevelDestination.PROFILE -> SettingsRoute

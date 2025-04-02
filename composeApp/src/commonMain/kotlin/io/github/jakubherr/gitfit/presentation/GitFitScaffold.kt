@@ -1,9 +1,11 @@
 package io.github.jakubherr.gitfit.presentation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ManageSearch
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.ManageSearch
 import androidx.compose.material.icons.filled.SettingsAccessibility
 import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material3.Icon
@@ -20,10 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.dashboard
+import gitfit.composeapp.generated.resources.history
 import gitfit.composeapp.generated.resources.measurement
 import gitfit.composeapp.generated.resources.plan
 import gitfit.composeapp.generated.resources.profile
-import gitfit.composeapp.generated.resources.trends
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import kotlin.reflect.KClass
@@ -34,9 +36,9 @@ enum class TopLevelDestination(
     val route: KClass<*>,
 ) {
     DASHBOARD(Res.string.dashboard, Icons.Default.Home, DashboardRoute::class),
-    TRENDS(Res.string.trends, Icons.Default.Timeline, TrendsRoute::class),
-    MEASUREMENT(Res.string.measurement, Icons.Default.SettingsAccessibility, MeasurementRoute::class),
     PLAN(Res.string.plan, Icons.Default.EditCalendar, PlanOverviewRoute::class),
+    MEASUREMENT(Res.string.measurement, Icons.Default.SettingsAccessibility, MeasurementRoute::class),
+    HISTORY(Res.string.history, Icons.AutoMirrored.Filled.ManageSearch, HistoryRoute::class),
     PROFILE(Res.string.profile, Icons.Default.AccountBox, SettingsRoute::class),
 }
 
