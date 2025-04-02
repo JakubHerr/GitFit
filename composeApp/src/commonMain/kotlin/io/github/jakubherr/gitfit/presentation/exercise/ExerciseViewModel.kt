@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import io.github.jakubherr.gitfit.domain.repository.ExerciseRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.repository.AuthRepository
+import io.github.jakubherr.gitfit.presentation.shared.Resource
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class ExerciseViewModel(
@@ -17,7 +19,7 @@ class ExerciseViewModel(
     val defaultExercises = exerciseRepository.getDefaultExercises()
     val customExercises = exerciseRepository.getCustomExercises(authRepository.currentUser.id)
 
-    var fetchedExercise by mutableStateOf<ExerciseFetchResult>(ExerciseFetchResult.Loading)
+    var fetchedExercise by mutableStateOf<Resource<Exercise>>(Resource.Loading)
         private set
 
     fun onAction(action: ExerciseAction) {
@@ -48,25 +50,18 @@ class ExerciseViewModel(
     }
 
     private fun fetchExercise(exerciseId: String) {
-        println("DBG: fetch exercise called")
-        fetchedExercise = ExerciseFetchResult.Loading
+        fetchedExercise = Resource.Loading
         viewModelScope.launch {
             exerciseRepository.getDefaultExercise(exerciseId)
-                .onSuccess { fetchedExercise = ExerciseFetchResult.Success(it) }
+                .onSuccess { fetchedExercise = Resource.Success(it) }
                 .onFailure {
                     val custom = exerciseRepository.getCustomExercise(authRepository.currentUser.id, exerciseId)
                     custom
-                        .onSuccess { fetchedExercise = ExerciseFetchResult.Success(it) }
-                        .onFailure { ExerciseFetchResult.Failure(it) }
+                        .onSuccess { fetchedExercise = Resource.Success(it) }
+                        .onFailure { Resource.Failure(it) }
                 }
         }
     }
-}
-
-sealed class ExerciseFetchResult {
-    object Loading : ExerciseFetchResult()
-    class Success(val exercise: Exercise) : ExerciseFetchResult()
-    class Failure(val e: Throwable) : ExerciseFetchResult()
 }
 
 sealed interface ExerciseAction {

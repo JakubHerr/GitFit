@@ -24,6 +24,7 @@ import gitfit.composeapp.generated.resources.secondary_muscle
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.MuscleGroup
 import io.github.jakubherr.gitfit.presentation.shared.MultipleChoiceChipSelection
+import io.github.jakubherr.gitfit.presentation.shared.OnBackPress
 import io.github.jakubherr.gitfit.presentation.shared.SingleChoiceChipSelection
 import io.github.jakubherr.gitfit.presentation.shared.StringInputField
 import org.jetbrains.compose.resources.stringResource
@@ -50,6 +51,11 @@ fun ExerciseCreateScreen(
     var name by remember { mutableStateOf("") }
     var selectedPrimaryMuscle by remember { mutableStateOf(MuscleGroup.entries.first()) }
     val selectedSecondaryMuscle = remember { mutableStateListOf<MuscleGroup>() }
+
+    OnBackPress {
+        println("DBG: User pressed back button")
+        // TODO: are you sure? dialog
+    }
 
     Column(
         Modifier.fillMaxSize().padding(16.dp),

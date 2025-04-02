@@ -88,3 +88,28 @@ fun CheckableSetInput(
         )
     }
 }
+
+@Composable
+fun ReadOnlySet(
+    index: Int,
+    set: Series,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text((index + 1).toString())
+
+        Text(set.weight?.toPrettyString() ?: "0")
+        Text(set.repetitions.toString())
+
+        Checkbox(
+            set.completed,
+            enabled = false,
+            onCheckedChange = { },
+        )
+    }
+}
+

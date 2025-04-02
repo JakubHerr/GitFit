@@ -1,5 +1,6 @@
 package io.github.jakubherr.gitfit.presentation
 
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +29,9 @@ import io.github.jakubherr.gitfit.presentation.planning.PlanAction
 import io.github.jakubherr.gitfit.presentation.planning.PlanningViewModel
 import io.github.jakubherr.gitfit.presentation.planning.planningGraph
 import io.github.jakubherr.gitfit.presentation.settings.SettingsScreenRoot
+import io.github.jakubherr.gitfit.presentation.shared.Resource
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
+import io.github.jakubherr.gitfit.presentation.workout.WorkoutDetailScreen
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutListScreen
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutInProgressScreenRoot
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
@@ -142,7 +145,9 @@ fun GitFitNavHost(
                 } else {
                     WorkoutListScreen(
                         completedWorkouts,
-                        onWorkoutSelected = { navController.navigate(WorkoutDetailRoute(it)) }
+                        onWorkoutSelected = {
+                            navController.navigate(WorkoutDetailRoute(it))
+                        }
                     )
                 }
             }
@@ -151,7 +156,17 @@ fun GitFitNavHost(
                 val workoutId = backstackEntry.toRoute<WorkoutDetailRoute>().workoutId
                 val vm: WorkoutViewModel = koinViewModel()
 
+                LaunchedEffect(true) {
+                    vm.onAction(WorkoutAction.FetchWorkout(workoutId))
+                }
 
+                when (val fetch = vm.fetchedWorkout) {
+                    is Resource.Failure -> Text("Failed te fetch exercise")
+                    Resource.Loading -> CircularProgressIndicator()
+                    is Resource.Success -> {
+                        WorkoutDetailScreen(fetch.data)
+                    }
+                }
             }
 
             composable<SettingsRoute> {

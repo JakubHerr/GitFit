@@ -13,6 +13,7 @@ import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.ProgressionType
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
+import io.github.jakubherr.gitfit.presentation.shared.Resource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -44,7 +45,8 @@ class WorkoutViewModel(
             started = SharingStarted.WhileSubscribed(5_000L),
         )
 
-
+    var fetchedWorkout by mutableStateOf(Resource.Loading as Resource<Workout>)
+        private set
 
     var workoutSaved by mutableStateOf(false)
         private set
@@ -58,6 +60,7 @@ class WorkoutViewModel(
             is WorkoutAction.StartPlannedWorkout -> startPlannedWorkout(action.planId, action.workoutIdx)
             is WorkoutAction.CompleteCurrentWorkout -> completeCurrentWorkout()
             is WorkoutAction.DeleteWorkout -> deleteWorkout(action.workoutId)
+            is WorkoutAction.FetchWorkout -> fetchWorkout(action.workoutId)
             is WorkoutAction.AskForExercise -> { }
             is WorkoutAction.AddBlock -> addBlock(action.workoutId, action.exercise)
             is WorkoutAction.RemoveBlock -> removeBlock(action.workoutId, action.block)
@@ -105,6 +108,11 @@ class WorkoutViewModel(
         }
     }
 
+    // Some restrictions were made on editing workout records with progression to prevent user from shooting themselves in the foot
+    //  progression can not be changed mid-workout
+    //  user can not remove block with progression
+    //  user can add a new block without a progression -> OK
+    //  user can not change order of exercises
     private suspend fun handleProgression(workout: Workout) {
         println("DBG: progressing workout: ${workout.id}")
         workout.let {
@@ -117,13 +125,7 @@ class WorkoutViewModel(
             val plan = planRepository.getCustomPlan(authRepository.currentUser.id, workout.planId!!) ?: return
             var workoutPlanCopy = plan.workoutPlans.getOrNull(workout.planWorkoutIdx!!) ?: return
 
-            // TODO how to detect a plan that is different from workout plan?
-            //  progression can not be changed mid-workout -> no workouts with progression should be missing from plan
-            //  removing a block with progression will just prevent it from progressing in the plan -> OK
-            //  user can add a new block without a progression -> OK
-            //  user can not change order of exercises -> indexing should be OK
-
-            // filter out all blocks in workout record that have progression, if none are found, exit
+            // filter out all blocks in workout record that have progression. if none are found, exit
             val blocksWithProgression = workout.blocks.filter { it.progressionSettings != null }.ifEmpty { return }
             println("DBG: workout has ${blocksWithProgression.size} blocks with progression")
 
@@ -168,6 +170,15 @@ class WorkoutViewModel(
         viewModelScope.launch { workoutRepository.deleteWorkout(workoutId) }
     }
 
+    private fun fetchWorkout(workoutId: String) {
+        fetchedWorkout = Resource.Loading
+        viewModelScope.launch {
+            workoutRepository.getWorkout(workoutId)
+                .onSuccess { fetchedWorkout = Resource.Success(it) }
+                .onFailure { fetchedWorkout = Resource.Failure(it) }
+        }
+    }
+
     private fun addBlock(
         workoutId: String,
         exercise: Exercise,
@@ -206,6 +217,7 @@ sealed interface WorkoutAction {
     class StartPlannedWorkout(val planId: String, val workoutIdx: Int) : WorkoutAction
     object CompleteCurrentWorkout : WorkoutAction
     class DeleteWorkout(val workoutId: String) : WorkoutAction
+    class FetchWorkout(val workoutId: String): WorkoutAction
 
     class AddBlock(val workoutId: String, val exercise: Exercise) : WorkoutAction
     class RemoveBlock(val workoutId: String, val block: Block) : WorkoutAction

@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import io.github.jakubherr.gitfit.domain.isNonNegativeDouble
 import io.github.jakubherr.gitfit.domain.isNonNegativeInt
 import io.github.jakubherr.gitfit.domain.validDecimals
+import jdk.jfr.Enabled
 
 // For user input sanitation, one of these input fields should ALWAYS be used
 // maxLength prevents users from entering numbers larger than the KoalaGraph library can handle
@@ -25,12 +26,14 @@ fun NumberInputField(
     placeholder: Int = 0,
     label: String? = null,
     isError: Boolean = false,
+    enabled: Boolean = true,
     maxlength: Int,
 ) {
     OutlinedTextField(
         value,
         onValueChange = { if (it.length <= maxlength) onValueChange(it) },
         modifier = modifier,
+        enabled = enabled,
         placeholder = { Text(placeholder.toString(), Modifier.alpha(0.6f)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         isError = isError,
@@ -46,6 +49,7 @@ fun IntegerInputField(
     placeholder: Int = 0,
     label: String? = null,
     isError: Boolean = !value.isNonNegativeInt(),
+    enabled: Boolean = true,
     maxlength: Int = 3, // nobody is doing more than 999 kg or 999 reps
 ) {
     NumberInputField(
@@ -55,6 +59,7 @@ fun IntegerInputField(
         placeholder,
         label,
         isError,
+        enabled,
         maxlength
     )
 }
@@ -69,6 +74,7 @@ fun DoubleInputField(
     label: String? = null,
     isError: Boolean = !value.isNonNegativeDouble(),
     maxlength: Int = 6,
+    enabled: Boolean = true,
     maxDecimals: Int = 2,
 ) {
     NumberInputField(
@@ -80,6 +86,7 @@ fun DoubleInputField(
         placeholder,
         label,
         isError,
+        enabled,
         maxlength
     )
 }

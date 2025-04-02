@@ -34,6 +34,7 @@ import org.jetbrains.compose.resources.stringResource
 fun SharedBlockItem(
     block: Block,
     modifier: Modifier = Modifier,
+    readOnly: Boolean = false,
     dropdownMenu: @Composable () -> Unit = {},
     seriesItems: @Composable () -> Unit = {},
     onAddSet: () -> Unit = {},
@@ -60,11 +61,14 @@ fun SharedBlockItem(
             }
 
             Spacer(Modifier.height(8.dp))
-            Button(
-                onClick = onAddSet,
-                Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(Res.string.add_set))
+
+            if (!readOnly) {
+                Button(
+                    onClick = onAddSet,
+                    Modifier.fillMaxWidth()
+                ) {
+                    Text(stringResource(Res.string.add_set))
+                }
             }
         }
     }
@@ -113,6 +117,7 @@ fun PlanBlockItem(
 fun WorkoutBlockItem(
     block: Block,
     modifier: Modifier = Modifier,
+    readOnly: Boolean = false,
     onAction: (WorkoutAction) -> Unit = {},
     onAddSetClicked: () -> Unit = {},
     dropdownMenu: @Composable () -> Unit = {}
@@ -120,24 +125,30 @@ fun WorkoutBlockItem(
     SharedBlockItem(
         block,
         modifier = modifier,
+        readOnly = readOnly,
         seriesItems = {
             block.series.forEachIndexed { seriesIdx, series ->
-                CheckableSetInput(
-                    seriesIdx,
-                    series,
-                    onToggle = { weight, reps ->
-                        onAction(
-                            WorkoutAction.ModifySeries(
-                                block.idx,
-                                series.copy(
-                                    weight = weight.toDouble(),
-                                    repetitions = reps.toLong(),
-                                    completed = !series.completed,
+
+                if (readOnly) {
+                    ReadOnlySet(seriesIdx, series)
+                } else{
+                    CheckableSetInput(
+                        seriesIdx,
+                        series,
+                        onToggle = { weight, reps ->
+                            onAction(
+                                WorkoutAction.ModifySeries(
+                                    block.idx,
+                                    series.copy(
+                                        weight = weight.toDouble(),
+                                        repetitions = reps.toLong(),
+                                        completed = !series.completed,
+                                    ),
                                 ),
-                            ),
-                        )
-                    },
-                )
+                            )
+                        },
+                    )
+                }
             }
         },
         onAddSet = onAddSetClicked,
