@@ -14,12 +14,18 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
+import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
+import io.github.jakubherr.gitfit.presentation.shared.OnBackPress
 import io.github.jakubherr.gitfit.presentation.shared.StringInputField
 import io.github.jakubherr.gitfit.presentation.shared.WorkoutPlanListItem
 
@@ -30,6 +36,22 @@ fun PlanCreationScreen(
     onAction: (PlanAction) -> Unit = {},
     onWorkoutSelected: (Int) -> Unit = {},
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+    OnBackPress { showDialog = true }
+    if (showDialog) {
+        ConfirmationDialog(
+            title = "Discard plan changes",
+            text = "The current plan will not be saved",
+            confirmText = "Discard changes",
+            dismissText = "Cancel",
+            onDismiss = { showDialog = false },
+            onConfirm = {
+                showDialog = false
+                onAction(PlanAction.DiscardPlan)
+            }
+        )
+    }
+
     Column(
         modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -79,7 +101,7 @@ fun PlanCreationScreen(
         ) {
             Button({ onAction(PlanAction.SavePlan) }) { Text("Save plan") }
 
-            Button({ onAction(PlanAction.DiscardPlan) }) { Text("Discard changes") }
+            Button({ showDialog = true }) { Text("Discard changes") }
         }
     }
 }

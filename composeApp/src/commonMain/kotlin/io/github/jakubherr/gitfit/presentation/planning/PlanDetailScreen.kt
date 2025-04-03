@@ -18,12 +18,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
+import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
+import io.github.jakubherr.gitfit.presentation.shared.OnBackPress
 import io.github.jakubherr.gitfit.presentation.shared.WorkoutPlanListItem
 
 @Composable
@@ -34,6 +40,21 @@ fun PlanDetailScreen(
     onPlanSelected: () -> Unit = {}, // TODO User can add a predefined plan to his plans, where he can edit it etc.
     onAction: (PlanAction) -> Unit = {},
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+    if (showDialog) {
+        ConfirmationDialog(
+            title = "Delete",
+            text = "The selected plan will be deleted",
+            confirmText = "Delete plan",
+            dismissText = "Cancel",
+            onDismiss = { showDialog = false },
+            onConfirm = {
+                showDialog = false
+                onAction(PlanAction.DeletePlan(plan.id))
+            }
+        )
+    }
+
     Column(modifier.fillMaxSize().padding(16.dp)) {
         Row(
             Modifier.fillMaxWidth(),
@@ -46,8 +67,8 @@ fun PlanDetailScreen(
                 IconButton({ onAction(PlanAction.EditPlan(plan)) }) {
                     Icon(Icons.Default.Edit, "")
                 }
-                // TODO: "are you sure?" dialog
-                IconButton({ onAction(PlanAction.DeletePlan(plan.id)) }) {
+
+                IconButton({ showDialog = true }) {
                     Icon(Icons.Default.Delete, "")
                 }
             }
