@@ -1,6 +1,5 @@
 package io.github.jakubherr.gitfit.presentation.exercise
 
-import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -16,11 +15,15 @@ import org.koin.compose.viewmodel.koinViewModel
 
 fun NavGraphBuilder.exerciseNavigation(
     navController: NavHostController,
+    exerciseViewModel: ExerciseViewModel,
 ) {
     composable<ExerciseListRoute> {
         ExerciseListScreenRoot(
+            vm = exerciseViewModel,
             onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
-            onExerciseClick = { navController.navigate(ExerciseDetailRoute(it.id)) },
+            onExerciseClick = {
+                exerciseViewModel.onAction(ExerciseAction.SelectExercise(it))
+                navController.navigate(ExerciseDetailRoute(it.id, it.isCustom)) },
         )
     }
 
@@ -29,6 +32,7 @@ fun NavGraphBuilder.exerciseNavigation(
         val workoutViewModel: WorkoutViewModel = koinViewModel()
 
         ExerciseListScreenRoot(
+            vm = exerciseViewModel,
             onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
             onExerciseClick = { exercise ->
                 workoutViewModel.onAction(WorkoutAction.AddBlock(route.workoutId, exercise))
@@ -38,26 +42,19 @@ fun NavGraphBuilder.exerciseNavigation(
     }
 
     composable<ExerciseDetailRoute> { backstackEntry ->
-        val exerciseId = backstackEntry.toRoute<ExerciseDetailRoute>().exerciseId
-        val exerciseVm: ExerciseViewModel = koinViewModel()
-
-        LaunchedEffect(true) {
-            exerciseVm.onAction(ExerciseAction.FetchExercise(exerciseId))
-        }
         val graphVm: GraphViewModel = koinViewModel()
 
         ExerciseDetailScreenRoot(
             graphViewModel = graphVm,
+            exerciseViewModel = exerciseViewModel,
             onBack = { navController.popBackStack() }
         )
     }
 
     composable<CreateExerciseRoute> {
-        val exerciseVm: ExerciseViewModel = koinViewModel()
-
         ExerciseCreateScreenRoot(
             onExerciseCreated = {
-                exerciseVm.onAction(ExerciseAction.CreateExercise(it))
+                exerciseViewModel.onAction(ExerciseAction.CreateExercise(it))
                 navController.popBackStack()
             },
             onCancel = { navController.popBackStack() }

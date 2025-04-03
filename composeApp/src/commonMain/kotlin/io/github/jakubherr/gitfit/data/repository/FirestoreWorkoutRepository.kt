@@ -19,7 +19,6 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 
-// TODO handle uncached data, null value when something is not found
 class FirestoreWorkoutRepository(
     private val authRepository: AuthRepository,
     private val planRepository: PlanRepository
@@ -256,6 +255,7 @@ class FirestoreWorkoutRepository(
         }
     }
 
+    // if the device is offline and the user deletes the only completed workout, it will take longer to update for some reason
     override fun getCompletedWorkouts(): Flow<List<Workout>> {
         val userId = authRepository.currentUser.id.ifBlank { return emptyFlow() }
 

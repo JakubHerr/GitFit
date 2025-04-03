@@ -85,5 +85,4 @@ class GraphViewModel(
 
 sealed interface GraphAction {
     class ExerciseMetricSelected(val exerciseId: String, val metric: ExerciseMetric) : GraphAction
-    // class MeasurementMetricSelected(val userId: String) : GraphAction // TODO measurement type selection
 }

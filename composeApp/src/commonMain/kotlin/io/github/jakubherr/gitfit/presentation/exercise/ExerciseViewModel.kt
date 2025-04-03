@@ -22,12 +22,16 @@ class ExerciseViewModel(
     var fetchedExercise by mutableStateOf<Resource<Exercise>>(Resource.Loading)
         private set
 
+    var selectedExercise by mutableStateOf<Exercise?>(null)
+        private set
+
     fun onAction(action: ExerciseAction) {
         when (action) {
             is ExerciseAction.CreateExercise -> createExercise(action.exercise)
             is ExerciseAction.EditCustomExercise -> editExercise(action.exercise)
             is ExerciseAction.DeleteCustomExercise -> deleteCustomExercise(action.exerciseId)
-            is ExerciseAction.FetchExercise -> fetchExercise(action.exerciseId)
+            // is ExerciseAction.FetchExercise -> fetchExercise(action.exerciseId, action.isCustom)
+            is ExerciseAction.SelectExercise -> selectedExercise = action.exercise
         }
     }
 
@@ -49,17 +53,19 @@ class ExerciseViewModel(
         }
     }
 
-    private fun fetchExercise(exerciseId: String) {
+    // TODO: AVOID fetching exercise if it is not necessary, it can take a long time in offline mode
+    private fun fetchExercise(exerciseId: String, isCustom: Boolean) {
         fetchedExercise = Resource.Loading
         viewModelScope.launch {
-            exerciseRepository.getDefaultExercise(exerciseId)
-                .onSuccess { fetchedExercise = Resource.Success(it) }
-                .onFailure {
-                    val custom = exerciseRepository.getCustomExercise(authRepository.currentUser.id, exerciseId)
-                    custom
-                        .onSuccess { fetchedExercise = Resource.Success(it) }
-                        .onFailure { Resource.Failure(it) }
-                }
+            if (isCustom) {
+                exerciseRepository.getCustomExercise(authRepository.currentUser.id, exerciseId)
+                    .onSuccess { fetchedExercise = Resource.Success(it) }
+                    .onFailure { Resource.Failure(it) }
+            } else {
+                exerciseRepository.getDefaultExercise(exerciseId)
+                    .onSuccess { fetchedExercise = Resource.Success(it) }
+                    .onFailure { fetchedExercise = Resource.Failure(it) }
+            }
         }
     }
 }
@@ -68,5 +74,7 @@ sealed interface ExerciseAction {
     class CreateExercise(val exercise: Exercise) : ExerciseAction
     class EditCustomExercise(val exercise: Exercise) : ExerciseAction
     class DeleteCustomExercise(val exerciseId: String) : ExerciseAction
-    class FetchExercise(val exerciseId: String) : ExerciseAction
+
+    // class FetchExercise(val exerciseId: String, val isCustom: Boolean) : ExerciseAction
+    class SelectExercise(val exercise: Exercise) : ExerciseAction
 }

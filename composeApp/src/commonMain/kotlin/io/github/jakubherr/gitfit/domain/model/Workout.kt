@@ -7,7 +7,7 @@ import kotlinx.datetime.todayIn
 import kotlinx.serialization.Serializable
 
 // Important: never rename existing variable names, it will create problems with existing records in database
-// TODO solution: Add abstraction to data layer that will translate domain models to DTO
+// optional: Add abstraction to data layer that will translate domain models to DTO
 
 @Serializable
 data class Workout(

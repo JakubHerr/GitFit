@@ -40,7 +40,7 @@ import org.koin.compose.viewmodel.koinViewModel
 // the purpose is to either browse and show detail or add exercise to workout (real time or planned)
 @Composable
 fun ExerciseListScreenRoot(
-    vm: ExerciseViewModel = koinViewModel(),
+    vm: ExerciseViewModel,
     modifier: Modifier = Modifier,
     onExerciseClick: (Exercise) -> Unit = {},
     onCreateExerciseClick: () -> Unit = {},

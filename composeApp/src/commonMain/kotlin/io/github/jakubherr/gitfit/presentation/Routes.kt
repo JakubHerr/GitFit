@@ -34,7 +34,7 @@ class AddExerciseToWorkoutRoute(val workoutId: String)
 class AddExerciseToPlanRoute(val workoutIdx: Int)
 
 @Serializable
-data class ExerciseDetailRoute(val exerciseId: String)
+data class ExerciseDetailRoute(val exerciseId: String, val isCustom: Boolean)
 
 @Serializable
 object CreateExerciseRoute

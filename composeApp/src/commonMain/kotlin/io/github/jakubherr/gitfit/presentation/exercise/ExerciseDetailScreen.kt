@@ -40,40 +40,40 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ExerciseDetailScreenRoot(
     modifier: Modifier = Modifier,
     graphViewModel: GraphViewModel = koinViewModel(),
-    exerciseViewModel: ExerciseViewModel = koinViewModel(),
+    exerciseViewModel: ExerciseViewModel,
     onBack: () -> Unit = {},
 ) {
     val data by graphViewModel.dataPoints.collectAsStateWithLifecycle()
-    val fetch = exerciseViewModel.fetchedExercise
+    val exercise = exerciseViewModel.selectedExercise
     var showDialog by remember { mutableStateOf(false) }
 
-    when (fetch) {
-        is Resource.Loading -> CircularProgressIndicator()
-        is Resource.Failure -> Text("Some error occurred")
-        is Resource.Success -> {
-            if (showDialog) {
-                ConfirmationDialog(
-                    title = "Delete custom exercise",
-                    text = "The exercise will be deleted. Workouts with this exercise will not be changed",
-                    confirmText = "Delete exercise",
-                    dismissText = "Cancel",
-                    onDismiss = { showDialog = false },
-                    onConfirm = {
-                        showDialog = false
-                        exerciseViewModel.onAction(ExerciseAction.DeleteCustomExercise(fetch.data.id))
-                        onBack()
-                    }
-                )
-            }
-
-            ExerciseDetailScreen(
-                exercise = fetch.data,
-                graphData = data,
-                selectedMetric = graphViewModel.selectedMetric,
-                onGraphAction = { graphViewModel.onAction(it) },
-                onDeleteExercise = { showDialog = true }
+    exercise?.let {
+        if (showDialog) {
+            ConfirmationDialog(
+                title = "Delete custom exercise",
+                text = "The exercise will be deleted. Workouts with this exercise will not be changed",
+                confirmText = "Delete exercise",
+                dismissText = "Cancel",
+                onDismiss = { showDialog = false },
+                onConfirm = {
+                    showDialog = false
+                    exerciseViewModel.onAction(ExerciseAction.DeleteCustomExercise(exercise.id))
+                    onBack()
+                }
             )
         }
+
+        ExerciseDetailScreen(
+            exercise = exercise,
+            graphData = data,
+            selectedMetric = graphViewModel.selectedMetric,
+            onGraphAction = { graphViewModel.onAction(it) },
+            onDeleteExercise = { showDialog = true }
+        )
+    }
+
+    if (exercise == null) {
+        Text("Some error occurred :(")
     }
 }
 

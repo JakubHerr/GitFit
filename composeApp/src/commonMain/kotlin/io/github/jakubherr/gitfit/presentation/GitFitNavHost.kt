@@ -22,6 +22,7 @@ import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
 import io.github.jakubherr.gitfit.presentation.auth.authGraph
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardAction
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardScreenRoot
+import io.github.jakubherr.gitfit.presentation.exercise.ExerciseViewModel
 import io.github.jakubherr.gitfit.presentation.exercise.exerciseNavigation
 import io.github.jakubherr.gitfit.presentation.graph.HistoryScreenRoot
 import io.github.jakubherr.gitfit.presentation.measurement.measurementGraph
@@ -36,6 +37,7 @@ import io.github.jakubherr.gitfit.presentation.workout.WorkoutListScreen
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutInProgressScreenRoot
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinNavViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -52,6 +54,7 @@ fun GitFitNavHost(
 
     // this prevents data loss of in-memory plan
     val planViewModel: PlanningViewModel = koinViewModel()
+    val exerciseViewModel: ExerciseViewModel = koinViewModel() // TODO: experimental, test
 
     LaunchedEffect(auth) {
         println("DBG: auth state is ${auth.user.loggedIn}")
@@ -120,7 +123,7 @@ fun GitFitNavHost(
                 )
             }
 
-            exerciseNavigation(navController)
+            exerciseNavigation(navController, exerciseViewModel)
 
             measurementGraph(navController, snackbarHostState)
 

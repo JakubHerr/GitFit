@@ -71,7 +71,6 @@ fun PlanListItem(
     modifier: Modifier = Modifier,
     onPlanClicked: () -> Unit = {}
 ) {
-    // TODO card for a complete plan
     // name of plan
     Card(onPlanClicked) {
         Column(modifier.fillMaxWidth()) {
