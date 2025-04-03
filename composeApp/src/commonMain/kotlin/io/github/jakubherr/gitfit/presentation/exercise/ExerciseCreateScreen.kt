@@ -23,6 +23,7 @@ import gitfit.composeapp.generated.resources.save_exercise
 import gitfit.composeapp.generated.resources.secondary_muscle
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.MuscleGroup
+import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import io.github.jakubherr.gitfit.presentation.shared.MultipleChoiceChipSelection
 import io.github.jakubherr.gitfit.presentation.shared.OnBackPress
 import io.github.jakubherr.gitfit.presentation.shared.SingleChoiceChipSelection
@@ -51,10 +52,25 @@ fun ExerciseCreateScreen(
     var name by remember { mutableStateOf("") }
     var selectedPrimaryMuscle by remember { mutableStateOf(MuscleGroup.entries.first()) }
     val selectedSecondaryMuscle = remember { mutableStateListOf<MuscleGroup>() }
+    var showDialog by remember { mutableStateOf(false) }
+
+    if (showDialog) {
+        ConfirmationDialog(
+            title = "Cancel creation",
+            text = "If you quit, the exercise will not be saved",
+            confirmText = "Quit",
+            dismissText = "Continue creation",
+            onDismiss = { showDialog = false },
+            onConfirm = {
+                showDialog = false
+                onCancel()
+            }
+        )
+    }
 
     OnBackPress {
         println("DBG: User pressed back button")
-        // TODO: are you sure? dialog
+        showDialog = true
     }
 
     Column(
@@ -99,7 +115,7 @@ fun ExerciseCreateScreen(
             }) {
                 Text(stringResource(Res.string.save_exercise))
             }
-            Button(onCancel) {
+            Button({ showDialog = true }) {
                 Text(stringResource(Res.string.cancel))
             }
         }
