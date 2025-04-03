@@ -24,6 +24,8 @@ class WorkoutViewModel(
     private val planRepository: PlanRepository,
     private val authRepository: AuthRepository,
 ) : ViewModel() {
+    // TODO: how to detect a workout modification? If device is offline, the launched coroutine will not finish
+    //  maybe make all repository actions return result?
     var currentWorkout =
         workoutRepository.observeCurrentWorkoutOrNull().stateIn(
             scope = viewModelScope,

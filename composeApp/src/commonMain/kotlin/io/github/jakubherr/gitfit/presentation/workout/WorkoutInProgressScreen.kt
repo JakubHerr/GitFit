@@ -40,6 +40,7 @@ import gitfit.composeapp.generated.resources.save_workout
 import gitfit.composeapp.generated.resources.set
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
+import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import io.github.jakubherr.gitfit.presentation.shared.WorkoutBlockItem
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -54,9 +55,26 @@ fun WorkoutInProgressScreenRoot(
     // TODO loading indicator when workout modification hangs
     val workout by vm.currentWorkout.collectAsStateWithLifecycle(null)
     val workoutSaved = vm.workoutSaved
+    var showDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(workoutSaved) {
         if (workoutSaved) onSaveComplete()
+    }
+
+    if (showDialog) {
+        ConfirmationDialog(
+            title = "Delete workout",
+            text = "The current workout will be deleted",
+            confirmText = "Delete workout",
+            dismissText = "Continue workout",
+            onDismiss = { showDialog = false },
+            onConfirm = {
+                showDialog = false
+                workout?.let {
+                    onAction(WorkoutAction.DeleteWorkout(it.id))
+                }
+            }
+        )
     }
 
     if (workout == null) {
@@ -69,7 +87,8 @@ fun WorkoutInProgressScreenRoot(
         }
     } else {
         WorkoutInProgressScreen(workout!!) { action ->
-            onAction(action)
+            if (action is WorkoutAction.DeleteWorkout) showDialog = true
+            else onAction(action)
         }
     }
 }

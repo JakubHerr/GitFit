@@ -78,8 +78,8 @@ fun CheckableSetInput(
     ) {
         Text((index+1).toString())
 
-        DoubleInputField(weight, onValueChange = { weight = it })
-        IntegerInputField(reps, onValueChange = { reps = it })
+        DoubleInputField(weight, onValueChange = { weight = it }, enabled = !set.completed)
+        IntegerInputField(reps, onValueChange = { reps = it }, enabled = !set.completed)
 
         Checkbox(
             set.completed,

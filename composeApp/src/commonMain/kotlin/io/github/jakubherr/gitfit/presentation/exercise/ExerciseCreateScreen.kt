@@ -52,8 +52,9 @@ fun ExerciseCreateScreen(
     var name by remember { mutableStateOf("") }
     var selectedPrimaryMuscle by remember { mutableStateOf(MuscleGroup.entries.first()) }
     val selectedSecondaryMuscle = remember { mutableStateListOf<MuscleGroup>() }
-    var showDialog by remember { mutableStateOf(false) }
 
+    var showDialog by remember { mutableStateOf(false) }
+    OnBackPress { showDialog = true }
     if (showDialog) {
         ConfirmationDialog(
             title = "Cancel creation",
@@ -66,11 +67,6 @@ fun ExerciseCreateScreen(
                 onCancel()
             }
         )
-    }
-
-    OnBackPress {
-        println("DBG: User pressed back button")
-        showDialog = true
     }
 
     Column(
