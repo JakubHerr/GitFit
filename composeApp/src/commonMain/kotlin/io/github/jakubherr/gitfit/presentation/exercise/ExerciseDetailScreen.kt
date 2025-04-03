@@ -17,6 +17,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +30,7 @@ import io.github.jakubherr.gitfit.presentation.graph.BasicLineGraph
 import io.github.jakubherr.gitfit.presentation.graph.ExerciseMetric
 import io.github.jakubherr.gitfit.presentation.graph.GraphAction
 import io.github.jakubherr.gitfit.presentation.graph.GraphViewModel
+import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import io.github.jakubherr.gitfit.presentation.shared.Resource
 import io.github.jakubherr.gitfit.presentation.shared.SingleChoiceChipSelection
 import io.github.koalaplot.core.xygraph.DefaultPoint
@@ -41,20 +45,33 @@ fun ExerciseDetailScreenRoot(
 ) {
     val data by graphViewModel.dataPoints.collectAsStateWithLifecycle()
     val fetch = exerciseViewModel.fetchedExercise
+    var showDialog by remember { mutableStateOf(false) }
 
     when (fetch) {
         is Resource.Loading -> CircularProgressIndicator()
         is Resource.Failure -> Text("Some error occurred")
         is Resource.Success -> {
+            if (showDialog) {
+                ConfirmationDialog(
+                    title = "Delete custom exercise",
+                    text = "The exercise will be deleted. Workouts with this exercise will not be changed",
+                    confirmText = "Delete exercise",
+                    dismissText = "Cancel",
+                    onDismiss = { showDialog = false },
+                    onConfirm = {
+                        showDialog = false
+                        exerciseViewModel.onAction(ExerciseAction.DeleteCustomExercise(fetch.data.id))
+                        onBack()
+                    }
+                )
+            }
+
             ExerciseDetailScreen(
                 exercise = fetch.data,
                 graphData = data,
                 selectedMetric = graphViewModel.selectedMetric,
                 onGraphAction = { graphViewModel.onAction(it) },
-                onExerciseAction = {
-                    exerciseViewModel.onAction(it)
-                    onBack()
-                }
+                onDeleteExercise = { showDialog = true }
             )
         }
     }
@@ -68,7 +85,7 @@ fun ExerciseDetailScreen(
     selectedMetric: ExerciseMetric,
     modifier: Modifier = Modifier,
     onGraphAction: (GraphAction) -> Unit = {},
-    onExerciseAction: (ExerciseAction) -> Unit = {}
+    onDeleteExercise: (String) -> Unit = {}
 ) {
     LaunchedEffect(exercise) {
         onGraphAction(GraphAction.ExerciseMetricSelected(exercise.id, ExerciseMetric.HEAVIEST_WEIGHT))
@@ -82,9 +99,8 @@ fun ExerciseDetailScreen(
         ) {
             Text(exercise.name)
 
-            // TODO: are you sure? dialog
             if (exercise.isCustom) {
-                IconButton({ onExerciseAction(ExerciseAction.DeleteCustomExercise(exercise.id)) }) {
+                IconButton({ onDeleteExercise(exercise.id) }) {
                     Icon(Icons.Default.Delete, "")
                 }
             }

@@ -12,6 +12,7 @@ The application has the following major features and use cases:
 - create custom plan
 - start and finish a planned workout with progression
 - log out of their account
+- browse cached workout and exercise history
 
 # Authentication
 
@@ -35,7 +36,7 @@ The application has the following major features and use cases:
 - User can create a custom plan
 - A plan is made of one or many workout plans/days
 - Workout day consists of blocks of exercises with sets
-- TODO user can rename workout day
+- user can rename workout day
 - User can save a created plan to database
 - User can start a new workout record from a workout day in a plan
 - User can delete workout days in a plan or the entire plan
@@ -43,7 +44,7 @@ The application has the following major features and use cases:
 #### Basic progressive overload
 - User can define settings to make their custom plan harder over time
 - Overload is tracked for every exercise in plan separately
-- Progressive overload settings are based on a progresed value, threshold and increment
+- Progressive overload settings are based on a progressed value, threshold and increment
 - currently, either weight or repetitions can be progressed
 - a threshold is the minimum weight and number of repetitions in each set of an exercise
 - an increment is the amount that either weight or repetitions will be incremented when threshold is reached
@@ -78,7 +79,7 @@ The application has the following major features and use cases:
 
 # User input validation
 - all user input must be validated
-- String User input is generally limited to 20 characters with exception for email and password fields
+- String user input is generally limited to 20 characters with exception for email and password fields
 - User measurement and weight input are all limited to 6 digits, including 2 decimal places
 - repetition count is limited to a whole number
 - Plan, exercise and workout name must not be blank! 
@@ -93,9 +94,9 @@ The application has the following major features and use cases:
 - every exercise block must contain at least one set that is not empty
 - every set must contain valid input for weight and repetitions
 - valid weight is a non-negative number with up to two decimal points
-- User can define progressive overoad settings for each exercise block in workout day
+- User can define progressive overload settings for each exercise block in workout day
 - overload is optional
-- valid repetition is a whole number (user wants to record failed lift)
+- valid repetition is a whole non-negative number (user wants to record failed lift)
 
 #### Measurement
 - all measurements are currently in cm and kg
@@ -105,8 +106,8 @@ The application has the following major features and use cases:
 
 ### Navigation
 - If user is not signed-in, the app starts with a login screen
-- (mobile only) If a user was signed-in already, the app starts with a dashboard scren
+- (mobile only) If a user was signed-in already, the app starts with a dashboard screen
 - User can navigate between top-level destinations using a navigation bar
 - TODO user can navigate to the previous destination using a back button
 - User can start a predefined workout by clicking on a plan and selecting a workout day
-- TODO handle back navigation when user is exiting an operation with unsaved progress (workout plan)
+- When user is exiting an operation with unsaved progress (workout plan), they must confirm this action

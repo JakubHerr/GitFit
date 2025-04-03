@@ -164,7 +164,13 @@ fun GitFitNavHost(
                     is Resource.Failure -> Text("Failed te fetch exercise")
                     Resource.Loading -> CircularProgressIndicator()
                     is Resource.Success -> {
-                        WorkoutDetailScreen(fetch.data)
+                        WorkoutDetailScreen(
+                            fetch.data,
+                            onDelete = {
+                                vm.onAction(WorkoutAction.DeleteWorkout(fetch.data.id))
+                                navController.popBackStack()
+                            }
+                        )
                     }
                 }
             }

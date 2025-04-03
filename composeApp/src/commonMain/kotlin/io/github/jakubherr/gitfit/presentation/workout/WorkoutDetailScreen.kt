@@ -16,11 +16,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.jakubherr.gitfit.domain.model.Workout
+import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import io.github.jakubherr.gitfit.presentation.shared.WorkoutBlockItem
 
 @Composable
@@ -29,6 +34,22 @@ fun WorkoutDetailScreen(
     modifier: Modifier = Modifier,
     onDelete: () -> Unit = {},
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    if (showDialog) {
+        ConfirmationDialog(
+            title = "Delete workout record",
+            text = "The workout will be deleted",
+            confirmText = "Delete workout",
+            dismissText = "Cancel",
+            onDismiss = { showDialog = false },
+            onConfirm = {
+                showDialog = false
+                onDelete()
+            }
+        )
+    }
+
     Column(Modifier.fillMaxSize().padding(16.dp)) {
         Row(
             Modifier.fillMaxWidth(),
@@ -37,7 +58,7 @@ fun WorkoutDetailScreen(
         ) {
             Text(workout.date.toString(), fontWeight = FontWeight.Bold)
 
-            IconButton(onDelete) {
+            IconButton({ showDialog = true }) {
                 Icon(Icons.Default.Delete, "")
             }
         }
