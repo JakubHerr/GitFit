@@ -10,6 +10,8 @@ import androidx.compose.ui.Modifier
 import kotlinx.coroutines.delay
 import org.koin.compose.viewmodel.koinViewModel
 
+expect suspend fun checkEmailValidation() : Boolean
+
 @Composable
 fun VerifyEmailScreenRoot(
     vm: AuthViewModel = koinViewModel(),
@@ -20,7 +22,7 @@ fun VerifyEmailScreenRoot(
         while (true) {
             delay(5_000L)
             println("DBG: Checking for email verification...")
-            if (vm.currentUser.emailVerified) break
+            if (checkEmailValidation()) break
         }
         onSkip()
     }

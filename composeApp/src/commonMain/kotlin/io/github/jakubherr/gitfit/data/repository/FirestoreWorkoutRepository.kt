@@ -6,6 +6,7 @@ import io.github.jakubherr.gitfit.domain.repository.AuthRepository
 import io.github.jakubherr.gitfit.domain.repository.PlanRepository
 import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
+import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.domain.repository.AuthError
@@ -89,22 +90,19 @@ class FirestoreWorkoutRepository(
         }
     }
 
-    override suspend fun startWorkoutFromPlan(planId: String, workoutIdx: Int): Result<Unit> {
+    override suspend fun startWorkoutFromPlan(plan: Plan, workoutIdx: Int): Result<Unit> {
         val userId = authRepository.currentUser.id.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
-        println("DBG: starting planned workout with index $workoutIdx from plan $planId")
-
-        // TODO result check
-        val workoutPlan = planRepository.getCustomWorkout(userId, planId, workoutIdx)
+        println("DBG: starting planned workout with index $workoutIdx from plan ${plan.id}")
 
         return withContext(dispatcher) {
             val id = workoutRef(userId).document.id
 
             val workout = Workout(
                 id = id,
-                blocks = workoutPlan.blocks,
+                blocks = plan.workoutPlans[workoutIdx].blocks,
                 completed = false,
                 inProgress = true,
-                planId = planId,
+                planId = plan.id,
                 planWorkoutIdx = workoutIdx,
             )
 

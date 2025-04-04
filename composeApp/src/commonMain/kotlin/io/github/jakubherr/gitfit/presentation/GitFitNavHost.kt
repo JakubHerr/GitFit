@@ -132,7 +132,7 @@ fun GitFitNavHost(
 
             measurementGraph(navController, snackbarHostState)
 
-            planningGraph(navController, planViewModel, snackbarHostState)
+            planningGraph(navController, planViewModel, workoutViewModel, snackbarHostState)
 
             composable<HistoryRoute> {
                 HistoryScreenRoot(

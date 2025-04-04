@@ -1,6 +1,7 @@
 package io.github.jakubherr.gitfit.domain.repository
 
 import io.github.jakubherr.gitfit.domain.model.Exercise
+import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +15,7 @@ interface WorkoutRepository {
 
     suspend fun startNewWorkout(): Result<Unit>
 
-    suspend fun startWorkoutFromPlan(planId: String, workoutIdx: Int): Result<Unit>
+    suspend fun startWorkoutFromPlan(plan: Plan, workoutIdx: Int): Result<Unit>
 
     suspend fun completeWorkout(workout: Workout)
 

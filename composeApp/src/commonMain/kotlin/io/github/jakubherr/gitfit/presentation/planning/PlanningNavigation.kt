@@ -28,6 +28,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun NavGraphBuilder.planningGraph(
     navController: NavHostController,
     planViewModel: PlanningViewModel,
+    workoutViewModel: WorkoutViewModel,
     snackbarHostState: SnackbarHostState,
 ) {
     fun handleError(error: Plan.Error?, scope: CoroutineScope) {
@@ -50,12 +51,10 @@ fun NavGraphBuilder.planningGraph(
         val planId = backstackEntry.toRoute<PlanDetailRoute>().planId
         val userPlans = planViewModel.userPlans.collectAsStateWithLifecycle(emptyList())
         val scope = rememberCoroutineScope()
+        val currentWorkout by workoutViewModel.currentWorkout.collectAsStateWithLifecycle()
 
         // TODO differentiate user and predefined plan
         val userPlan = userPlans.value.find { it.id == planId }
-
-        val workoutViewModel: WorkoutViewModel = koinViewModel()
-        val currentWorkout by workoutViewModel.currentWorkout.collectAsStateWithLifecycle()
 
         userPlan?.let { plan ->
             PlanDetailScreen(
@@ -64,7 +63,7 @@ fun NavGraphBuilder.planningGraph(
                     println("DBG: Plan selected: ${plan.id}, workout index ${workout.idx}")
 
                     if (currentWorkout == null) {
-                        workoutViewModel.onAction(WorkoutAction.StartPlannedWorkout(plan.id, workout.idx))
+                        workoutViewModel.onAction(WorkoutAction.StartPlannedWorkout(plan, workout.idx))
                         navController.navigate(WorkoutInProgressRoute)
                     } else {
                         scope.launch {

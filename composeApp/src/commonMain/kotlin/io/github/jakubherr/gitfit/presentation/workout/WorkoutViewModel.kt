@@ -10,6 +10,7 @@ import io.github.jakubherr.gitfit.domain.repository.AuthRepository
 import io.github.jakubherr.gitfit.domain.repository.PlanRepository
 import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
+import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.ProgressionType
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
@@ -51,13 +52,15 @@ class WorkoutViewModel(
     var workoutSaved by mutableStateOf(false)
         private set
 
+    private var progressionHandled = false
+
     var error by mutableStateOf<Workout.Error?>(null)
         private set
 
     fun onAction(action: WorkoutAction) {
         when (action) {
             is WorkoutAction.StartNewWorkout -> startNewWorkout()
-            is WorkoutAction.StartPlannedWorkout -> startPlannedWorkout(action.planId, action.workoutIdx)
+            is WorkoutAction.StartPlannedWorkout -> startPlannedWorkout(action.plan, action.workoutIdx)
             is WorkoutAction.CompleteCurrentWorkout -> completeCurrentWorkout()
             is WorkoutAction.DeleteWorkout -> deleteWorkout(action.workoutId)
             is WorkoutAction.SelectWorkout -> selectedWorkout = action.workout
@@ -67,7 +70,10 @@ class WorkoutViewModel(
             is WorkoutAction.AddSet -> addSeries(action.workout, action.blockIdx)
             is WorkoutAction.ModifySeries -> modifySeries(action.workout, action.blockIdx, action.series)
             is WorkoutAction.DeleteLastSeries -> deleteLastSeries(action.workout, action.blockIdx, action.series)
-            WorkoutAction.NotifyWorkoutSaved -> workoutSaved = false
+            WorkoutAction.NotifyWorkoutSaved -> {
+                workoutSaved = false
+                progressionHandled = false
+            }
         }
     }
 
@@ -85,10 +91,10 @@ class WorkoutViewModel(
         }
     }
 
-    private fun startPlannedWorkout(planId: String, workoutIdx: Int) {
+    private fun startPlannedWorkout(plan: Plan, workoutIdx: Int) {
         if (currentWorkout.value == null) {
             viewModelScope.launch {
-                workoutRepository.startWorkoutFromPlan(planId, workoutIdx)
+                workoutRepository.startWorkoutFromPlan(plan, workoutIdx)
             }
         }
     }
@@ -102,9 +108,12 @@ class WorkoutViewModel(
             // if the device is offline, GitLive will suspend coroutine indefinitely until the record is synchronized
             // to check for success, it is necessary to observe completion indirectly through flow
             viewModelScope.launch { workoutRepository.completeWorkout(workout) }
-            viewModelScope.launch { handleProgression(workout) }
             viewModelScope.launch {
-                while (currentWorkout.value != null) delay(1000)
+                delay(3000)
+                handleProgression(workout)
+            }
+            viewModelScope.launch {
+                while (currentWorkout.value != null || !progressionHandled) delay(1000)
                 workoutSaved = true
             }
         }
@@ -166,6 +175,7 @@ class WorkoutViewModel(
 
             // update plan in database
             println("DBG: Saving updated workout plan")
+            progressionHandled = true
             planRepository.saveCustomPlan(authRepository.currentUser.id, plan.updateWorkoutPlan(workoutPlanCopy))
             println("DBG: plan saved")
         }
@@ -212,7 +222,7 @@ class WorkoutViewModel(
 
 sealed interface WorkoutAction {
     object StartNewWorkout : WorkoutAction
-    class StartPlannedWorkout(val planId: String, val workoutIdx: Int) : WorkoutAction
+    class StartPlannedWorkout(val plan: Plan, val workoutIdx: Int) : WorkoutAction
     object CompleteCurrentWorkout : WorkoutAction
     class DeleteWorkout(val workoutId: String) : WorkoutAction
     class SelectWorkout(val workout: Workout) : WorkoutAction
