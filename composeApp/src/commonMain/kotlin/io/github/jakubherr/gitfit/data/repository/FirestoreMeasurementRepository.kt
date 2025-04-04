@@ -4,6 +4,7 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
 import io.github.jakubherr.gitfit.domain.repository.MeasurementRepository
 import io.github.jakubherr.gitfit.domain.model.Measurement
+import io.github.jakubherr.gitfit.domain.repository.AuthError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -50,7 +51,18 @@ class FirestoreMeasurementRepository : MeasurementRepository {
         measurementsRef(userId).document(measurementId).delete()
     }
 
-    override suspend fun deleteAll(userId: String) {
-        TODO("Not yet implemented")
+    override suspend fun deleteAllMeasurements(userId: String): Result<Unit> {
+        userId.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
+
+        return withContext(dispatcher) {
+            measurementsRef(userId).get().documents.forEach { document ->
+                try {
+                    measurementsRef(userId).document(document.id).delete()
+                } catch (e: Exception) {
+                    return@withContext Result.failure(e)
+                }
+            }
+            Result.success(Unit)
+        }
     }
 }

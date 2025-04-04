@@ -5,21 +5,31 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import org.koin.compose.viewmodel.koinViewModel
 
-// use case: browse previous records, measurements over a month/year
+// use case: browse previous records, measurements, exercises etc.
 @Composable
-fun GraphScreenRoot(
-    vm: GraphViewModel = koinViewModel(),
+fun HistoryScreenRoot(
     modifier: Modifier = Modifier,
-    onShowExerciseData: () -> Unit = { },
+    onBrowseExerciseData: () -> Unit = {},
+    onBrowseMeasurementData: () -> Unit = {},
+    onBrowseWorkoutData: () -> Unit
 ) {
     Column(
-        modifier.fillMaxSize()
+        modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onShowExerciseData) {
+        Button(onBrowseExerciseData) {
             Text("Browse exercise history")
+        }
+
+        Button(onBrowseWorkoutData) {
+            Text("Browse workout history")
+        }
+
+        Button(onBrowseMeasurementData) {
+            Text("Browse measurement history")
         }
     }
 }

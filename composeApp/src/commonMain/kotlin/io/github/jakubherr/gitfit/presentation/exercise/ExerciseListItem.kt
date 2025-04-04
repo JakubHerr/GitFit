@@ -29,7 +29,7 @@ fun ExerciseListItem(
     ) {
         Column {
             Text(exercise.name)
-            if (exercise.primaryMuscle.isNotEmpty()) Text(exercise.primaryMuscle.first().name.lowercase())
+            Text(exercise.primaryMuscle.name.lowercase())
         }
         Icon(Icons.Default.ChevronRight, "", modifier.size(32.dp))
     }

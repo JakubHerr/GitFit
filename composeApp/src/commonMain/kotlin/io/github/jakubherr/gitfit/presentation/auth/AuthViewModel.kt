@@ -5,6 +5,10 @@ import androidx.lifecycle.viewModelScope
 import io.github.jakubherr.gitfit.domain.repository.AuthError
 import io.github.jakubherr.gitfit.domain.repository.AuthRepository
 import io.github.jakubherr.gitfit.domain.model.User
+import io.github.jakubherr.gitfit.domain.repository.ExerciseRepository
+import io.github.jakubherr.gitfit.domain.repository.MeasurementRepository
+import io.github.jakubherr.gitfit.domain.repository.PlanRepository
+import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -13,13 +17,17 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class AuthViewModel(
-    private val auth: AuthRepository,
+    private val authRepository: AuthRepository,
+    private val workoutRepository: WorkoutRepository,
+    private val measurementRepository: MeasurementRepository,
+    private val planRepository: PlanRepository,
+    private val exerciseRepository: ExerciseRepository,
 ) : ViewModel() {
     private val isLoading = MutableStateFlow(false)
     private val error = MutableStateFlow<AuthError?>(null)
-    val currentUser get() = auth.currentUser
+    val currentUser get() = authRepository.currentUser
 
-    val state: StateFlow<AuthState> = combine(auth.currentUserFlow, error, isLoading) { user, error, loading ->
+    val state: StateFlow<AuthState> = combine(authRepository.currentUserFlow, error, isLoading) { user, error, loading ->
         AuthState(
             user ?: User.LoggedOut,
             error,
@@ -27,7 +35,7 @@ class AuthViewModel(
         )
     }.stateIn(
         scope = viewModelScope,
-        initialValue = AuthState(auth.currentUser, null, false),
+        initialValue = AuthState(authRepository.currentUser, null, false),
         started = SharingStarted.WhileSubscribed(5_000L),
     )
 
@@ -46,33 +54,46 @@ class AuthViewModel(
         email: String,
         password: String,
     ) {
-        launch { auth.registerUser(email, password) }
+        launch { authRepository.registerUser(email, password) }
     }
 
     private fun signIn(
         email: String,
         password: String,
     ) {
-        launch { auth.signInUser(email, password) }
+        launch { authRepository.signInUser(email, password) }
     }
 
     private fun signOut() {
         println("DBG: signing out ${state.value.user.id}...")
-        launch { auth.signOut() }
+        launch { authRepository.signOut() }
     }
 
     private fun verifyEmail() {
         println("DBG: email verification requested")
-        launch { auth.sendVerificationEmail() }
+        launch { authRepository.sendVerificationEmail() }
     }
 
     private fun sendPasswordResetEmail(email: String) {
-        launch { auth.sendPasswordResetEmail(email) }
+        launch { authRepository.sendPasswordResetEmail(email) }
     }
 
     private fun deleteAccount(password: String) {
         println("DBG: deleting user ${state.value.user.id}")
-        launch { auth.deleteUser(password) }
+        launch {
+            authRepository.deleteUser(password) { userId ->
+                // nuke all user workouts
+                workoutRepository.deleteAllWorkouts(userId).onFailure { return@deleteUser Result.failure(it) }
+                // nuke all user plans
+                planRepository.deleteAllCustomPlans(userId).onFailure { return@deleteUser Result.failure(it) }
+                // nuke all user measurements
+                measurementRepository.deleteAllMeasurements(userId).onFailure { return@deleteUser Result.failure(it) }
+                // nuke all user custom exercises
+                exerciseRepository.removeAllCustomExercises(userId).onFailure { return@deleteUser Result.failure(it) }
+            }.onFailure {
+                println("DBG: Failed to delete user, cause ${it.stackTraceToString()}")
+            }
+        }
     }
 
     private fun <T> launch(block: suspend () -> Result<T>) {

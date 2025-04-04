@@ -23,15 +23,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.github.jakubherr.gitfit.domain.isNonNegativeDouble
 import io.github.jakubherr.gitfit.domain.isPositiveDouble
 import io.github.jakubherr.gitfit.domain.isPositiveInt
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.ProgressionSettings
 import io.github.jakubherr.gitfit.domain.model.ProgressionTrigger
 import io.github.jakubherr.gitfit.domain.model.ProgressionType
-import io.github.jakubherr.gitfit.presentation.shared.NumberInputField
+import io.github.jakubherr.gitfit.presentation.shared.DoubleInputField
 import io.github.jakubherr.gitfit.presentation.shared.SingleChoiceChipSelection
+import io.github.jakubherr.gitfit.presentation.shared.toPrettyString
 
 @Composable
 fun EditProgressionScreenRoot(
@@ -41,7 +41,7 @@ fun EditProgressionScreenRoot(
     onDelete: () -> Unit = {},
     onSave: (ProgressionSettings) -> Unit = {},
 ) {
-    val initialWeight = block.progressionSettings?.weightThreshold.let { it?.toString() ?: "" }
+    val initialWeight = block.progressionSettings?.weightThreshold.let { it?.toPrettyString() ?: "" }
     val initialReps = block.progressionSettings?.repThreshold ?: 12
 
     var selectedProgressionType by remember { mutableStateOf(ProgressionType.INCREASE_WEIGHT) }
@@ -60,9 +60,8 @@ fun EditProgressionScreenRoot(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text("Minimum weight (kg)")
-                NumberInputField(
+                DoubleInputField(
                     minimumWeight,
-                    isError = !minimumWeight.isNonNegativeDouble(),
                     onValueChange = { minimumWeight = it }
                 )
             }
@@ -82,7 +81,7 @@ fun EditProgressionScreenRoot(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text("Weight increase: ")
-                    NumberInputField(
+                    DoubleInputField(
                         weightIncrease,
                         isError = !weightIncrease.isPositiveDouble(),
                         onValueChange = { weightIncrease = it }
@@ -95,7 +94,7 @@ fun EditProgressionScreenRoot(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text("Repetition increase: ")
-                    NumberInputField(
+                    DoubleInputField(
                         repIncrease,
                         isError = !repIncrease.isPositiveInt(),
                         onValueChange = { repIncrease = it }
@@ -115,7 +114,6 @@ fun EditProgressionScreenRoot(
             Button(
                 enabled = validateInputs(selectedProgressionType, minimumWeight, weightIncrease, repIncrease),
                 onClick = {
-                    // TODO test
                     val settings = ProgressionSettings(
                         incrementWeightByKg = weightIncrease.toDoubleOrNull() ?: 0.0,
                         incrementRepsBy = repIncrease.toIntOrNull() ?: 0,

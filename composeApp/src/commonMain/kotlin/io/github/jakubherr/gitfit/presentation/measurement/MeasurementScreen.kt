@@ -48,7 +48,7 @@ import gitfit.composeapp.generated.resources.waist
 import gitfit.composeapp.generated.resources.weight
 import io.github.jakubherr.gitfit.domain.model.Measurement
 import io.github.jakubherr.gitfit.presentation.graph.MeasurementLineGraph
-import io.github.jakubherr.gitfit.presentation.shared.NumberInputField
+import io.github.jakubherr.gitfit.presentation.shared.DoubleInputField
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
@@ -221,7 +221,7 @@ fun MeasurementInputField(
             Modifier.wrapContentWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            NumberInputField(value, onValueChange = onValueChange)
+            DoubleInputField(value, onValueChange = onValueChange)
             Spacer(Modifier.width(12.dp))
             Text(unit)
         }

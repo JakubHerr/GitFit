@@ -4,15 +4,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -30,6 +24,7 @@ import io.github.jakubherr.gitfit.presentation.auth.AuthState
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
 import io.github.jakubherr.gitfit.presentation.shared.PasswordInputField
 import io.github.jakubherr.gitfit.presentation.auth.toMessage
+import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -80,7 +75,9 @@ fun SettingsScreen(
                 ConfirmationDialog(
                     title = "Delete account",
                     text = "Are sure you want to delete your account? All of your data will be lost",
+                    dismissText = "confirm",
                     onDismiss = { showAccountDeletionDialog = false },
+                    confirmText = "Delete",
                     onConfirm = {
                         showAccountDeletionDialog = false
                         showPasswordField = true
@@ -98,30 +95,4 @@ fun SettingsScreen(
             }
         }
     }
-}
-
-@Composable
-fun ConfirmationDialog(
-    modifier: Modifier = Modifier,
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit,
-    title: String,
-    text: String,
-) {
-    AlertDialog(
-        icon = { Icon(Icons.Default.Warning, "") },
-        title = { Text(title) },
-        text = { Text(text) },
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(onConfirm) {
-                Text("Delete", color = MaterialTheme.colorScheme.error)
-            }
-        },
-        dismissButton = {
-            TextButton(onDismiss) {
-                Text("Cancel")
-            }
-        }
-    )
 }

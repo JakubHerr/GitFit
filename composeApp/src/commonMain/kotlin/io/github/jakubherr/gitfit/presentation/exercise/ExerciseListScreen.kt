@@ -40,7 +40,7 @@ import org.koin.compose.viewmodel.koinViewModel
 // the purpose is to either browse and show detail or add exercise to workout (real time or planned)
 @Composable
 fun ExerciseListScreenRoot(
-    vm: ExerciseViewModel = koinViewModel(),
+    vm: ExerciseViewModel,
     modifier: Modifier = Modifier,
     onExerciseClick: (Exercise) -> Unit = {},
     onCreateExerciseClick: () -> Unit = {},
@@ -50,17 +50,17 @@ fun ExerciseListScreenRoot(
 
     ExerciseListScreen(
         exerciseList = default + custom,
-    ) { action ->
-        if (action is ExerciseAction.CreateExerciseSelected) onCreateExerciseClick()
-        if (action is ExerciseAction.ExerciseSelected) onExerciseClick(action.exercise)
-    }
+        onExerciseClick = { onExerciseClick(it) },
+        onAddExerciseClick = { onCreateExerciseClick() }
+    )
 }
 
 @Composable
 fun ExerciseListScreen(
     exerciseList: List<Exercise>,
     modifier: Modifier = Modifier,
-    onAction: (ExerciseAction) -> Unit = {},
+    onExerciseClick: (Exercise) -> Unit = {},
+    onAddExerciseClick: () -> Unit = {},
 ) {
     Column(
         Modifier.fillMaxSize().statusBarsPadding(),
@@ -89,13 +89,13 @@ fun ExerciseListScreen(
                 contentPadding = PaddingValues(16.dp),
             ) {
                 items(exerciseList) { exercise ->
-                    ExerciseListItem(exercise) { onAction(ExerciseAction.ExerciseSelected(exercise)) }
+                    ExerciseListItem(exercise) { onExerciseClick(exercise) }
                     HorizontalDivider(Modifier.height(1.dp))
                 }
             }
         }
         Row {
-            Button(onClick = { onAction(ExerciseAction.CreateExerciseSelected) }) {
+            Button(onAddExerciseClick) {
                 Text(stringResource(Res.string.create_exercise))
             }
         }

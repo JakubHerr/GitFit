@@ -11,6 +11,8 @@ data class Series(
     val completed: Boolean,
 ) {
     val volume get() = if (weight == null || repetitions == null) null else weight * repetitions
+
+    val isNotNull get() = weight != null && repetitions != null
 }
 
 val mockSeries =

@@ -1,6 +1,7 @@
 package io.github.jakubherr.gitfit.domain.repository
 
 import io.github.jakubherr.gitfit.domain.model.Exercise
+import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
 import kotlinx.coroutines.flow.Flow
@@ -8,53 +9,50 @@ import kotlinx.coroutines.flow.Flow
 interface WorkoutRepository {
     fun observeCurrentWorkoutOrNull(): Flow<Workout?>
 
-    suspend fun startNewWorkout()
+    fun getCompletedWorkouts(): Flow<List<Workout>>
 
-    suspend fun startWorkoutFromPlan(planId: String, workoutIdx: Int)
+    fun getPlannedWorkouts(): Flow<List<Workout>>
 
-    suspend fun getWorkout(workoutId: String): Workout?
+    suspend fun startNewWorkout(): Result<Unit>
 
-    suspend fun completeWorkout(workoutId: String)
+    suspend fun startWorkoutFromPlan(plan: Plan, workoutIdx: Int): Result<Unit>
 
     suspend fun completeWorkout(workout: Workout)
 
     suspend fun deleteWorkout(workoutId: String)
 
+    suspend fun deleteAllWorkouts(userId: String): Result<Unit>
+
     suspend fun addBlock(
-        workoutId: String,
+        workout: Workout,
         exercise: Exercise,
     )
 
     suspend fun removeBlock(
-        workoutId: String,
+        workout: Workout,
         blockIdx: Int,
     )
 
     suspend fun setBlockTimer(
-        workoutId: String,
+        workout: Workout,
         blockIdx: Int,
         seconds: Long?,
     )
 
     suspend fun addSeries(
-        workoutId: String,
+        workout: Workout,
         blockIdx: Int,
-        set: Series,
     )
 
     suspend fun modifySeries(
-        workoutId: String,
+        workout: Workout,
         blockIdx: Int,
         set: Series,
     )
 
     suspend fun removeSeries(
-        workoutId: String,
+        workout: Workout,
         blockIdx: Int,
         set: Series,
     )
-
-    fun getCompletedWorkouts(): Flow<List<Workout>>
-
-    fun getPlannedWorkouts(): Flow<List<Workout>>
 }

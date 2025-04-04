@@ -7,7 +7,7 @@ import kotlinx.datetime.todayIn
 import kotlinx.serialization.Serializable
 
 // Important: never rename existing variable names, it will create problems with existing records in database
-// TODO solution: Add abstraction to data layer that will translate domain models to DTO
+// optional: Add abstraction to data layer that will translate domain models to DTO
 
 @Serializable
 data class Workout(
@@ -51,6 +51,24 @@ data class Workout(
         return reps
     }
 
+    fun addBlock(exercise: Exercise): Workout = copy(blocks = blocks + Block(blocks.size, exercise))
+
+    fun updateBlock(block: Block): Workout {
+        val newBlocks = blocks.toMutableList()
+        newBlocks[block.idx] = block
+        return copy(blocks = newBlocks)
+    }
+
+    fun removeBlock(blockIdx: Int): Workout {
+        val newBlocks = blocks.toMutableList()
+        newBlocks.removeAt(blockIdx)
+        newBlocks.forEachIndexed { idx, oldBlock ->
+            newBlocks[idx] = oldBlock.copy(idx = idx)
+        }
+        return copy(blocks = newBlocks)
+    }
+
+
     val error: Error? get() = when {
         blocks.isEmpty() -> Error.NoExerciseInWorkout
         blocks.any { block -> block.series.isEmpty() } -> Error.NoSetInExercise
@@ -58,10 +76,13 @@ data class Workout(
         else -> null
     }
 
+    fun hasExercise(exerciseId: String?) = blocks.any { it.exercise.id == exerciseId }
+
     sealed class Error(val message: String) {
         object NoExerciseInWorkout: Error("Workout has no exercises")
         object NoSetInExercise: Error("Some exercise has no sets")
         object EmptySetInExercise: Error("Some set has invalid values")
+        object BlankName: Error("Workout plan has no name")
     }
 }
 

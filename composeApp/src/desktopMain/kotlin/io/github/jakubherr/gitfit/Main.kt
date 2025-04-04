@@ -16,7 +16,6 @@ import io.github.jakubherr.gitfit.presentation.App
 fun main() =
     application {
         // https://github.com/GitLiveApp/firebase-java-sdk?tab=readme-ov-file#initializing-the-sdk
-        // TODO implement persistent storage, this only stores in memory
         FirebasePlatform.initializeFirebasePlatform(
             object : FirebasePlatform() {
                 val storage = mutableMapOf<String, String>()

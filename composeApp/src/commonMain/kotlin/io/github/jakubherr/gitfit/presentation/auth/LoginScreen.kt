@@ -69,7 +69,7 @@ fun LoginScreen(
         }
         state.error?.let { Text(it.toMessage()) }
 
-        TextField(email, onValueChange = { email = it })
+        TextField(email, onValueChange = { email = it }, singleLine = true)
         Spacer(Modifier.height(16.dp))
         PasswordInputField(password, onPasswordChange = { password = it})
 
@@ -105,4 +105,5 @@ fun AuthError.toMessage() = when (this) {
     AuthError.NoInternet -> "No internet"
     AuthError.PasswordTooWeak -> "Password too weak"
     AuthError.Unknown -> "Unknown error"
+    AuthError.UserLoggedOut -> "User is logged out"
 }

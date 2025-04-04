@@ -5,27 +5,33 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.jakubherr.gitfit.data.repository.FirebaseAuthRepository
 import io.github.jakubherr.gitfit.domain.repository.ExerciseRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
+import io.github.jakubherr.gitfit.domain.repository.AuthRepository
+import io.github.jakubherr.gitfit.presentation.shared.Resource
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class ExerciseViewModel(
     private val exerciseRepository: ExerciseRepository,
-    private val authRepository: FirebaseAuthRepository,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
     val defaultExercises = exerciseRepository.getDefaultExercises()
     val customExercises = exerciseRepository.getCustomExercises(authRepository.currentUser.id)
 
-    // TODO add loading/error/result state
-    var lastFetchedExercise by mutableStateOf<Exercise?>(null)
+    var fetchedExercise by mutableStateOf<Resource<Exercise>>(Resource.Loading)
+        private set
+
+    var selectedExercise by mutableStateOf<Exercise?>(null)
         private set
 
     fun onAction(action: ExerciseAction) {
         when (action) {
-            is ExerciseAction.ExerciseCreated -> createExercise(action.exercise)
-            is ExerciseAction.FetchExercise -> fetchExercise(action.exerciseId) // TODO fetch will fail/hang offline!
-            else -> { }
+            is ExerciseAction.CreateExercise -> createExercise(action.exercise)
+            is ExerciseAction.EditCustomExercise -> editExercise(action.exercise)
+            is ExerciseAction.DeleteCustomExercise -> deleteCustomExercise(action.exerciseId)
+            // is ExerciseAction.FetchExercise -> fetchExercise(action.exerciseId, action.isCustom)
+            is ExerciseAction.SelectExercise -> selectedExercise = action.exercise
         }
     }
 
@@ -35,20 +41,40 @@ class ExerciseViewModel(
         }
     }
 
-    private fun fetchExercise(exerciseId: String) {
+    private fun editExercise(exercise: Exercise) {
         viewModelScope.launch {
-            lastFetchedExercise =
-                exerciseRepository.getExerciseById(exerciseId) ?: // this will hang offline?
-                exerciseRepository.getCustomExerciseById(authRepository.currentUser.id, exerciseId)
+            exerciseRepository.editCustomExercise(authRepository.currentUser.id, exercise)
+        }
+    }
+
+    private fun deleteCustomExercise(exerciseId: String) {
+        viewModelScope.launch {
+            exerciseRepository.removeCustomExercise(authRepository.currentUser.id, exerciseId)
+        }
+    }
+
+    // TODO: AVOID fetching exercise if it is not necessary, it can take a long time in offline mode
+    private fun fetchExercise(exerciseId: String, isCustom: Boolean) {
+        fetchedExercise = Resource.Loading
+        viewModelScope.launch {
+            if (isCustom) {
+                exerciseRepository.getCustomExercise(authRepository.currentUser.id, exerciseId)
+                    .onSuccess { fetchedExercise = Resource.Success(it) }
+                    .onFailure { Resource.Failure(it) }
+            } else {
+                exerciseRepository.getDefaultExercise(exerciseId)
+                    .onSuccess { fetchedExercise = Resource.Success(it) }
+                    .onFailure { fetchedExercise = Resource.Failure(it) }
+            }
         }
     }
 }
 
 sealed interface ExerciseAction {
-    // TODO delete custom exercise
-    // TODO edit custom exercise
-    class ExerciseSelected(val exercise: Exercise) : ExerciseAction
-    object CreateExerciseSelected : ExerciseAction
-    class ExerciseCreated(val exercise: Exercise) : ExerciseAction
-    class FetchExercise(val exerciseId: String) : ExerciseAction
+    class CreateExercise(val exercise: Exercise) : ExerciseAction
+    class EditCustomExercise(val exercise: Exercise) : ExerciseAction
+    class DeleteCustomExercise(val exerciseId: String) : ExerciseAction
+
+    // class FetchExercise(val exerciseId: String, val isCustom: Boolean) : ExerciseAction
+    class SelectExercise(val exercise: Exercise) : ExerciseAction
 }

@@ -31,6 +31,7 @@ fun PasswordInputField(
         onValueChange = { onPasswordChange(it) },
         modifier = modifier,
         visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+        singleLine = true,
         trailingIcon = {
             IconButton({ showPassword = !showPassword }) {
                 Icon(

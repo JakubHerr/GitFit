@@ -5,10 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.repository.AuthRepository
 import io.github.jakubherr.gitfit.domain.repository.PlanRepository
 import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
+import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.ProgressionType
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
@@ -22,6 +24,8 @@ class WorkoutViewModel(
     private val planRepository: PlanRepository,
     private val authRepository: AuthRepository,
 ) : ViewModel() {
+    // TODO: how to detect a workout modification? If device is offline, the launched coroutine will not finish
+    //  maybe make all repository actions return result?
     var currentWorkout =
         workoutRepository.observeCurrentWorkoutOrNull().stateIn(
             scope = viewModelScope,
@@ -36,8 +40,19 @@ class WorkoutViewModel(
             started = SharingStarted.WhileSubscribed(5_000L),
         )
 
+    val completedWorkouts =
+        workoutRepository.getCompletedWorkouts().stateIn(
+            scope = viewModelScope,
+            initialValue = emptyList(),
+            started = SharingStarted.WhileSubscribed(5_000L),
+        )
+
+    var selectedWorkout by mutableStateOf<Workout?>(null)
+
     var workoutSaved by mutableStateOf(false)
         private set
+
+    private var progressionHandled = false
 
     var error by mutableStateOf<Workout.Error?>(null)
         private set
@@ -45,14 +60,26 @@ class WorkoutViewModel(
     fun onAction(action: WorkoutAction) {
         when (action) {
             is WorkoutAction.StartNewWorkout -> startNewWorkout()
-            // TODO prevent user from starting a planned workout if one workout is already in progress!
-            is WorkoutAction.StartPlannedWorkout -> startPlannedWorkout(action.planId, action.workoutIdx)
+            is WorkoutAction.StartPlannedWorkout -> startPlannedWorkout(action.plan, action.workoutIdx)
             is WorkoutAction.CompleteCurrentWorkout -> completeCurrentWorkout()
             is WorkoutAction.DeleteWorkout -> deleteWorkout(action.workoutId)
-            is WorkoutAction.AskForExercise -> { }
-            is WorkoutAction.AddBlock -> addBlock(action.workoutId, action.exercise)
-            is WorkoutAction.AddSet -> addSet(action.workoutId, action.blockIdx, action.set)
-            is WorkoutAction.ModifySeries -> modifySeries(action.blockIdx, action.set)
+            is WorkoutAction.SelectWorkout -> selectedWorkout = action.workout
+            is WorkoutAction.AskForExercise -> {}
+            is WorkoutAction.AddBlock -> addBlock(action.workout, action.exercise)
+            is WorkoutAction.RemoveBlock -> removeBlock(action.workout, action.block)
+            is WorkoutAction.AddSet -> addSeries(action.workout, action.blockIdx)
+            is WorkoutAction.ModifySeries -> modifySeries(action.workout, action.blockIdx, action.series)
+            is WorkoutAction.DeleteLastSeries -> deleteLastSeries(action.workout, action.blockIdx, action.series)
+            WorkoutAction.NotifyWorkoutSaved -> {
+                workoutSaved = false
+                progressionHandled = false
+            }
+        }
+    }
+
+    private fun removeBlock(workout: Workout, block: Block) {
+        viewModelScope.launch {
+            workoutRepository.removeBlock(workout, block.idx)
         }
     }
 
@@ -64,15 +91,16 @@ class WorkoutViewModel(
         }
     }
 
-    private fun startPlannedWorkout(planId: String, workoutIdx: Int) {
+    private fun startPlannedWorkout(plan: Plan, workoutIdx: Int) {
         if (currentWorkout.value == null) {
             viewModelScope.launch {
-                workoutRepository.startWorkoutFromPlan(planId, workoutIdx)
+                workoutRepository.startWorkoutFromPlan(plan, workoutIdx)
             }
         }
     }
 
     private fun completeCurrentWorkout() {
+        println("DBG: completing current workout ${currentWorkout.value}")
         val workout = currentWorkout.value ?: return
 
         if (workout.error == null) {
@@ -82,12 +110,17 @@ class WorkoutViewModel(
             viewModelScope.launch { workoutRepository.completeWorkout(workout) }
             viewModelScope.launch { handleProgression(workout) }
             viewModelScope.launch {
-                while (currentWorkout.value != null) delay(1000)
+                while (currentWorkout.value != null || !progressionHandled) delay(1000)
                 workoutSaved = true
             }
         }
     }
 
+    // Some restrictions were made on editing workout records with progression to prevent user from shooting themselves in the foot
+    //  progression can not be changed mid-workout
+    //  user can not remove block with progression
+    //  user can add a new block without a progression -> OK
+    //  user can not change order of exercises
     private suspend fun handleProgression(workout: Workout) {
         println("DBG: progressing workout: ${workout.id}")
         workout.let {
@@ -100,38 +133,38 @@ class WorkoutViewModel(
             val plan = planRepository.getCustomPlan(authRepository.currentUser.id, workout.planId!!) ?: return
             var workoutPlanCopy = plan.workoutPlans.getOrNull(workout.planWorkoutIdx!!) ?: return
 
-            // TODO how to detect a plan that is different from workout plan?
-            //  progression can not be changed mid-workout -> no workouts with progression should be missing from plan
-            //  removing a block with progression will just prevent it from progressing in the plan -> OK
-            //  user can add a new block without a progression -> OK
-            //  user can not change order of exercises -> indexing should be OK
-
-            // filter out all blocks in workout record that have progression, if none are found, exit
+            // filter out all blocks in workout record that have progression. if none are found, exit
             val blocksWithProgression = workout.blocks.filter { it.progressionSettings != null }.ifEmpty { return }
             println("DBG: workout has ${blocksWithProgression.size} blocks with progression")
 
             // check every recorded block with progression for progress threshold criteria
-            blocksWithProgression.forEach { block ->
-                val settings = block.progressionSettings!!
-                val shouldProgress = block.series.all { series ->
+            blocksWithProgression.forEach { recordedBlock ->
+                val settings = recordedBlock.progressionSettings!!
+                val shouldProgress = recordedBlock.series.all { series ->
                     series.completed && series.weight!! >= settings.weightThreshold && series.repetitions!! >= settings.repThreshold
                 }
 
                 // if criteria was met
                 if (shouldProgress) {
                     println("DBG: block with valid progression detected")
+                    val planBlock = workoutPlanCopy.blocks[recordedBlock.idx]
+
                     // increment all block weight/reps by increment
                     // increment value in progression setting
                     // save block to workout plan and then save it to plan
                     when (settings.type) {
-                        ProgressionType.INCREASE_WEIGHT-> {
-                            println("DBG: progressing ${block.exercise.name} by ${settings.weightThreshold}")
-                            workoutPlanCopy = workoutPlanCopy.updateBlock(block.progressWeight(settings.incrementWeightByKg))
-                        }
-                        ProgressionType.INCREASE_REPS -> {
-                            println("DBG: progressing ${block.exercise.name} by ${settings.incrementRepsBy}")
+                        ProgressionType.INCREASE_WEIGHT -> {
+                            println("DBG: progressing ${recordedBlock.exercise.name} by ${settings.weightThreshold}")
 
-                            workoutPlanCopy = workoutPlanCopy.updateBlock(block.progressReps(settings.incrementRepsBy))
+                            workoutPlanCopy =
+                                workoutPlanCopy.updateBlock(planBlock.progressWeight(settings.incrementWeightByKg))
+                        }
+
+                        ProgressionType.INCREASE_REPS -> {
+                            println("DBG: progressing ${recordedBlock.exercise.name} by ${settings.incrementRepsBy}")
+
+                            workoutPlanCopy =
+                                workoutPlanCopy.updateBlock(planBlock.progressReps(settings.incrementRepsBy))
                         }
                     }
                 }
@@ -139,6 +172,7 @@ class WorkoutViewModel(
 
             // update plan in database
             println("DBG: Saving updated workout plan")
+            progressionHandled = true
             planRepository.saveCustomPlan(authRepository.currentUser.id, plan.updateWorkoutPlan(workoutPlanCopy))
             println("DBG: plan saved")
         }
@@ -149,43 +183,54 @@ class WorkoutViewModel(
     }
 
     private fun addBlock(
-        workoutId: String,
+        workout: Workout,
         exercise: Exercise,
     ) {
         viewModelScope.launch {
-            workoutRepository.addBlock(workoutId, exercise)
+            workoutRepository.addBlock(workout, exercise)
         }
     }
 
-    private fun addSet(
-        workoutId: String,
-        blockIdx: Int,
-        set: Series,
+    private fun addSeries(
+        workout: Workout,
+        blockIdx: Int
     ) {
-        viewModelScope.launch { workoutRepository.addSeries(workoutId, blockIdx, set) }
+        viewModelScope.launch { workoutRepository.addSeries(workout, blockIdx) }
     }
 
     private fun modifySeries(
+        workout: Workout,
         blockIdx: Int,
-        set: Series,
+        series: Series,
     ) {
-        val workoutId = currentWorkout.value?.id ?: return // TODO error handling
-        viewModelScope.launch { workoutRepository.modifySeries(workoutId, blockIdx, set) }
+        viewModelScope.launch { workoutRepository.modifySeries(workout, blockIdx, series) }
+    }
+
+    private fun deleteLastSeries(
+        workout: Workout,
+        blockIdx: Int,
+        series: Series
+    ) {
+        viewModelScope.launch {
+            workoutRepository.removeSeries(workout, blockIdx, series)
+        }
     }
 }
 
 sealed interface WorkoutAction {
     object StartNewWorkout : WorkoutAction
-    class StartPlannedWorkout(val planId: String, val workoutIdx: Int) : WorkoutAction
+    class StartPlannedWorkout(val plan: Plan, val workoutIdx: Int) : WorkoutAction
     object CompleteCurrentWorkout : WorkoutAction
     class DeleteWorkout(val workoutId: String) : WorkoutAction
+    class SelectWorkout(val workout: Workout) : WorkoutAction
 
-    class AddBlock(val workoutId: String, val exercise: Exercise) : WorkoutAction
-    // TODO Remove block
+    class AddBlock(val workout: Workout, val exercise: Exercise) : WorkoutAction
+    class RemoveBlock(val workout: Workout, val block: Block) : WorkoutAction
 
-    class AddSet(val workoutId: String, val blockIdx: Int, val set: Series) : WorkoutAction
-    class ModifySeries(val blockIdx: Int, val set: Series) : WorkoutAction
-    // TODO remove series
+    class AddSet(val workout: Workout, val blockIdx: Int) : WorkoutAction
+    class ModifySeries(val workout: Workout, val blockIdx: Int, val series: Series) : WorkoutAction
+    class DeleteLastSeries(val workout: Workout, val blockIdx: Int, val series: Series) : WorkoutAction
 
     class AskForExercise(val workoutId: String) : WorkoutAction
+    object NotifyWorkoutSaved : WorkoutAction
 }

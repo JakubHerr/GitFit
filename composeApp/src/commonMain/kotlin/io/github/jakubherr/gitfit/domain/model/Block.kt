@@ -18,7 +18,14 @@ data class Block(
         return copy(series = newSeries)
     }
 
-    fun removeSeries(series: Series): Block = copy(series = this.series - series)
+    fun removeSeries(series: Series): Block {
+        val newSeries = this.series.toMutableList()
+        newSeries.remove(series)
+        newSeries.forEachIndexed { idx, oldSeries ->
+            newSeries[idx] = oldSeries.copy(idx = idx)
+        }
+        return copy(series = newSeries)
+    }
 
     fun progressWeight(increment: Double): Block {
         val newSeries = series.toMutableList()

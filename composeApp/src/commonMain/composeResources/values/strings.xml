@@ -4,7 +4,7 @@
     <string name="workout">Workout</string>
     <string name="profile">Profile</string>
     <string name="measurement">Measure</string>
-    <string name="trends">Trends</string>
+    <string name="history">History</string>
     <string name="add_exercise">Add exercise</string>
     <string name="save_workout">Save</string>
     <string name="delete_workout">Delete</string>

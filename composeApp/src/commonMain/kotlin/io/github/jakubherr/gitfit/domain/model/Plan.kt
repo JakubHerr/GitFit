@@ -11,16 +11,16 @@ data class Plan(
     val workoutPlans: List<WorkoutPlan> = emptyList()
 ) {
     companion object {
-        val Empty = Plan("","","","")
+        val Empty = Plan("","","New plan","")
     }
 
     val error: Error? get() {
-        val invalidWorkout = workoutPlans.map { it.toWorkout() }.find { it.error != null }
+        val workoutError = workoutPlans.find { it.error != null }?.error
 
         return when {
             name.isBlank() -> Error.InvalidPlanName
             workoutPlans.isEmpty() -> Error.NoWorkoutInPlan
-            invalidWorkout != null -> Error.InvalidWorkout(invalidWorkout.error!!)
+            workoutError != null -> Error.InvalidWorkout(workoutError)
             else -> null
         }
     }

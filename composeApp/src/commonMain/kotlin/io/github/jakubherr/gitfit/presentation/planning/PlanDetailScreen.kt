@@ -3,8 +3,10 @@ package io.github.jakubherr.gitfit.presentation.planning
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,11 +18,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
+import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
+import io.github.jakubherr.gitfit.presentation.shared.OnBackPress
+import io.github.jakubherr.gitfit.presentation.shared.WorkoutPlanListItem
 
 @Composable
 fun PlanDetailScreen(
@@ -30,29 +40,48 @@ fun PlanDetailScreen(
     onPlanSelected: () -> Unit = {}, // TODO User can add a predefined plan to his plans, where he can edit it etc.
     onAction: (PlanAction) -> Unit = {},
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+    if (showDialog) {
+        ConfirmationDialog(
+            title = "Delete",
+            text = "The selected plan will be deleted",
+            confirmText = "Delete plan",
+            dismissText = "Cancel",
+            onDismiss = { showDialog = false },
+            onConfirm = {
+                showDialog = false
+                onAction(PlanAction.DeletePlan(plan.id))
+            }
+        )
+    }
+
     Column(modifier.fillMaxSize().padding(16.dp)) {
         Row(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(plan.name.ifBlank { "Unnamed plan" })
+            Text(plan.name, fontWeight = FontWeight.Bold)
 
             Row {
                 IconButton({ onAction(PlanAction.EditPlan(plan)) }) {
                     Icon(Icons.Default.Edit, "")
                 }
-                // TODO: "are you sure?" dialog
-                IconButton({ onAction(PlanAction.DeletePlan(plan.id)) }) {
+
+                IconButton({ showDialog = true }) {
                     Icon(Icons.Default.Delete, "")
                 }
             }
 
         }
 
-        LazyColumn {
+        Spacer(Modifier.height(32.dp))
+
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
             items(plan.workoutPlans) { workout ->
-                WorkoutListItem(
+                WorkoutPlanListItem(
                     workout,
                     onActionClicked = { onWorkoutSelected(workout) },
                     actionSlot = { Icon(Icons.Default.PlayArrow, "") }
