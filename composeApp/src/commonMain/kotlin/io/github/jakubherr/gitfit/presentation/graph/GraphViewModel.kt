@@ -1,68 +1,61 @@
 package io.github.jakubherr.gitfit.presentation.graph
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.jakubherr.gitfit.domain.repository.AuthRepository
-import io.github.jakubherr.gitfit.domain.repository.MeasurementRepository
+import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.koalaplot.core.xygraph.DefaultPoint
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.launch
 
 class GraphViewModel(
     private val workoutRepository: WorkoutRepository,
-    private val measurementRepository: MeasurementRepository,
-    private val authRepository: AuthRepository,
 ) : ViewModel() {
-    var selectedMetric by mutableStateOf(ExerciseMetric.HEAVIEST_WEIGHT)
+    var selectedMetric = MutableStateFlow(ExerciseMetric.HEAVIEST_WEIGHT)
         private set
 
-    private val lastTen = workoutRepository.getCompletedWorkouts().map { wo -> wo.sortedBy { it.date } }.take(10).stateIn(
-        scope = viewModelScope,
-        initialValue = emptyList(),
-        started = SharingStarted.WhileSubscribed(5_000L),
-    )
+    private var selectedExercise = MutableStateFlow<Exercise?>(null)
 
-    private val _dataPoints: MutableStateFlow<List<DefaultPoint<String, Int>>> = MutableStateFlow(emptyList())
-    val dataPoints: StateFlow<List<DefaultPoint<String, Int>>> = _dataPoints
+    // TODO make state flow that will change the number of selected records
+    private val lastTen =
+        workoutRepository
+            .getCompletedWorkouts()
+            .map { wo ->
+                wo.filter { it.hasExercise(selectedExercise.value?.id) }.sortedBy { it.date }
+            }
+            .take(10)
+            .stateIn(
+                scope = viewModelScope,
+                initialValue = emptyList(),
+                started = SharingStarted.WhileSubscribed(5_000L),
+            )
 
-    init {
-        viewModelScope.launch {
-            lastTen.collect { workouts ->
-                println("DBG: collected ${workouts.size} workouts")
+    val data: Flow<List<DefaultPoint<String, Int>>> =
+        combine(lastTen, selectedMetric, selectedExercise) { workouts, metric, exercise ->
+            if (exercise == null) return@combine emptyList()
+
+            return@combine when (metric) {
+                ExerciseMetric.HEAVIEST_WEIGHT -> workouts.toDataPoints { it.getExerciseHeaviestWeight(exercise.id)?.toInt() }
+                ExerciseMetric.BEST_SET_VOLUME -> workouts.toDataPoints { it.getExerciseBestSetVolume(exercise.id)?.toInt() }
+                ExerciseMetric.TOTAL_WORKOUT_VOLUME -> workouts.toDataPoints { it.getExerciseTotalWorkoutVolume(exercise.id)?.toInt() }
+                ExerciseMetric.TOTAL_REPETITIONS -> workouts.toDataPoints { it.getExerciseTotalRepetitions(exercise.id)?.toInt() }
             }
         }
-    }
-
-    // measurement data
 
     fun onAction(action: GraphAction) {
         when (action) {
-            is GraphAction.ExerciseMetricSelected -> changeExerciseMetric(action.exerciseId, action.metric)
-        }
-    }
-
-    private fun changeExerciseMetric(exerciseId: String, metric: ExerciseMetric) {
-        selectedMetric = metric
-
-        viewModelScope.launch {
-            val list = when (metric) {
-                ExerciseMetric.HEAVIEST_WEIGHT -> lastTen.value.toDataPoints { it.getExerciseHeaviestWeight(exerciseId)?.toInt() }
-                ExerciseMetric.BEST_SET_VOLUME -> lastTen.value.toDataPoints { it.getExerciseBestSetVolume(exerciseId)?.toInt() }
-                ExerciseMetric.TOTAL_WORKOUT_VOLUME -> lastTen.value.toDataPoints { it.getExerciseTotalWorkoutVolume(exerciseId)?.toInt() }
-                ExerciseMetric.TOTAL_REPETITIONS -> lastTen.value.toDataPoints { it.getExerciseTotalRepetitions(exerciseId)?.toInt() }
+            is GraphAction.ExerciseAndMetricSelected -> {
+                println("DBG: selecting metric ${action.metric} for exercise ${action.exercise.id}")
+                selectedMetric.value = action.metric
+                selectedExercise.value = action.exercise
             }
-
-            _dataPoints.emit(list)
         }
     }
 
@@ -84,5 +77,5 @@ class GraphViewModel(
 }
 
 sealed interface GraphAction {
-    class ExerciseMetricSelected(val exerciseId: String, val metric: ExerciseMetric) : GraphAction
+    class ExerciseAndMetricSelected(val exercise: Exercise, val metric: ExerciseMetric) : GraphAction
 }

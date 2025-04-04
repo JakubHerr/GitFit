@@ -67,7 +67,7 @@ object HistoryRoute
 object WorkoutHistoryRoute
 
 @Serializable
-class WorkoutDetailRoute(val workoutId: String)
+object WorkoutDetailRoute
 
 @Serializable
 object SettingsRoute

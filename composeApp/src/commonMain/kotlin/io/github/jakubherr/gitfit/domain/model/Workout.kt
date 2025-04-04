@@ -76,6 +76,8 @@ data class Workout(
         else -> null
     }
 
+    fun hasExercise(exerciseId: String?) = blocks.any { it.exercise.id == exerciseId }
+
     sealed class Error(val message: String) {
         object NoExerciseInWorkout: Error("Workout has no exercises")
         object NoSetInExercise: Error("Some exercise has no sets")

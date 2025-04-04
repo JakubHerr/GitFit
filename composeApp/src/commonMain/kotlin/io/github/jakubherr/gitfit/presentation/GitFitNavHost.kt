@@ -1,6 +1,5 @@
 package io.github.jakubherr.gitfit.presentation
 
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,7 +16,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.toRoute
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
 import io.github.jakubherr.gitfit.presentation.auth.authGraph
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardAction
@@ -30,14 +28,12 @@ import io.github.jakubherr.gitfit.presentation.planning.PlanAction
 import io.github.jakubherr.gitfit.presentation.planning.PlanningViewModel
 import io.github.jakubherr.gitfit.presentation.planning.planningGraph
 import io.github.jakubherr.gitfit.presentation.settings.SettingsScreenRoot
-import io.github.jakubherr.gitfit.presentation.shared.Resource
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutDetailScreen
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutListScreen
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutInProgressScreenRoot
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinNavViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -52,9 +48,13 @@ fun GitFitNavHost(
     val authViewModel: AuthViewModel = koinViewModel()
     val auth by authViewModel.state.collectAsStateWithLifecycle()
 
-    // this prevents data loss of in-memory plan
+    /*
+        these ViewModels are shared globally so that state like current workout or selected exercise can be passed between
+        nav destinations without fetching them from the DB that is extremely slow in offline mode
+    */
     val planViewModel: PlanningViewModel = koinViewModel()
-    val exerciseViewModel: ExerciseViewModel = koinViewModel() // TODO: experimental, test
+    val exerciseViewModel: ExerciseViewModel = koinViewModel()
+    val workoutViewModel: WorkoutViewModel = koinViewModel()
 
     LaunchedEffect(auth) {
         println("DBG: auth state is ${auth.user.loggedIn}")
@@ -93,37 +93,42 @@ fun GitFitNavHost(
 
             composable<WorkoutInProgressRoute> {
                 val scope = rememberCoroutineScope()
-                val workoutVm: WorkoutViewModel = koinViewModel()
 
                 WorkoutInProgressScreenRoot(
+                    vm = workoutViewModel,
                     onAction = { action ->
-                        if (action !is WorkoutAction.CompleteCurrentWorkout && action !is WorkoutAction.RemoveBlock) workoutVm.onAction(action)
+                        if (action !is WorkoutAction.CompleteCurrentWorkout && action !is WorkoutAction.RemoveBlock) workoutViewModel.onAction(
+                            action
+                        )
 
                         when (action) {
                             is WorkoutAction.AskForExercise -> navController.navigate(AddExerciseToWorkoutRoute(action.workoutId))
                             is WorkoutAction.DeleteWorkout -> navController.popBackStack()
                             is WorkoutAction.CompleteCurrentWorkout -> {
-                                val error = workoutVm.currentWorkout.value?.error
-                                if (error == null) workoutVm.onAction(action)
+                                val error = workoutViewModel.currentWorkout.value?.error
+                                if (error == null) workoutViewModel.onAction(action)
                                 else scope.launch { snackbarHostState.showSnackbar(error.message) }
                             }
+
                             is WorkoutAction.RemoveBlock -> {
                                 if (action.block.progressionSettings != null) {
                                     scope.launch {
                                         snackbarHostState.showSnackbar("Blocks with progression can not be removed")
                                     }
-                                }
-                                else workoutVm.onAction(action)
+                                } else workoutViewModel.onAction(action)
                             }
-                            else -> { }
+
+                            else -> {}
                         }
                     },
-                    onSaveComplete = { navController.popBackStack() }
-
+                    onSaveComplete = {
+                        workoutViewModel.onAction(WorkoutAction.NotifyWorkoutSaved)
+                        navController.popBackStack()
+                    }
                 )
             }
 
-            exerciseNavigation(navController, exerciseViewModel)
+            exerciseNavigation(navController, exerciseViewModel, workoutViewModel)
 
             measurementGraph(navController, snackbarHostState)
 
@@ -139,8 +144,7 @@ fun GitFitNavHost(
             }
 
             composable<WorkoutHistoryRoute> {
-                val vm: WorkoutViewModel = koinViewModel()
-                val completedWorkouts by vm.completedWorkouts.collectAsStateWithLifecycle()
+                val completedWorkouts by workoutViewModel.completedWorkouts.collectAsStateWithLifecycle()
 
                 if (completedWorkouts.isEmpty()) {
                     // TODO screen
@@ -149,32 +153,26 @@ fun GitFitNavHost(
                     WorkoutListScreen(
                         completedWorkouts,
                         onWorkoutSelected = {
-                            navController.navigate(WorkoutDetailRoute(it))
+                            workoutViewModel.onAction(WorkoutAction.SelectWorkout(it))
+                            navController.navigate(WorkoutDetailRoute)
                         }
                     )
                 }
             }
 
-            composable<WorkoutDetailRoute> { backstackEntry ->
-                val workoutId = backstackEntry.toRoute<WorkoutDetailRoute>().workoutId
-                val vm: WorkoutViewModel = koinViewModel()
-
-                LaunchedEffect(true) {
-                    vm.onAction(WorkoutAction.FetchWorkout(workoutId))
+            composable<WorkoutDetailRoute> {
+                val workout = workoutViewModel.selectedWorkout
+                workout?.let {
+                    WorkoutDetailScreen(
+                        it,
+                        onDelete = {
+                            workoutViewModel.onAction(WorkoutAction.DeleteWorkout(it.id))
+                            navController.popBackStack()
+                        }
+                    )
                 }
-
-                when (val fetch = vm.fetchedWorkout) {
-                    is Resource.Failure -> Text("Failed te fetch exercise")
-                    Resource.Loading -> CircularProgressIndicator()
-                    is Resource.Success -> {
-                        WorkoutDetailScreen(
-                            fetch.data,
-                            onDelete = {
-                                vm.onAction(WorkoutAction.DeleteWorkout(fetch.data.id))
-                                navController.popBackStack()
-                            }
-                        )
-                    }
+                if (workout == null) {
+                    Text("Something went wrong")
                 }
             }
 

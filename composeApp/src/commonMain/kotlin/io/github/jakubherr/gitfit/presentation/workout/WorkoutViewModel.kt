@@ -13,7 +13,6 @@ import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.ProgressionType
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
-import io.github.jakubherr.gitfit.presentation.shared.Resource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -47,8 +46,7 @@ class WorkoutViewModel(
             started = SharingStarted.WhileSubscribed(5_000L),
         )
 
-    var fetchedWorkout by mutableStateOf(Resource.Loading as Resource<Workout>)
-        private set
+    var selectedWorkout by mutableStateOf<Workout?>(null)
 
     var workoutSaved by mutableStateOf(false)
         private set
@@ -62,19 +60,20 @@ class WorkoutViewModel(
             is WorkoutAction.StartPlannedWorkout -> startPlannedWorkout(action.planId, action.workoutIdx)
             is WorkoutAction.CompleteCurrentWorkout -> completeCurrentWorkout()
             is WorkoutAction.DeleteWorkout -> deleteWorkout(action.workoutId)
-            is WorkoutAction.FetchWorkout -> fetchWorkout(action.workoutId)
-            is WorkoutAction.AskForExercise -> { }
-            is WorkoutAction.AddBlock -> addBlock(action.workoutId, action.exercise)
-            is WorkoutAction.RemoveBlock -> removeBlock(action.workoutId, action.block)
-            is WorkoutAction.AddSet -> addSeries(action.workoutId, action.blockIdx)
-            is WorkoutAction.ModifySeries -> modifySeries(action.blockIdx, action.series)
-            is WorkoutAction.DeleteLastSeries -> deleteLastSeries(action.workoutId, action.blockIdx, action.series)
+            is WorkoutAction.SelectWorkout -> selectedWorkout = action.workout
+            is WorkoutAction.AskForExercise -> {}
+            is WorkoutAction.AddBlock -> addBlock(action.workout, action.exercise)
+            is WorkoutAction.RemoveBlock -> removeBlock(action.workout, action.block)
+            is WorkoutAction.AddSet -> addSeries(action.workout, action.blockIdx)
+            is WorkoutAction.ModifySeries -> modifySeries(action.workout, action.blockIdx, action.series)
+            is WorkoutAction.DeleteLastSeries -> deleteLastSeries(action.workout, action.blockIdx, action.series)
+            WorkoutAction.NotifyWorkoutSaved -> workoutSaved = false
         }
     }
 
-    private fun removeBlock(workoutId: String, block: Block) {
+    private fun removeBlock(workout: Workout, block: Block) {
         viewModelScope.launch {
-            workoutRepository.removeBlock(workoutId, block.idx)
+            workoutRepository.removeBlock(workout, block.idx)
         }
     }
 
@@ -95,6 +94,7 @@ class WorkoutViewModel(
     }
 
     private fun completeCurrentWorkout() {
+        println("DBG: completing current workout ${currentWorkout.value}")
         val workout = currentWorkout.value ?: return
 
         if (workout.error == null) {
@@ -147,15 +147,18 @@ class WorkoutViewModel(
                     // increment value in progression setting
                     // save block to workout plan and then save it to plan
                     when (settings.type) {
-                        ProgressionType.INCREASE_WEIGHT-> {
+                        ProgressionType.INCREASE_WEIGHT -> {
                             println("DBG: progressing ${recordedBlock.exercise.name} by ${settings.weightThreshold}")
 
-                            workoutPlanCopy = workoutPlanCopy.updateBlock(planBlock.progressWeight(settings.incrementWeightByKg))
+                            workoutPlanCopy =
+                                workoutPlanCopy.updateBlock(planBlock.progressWeight(settings.incrementWeightByKg))
                         }
+
                         ProgressionType.INCREASE_REPS -> {
                             println("DBG: progressing ${recordedBlock.exercise.name} by ${settings.incrementRepsBy}")
 
-                            workoutPlanCopy = workoutPlanCopy.updateBlock(planBlock.progressReps(settings.incrementRepsBy))
+                            workoutPlanCopy =
+                                workoutPlanCopy.updateBlock(planBlock.progressReps(settings.incrementRepsBy))
                         }
                     }
                 }
@@ -172,42 +175,37 @@ class WorkoutViewModel(
         viewModelScope.launch { workoutRepository.deleteWorkout(workoutId) }
     }
 
-    private fun fetchWorkout(workoutId: String) {
-        fetchedWorkout = Resource.Loading
-        viewModelScope.launch {
-            workoutRepository.getWorkout(workoutId)
-                .onSuccess { fetchedWorkout = Resource.Success(it) }
-                .onFailure { fetchedWorkout = Resource.Failure(it) }
-        }
-    }
-
     private fun addBlock(
-        workoutId: String,
+        workout: Workout,
         exercise: Exercise,
     ) {
         viewModelScope.launch {
-            workoutRepository.addBlock(workoutId, exercise)
+            workoutRepository.addBlock(workout, exercise)
         }
     }
 
     private fun addSeries(
-        workoutId: String,
+        workout: Workout,
         blockIdx: Int
     ) {
-        viewModelScope.launch { workoutRepository.addSeries(workoutId, blockIdx) }
+        viewModelScope.launch { workoutRepository.addSeries(workout, blockIdx) }
     }
 
     private fun modifySeries(
+        workout: Workout,
         blockIdx: Int,
         series: Series,
     ) {
-        val workoutId = currentWorkout.value?.id ?: return // TODO error handling
-        viewModelScope.launch { workoutRepository.modifySeries(workoutId, blockIdx, series) }
+        viewModelScope.launch { workoutRepository.modifySeries(workout, blockIdx, series) }
     }
 
-    private fun deleteLastSeries(workoutId: String, blockIdx: Int, series: Series) {
+    private fun deleteLastSeries(
+        workout: Workout,
+        blockIdx: Int,
+        series: Series
+    ) {
         viewModelScope.launch {
-            workoutRepository.removeSeries(workoutId, blockIdx, series)
+            workoutRepository.removeSeries(workout, blockIdx, series)
         }
     }
 }
@@ -217,14 +215,15 @@ sealed interface WorkoutAction {
     class StartPlannedWorkout(val planId: String, val workoutIdx: Int) : WorkoutAction
     object CompleteCurrentWorkout : WorkoutAction
     class DeleteWorkout(val workoutId: String) : WorkoutAction
-    class FetchWorkout(val workoutId: String): WorkoutAction
+    class SelectWorkout(val workout: Workout) : WorkoutAction
 
-    class AddBlock(val workoutId: String, val exercise: Exercise) : WorkoutAction
-    class RemoveBlock(val workoutId: String, val block: Block) : WorkoutAction
+    class AddBlock(val workout: Workout, val exercise: Exercise) : WorkoutAction
+    class RemoveBlock(val workout: Workout, val block: Block) : WorkoutAction
 
-    class AddSet(val workoutId: String, val blockIdx: Int) : WorkoutAction
-    class ModifySeries(val blockIdx: Int, val series: Series) : WorkoutAction
-    class DeleteLastSeries(val workoutId: String, val blockIdx: Int, val series: Series) : WorkoutAction
+    class AddSet(val workout: Workout, val blockIdx: Int) : WorkoutAction
+    class ModifySeries(val workout: Workout, val blockIdx: Int, val series: Series) : WorkoutAction
+    class DeleteLastSeries(val workout: Workout, val blockIdx: Int, val series: Series) : WorkoutAction
 
     class AskForExercise(val workoutId: String) : WorkoutAction
+    object NotifyWorkoutSaved : WorkoutAction
 }

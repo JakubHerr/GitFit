@@ -38,17 +38,14 @@ import gitfit.composeapp.generated.resources.kg
 import gitfit.composeapp.generated.resources.reps
 import gitfit.composeapp.generated.resources.save_workout
 import gitfit.composeapp.generated.resources.set
-import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import io.github.jakubherr.gitfit.presentation.shared.WorkoutBlockItem
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
-// use case: track a workout while in the gym
 @Composable
 fun WorkoutInProgressScreenRoot(
-    vm: WorkoutViewModel = koinViewModel(),
+    vm: WorkoutViewModel,
     onAction: (WorkoutAction) -> Unit = {},
     onSaveComplete: () -> Unit = {}, // this mainly prevents cancelling viewmodel before it handles progression
 ) {
@@ -107,18 +104,19 @@ fun WorkoutInProgressScreen(
                 ) {
                     items(workout.blocks) { block ->
                         WorkoutBlockItem(
+                            workout,
                             block,
                             onAction = onAction,
                             onAddSetClicked = {
-                                onAction(WorkoutAction.AddSet(workout.id, block.idx))
+                                onAction(WorkoutAction.AddSet(workout, block.idx))
                             },
                             dropdownMenu = {
                                 WorkoutBlockItemDropdownMenu(
-                                    onDeleteExercise = { onAction(WorkoutAction.RemoveBlock(workout.id, block) )},
+                                    onDeleteExercise = { onAction(WorkoutAction.RemoveBlock(workout, block) )},
                                     onDeleteSet = {
                                         val series = block.series.lastOrNull()
                                         series?.let {
-                                            onAction(WorkoutAction.DeleteLastSeries(workout.id, block.idx, it))
+                                            onAction(WorkoutAction.DeleteLastSeries(workout, block.idx, it))
                                         }
                                     }
                                 )

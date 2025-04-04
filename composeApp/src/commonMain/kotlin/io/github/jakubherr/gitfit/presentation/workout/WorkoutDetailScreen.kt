@@ -67,7 +67,7 @@ fun WorkoutDetailScreen(
 
         LazyColumn {
             items(workout.blocks) { block ->
-                WorkoutBlockItem(block, readOnly = true)
+                WorkoutBlockItem(workout, block, readOnly = true)
             }
         }
     }

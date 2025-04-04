@@ -15,7 +15,7 @@ import io.github.jakubherr.gitfit.presentation.shared.WorkoutListItem
 fun WorkoutListScreen(
     workoutList: List<Workout>,
     modifier: Modifier = Modifier,
-    onWorkoutSelected: (String) -> Unit,
+    onWorkoutSelected: (Workout) -> Unit,
 ) {
     Column(
         modifier.padding(16.dp)
@@ -24,7 +24,7 @@ fun WorkoutListScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(workoutList) { workout ->
-                WorkoutListItem(workout) { onWorkoutSelected(it) }
+                WorkoutListItem(workout) { onWorkoutSelected(workout) }
             }
         }
     }

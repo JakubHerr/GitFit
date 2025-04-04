@@ -25,6 +25,7 @@ import io.github.jakubherr.gitfit.domain.isNonNegativeDouble
 import io.github.jakubherr.gitfit.domain.isNonNegativeLong
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Series
+import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.presentation.planning.PlanBlockItemDropdownMenu
 import io.github.jakubherr.gitfit.presentation.workout.SetHeader
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
@@ -115,6 +116,7 @@ fun PlanBlockItem(
 
 @Composable
 fun WorkoutBlockItem(
+    workout: Workout,
     block: Block,
     modifier: Modifier = Modifier,
     readOnly: Boolean = false,
@@ -138,6 +140,7 @@ fun WorkoutBlockItem(
                         onToggle = { weight, reps ->
                             onAction(
                                 WorkoutAction.ModifySeries(
+                                    workout,
                                     block.idx,
                                     series.copy(
                                         weight = weight.toDouble(),

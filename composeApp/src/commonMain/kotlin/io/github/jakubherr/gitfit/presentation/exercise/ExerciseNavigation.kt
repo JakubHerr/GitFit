@@ -1,9 +1,10 @@
 package io.github.jakubherr.gitfit.presentation.exercise
 
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
 import io.github.jakubherr.gitfit.presentation.AddExerciseToWorkoutRoute
 import io.github.jakubherr.gitfit.presentation.CreateExerciseRoute
 import io.github.jakubherr.gitfit.presentation.ExerciseDetailRoute
@@ -16,6 +17,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun NavGraphBuilder.exerciseNavigation(
     navController: NavHostController,
     exerciseViewModel: ExerciseViewModel,
+    workoutViewModel: WorkoutViewModel,
 ) {
     composable<ExerciseListRoute> {
         ExerciseListScreenRoot(
@@ -27,21 +29,22 @@ fun NavGraphBuilder.exerciseNavigation(
         )
     }
 
-    composable<AddExerciseToWorkoutRoute> { backStackEntry ->
-        val route: AddExerciseToWorkoutRoute = backStackEntry.toRoute()
-        val workoutViewModel: WorkoutViewModel = koinViewModel()
+    composable<AddExerciseToWorkoutRoute> {
+        val currentWorkout by workoutViewModel.currentWorkout.collectAsStateWithLifecycle()
 
         ExerciseListScreenRoot(
             vm = exerciseViewModel,
             onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
             onExerciseClick = { exercise ->
-                workoutViewModel.onAction(WorkoutAction.AddBlock(route.workoutId, exercise))
+                currentWorkout?.let {
+                    workoutViewModel.onAction(WorkoutAction.AddBlock(it, exercise))
+                }
                 navController.popBackStack()
             },
         )
     }
 
-    composable<ExerciseDetailRoute> { backstackEntry ->
+    composable<ExerciseDetailRoute> {
         val graphVm: GraphViewModel = koinViewModel()
 
         ExerciseDetailScreenRoot(

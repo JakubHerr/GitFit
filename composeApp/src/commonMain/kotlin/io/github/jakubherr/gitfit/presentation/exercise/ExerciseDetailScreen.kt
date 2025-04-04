@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -31,7 +30,6 @@ import io.github.jakubherr.gitfit.presentation.graph.ExerciseMetric
 import io.github.jakubherr.gitfit.presentation.graph.GraphAction
 import io.github.jakubherr.gitfit.presentation.graph.GraphViewModel
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
-import io.github.jakubherr.gitfit.presentation.shared.Resource
 import io.github.jakubherr.gitfit.presentation.shared.SingleChoiceChipSelection
 import io.github.koalaplot.core.xygraph.DefaultPoint
 import org.koin.compose.viewmodel.koinViewModel
@@ -43,7 +41,7 @@ fun ExerciseDetailScreenRoot(
     exerciseViewModel: ExerciseViewModel,
     onBack: () -> Unit = {},
 ) {
-    val data by graphViewModel.dataPoints.collectAsStateWithLifecycle()
+    val data by graphViewModel.data.collectAsStateWithLifecycle(emptyList())
     val exercise = exerciseViewModel.selectedExercise
     var showDialog by remember { mutableStateOf(false) }
 
@@ -66,7 +64,7 @@ fun ExerciseDetailScreenRoot(
         ExerciseDetailScreen(
             exercise = exercise,
             graphData = data,
-            selectedMetric = graphViewModel.selectedMetric,
+            selectedMetric = graphViewModel.selectedMetric.value,
             onGraphAction = { graphViewModel.onAction(it) },
             onDeleteExercise = { showDialog = true }
         )
@@ -88,7 +86,11 @@ fun ExerciseDetailScreen(
     onDeleteExercise: (String) -> Unit = {}
 ) {
     LaunchedEffect(exercise) {
-        onGraphAction(GraphAction.ExerciseMetricSelected(exercise.id, ExerciseMetric.HEAVIEST_WEIGHT))
+        onGraphAction(GraphAction.ExerciseAndMetricSelected(exercise, ExerciseMetric.HEAVIEST_WEIGHT))
+    }
+
+    LaunchedEffect(graphData) {
+        println("DBG: data size: ${graphData.size}")
     }
 
     // name, description, primary, secondary muscle etc.
@@ -132,7 +134,7 @@ fun ExerciseDetailScreen(
             modifier = Modifier.padding(16.dp),
             onChoiceSelected = { metric ->
                 println("DBG: ${metric.name} selected")
-                onGraphAction(GraphAction.ExerciseMetricSelected(exercise.id, metric))
+                onGraphAction(GraphAction.ExerciseAndMetricSelected(exercise, metric))
             }
         )
     }

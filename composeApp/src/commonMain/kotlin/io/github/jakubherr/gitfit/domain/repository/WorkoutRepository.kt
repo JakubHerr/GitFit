@@ -18,41 +18,39 @@ interface WorkoutRepository {
 
     suspend fun completeWorkout(workout: Workout)
 
-    suspend fun getWorkout(workoutId: String): Result<Workout>
-
     suspend fun deleteWorkout(workoutId: String)
 
     suspend fun deleteAllWorkouts(userId: String): Result<Unit>
 
     suspend fun addBlock(
-        workoutId: String,
+        workout: Workout,
         exercise: Exercise,
     )
 
     suspend fun removeBlock(
-        workoutId: String,
+        workout: Workout,
         blockIdx: Int,
     )
 
     suspend fun setBlockTimer(
-        workoutId: String,
+        workout: Workout,
         blockIdx: Int,
         seconds: Long?,
     )
 
     suspend fun addSeries(
-        workoutId: String,
+        workout: Workout,
         blockIdx: Int,
     )
 
     suspend fun modifySeries(
-        workoutId: String,
+        workout: Workout,
         blockIdx: Int,
         set: Series,
     )
 
     suspend fun removeSeries(
-        workoutId: String,
+        workout: Workout,
         blockIdx: Int,
         set: Series,
     )

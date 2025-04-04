@@ -46,8 +46,7 @@ class FirestoreWorkoutRepository(
 
         return workoutRef(userId)
             .where {
-                ("completed" equalTo true) and
-                        ("inProgress" equalTo false)
+                ("completed" equalTo true) and ("inProgress" equalTo false)
             }
             .snapshots
             .map { snapshot ->
@@ -61,8 +60,7 @@ class FirestoreWorkoutRepository(
 
         return workoutRef(userId)
             .where {
-                ("completed" equalTo false) and
-                        ("inProgress" equalTo false)
+                ("completed" equalTo false) and ("inProgress" equalTo false)
             }
             .snapshots
             .map { snapshot ->
@@ -125,15 +123,6 @@ class FirestoreWorkoutRepository(
         }
     }
 
-    override suspend fun getWorkout(workoutId: String): Result<Workout> {
-        println("DBG: workout fetch started")
-        val userId = authRepository.currentUser.id.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
-
-        return withContext(dispatcher) {
-            runCatching { getWorkout(userId, workoutId) }
-        }
-    }
-
     override suspend fun deleteWorkout(workoutId: String) {
         val userId = authRepository.currentUser.id.ifBlank { return }
         println("DBG: deleting workout $workoutId of user $userId")
@@ -155,92 +144,62 @@ class FirestoreWorkoutRepository(
         }
     }
 
-    override suspend fun addBlock(
-        workoutId: String,
-        exercise: Exercise,
-    ) {
+    override suspend fun addBlock(workout: Workout, exercise: Exercise) {
         val userId = authRepository.currentUser.id.ifBlank { return }
-        println("DBG: Adding new block to workout $workoutId with ${exercise.name}")
+        println("DBG: Adding new block to workout $workout.id with ${exercise.name}")
 
         withContext(dispatcher) {
-            val newWorkout = getWorkout(userId, workoutId).addBlock(exercise)
-            workoutRef(userId).document(workoutId).set(newWorkout)
+            val newWorkout = workout.addBlock(exercise)
+            workoutRef(userId).document(workout.id).set(newWorkout)
         }
     }
 
-    override suspend fun removeBlock(
-        workoutId: String,
-        blockIdx: Int,
-    ) {
+    override suspend fun removeBlock(workout: Workout, blockIdx: Int) {
         println("DBG removing block")
         val userId = authRepository.currentUser.id.ifBlank { return }
 
         withContext(dispatcher) {
-            val newWorkout = getWorkout(userId, workoutId).removeBlock(blockIdx)
-            workoutRef(userId).document(workoutId).set(newWorkout)
+            val newWorkout = workout.removeBlock(blockIdx)
+            workoutRef(userId).document(workout.id).set(newWorkout)
         }
     }
 
-    override suspend fun setBlockTimer(
-        workoutId: String,
-        blockIdx: Int,
-        seconds: Long?,
-    ) {
+    override suspend fun setBlockTimer(workout: Workout, blockIdx: Int, seconds: Long?) {
         val userId = authRepository.currentUser.id.ifBlank { return }
 
         withContext(dispatcher) {
-            val workout = getWorkout(userId, workoutId)
             val newWorkout = workout.updateBlock(workout.blocks[blockIdx].copy(restTimeSeconds = seconds))
-            workoutRef(userId).document(workoutId).set(newWorkout)
+            workoutRef(userId).document(workout.id).set(newWorkout)
         }
     }
 
-    override suspend fun addSeries(
-        workoutId: String,
-        blockIdx: Int,
-    ) {
+    override suspend fun addSeries(workout: Workout, blockIdx: Int) {
         println("DBG: Adding series to block")
         val userId = authRepository.currentUser.id.ifBlank { return }
 
         withContext(dispatcher) {
-            val workout = getWorkout(userId, workoutId)
             val newWorkout = workout.updateBlock(workout.blocks[blockIdx].addSeries())
-            workoutRef(userId).document(workoutId).set(newWorkout)
+            workoutRef(userId).document(workout.id).set(newWorkout)
         }
     }
 
-    override suspend fun modifySeries(
-        workoutId: String,
-        blockIdx: Int,
-        set: Series,
-    ) {
+    override suspend fun modifySeries(workout: Workout, blockIdx: Int, set: Series) {
         println("DBG: updating series of block $blockIdx to $set")
         val userId = authRepository.currentUser.id.ifBlank { return }
 
         withContext(dispatcher) {
-            val workout = getWorkout(userId, workoutId)
             val newWorkout = workout.updateBlock(workout.blocks[blockIdx].updateSeries(set))
-            workoutRef(userId).document(workoutId).set(newWorkout)
+            workoutRef(userId).document(workout.id).set(newWorkout)
         }
     }
 
-    private suspend fun getWorkout(
-        userId: String,
-        workoutId: String
-    ) = workoutRef(userId).document(workoutId).get().data<Workout>()
-
-    override suspend fun removeSeries(
-        workoutId: String,
-        blockIdx: Int,
-        set: Series,
-    ) {
+    override suspend fun removeSeries(workout: Workout, blockIdx: Int, set: Series) {
         println("DBG: removing series $set")
         val userId = authRepository.currentUser.id.ifBlank { return }
 
         withContext(dispatcher) {
-            val workout = getWorkout(userId, workoutId)
             val newWorkout = workout.updateBlock(workout.blocks[blockIdx].removeSeries(set))
-            workoutRef(userId).document(workoutId).set(newWorkout)
+            workoutRef(userId).document(workout.id).set(newWorkout)
         }
     }
 }
