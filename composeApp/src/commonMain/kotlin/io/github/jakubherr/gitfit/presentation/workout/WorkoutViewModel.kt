@@ -108,10 +108,7 @@ class WorkoutViewModel(
             // if the device is offline, GitLive will suspend coroutine indefinitely until the record is synchronized
             // to check for success, it is necessary to observe completion indirectly through flow
             viewModelScope.launch { workoutRepository.completeWorkout(workout) }
-            viewModelScope.launch {
-                delay(3000)
-                handleProgression(workout)
-            }
+            viewModelScope.launch { handleProgression(workout) }
             viewModelScope.launch {
                 while (currentWorkout.value != null || !progressionHandled) delay(1000)
                 workoutSaved = true
