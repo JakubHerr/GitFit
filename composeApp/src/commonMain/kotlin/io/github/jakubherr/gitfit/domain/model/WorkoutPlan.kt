@@ -17,13 +17,6 @@ data class WorkoutPlan(
         else -> null
     }
 
-    fun toWorkout() = Workout(
-        id = "",
-        blocks = blocks,
-        completed = false,
-        inProgress = false,
-    )
-
     fun addBlock(exercise: Exercise): WorkoutPlan = copy(blocks = blocks + Block(blocks.size, exercise))
 
     fun updateBlock(block: Block): WorkoutPlan {

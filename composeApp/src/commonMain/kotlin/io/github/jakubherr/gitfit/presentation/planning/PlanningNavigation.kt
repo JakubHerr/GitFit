@@ -86,6 +86,7 @@ fun NavGraphBuilder.planningGraph(
         val idx = backstackEntry.toRoute<AddExerciseToPlanRoute>().workoutIdx
 
         ExerciseListScreenRoot(
+            vm = koinViewModel(),
             onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
             onExerciseClick = { exercise ->
                 viewModel.onAction(PlanAction.AddExercise(idx, exercise))

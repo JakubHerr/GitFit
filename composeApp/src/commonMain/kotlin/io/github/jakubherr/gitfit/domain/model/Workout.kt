@@ -51,6 +51,24 @@ data class Workout(
         return reps
     }
 
+    fun addBlock(exercise: Exercise): Workout = copy(blocks = blocks + Block(blocks.size, exercise))
+
+    fun updateBlock(block: Block): Workout {
+        val newBlocks = blocks.toMutableList()
+        newBlocks[block.idx] = block
+        return copy(blocks = newBlocks)
+    }
+
+    fun removeBlock(blockIdx: Int): Workout {
+        val newBlocks = blocks.toMutableList()
+        newBlocks.removeAt(blockIdx)
+        newBlocks.forEachIndexed { idx, oldBlock ->
+            newBlocks[idx] = oldBlock.copy(idx = idx)
+        }
+        return copy(blocks = newBlocks)
+    }
+
+
     val error: Error? get() = when {
         blocks.isEmpty() -> Error.NoExerciseInWorkout
         blocks.any { block -> block.series.isEmpty() } -> Error.NoSetInExercise

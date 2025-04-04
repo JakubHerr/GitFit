@@ -66,7 +66,7 @@ class WorkoutViewModel(
             is WorkoutAction.AskForExercise -> { }
             is WorkoutAction.AddBlock -> addBlock(action.workoutId, action.exercise)
             is WorkoutAction.RemoveBlock -> removeBlock(action.workoutId, action.block)
-            is WorkoutAction.AddSet -> addSeries(action.workoutId, action.blockIdx, action.series)
+            is WorkoutAction.AddSet -> addSeries(action.workoutId, action.blockIdx)
             is WorkoutAction.ModifySeries -> modifySeries(action.blockIdx, action.series)
             is WorkoutAction.DeleteLastSeries -> deleteLastSeries(action.workoutId, action.blockIdx, action.series)
         }
@@ -192,17 +192,15 @@ class WorkoutViewModel(
 
     private fun addSeries(
         workoutId: String,
-        blockIdx: Int,
-        series: Series,
+        blockIdx: Int
     ) {
-        viewModelScope.launch { workoutRepository.addSeries(workoutId, blockIdx, series) }
+        viewModelScope.launch { workoutRepository.addSeries(workoutId, blockIdx) }
     }
 
     private fun modifySeries(
         blockIdx: Int,
         series: Series,
     ) {
-        println("DBG: saving series $series to database")
         val workoutId = currentWorkout.value?.id ?: return // TODO error handling
         viewModelScope.launch { workoutRepository.modifySeries(workoutId, blockIdx, series) }
     }
@@ -224,7 +222,7 @@ sealed interface WorkoutAction {
     class AddBlock(val workoutId: String, val exercise: Exercise) : WorkoutAction
     class RemoveBlock(val workoutId: String, val block: Block) : WorkoutAction
 
-    class AddSet(val workoutId: String, val blockIdx: Int, val series: Series) : WorkoutAction
+    class AddSet(val workoutId: String, val blockIdx: Int) : WorkoutAction
     class ModifySeries(val blockIdx: Int, val series: Series) : WorkoutAction
     class DeleteLastSeries(val workoutId: String, val blockIdx: Int, val series: Series) : WorkoutAction
 

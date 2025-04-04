@@ -8,11 +8,13 @@ import kotlinx.coroutines.flow.Flow
 interface WorkoutRepository {
     fun observeCurrentWorkoutOrNull(): Flow<Workout?>
 
+    fun getCompletedWorkouts(): Flow<List<Workout>>
+
+    fun getPlannedWorkouts(): Flow<List<Workout>>
+
     suspend fun startNewWorkout(): Result<Unit>
 
     suspend fun startWorkoutFromPlan(planId: String, workoutIdx: Int): Result<Unit>
-
-    suspend fun completeWorkout(workoutId: String)
 
     suspend fun completeWorkout(workout: Workout)
 
@@ -41,7 +43,6 @@ interface WorkoutRepository {
     suspend fun addSeries(
         workoutId: String,
         blockIdx: Int,
-        set: Series,
     )
 
     suspend fun modifySeries(
@@ -55,8 +56,4 @@ interface WorkoutRepository {
         blockIdx: Int,
         set: Series,
     )
-
-    fun getCompletedWorkouts(): Flow<List<Workout>>
-
-    fun getPlannedWorkouts(): Flow<List<Workout>>
 }

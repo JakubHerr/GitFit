@@ -110,8 +110,7 @@ fun WorkoutInProgressScreen(
                             block,
                             onAction = onAction,
                             onAddSetClicked = {
-                                val set = Series(block.series.size, null, null, false)
-                                onAction(WorkoutAction.AddSet(workout.id, block.idx, set))
+                                onAction(WorkoutAction.AddSet(workout.id, block.idx))
                             },
                             dropdownMenu = {
                                 WorkoutBlockItemDropdownMenu(

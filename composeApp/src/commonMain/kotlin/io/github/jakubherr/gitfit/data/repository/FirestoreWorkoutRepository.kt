@@ -5,7 +5,6 @@ import dev.gitlive.firebase.firestore.firestore
 import io.github.jakubherr.gitfit.domain.repository.AuthRepository
 import io.github.jakubherr.gitfit.domain.repository.PlanRepository
 import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
-import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
@@ -13,6 +12,7 @@ import io.github.jakubherr.gitfit.domain.repository.AuthError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
@@ -37,6 +37,38 @@ class FirestoreWorkoutRepository(
             .snapshots.map { workoutSnapshot ->
                 runCatching { workoutSnapshot.documents.firstOrNull()?.data<Workout>() }.getOrNull()
             }
+            .flowOn(dispatcher)
+    }
+
+    // if the device is offline and the user deletes the only completed workout, it will take longer to update for some reason
+    override fun getCompletedWorkouts(): Flow<List<Workout>> {
+        val userId = authRepository.currentUser.id.ifBlank { return emptyFlow() }
+
+        return workoutRef(userId)
+            .where {
+                ("completed" equalTo true) and
+                        ("inProgress" equalTo false)
+            }
+            .snapshots
+            .map { snapshot ->
+                snapshot.documents.map { it.data<Workout>() }
+            }
+            .flowOn(dispatcher)
+    }
+
+    override fun getPlannedWorkouts(): Flow<List<Workout>> {
+        val userId = authRepository.currentUser.id.ifBlank { return emptyFlow() }
+
+        return workoutRef(userId)
+            .where {
+                ("completed" equalTo false) and
+                        ("inProgress" equalTo false)
+            }
+            .snapshots
+            .map { snapshot ->
+                snapshot.documents.map { it.data<Workout>() }
+            }
+            .flowOn(dispatcher)
     }
 
     override suspend fun startNewWorkout(): Result<Unit> {
@@ -83,27 +115,18 @@ class FirestoreWorkoutRepository(
         }
     }
 
-    override suspend fun completeWorkout(workoutId: String) {
-        val userId = authRepository.currentUser.id.ifBlank { return}
-
-        withContext(dispatcher) {
-            println("DBG: completing workout $workoutId of user $userId")
-            workoutRef(userId).document(workoutId).update("completed" to true, "inProgress" to false)
-        }
-    }
-
     override suspend fun completeWorkout(workout: Workout) {
         val userId = authRepository.currentUser.id.ifBlank { return }
 
         withContext(dispatcher) {
             println("DBG: completing workout ${workout.id} of user $userId")
-
             val newWorkout = workout.copy(completed = true, inProgress = false)
             workoutRef(userId).document(workout.id).set(newWorkout)
         }
     }
 
     override suspend fun getWorkout(workoutId: String): Result<Workout> {
+        println("DBG: workout fetch started")
         val userId = authRepository.currentUser.id.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
 
         return withContext(dispatcher) {
@@ -113,6 +136,7 @@ class FirestoreWorkoutRepository(
 
     override suspend fun deleteWorkout(workoutId: String) {
         val userId = authRepository.currentUser.id.ifBlank { return }
+        println("DBG: deleting workout $workoutId of user $userId")
         withContext(dispatcher) { workoutRef(userId).document(workoutId).delete() }
     }
 
@@ -136,22 +160,11 @@ class FirestoreWorkoutRepository(
         exercise: Exercise,
     ) {
         val userId = authRepository.currentUser.id.ifBlank { return }
+        println("DBG: Adding new block to workout $workoutId with ${exercise.name}")
 
         withContext(dispatcher) {
-            val workout = getWorkout(userId, workoutId)
-
-            val block = Block(
-                workout.blocks.size,
-                exercise,
-                emptyList(),
-                null,
-            )
-
-            val newWorkout = workout.copy(blocks = workout.blocks + block)
-
-            println("DBG: Adding new block to workout $workoutId with set")
+            val newWorkout = getWorkout(userId, workoutId).addBlock(exercise)
             workoutRef(userId).document(workoutId).set(newWorkout)
-
         }
     }
 
@@ -159,16 +172,12 @@ class FirestoreWorkoutRepository(
         workoutId: String,
         blockIdx: Int,
     ) {
+        println("DBG removing block")
         val userId = authRepository.currentUser.id.ifBlank { return }
 
         withContext(dispatcher) {
-            val workout = getWorkout(userId, workoutId)
-            val newBlocks = workout.blocks.toMutableList()
-            newBlocks.removeAt(blockIdx)
-            newBlocks.forEachIndexed { idx, block ->
-                newBlocks[idx] = block.copy(idx = idx)
-            }
-            workoutRef(userId).document(workoutId).set(workout.copy(blocks = newBlocks))
+            val newWorkout = getWorkout(userId, workoutId).removeBlock(blockIdx)
+            workoutRef(userId).document(workoutId).set(newWorkout)
         }
     }
 
@@ -181,8 +190,7 @@ class FirestoreWorkoutRepository(
 
         withContext(dispatcher) {
             val workout = getWorkout(userId, workoutId)
-            val newBlock = workout.blocks[blockIdx].copy(restTimeSeconds = seconds)
-            val newWorkout = workout.mutateBlock(newBlock)
+            val newWorkout = workout.updateBlock(workout.blocks[blockIdx].copy(restTimeSeconds = seconds))
             workoutRef(userId).document(workoutId).set(newWorkout)
         }
     }
@@ -190,17 +198,13 @@ class FirestoreWorkoutRepository(
     override suspend fun addSeries(
         workoutId: String,
         blockIdx: Int,
-        set: Series,
     ) {
+        println("DBG: Adding series to block")
         val userId = authRepository.currentUser.id.ifBlank { return }
 
         withContext(dispatcher) {
             val workout = getWorkout(userId, workoutId)
-
-            val oldBlock = workout.blocks[blockIdx]
-            val emptySeries = Series(oldBlock.series.size, null, null, false)
-            val newWorkout = workout.mutateBlock(oldBlock.copy(series = oldBlock.series + emptySeries))
-
+            val newWorkout = workout.updateBlock(workout.blocks[blockIdx].addSeries())
             workoutRef(userId).document(workoutId).set(newWorkout)
         }
     }
@@ -210,12 +214,12 @@ class FirestoreWorkoutRepository(
         blockIdx: Int,
         set: Series,
     ) {
+        println("DBG: updating series of block $blockIdx to $set")
         val userId = authRepository.currentUser.id.ifBlank { return }
 
         withContext(dispatcher) {
             val workout = getWorkout(userId, workoutId)
-            val newBlock = workout.blocks[blockIdx].mutateSeries(set)
-            val newWorkout = workout.mutateBlock(newBlock)
+            val newWorkout = workout.updateBlock(workout.blocks[blockIdx].updateSeries(set))
             workoutRef(userId).document(workoutId).set(newWorkout)
         }
     }
@@ -225,62 +229,18 @@ class FirestoreWorkoutRepository(
         workoutId: String
     ) = workoutRef(userId).document(workoutId).get().data<Workout>()
 
-    private fun Workout.mutateBlock(block: Block): Workout {
-        val newBlocks = blocks.toMutableList()
-        newBlocks[block.idx] = block
-        return copy(blocks = newBlocks)
-    }
-
-    private fun Block.mutateSeries(set: Series) : Block {
-        val newSeries = series.toMutableList()
-        newSeries[set.idx] = set
-        return copy(series = newSeries)
-    }
-
     override suspend fun removeSeries(
         workoutId: String,
         blockIdx: Int,
         set: Series,
     ) {
+        println("DBG: removing series $set")
         val userId = authRepository.currentUser.id.ifBlank { return }
 
         withContext(dispatcher) {
             val workout = getWorkout(userId, workoutId)
-
-            val oldBlock = workout.blocks[blockIdx]
-            val newBlock = oldBlock.copy(series = oldBlock.series - set)
-            val newWorkout = workout.mutateBlock(newBlock)
-
+            val newWorkout = workout.updateBlock(workout.blocks[blockIdx].removeSeries(set))
             workoutRef(userId).document(workoutId).set(newWorkout)
         }
-    }
-
-    // if the device is offline and the user deletes the only completed workout, it will take longer to update for some reason
-    override fun getCompletedWorkouts(): Flow<List<Workout>> {
-        val userId = authRepository.currentUser.id.ifBlank { return emptyFlow() }
-
-        return workoutRef(userId)
-            .where {
-                        ("completed" equalTo true) and
-                        ("inProgress" equalTo false)
-            }
-            .snapshots
-            .map { snapshot ->
-                snapshot.documents.map { it.data<Workout>() }
-            }
-    }
-
-    override fun getPlannedWorkouts(): Flow<List<Workout>> {
-        val userId = authRepository.currentUser.id.ifBlank { return emptyFlow() }
-
-        return workoutRef(userId)
-            .where {
-                    ("completed" equalTo false) and
-                    ("inProgress" equalTo false)
-            }
-            .snapshots
-            .map { snapshot ->
-                snapshot.documents.map { it.data<Workout>() }
-            }
     }
 }
