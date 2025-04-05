@@ -27,21 +27,23 @@ data class Block(
         return copy(series = newSeries)
     }
 
-    fun progressWeight(increment: Double): Block {
+    fun progressWeight(): Block {
+        progressionSettings?.incrementWeightByKg ?: return this
         val newSeries = series.toMutableList()
         newSeries.forEachIndexed { idx, series ->
-            newSeries[idx] = series.copy(weight = (series.weight ?: 0.0) + increment, completed = false)
+            newSeries[idx] = series.copy(weight = (series.weight ?: 0.0) + progressionSettings.incrementWeightByKg, completed = false)
         }
-        val newProgression = progressionSettings?.copy(weightThreshold = progressionSettings.weightThreshold + increment)
+        val newProgression = progressionSettings.copy(weightThreshold = progressionSettings.weightThreshold + progressionSettings.incrementWeightByKg)
         return copy(series = newSeries, progressionSettings = newProgression)
     }
 
-    fun progressReps(increment: Int): Block {
+    fun progressReps(): Block {
+        progressionSettings?.incrementRepsBy ?: return this
         val newSeries = series.toMutableList()
         newSeries.forEachIndexed { idx, series ->
-            newSeries[idx] = series.copy(repetitions = (series.repetitions ?: 0) + increment, completed = false)
+            newSeries[idx] = series.copy(repetitions = (series.repetitions ?: 0) + progressionSettings.incrementRepsBy, completed = false)
         }
-        val newProgression = progressionSettings?.copy(repThreshold = progressionSettings.repThreshold + increment)
+        val newProgression = progressionSettings.copy(repThreshold = progressionSettings.repThreshold + progressionSettings.incrementRepsBy)
         return copy(series = newSeries, progressionSettings = newProgression)
     }
 }

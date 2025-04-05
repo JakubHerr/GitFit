@@ -11,7 +11,6 @@ import io.github.jakubherr.gitfit.domain.repository.PlanRepository
 import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.Plan
-import io.github.jakubherr.gitfit.domain.model.ProgressionType
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
 import kotlinx.coroutines.delay
@@ -108,7 +107,10 @@ class WorkoutViewModel(
             // if the device is offline, GitLive will suspend coroutine indefinitely until the record is synchronized
             // to check for success, it is necessary to observe completion indirectly through flow
             viewModelScope.launch { workoutRepository.completeWorkout(workout) }
-            viewModelScope.launch { handleProgression(workout) }
+            viewModelScope.launch {
+                handleProgression(workout)
+                progressionHandled = true
+            }
             viewModelScope.launch {
                 while (currentWorkout.value != null || !progressionHandled) delay(1000)
                 workoutSaved = true
@@ -116,65 +118,21 @@ class WorkoutViewModel(
         }
     }
 
-    // Some restrictions were made on editing workout records with progression to prevent user from shooting themselves in the foot
-    //  progression can not be changed mid-workout
-    //  user can not remove block with progression
-    //  user can add a new block without a progression -> OK
-    //  user can not change order of exercises
+
     private suspend fun handleProgression(workout: Workout) {
-        println("DBG: progressing workout: ${workout.id}")
         workout.let {
             // if not part of plan, exit
             val isFromPlan = workout.planId != null && workout.planWorkoutIdx != null
-            println("DBG: workout is from plan: $isFromPlan")
             if (!isFromPlan) return
 
             // fetch plan that workout record was based on and its workout plan
             val plan = planRepository.getCustomPlan(authRepository.currentUser.id, workout.planId!!) ?: return
-            var workoutPlanCopy = plan.workoutPlans.getOrNull(workout.planWorkoutIdx!!) ?: return
-
-            // filter out all blocks in workout record that have progression. if none are found, exit
-            val blocksWithProgression = workout.blocks.filter { it.progressionSettings != null }.ifEmpty { return }
-            println("DBG: workout has ${blocksWithProgression.size} blocks with progression")
-
-            // check every recorded block with progression for progress threshold criteria
-            blocksWithProgression.forEach { recordedBlock ->
-                val settings = recordedBlock.progressionSettings!!
-                val shouldProgress = recordedBlock.series.all { series ->
-                    series.completed && series.weight!! >= settings.weightThreshold && series.repetitions!! >= settings.repThreshold
-                }
-
-                // if criteria was met
-                if (shouldProgress) {
-                    println("DBG: block with valid progression detected")
-                    val planBlock = workoutPlanCopy.blocks[recordedBlock.idx]
-
-                    // increment all block weight/reps by increment
-                    // increment value in progression setting
-                    // save block to workout plan and then save it to plan
-                    when (settings.type) {
-                        ProgressionType.INCREASE_WEIGHT -> {
-                            println("DBG: progressing ${recordedBlock.exercise.name} by ${settings.weightThreshold}")
-
-                            workoutPlanCopy =
-                                workoutPlanCopy.updateBlock(planBlock.progressWeight(settings.incrementWeightByKg))
-                        }
-
-                        ProgressionType.INCREASE_REPS -> {
-                            println("DBG: progressing ${recordedBlock.exercise.name} by ${settings.incrementRepsBy}")
-
-                            workoutPlanCopy =
-                                workoutPlanCopy.updateBlock(planBlock.progressReps(settings.incrementRepsBy))
-                        }
-                    }
-                }
-            }
+            var workoutPlan = plan.workoutPlans.getOrNull(workout.planWorkoutIdx!!) ?: return
+            workoutPlan = workoutPlan.progressPlan(workout)
 
             // update plan in database
-            println("DBG: Saving updated workout plan")
             progressionHandled = true
-            planRepository.saveCustomPlan(authRepository.currentUser.id, plan.updateWorkoutPlan(workoutPlanCopy))
-            println("DBG: plan saved")
+            planRepository.saveCustomPlan(authRepository.currentUser.id, plan.updateWorkoutPlan(workoutPlan))
         }
     }
 
