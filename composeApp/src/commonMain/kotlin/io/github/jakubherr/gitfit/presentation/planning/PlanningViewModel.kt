@@ -94,7 +94,7 @@ sealed interface PlanAction {
     class DeletePlan(val planId: String) : PlanAction
 
     class AddWorkout(val workout: WorkoutPlan) : PlanAction
-    class RenameWorkout(val workout: WorkoutPlan, val name: String) : PlanAction // TODO will this break validation?
+    class RenameWorkout(val workout: WorkoutPlan, val name: String) : PlanAction
     class ValidateWorkout(val workout: WorkoutPlan) : PlanAction
     class DeleteWorkout(val workout: WorkoutPlan) : PlanAction
 
