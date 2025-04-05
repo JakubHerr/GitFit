@@ -23,18 +23,6 @@ kotlin {
 
     jvm("desktop")
 
-    // this is necessary to force GitLive to use commonMain instead of JVM dependency in the common module
-//    listOf(
-//        iosX64(),
-//        iosArm64(),
-//        iosSimulatorArm64(),
-//    ).forEach { iosTarget ->
-//        iosTarget.binaries.framework {
-//            baseName = "ComposeApp"
-//            isStatic = true
-//        }
-//    }
-
     sourceSets {
         val desktopMain by getting
 
@@ -77,6 +65,10 @@ kotlin {
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+        }
+
+        commonTest.dependencies { 
+            implementation(libs.kotlin.test)
         }
     }
 }

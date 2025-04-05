@@ -19,17 +19,17 @@ data class Workout(
     val planId: String? = null,
     val planWorkoutIdx: Int? = null,
 ) {
-    // aggregates all completed series of an exercise
+    // aggregates all completed, valid series of an exercise
     // if there are no valid series of exercise in workout, return null
     private fun getExerciseSeries(exerciseId: String): List<Series>? = blocks
         .filter { it.exercise.id == exerciseId }
         .flatMap { it.series }
-        .filter { it.completed }
+        .filter { it.completed && it.isNotNull }
         .ifEmpty { null }
 
     fun getExerciseHeaviestWeight(exerciseId: String): Double? {
         val series = getExerciseSeries(exerciseId) ?: return null
-        val heaviestSet = series.maxByOrNull { if (it.repetitions == 0L) return 0.0 else it.weight ?: 0.0 }
+        val heaviestSet = series.maxByOrNull { if (it.repetitions == 0L) 0.0 else it.weight ?: 0.0 }
         return heaviestSet?.weight
     }
 
@@ -68,11 +68,10 @@ data class Workout(
         return copy(blocks = newBlocks)
     }
 
-
     val error: Error? get() = when {
         blocks.isEmpty() -> Error.NoExerciseInWorkout
         blocks.any { block -> block.series.isEmpty() } -> Error.NoSetInExercise
-        blocks.any { block -> block.series.any { series -> series.weight == null || series.repetitions == null } } -> Error.EmptySetInExercise
+        blocks.any { block -> block.series.any { series -> series.weight == null || series.repetitions == null } } -> Error.InvalidSetInExercise
         else -> null
     }
 
@@ -81,7 +80,7 @@ data class Workout(
     sealed class Error(val message: String) {
         object NoExerciseInWorkout: Error("Workout has no exercises")
         object NoSetInExercise: Error("Some exercise has no sets")
-        object EmptySetInExercise: Error("Some set has invalid values")
+        object InvalidSetInExercise: Error("Some set has invalid values")
         object BlankName: Error("Workout plan has no name")
     }
 }

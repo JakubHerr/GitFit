@@ -13,7 +13,7 @@ data class WorkoutPlan(
         name.isBlank() -> Error.BlankName
         blocks.isEmpty() -> Error.NoExerciseInWorkout
         blocks.any { block -> block.series.isEmpty() } -> Error.NoSetInExercise
-        blocks.any { block -> block.series.any { series -> series.weight == null || series.repetitions == null } } -> Error.EmptySetInExercise
+        blocks.any { block -> block.series.any { series -> series.weight == null || series.repetitions == null } } -> Error.InvalidSetInExercise
         else -> null
     }
 
