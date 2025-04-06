@@ -33,7 +33,14 @@ data class Plan(
         return copy(workoutPlans = workouts)
     }
 
-    fun removeWorkoutPlan(workoutPlan: WorkoutPlan): Plan = copy(workoutPlans = workoutPlans - workoutPlan)
+    fun removeWorkoutPlan(workoutPlan: WorkoutPlan): Plan {
+        val workouts = workoutPlans.toMutableList()
+        workouts.remove(workoutPlan)
+        workouts.forEachIndexed { index, oldWorkoutPlan ->
+            workouts[index] = oldWorkoutPlan.copy(idx = index)
+        }
+        return copy(workoutPlans = workouts)
+    }
 
     fun addExercise(workoutPlanIdx: Int, exercise: Exercise): Plan {
         val workout = workoutPlans[workoutPlanIdx]

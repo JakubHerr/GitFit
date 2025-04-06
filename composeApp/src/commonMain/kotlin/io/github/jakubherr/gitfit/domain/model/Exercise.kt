@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class Exercise(
     val id: String,
     val name: String,
-    val description: String?,
+    val description: String? = null,
     val isCustom: Boolean = false,
     val primaryMuscle: MuscleGroup,
     val secondaryMuscle: List<MuscleGroup> = emptyList(),
