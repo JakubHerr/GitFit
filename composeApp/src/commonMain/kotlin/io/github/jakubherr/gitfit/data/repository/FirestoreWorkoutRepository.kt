@@ -28,8 +28,9 @@ class FirestoreWorkoutRepository(
     private val dispatcher = Dispatchers.IO
     private fun workoutRef(userId: String) = firestore.collection("USERS").document(userId).collection("WORKOUTS")
 
-    override fun observeCurrentWorkoutOrNull(): Flow<Workout?> {
-        val userId = authRepository.currentUser.id.ifBlank { return emptyFlow() }
+    override fun observeCurrentWorkoutOrNull(userId: String): Flow<Workout?> {
+        println("DBG: observe current workout flow function triggered for userId $userId")
+        userId.ifBlank { return emptyFlow() }
 
         return workoutRef(userId)
             .where {
@@ -42,8 +43,8 @@ class FirestoreWorkoutRepository(
     }
 
     // if the device is offline and the user deletes the only completed workout, it will take longer to update for some reason
-    override fun getCompletedWorkouts(): Flow<List<Workout>> {
-        val userId = authRepository.currentUser.id.ifBlank { return emptyFlow() }
+    override fun getCompletedWorkouts(userId: String): Flow<List<Workout>> {
+        userId.ifBlank { return emptyFlow() }
 
         return workoutRef(userId)
             .where {
@@ -56,8 +57,8 @@ class FirestoreWorkoutRepository(
             .flowOn(dispatcher)
     }
 
-    override fun getPlannedWorkouts(): Flow<List<Workout>> {
-        val userId = authRepository.currentUser.id.ifBlank { return emptyFlow() }
+    override fun getPlannedWorkouts(userId: String): Flow<List<Workout>> {
+        userId.ifBlank { return emptyFlow() }
 
         return workoutRef(userId)
             .where {

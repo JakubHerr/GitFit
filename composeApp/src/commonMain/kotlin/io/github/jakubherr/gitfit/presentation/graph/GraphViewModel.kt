@@ -5,37 +5,41 @@ import androidx.lifecycle.viewModelScope
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.model.Workout
+import io.github.jakubherr.gitfit.domain.repository.AuthRepository
 import io.github.koalaplot.core.xygraph.DefaultPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.take
 
 class GraphViewModel(
     private val workoutRepository: WorkoutRepository,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
     var selectedMetric = MutableStateFlow(ExerciseMetric.HEAVIEST_WEIGHT)
         private set
 
     private var selectedExercise = MutableStateFlow<Exercise?>(null)
 
+    private val currentUser = authRepository.currentUserFlow
+
     // TODO make state flow that will change the number of selected records
-    private val lastTen =
-        workoutRepository
-            .getCompletedWorkouts()
-            .map { wo ->
-                wo.filter { it.hasExercise(selectedExercise.value?.id) }.sortedBy { it.date }
-            }
-            .take(10)
-            .stateIn(
-                scope = viewModelScope,
-                initialValue = emptyList(),
-                started = SharingStarted.WhileSubscribed(5_000L),
-            )
+    private val lastTen = currentUser.flatMapLatest { user ->
+        workoutRepository.getCompletedWorkouts(user?.id ?: "")
+    }
+    .map { wo ->
+        wo.filter { it.hasExercise(selectedExercise.value?.id) }.sortedBy { it.date }
+    }
+    .take(10)
+    .stateIn(
+        scope = viewModelScope,
+        initialValue = emptyList(),
+        started = SharingStarted.WhileSubscribed(5_000L),
+    )
 
     val data: Flow<List<DefaultPoint<String, Int>>> =
         combine(lastTen, selectedMetric, selectedExercise) { workouts, metric, exercise ->

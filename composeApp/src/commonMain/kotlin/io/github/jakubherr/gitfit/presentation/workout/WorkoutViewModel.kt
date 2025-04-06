@@ -13,8 +13,10 @@ import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -25,26 +27,34 @@ class WorkoutViewModel(
 ) : ViewModel() {
     // TODO: how to detect a workout modification? If device is offline, the launched coroutine will not finish
     //  maybe make all repository actions return result?
-    var currentWorkout =
-        workoutRepository.observeCurrentWorkoutOrNull().stateIn(
-            scope = viewModelScope,
-            initialValue = null,
-            started = SharingStarted.WhileSubscribed(5_000L),
-        )
+    private val currentUser = authRepository.currentUserFlow
 
-    val plannedWorkouts =
-        workoutRepository.getPlannedWorkouts().stateIn(
-            scope = viewModelScope,
-            initialValue = emptyList(),
-            started = SharingStarted.WhileSubscribed(5_000L),
-        )
+    @OptIn(ExperimentalCoroutinesApi::class)
+    var currentWorkout = currentUser.flatMapLatest { user ->
+        workoutRepository.observeCurrentWorkoutOrNull(user?.id ?: "")
+    }.stateIn(
+        scope = viewModelScope,
+        initialValue = null,
+        started = SharingStarted.WhileSubscribed(5_000L),
+    )
 
-    val completedWorkouts =
-        workoutRepository.getCompletedWorkouts().stateIn(
-            scope = viewModelScope,
-            initialValue = emptyList(),
-            started = SharingStarted.WhileSubscribed(5_000L),
-        )
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val plannedWorkouts = currentUser.flatMapLatest { user ->
+        workoutRepository.getPlannedWorkouts(user?.id ?: "")
+    }.stateIn(
+        scope = viewModelScope,
+        initialValue = emptyList(),
+        started = SharingStarted.WhileSubscribed(5_000L),
+    )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val completedWorkouts = currentUser.flatMapLatest { user ->
+        workoutRepository.getCompletedWorkouts(user?.id ?: "")
+    }.stateIn(
+        scope = viewModelScope,
+        initialValue = emptyList(),
+        started = SharingStarted.WhileSubscribed(5_000L),
+    )
 
     var selectedWorkout by mutableStateOf<Workout?>(null)
 

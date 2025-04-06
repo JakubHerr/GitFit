@@ -7,11 +7,11 @@ import io.github.jakubherr.gitfit.domain.model.Workout
 import kotlinx.coroutines.flow.Flow
 
 interface WorkoutRepository {
-    fun observeCurrentWorkoutOrNull(): Flow<Workout?>
+    fun observeCurrentWorkoutOrNull(userId: String): Flow<Workout?>
 
-    fun getCompletedWorkouts(): Flow<List<Workout>>
+    fun getCompletedWorkouts(userId: String): Flow<List<Workout>>
 
-    fun getPlannedWorkouts(): Flow<List<Workout>>
+    fun getPlannedWorkouts(userId: String): Flow<List<Workout>>
 
     suspend fun startNewWorkout(): Result<Unit>
 
