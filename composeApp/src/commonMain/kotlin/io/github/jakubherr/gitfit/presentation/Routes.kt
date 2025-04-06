@@ -1,6 +1,5 @@
 package io.github.jakubherr.gitfit.presentation
 
-import io.github.jakubherr.gitfit.domain.model.Workout
 import kotlinx.serialization.Serializable
 
 @Serializable
