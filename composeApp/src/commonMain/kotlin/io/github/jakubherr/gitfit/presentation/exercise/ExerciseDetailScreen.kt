@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.presentation.graph.BasicLineGraph
 import io.github.jakubherr.gitfit.presentation.graph.ExerciseMetric
@@ -42,6 +43,7 @@ fun ExerciseDetailScreenRoot(
     onBack: () -> Unit = {},
 ) {
     val data by graphViewModel.data.collectAsStateWithLifecycle(emptyList())
+    val selectedMetric by graphViewModel.selectedMetric.collectAsStateWithLifecycle()
     val exercise = exerciseViewModel.selectedExercise
     var showDialog by remember { mutableStateOf(false) }
 
@@ -64,7 +66,7 @@ fun ExerciseDetailScreenRoot(
         ExerciseDetailScreen(
             exercise = exercise,
             graphData = data,
-            selectedMetric = graphViewModel.selectedMetric.value,
+            selectedMetric = selectedMetric,
             onGraphAction = { graphViewModel.onAction(it) },
             onDeleteExercise = { showDialog = true }
         )

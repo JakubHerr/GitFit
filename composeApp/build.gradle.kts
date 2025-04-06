@@ -81,7 +81,7 @@ android {
         applicationId = "io.github.jakubherr.gitfit"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 3 // this version code should be incremented for every single AAB that is uploaded to Google Play console
+        versionCode = 4 // this version code should be incremented for every single AAB that is uploaded to Google Play console
         versionName = "0.9.0"
     }
     packaging {
