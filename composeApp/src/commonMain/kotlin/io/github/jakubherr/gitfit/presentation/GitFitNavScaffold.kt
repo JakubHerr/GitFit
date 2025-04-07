@@ -5,13 +5,8 @@ import androidx.compose.material.icons.automirrored.filled.ManageSearch
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.ManageSearch
 import androidx.compose.material.icons.filled.SettingsAccessibility
-import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -43,12 +38,11 @@ enum class TopLevelDestination(
 }
 
 @Composable
-fun GitFitScaffold(
+fun GitFitNavScaffold(
     modifier: Modifier = Modifier,
-    showDestinations: Boolean = true,
     currentDestination: TopLevelDestination?,
+    showDestinations: Boolean = currentDestination != null,
     onDestinationClicked: (TopLevelDestination) -> Unit = {},
-    snackbarHostState: SnackbarHostState = SnackbarHostState(),
     content: @Composable () -> Unit,
 ) {
     val layoutType =
@@ -60,34 +54,24 @@ fun GitFitScaffold(
             NavigationSuiteType.None
         }
 
-    if (currentDestination != null) {
-        NavigationSuiteScaffold(
-            navigationSuiteItems = {
-                TopLevelDestination.entries.forEach {
-                    item(
-                        icon = {
-                            Icon(
-                                it.icon,
-                                null,
-                            )
-                        },
-                        label = { Text(stringResource(it.label)) },
-                        selected = it == currentDestination,
-                        onClick = { onDestinationClicked(it) },
-                    )
-                }
-            },
-            layoutType = layoutType,
-            modifier = modifier,
-            content = {
-                Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) {
-                    content()
-                }
-            },
-        )
-    } else {
-        Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) {
-            content()
-        }
-    }
+    NavigationSuiteScaffold(
+        navigationSuiteItems = {
+            TopLevelDestination.entries.forEach {
+                item(
+                    icon = {
+                        Icon(
+                            it.icon,
+                            null,
+                        )
+                    },
+                    label = { Text(stringResource(it.label)) },
+                    selected = it == currentDestination,
+                    onClick = { onDestinationClicked(it) },
+                )
+            }
+        },
+        layoutType = layoutType,
+        modifier = modifier,
+        content = content,
+    )
 }
