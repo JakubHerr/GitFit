@@ -57,7 +57,10 @@ private fun NavHostController.navigateToTopLevelDestination(destination: TopLeve
             TopLevelDestination.PROFILE -> SettingsRoute
         }
     navigate(route) {
-        // popUpTo(graph.startDestinationId) TODO fix
+        popUpTo(graph.startDestinationId) {
+            saveState = true
+        }
         launchSingleTop = true
+        restoreState = true
     }
 }
