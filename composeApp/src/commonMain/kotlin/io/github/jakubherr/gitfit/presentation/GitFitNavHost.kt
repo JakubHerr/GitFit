@@ -8,7 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
+import io.github.jakubherr.gitfit.presentation.auth.VerifyEmailScreenRoot
 import io.github.jakubherr.gitfit.presentation.auth.authGraph
 import io.github.jakubherr.gitfit.presentation.workout.loggedInGraph
 import org.koin.compose.viewmodel.koinViewModel
@@ -37,5 +39,6 @@ fun GitFitNavHost(
     ) {
         authGraph(navController)
         loggedInGraph(navController, snackbarHostState)
+        composable<VerifyEmailRoute> { VerifyEmailScreenRoot { navController.navigate(DashboardRoute) } }
     }
 }
