@@ -54,24 +54,28 @@ fun GitFitNavScaffold(
             NavigationSuiteType.None
         }
 
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
-            TopLevelDestination.entries.forEach {
-                item(
-                    icon = {
-                        Icon(
-                            it.icon,
-                            null,
-                        )
-                    },
-                    label = { Text(stringResource(it.label)) },
-                    selected = it == currentDestination,
-                    onClick = { onDestinationClicked(it) },
-                )
-            }
-        },
-        layoutType = layoutType,
-        modifier = modifier,
-        content = content,
-    )
+    if (currentDestination != null) {
+        NavigationSuiteScaffold(
+            navigationSuiteItems = {
+                TopLevelDestination.entries.forEach {
+                    item(
+                        icon = {
+                            Icon(
+                                it.icon,
+                                null,
+                            )
+                        },
+                        label = { Text(stringResource(it.label)) },
+                        selected = it == currentDestination,
+                        onClick = { onDestinationClicked(it) },
+                    )
+                }
+            },
+            layoutType = layoutType,
+            modifier = modifier,
+            content = content,
+        )
+    } else {
+        content()
+    }
 }

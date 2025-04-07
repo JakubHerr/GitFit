@@ -1,8 +1,5 @@
 package io.github.jakubherr.gitfit.presentation
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -39,9 +36,11 @@ fun App() {
                 Scaffold(
                     snackbarHost = { SnackbarHost(snackbarHostState) }
                 ) { padding ->
-                    Column(modifier = Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding)) {
-                        GitFitNavHost(navController, snackbarHostState = snackbarHostState)
-                    }
+                    GitFitNavHost(
+                        navController,
+                        modifier = Modifier.padding(padding),
+                        snackbarHostState = snackbarHostState
+                    )
                 }
             }
         }
