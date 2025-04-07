@@ -19,35 +19,39 @@ import io.github.jakubherr.gitfit.presentation.PlanOverviewRoute
 import io.github.jakubherr.gitfit.presentation.PlanningWorkoutRoute
 import io.github.jakubherr.gitfit.presentation.WorkoutInProgressRoute
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseListScreenRoot
+import io.github.jakubherr.gitfit.presentation.exercise.ExerciseViewModel
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
+import io.github.jakubherr.gitfit.presentation.workout.sharedViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
 
 fun NavGraphBuilder.planningGraph(
     navController: NavHostController,
-    planViewModel: PlanningViewModel,
-    workoutViewModel: WorkoutViewModel,
     snackbarHostState: SnackbarHostState,
 ) {
-    fun handleError(error: Plan.Error?, scope: CoroutineScope) {
+    fun handleError(error: Plan.Error?, scope: CoroutineScope, vm: PlanningViewModel) {
         if (error == null) navController.popBackStack()
         else scope.launch {
             snackbarHostState.showSnackbar(error.message)
-            planViewModel.onAction(PlanAction.ErrorHandled)
+            vm.onAction(PlanAction.ErrorHandled)
         }
     }
 
     composable<PlanOverviewRoute> {
+        val vm = navController.sharedViewModel<PlanningViewModel>()
+
         PlanListScreenRoot(
-            vm = planViewModel,
+            vm = vm,
             onCreateNewPlan = { navController.navigate(PlanCreationRoute) },
             onPlanSelected = { navController.navigate(PlanDetailRoute(it.id)) }
         )
     }
 
     composable<PlanDetailRoute> { backstackEntry ->
+        val planViewModel = navController.sharedViewModel<PlanningViewModel>()
+        val workoutViewModel = navController.sharedViewModel<WorkoutViewModel>()
+
         val planId = backstackEntry.toRoute<PlanDetailRoute>().planId
         val userPlans = planViewModel.userPlans.collectAsStateWithLifecycle(emptyList())
         val scope = rememberCoroutineScope()
@@ -83,9 +87,11 @@ fun NavGraphBuilder.planningGraph(
 
     composable<AddExerciseToPlanRoute> { backstackEntry ->
         val idx = backstackEntry.toRoute<AddExerciseToPlanRoute>().workoutIdx
+        val planViewModel = navController.sharedViewModel<PlanningViewModel>()
+        val exerciseViewModel = navController.sharedViewModel<ExerciseViewModel>()
 
         ExerciseListScreenRoot(
-            vm = koinViewModel(),
+            vm = exerciseViewModel, // TODO check
             onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
             onExerciseClick = { exercise ->
                 planViewModel.onAction(PlanAction.AddExercise(idx, exercise))
@@ -95,15 +101,16 @@ fun NavGraphBuilder.planningGraph(
     }
 
     composable<PlanCreationRoute> {
+        val vm = navController.sharedViewModel<PlanningViewModel>()
         val scope = rememberCoroutineScope()
 
         PlanCreationScreen(
-            planViewModel.plan,
+            vm.plan,
             onAction = { action ->
-                planViewModel.onAction(action)
+                vm.onAction(action)
                 when (action) {
                     PlanAction.DiscardPlan -> navController.popBackStack()
-                    PlanAction.SavePlan -> handleError(planViewModel.error, scope)
+                    PlanAction.SavePlan -> handleError(vm.error, scope, vm)
                     else -> {}
                 }
             },
@@ -115,22 +122,24 @@ fun NavGraphBuilder.planningGraph(
 
     composable<PlanningWorkoutRoute> { backstackEntry ->
         val idx = backstackEntry.toRoute<PlanningWorkoutRoute>().workoutIdx
+        val vm = navController.sharedViewModel<PlanningViewModel>()
         val scope = rememberCoroutineScope()
 
         PlanWorkoutCreationScreen(
-            workoutPlan = planViewModel.plan.workoutPlans[idx],
-            onAction = { planViewModel.onAction(it) },
+            workoutPlan = vm.plan.workoutPlans[idx],
+            onAction = { vm.onAction(it) },
             onAddExerciseClick = { workoutIdx ->
                 navController.navigate(AddExerciseToPlanRoute(workoutIdx))
             },
-            onSave = { handleError(planViewModel.error, scope) },
+            onSave = { handleError(vm.error, scope, vm) },
             onEditProgression = { block -> navController.navigate(EditProgressionRoute(idx, block.idx)) }
         )
     }
 
     composable<EditProgressionRoute> { backstackEntry ->
         val entry = backstackEntry.toRoute<EditProgressionRoute>()
-        val workout = planViewModel.plan.workoutPlans.getOrNull(entry.workoutIdx)
+        val vm = navController.sharedViewModel<PlanningViewModel>()
+        val workout = vm.plan.workoutPlans.getOrNull(entry.workoutIdx)
         val block = workout?.blocks?.getOrNull(entry.blockIdx)
 
         if (block == null) {
@@ -140,11 +149,11 @@ fun NavGraphBuilder.planningGraph(
                 block,
                 onCancel = { navController.popBackStack() },
                 onDelete = {
-                    planViewModel.onAction(PlanAction.DeleteProgression(workout, block))
+                    vm.onAction(PlanAction.DeleteProgression(workout, block))
                     navController.popBackStack()
                 },
                 onSave = {
-                    planViewModel.onAction(PlanAction.SaveProgression(workout, block, it))
+                    vm.onAction(PlanAction.SaveProgression(workout, block, it))
                     navController.popBackStack()
                 }
             )

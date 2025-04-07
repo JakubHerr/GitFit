@@ -5,6 +5,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @Keep
+object AuthGraphRoute
+
+@Serializable
+@Keep
+object LoggedInRoute
+
+@Serializable
+@Keep
 object LoginRoute
 
 @Serializable

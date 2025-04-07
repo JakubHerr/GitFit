@@ -9,8 +9,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import io.github.jakubherr.gitfit.presentation.MeasurementAddEditRoute
 import io.github.jakubherr.gitfit.presentation.MeasurementRoute
+import io.github.jakubherr.gitfit.presentation.workout.sharedViewModel
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
 
 
 fun NavGraphBuilder.measurementGraph(
@@ -18,13 +18,16 @@ fun NavGraphBuilder.measurementGraph(
     snackbarHostState: SnackbarHostState,
 ) {
     composable<MeasurementRoute> {
+        val vm = navController.sharedViewModel<MeasurementViewModel>()
+
         MeasurementScreenRoot(
+            vm = vm,
             onRequestAddEditMeasurement = { navController.navigate(MeasurementAddEditRoute) }
         )
     }
 
     composable<MeasurementAddEditRoute> {
-        val vm: MeasurementViewModel = koinViewModel()
+        val vm = navController.sharedViewModel<MeasurementViewModel>()
         val today by vm.todayMeasurement.collectAsStateWithLifecycle()
         val scope = rememberCoroutineScope()
 

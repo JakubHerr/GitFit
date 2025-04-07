@@ -3,6 +3,8 @@ package io.github.jakubherr.gitfit.presentation.auth
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
+import io.github.jakubherr.gitfit.presentation.AuthGraphRoute
 import io.github.jakubherr.gitfit.presentation.DashboardRoute
 import io.github.jakubherr.gitfit.presentation.ResetPasswordRoute
 import io.github.jakubherr.gitfit.presentation.LoginRoute
@@ -13,17 +15,21 @@ import io.github.jakubherr.gitfit.presentation.VerifyEmailRoute
 fun NavGraphBuilder.authGraph(
     navController: NavHostController
 ) {
-    composable<RegisterRoute> { /* TODO */ }
+    navigation<AuthGraphRoute>(
+        startDestination = LoginRoute
+    ) {
+        composable<RegisterRoute> { /* TODO */ }
 
-    composable<LoginRoute> {
-        LoginScreenRoot(
-            onForgotPassword = { navController.navigate(ResetPasswordRoute) }
-        )
+        composable<LoginRoute> {
+            LoginScreenRoot(
+                onForgotPassword = { navController.navigate(ResetPasswordRoute) }
+            )
+        }
+
+        composable<VerifyEmailRoute> { VerifyEmailScreenRoot { navController.navigate(DashboardRoute) } }
+
+        composable<ResetPasswordRoute> { ResetPasswordScreenRoot() }
+
+        composable<OnboardingRoute> { /* TODO */ }
     }
-
-    composable<VerifyEmailRoute> { VerifyEmailScreenRoot { navController.navigate(DashboardRoute) } }
-
-    composable<ResetPasswordRoute> { ResetPasswordScreenRoot() }
-
-    composable<OnboardingRoute> { /* TODO */ }
 }

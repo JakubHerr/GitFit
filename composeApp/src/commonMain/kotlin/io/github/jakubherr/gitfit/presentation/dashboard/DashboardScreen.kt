@@ -1,6 +1,5 @@
 package io.github.jakubherr.gitfit.presentation.dashboard
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,7 +11,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,11 +26,10 @@ import io.github.jakubherr.gitfit.presentation.shared.WorkoutListItem
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun DashboardScreenRoot(
-    vm: WorkoutViewModel = koinViewModel(),
+    vm: WorkoutViewModel,
     modifier: Modifier = Modifier,
     onAction: (DashboardAction) -> Unit,
 ) {

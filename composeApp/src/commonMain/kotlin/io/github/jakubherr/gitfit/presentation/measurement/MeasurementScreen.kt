@@ -54,7 +54,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 import kotlin.enums.EnumEntries
 
 enum class MeasurementType(
@@ -88,7 +87,7 @@ enum class MeasurementType(
 // use case: add, edit and review body measurements over time
 @Composable
 fun MeasurementScreenRoot(
-    vm: MeasurementViewModel = koinViewModel(),
+    vm: MeasurementViewModel,
     modifier: Modifier = Modifier,
     onRequestAddEditMeasurement: () -> Unit = {},
 ) {

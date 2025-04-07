@@ -19,12 +19,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.presentation.shared.ExerciseNames
-import org.koin.compose.viewmodel.koinViewModel
 
 // use case: plan workouts to be performed in the future (weeks, months)
 @Composable
 fun PlanListScreenRoot(
-    vm: PlanningViewModel = koinViewModel(),
+    vm: PlanningViewModel,
     modifier: Modifier = Modifier,
     onCreateNewPlan: () -> Unit = {},
     onPlanSelected: (Plan) -> Unit = {},

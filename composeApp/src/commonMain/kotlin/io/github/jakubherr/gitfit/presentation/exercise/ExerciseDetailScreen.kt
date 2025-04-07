@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.presentation.graph.BasicLineGraph
 import io.github.jakubherr.gitfit.presentation.graph.ExerciseMetric
@@ -33,12 +32,11 @@ import io.github.jakubherr.gitfit.presentation.graph.GraphViewModel
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import io.github.jakubherr.gitfit.presentation.shared.SingleChoiceChipSelection
 import io.github.koalaplot.core.xygraph.DefaultPoint
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ExerciseDetailScreenRoot(
     modifier: Modifier = Modifier,
-    graphViewModel: GraphViewModel = koinViewModel(),
+    graphViewModel: GraphViewModel,
     exerciseViewModel: ExerciseViewModel,
     onBack: () -> Unit = {},
 ) {

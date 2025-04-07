@@ -34,7 +34,6 @@ import gitfit.composeapp.generated.resources.error_no_exercise_found
 import gitfit.composeapp.generated.resources.search_exercise
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
 // Use case: show a list of existing exercises
 // the purpose is to either browse and show detail or add exercise to workout (real time or planned)

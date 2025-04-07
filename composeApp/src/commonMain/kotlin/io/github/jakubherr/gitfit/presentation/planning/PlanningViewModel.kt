@@ -23,7 +23,6 @@ class PlanningViewModel(
     var plan: Plan by mutableStateOf(Plan.Empty)
     var error: Plan.Error? by mutableStateOf(null)
 
-    // TODO
     val userPlans get() =
         if (authRepository.currentUser.loggedIn) planRepository.getCustomPlans(authRepository.currentUser.id)
         else emptyFlow()

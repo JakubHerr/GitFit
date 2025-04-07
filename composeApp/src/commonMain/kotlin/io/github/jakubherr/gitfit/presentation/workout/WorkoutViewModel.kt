@@ -29,6 +29,15 @@ class WorkoutViewModel(
     //  maybe make all repository actions return result?
     private val currentUser = authRepository.currentUserFlow
 
+    init {
+        println("DBG: WorkoutViewModel initiated")
+    }
+
+    override fun onCleared() {
+        println("DBG: WorkoutViewModel cleared")
+        super.onCleared()
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     var currentWorkout = currentUser.flatMapLatest { user ->
         workoutRepository.observeCurrentWorkoutOrNull(user?.id ?: "")
