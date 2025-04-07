@@ -9,6 +9,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.error_block_not_found
+import gitfit.composeapp.generated.resources.error_block_with_progression
+import gitfit.composeapp.generated.resources.error_workout_in_progress
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.presentation.AddExerciseToPlanRoute
 import io.github.jakubherr.gitfit.presentation.CreateExerciseRoute
@@ -25,6 +29,8 @@ import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
 import io.github.jakubherr.gitfit.presentation.workout.sharedViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.stringResource
 
 fun NavGraphBuilder.planningGraph(
     navController: NavHostController,
@@ -71,7 +77,7 @@ fun NavGraphBuilder.planningGraph(
                         navController.navigate(WorkoutInProgressRoute)
                     } else {
                         scope.launch {
-                            snackbarHostState.showSnackbar("A different workout is already in progress!")
+                            snackbarHostState.showSnackbar(getString(Res.string.error_workout_in_progress))
                         }
                     }
 
@@ -143,7 +149,7 @@ fun NavGraphBuilder.planningGraph(
         val block = workout?.blocks?.getOrNull(entry.blockIdx)
 
         if (block == null) {
-            Text("Error: block not found")
+            Text(stringResource(Res.string.error_block_not_found))
         } else {
             EditProgressionScreenRoot(
                 block,

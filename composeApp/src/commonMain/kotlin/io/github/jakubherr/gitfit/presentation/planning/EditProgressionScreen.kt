@@ -23,6 +23,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.cancel
+import gitfit.composeapp.generated.resources.delete
+import gitfit.composeapp.generated.resources.edit_progression
+import gitfit.composeapp.generated.resources.minimum_repetitions
+import gitfit.composeapp.generated.resources.minimum_weight
+import gitfit.composeapp.generated.resources.progresison_type
+import gitfit.composeapp.generated.resources.repetition_increase
+import gitfit.composeapp.generated.resources.save
+import gitfit.composeapp.generated.resources.starting_values
+import gitfit.composeapp.generated.resources.weight_increase
 import io.github.jakubherr.gitfit.domain.isPositiveDouble
 import io.github.jakubherr.gitfit.domain.isPositiveInt
 import io.github.jakubherr.gitfit.domain.model.Block
@@ -32,6 +43,7 @@ import io.github.jakubherr.gitfit.domain.model.ProgressionType
 import io.github.jakubherr.gitfit.presentation.shared.DoubleInputField
 import io.github.jakubherr.gitfit.presentation.shared.SingleChoiceChipSelection
 import io.github.jakubherr.gitfit.presentation.shared.toPrettyString
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun EditProgressionScreenRoot(
@@ -53,13 +65,13 @@ fun EditProgressionScreenRoot(
 
     Column(modifier.fillMaxSize().padding(16.dp)) {
         Column(Modifier.weight(1.0f)) {
-            Text("Edit progression for: ${block.exercise.name}")
-            Text("Starting values:")
+            Text("${stringResource(Res.string.edit_progression)} ${block.exercise.name}")
+            Text(stringResource(Res.string.starting_values))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Minimum weight (kg)")
+                Text(stringResource(Res.string.minimum_weight))
                 DoubleInputField(
                     minimumWeight,
                     onValueChange = { minimumWeight = it }
@@ -67,11 +79,11 @@ fun EditProgressionScreenRoot(
             }
 
             Row {
-                Text("Minimum repetitions")
+                Text(stringResource(Res.string.minimum_repetitions))
                 MinimumRepSelector(minimumReps) { minimumReps = it }
             }
 
-            Text("Progression type: ")
+            Text(stringResource(Res.string.progresison_type))
             SingleChoiceChipSelection(ProgressionType.entries, selectedProgressionType) {
                 selectedProgressionType = it
             }
@@ -80,7 +92,7 @@ fun EditProgressionScreenRoot(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Weight increase: ")
+                    Text(stringResource(Res.string.weight_increase))
                     DoubleInputField(
                         weightIncrease,
                         isError = !weightIncrease.isPositiveDouble(),
@@ -93,7 +105,7 @@ fun EditProgressionScreenRoot(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Repetition increase: ")
+                    Text(stringResource(Res.string.repetition_increase))
                     DoubleInputField(
                         repIncrease,
                         isError = !repIncrease.isPositiveInt(),
@@ -127,15 +139,15 @@ fun EditProgressionScreenRoot(
                     onSave(settings)
                 }
             ) {
-                Text("Save")
+                Text(stringResource(Res.string.save))
             }
             Button(onCancel) {
-                Text("Cancel")
+                Text(stringResource(Res.string.cancel))
             }
 
             if (block.progressionSettings != null) {
                 Button(onDelete) {
-                    Text("Delete")
+                    Text(stringResource(Res.string.delete))
                 }
             }
         }
@@ -150,6 +162,7 @@ fun ProgressionHint(
     repIncrease: String,
     minimumReps: Int
 ) {
+    // TODO translate
     if (validateInputs(selectedProgressionType, minimumWeight, weightIncrease, repIncrease)) {
         val text =
             "Progression will start when you reach $minimumReps repetitions with a weight of ${minimumWeight.toDouble()} kg every set."

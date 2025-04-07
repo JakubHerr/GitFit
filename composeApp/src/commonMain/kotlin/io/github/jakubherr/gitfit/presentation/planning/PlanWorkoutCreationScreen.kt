@@ -21,10 +21,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.add_exercise
+import gitfit.composeapp.generated.resources.delete_exercise
+import gitfit.composeapp.generated.resources.edit_progression
+import gitfit.composeapp.generated.resources.plan_name
+import gitfit.composeapp.generated.resources.save
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 import io.github.jakubherr.gitfit.presentation.shared.PlanBlockItem
 import io.github.jakubherr.gitfit.presentation.shared.StringInputField
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PlanWorkoutCreationScreen(
@@ -42,8 +49,7 @@ fun PlanWorkoutCreationScreen(
             value = workoutPlan.name,
             onValueChange = { onAction(PlanAction.RenameWorkout(workoutPlan, it)) },
             maxLength = 20,
-            label = { Text("Plan name") },
-            // placeholder = { Text(workoutPlan.name, Modifier.alpha(0.5f)) },
+            label = { Text(stringResource(Res.string.plan_name)) },
             isError = workoutPlan.name.isBlank()
         )
 
@@ -59,13 +65,13 @@ fun PlanWorkoutCreationScreen(
                 )
             }
             item {
-                Button(onClick = { onAddExerciseClick(workoutPlan.idx) }) { Text("Add exercise") }
+                Button(onClick = { onAddExerciseClick(workoutPlan.idx) }) { Text(stringResource(Res.string.add_exercise)) }
             }
             item {
                 Button({
                     onAction(PlanAction.ValidateWorkout(workoutPlan))
                     onSave()
-                }) { Text("Save workout") }
+                }) { Text(stringResource(Res.string.save)) }
             }
         }
     }
@@ -89,14 +95,14 @@ fun PlanBlockItemDropdownMenu(
             onDismissRequest = { expanded = false }
         ) {
             DropdownMenuItem(
-                text = { Text("Delete exercise") },
+                text = { Text(stringResource(Res.string.delete_exercise)) },
                 onClick = {
                     onDeleteExercise()
                     expanded = false
                 }
             )
             DropdownMenuItem(
-                text = { Text("Edit progression") },
+                text = { Text(stringResource(Res.string.edit_progression)) },
                 onClick = {
                     onEditProgression()
                     expanded = false

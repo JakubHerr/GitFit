@@ -17,7 +17,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.cancel
+import gitfit.composeapp.generated.resources.confirm_account_deletion
+import gitfit.composeapp.generated.resources.delete
 import gitfit.composeapp.generated.resources.delete_account
+import gitfit.composeapp.generated.resources.delete_account_explanaiton
 import gitfit.composeapp.generated.resources.log_out
 import io.github.jakubherr.gitfit.presentation.auth.AuthAction
 import io.github.jakubherr.gitfit.presentation.auth.AuthState
@@ -55,7 +59,7 @@ fun SettingsScreen(
         if (showPasswordField) {
             var password by remember { mutableStateOf("") }
 
-            Text("Please confirm account deletion by entering your password")
+            Text(stringResource(Res.string.confirm_account_deletion))
             PasswordInputField(
                 password = password,
                 onPasswordChange = { password = it }
@@ -64,7 +68,7 @@ fun SettingsScreen(
                 showPasswordField = false
                 onDeleteAccount(password)
             }) {
-                Text("Delete account")
+                Text(stringResource(Res.string.delete_account))
             }
         } else {
             Button(onLogout) { Text(stringResource(Res.string.log_out)) }
@@ -75,11 +79,11 @@ fun SettingsScreen(
 
             if (showAccountDeletionDialog) {
                 ConfirmationDialog(
-                    title = "Delete account",
-                    text = "Are sure you want to delete your account? All of your data will be lost",
-                    dismissText = "confirm",
+                    title = stringResource(Res.string.delete_account),
+                    text = stringResource(Res.string.delete_account_explanaiton),
+                    dismissText = stringResource(Res.string.cancel),
                     onDismiss = { showAccountDeletionDialog = false },
-                    confirmText = "Delete",
+                    confirmText = stringResource(Res.string.delete),
                     onConfirm = {
                         showAccountDeletionDialog = false
                         showPasswordField = true

@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.create_exercise
-import gitfit.composeapp.generated.resources.error_no_exercise_found
+import gitfit.composeapp.generated.resources.error_exercise_list_empty
 import gitfit.composeapp.generated.resources.search_exercise
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import org.jetbrains.compose.resources.stringResource
@@ -80,7 +80,7 @@ fun ExerciseListScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Icon(Icons.Default.Block, "", Modifier.size(128.dp).alpha(0.6f))
-                Text(stringResource(Res.string.error_no_exercise_found))
+                Text(stringResource(Res.string.error_exercise_list_empty))
             }
         } else {
             LazyColumn(

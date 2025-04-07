@@ -24,9 +24,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.cancel
+import gitfit.composeapp.generated.resources.delete_workout
+import gitfit.composeapp.generated.resources.delete_workout_explanation
+import gitfit.composeapp.generated.resources.delete_workout_record
 import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import io.github.jakubherr.gitfit.presentation.shared.WorkoutBlockItem
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun WorkoutDetailScreen(
@@ -38,10 +44,10 @@ fun WorkoutDetailScreen(
 
     if (showDialog) {
         ConfirmationDialog(
-            title = "Delete workout record",
-            text = "The workout will be deleted",
-            confirmText = "Delete workout",
-            dismissText = "Cancel",
+            title = stringResource(Res.string.delete_workout_record),
+            text = stringResource(Res.string.delete_workout_explanation),
+            confirmText = stringResource(Res.string.delete_workout),
+            dismissText = stringResource(Res.string.cancel),
             onDismiss = { showDialog = false },
             onConfirm = {
                 showDialog = false

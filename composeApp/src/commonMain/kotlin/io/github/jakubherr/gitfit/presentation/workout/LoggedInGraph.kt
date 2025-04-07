@@ -11,6 +11,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.empty_workout_history
+import gitfit.composeapp.generated.resources.error_block_with_progression
+import gitfit.composeapp.generated.resources.error_workout_not_found
 import io.github.jakubherr.gitfit.presentation.AddExerciseToWorkoutRoute
 import io.github.jakubherr.gitfit.presentation.DashboardRoute
 import io.github.jakubherr.gitfit.presentation.ExerciseListRoute
@@ -28,6 +32,8 @@ import io.github.jakubherr.gitfit.presentation.measurement.measurementGraph
 import io.github.jakubherr.gitfit.presentation.planning.planningGraph
 import io.github.jakubherr.gitfit.presentation.settings.SettingsScreenRoot
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinNavViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 
@@ -75,7 +81,7 @@ fun NavGraphBuilder.loggedInGraph(
                         is WorkoutAction.RemoveBlock -> {
                             if (action.block.progressionSettings != null) {
                                 scope.launch {
-                                    snackbarHostState.showSnackbar("Blocks with progression can not be removed")
+                                    snackbarHostState.showSnackbar(getString(Res.string.error_block_with_progression))
                                 }
                             } else vm.onAction(action)
                         }
@@ -111,7 +117,7 @@ fun NavGraphBuilder.loggedInGraph(
 
             if (completedWorkouts.isEmpty()) {
                 // TODO screen
-                Text("No workout history")
+                Text(stringResource(Res.string.empty_workout_history))
             } else {
                 WorkoutListScreen(
                     completedWorkouts,
@@ -136,7 +142,7 @@ fun NavGraphBuilder.loggedInGraph(
                 )
             }
             if (workout == null) {
-                Text("Something went wrong")
+                Text(stringResource(Res.string.error_workout_not_found))
             }
         }
 

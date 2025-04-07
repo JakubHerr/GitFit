@@ -17,8 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.create_new_plan
+import gitfit.composeapp.generated.resources.predefined_plans
+import gitfit.composeapp.generated.resources.your_plans
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.presentation.shared.ExerciseNames
+import org.jetbrains.compose.resources.stringResource
 
 // use case: plan workouts to be performed in the future (weeks, months)
 @Composable
@@ -38,7 +43,7 @@ fun PlanListScreenRoot(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(vertical = 16.dp)
         ) {
-            item { Text("Your plans") }
+            item { Text(stringResource(Res.string.your_plans)) }
             items(userPlans) { plan ->
                 PlanListItem(
                     plan,
@@ -48,7 +53,7 @@ fun PlanListScreenRoot(
                 }
             }
 
-            item { Text("Predefined plans") }
+            item { Text(stringResource(Res.string.predefined_plans)) }
             items(predefinedPlans) { plan ->
                 PlanListItem(plan) {
                     // TODO predefined plans
@@ -57,7 +62,7 @@ fun PlanListScreenRoot(
 
             item {
                 Button(onCreateNewPlan) {
-                    Text("Create a new plan")
+                    Text(stringResource(Res.string.create_new_plan))
                 }
             }
         }

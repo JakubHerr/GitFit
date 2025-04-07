@@ -32,8 +32,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.add_todays_measurement
 import gitfit.composeapp.generated.resources.chest
+import gitfit.composeapp.generated.resources.edit_todays_measurement
 import gitfit.composeapp.generated.resources.height
+import gitfit.composeapp.generated.resources.latest_measurements
 import gitfit.composeapp.generated.resources.left_arm
 import gitfit.composeapp.generated.resources.left_calf
 import gitfit.composeapp.generated.resources.left_forearm
@@ -44,6 +47,7 @@ import gitfit.composeapp.generated.resources.right_calf
 import gitfit.composeapp.generated.resources.right_forearm
 import gitfit.composeapp.generated.resources.right_thigh
 import gitfit.composeapp.generated.resources.save_measurement
+import gitfit.composeapp.generated.resources.see_all
 import gitfit.composeapp.generated.resources.waist
 import gitfit.composeapp.generated.resources.weight
 import io.github.jakubherr.gitfit.domain.model.Measurement
@@ -53,6 +57,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import kotlin.enums.EnumEntries
 
@@ -104,8 +109,7 @@ fun MeasurementScreenRoot(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text("Latest measurements")
-
+            Text(stringResource(Res.string.latest_measurements))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -130,8 +134,8 @@ fun MeasurementScreenRoot(
             modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text("Latest measurements")
-            Text("See all") // TODO
+            Text(stringResource(Res.string.latest_measurements))
+            Text(stringResource(Res.string.see_all)) // TODO
         }
         LazyColumn(
             modifier.weight(1.0f)
@@ -145,8 +149,11 @@ fun MeasurementScreenRoot(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {
+            val add = stringResource(Res.string.add_todays_measurement)
+            val edit = stringResource(Res.string.edit_todays_measurement)
+
             Button(onRequestAddEditMeasurement) {
-                val text = if (todaysMeasurement == null) "Add today's measurement" else "Edit today's measurement"
+                val text = if (todaysMeasurement == null) add else edit
                 Text(text)
             }
         }

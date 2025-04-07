@@ -23,6 +23,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.error_email_used_already
+import gitfit.composeapp.generated.resources.error_failed_to_send_email
+import gitfit.composeapp.generated.resources.error_invalid_credentials
+import gitfit.composeapp.generated.resources.error_no_internet
+import gitfit.composeapp.generated.resources.error_password_too_weak
+import gitfit.composeapp.generated.resources.error_unknown
+import gitfit.composeapp.generated.resources.error_user_logged_out
+import gitfit.composeapp.generated.resources.forgot_password
 import gitfit.composeapp.generated.resources.register
 import gitfit.composeapp.generated.resources.sign_in
 import io.github.jakubherr.gitfit.domain.repository.AuthError
@@ -91,19 +99,19 @@ fun LoginScreen(
             }
         }
         TextButton(onClick = onForgotPassword) {
-            Text("Forgot password")
+            Text(stringResource(Res.string.forgot_password))
         }
     }
 }
 
-// TODO string resources
+@Composable
 fun AuthError.toMessage() = when (this) {
-    AuthError.EmailInUseAlready -> "Email is used already"
-    AuthError.FailedToSendEmail -> "Failed to send email"
-    AuthError.Generic -> "FirebaseAuthError"
-    AuthError.InvalidCredentials -> "Invalid credentials"
-    AuthError.NoInternet -> "No internet"
-    AuthError.PasswordTooWeak -> "Password too weak"
-    AuthError.Unknown -> "Unknown error"
-    AuthError.UserLoggedOut -> "User is logged out"
+    AuthError.EmailInUseAlready -> stringResource(Res.string.error_email_used_already)
+    AuthError.FailedToSendEmail -> stringResource(Res.string.error_failed_to_send_email)
+    AuthError.Generic -> stringResource(Res.string.error_unknown)
+    AuthError.InvalidCredentials -> stringResource(Res.string.error_invalid_credentials)
+    AuthError.NoInternet -> stringResource(Res.string.error_no_internet)
+    AuthError.PasswordTooWeak -> stringResource(Res.string.error_password_too_weak)
+    AuthError.Unknown -> stringResource(Res.string.error_unknown)
+    AuthError.UserLoggedOut -> stringResource(Res.string.error_user_logged_out)
 }

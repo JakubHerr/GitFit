@@ -22,12 +22,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.add_workout_day
+import gitfit.composeapp.generated.resources.cancel
+import gitfit.composeapp.generated.resources.discard_changes
+import gitfit.composeapp.generated.resources.discard_plan_changes
+import gitfit.composeapp.generated.resources.discard_plan_changes_explanation
+import gitfit.composeapp.generated.resources.plan_name
+import gitfit.composeapp.generated.resources.save
+import gitfit.composeapp.generated.resources.workout_days
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import io.github.jakubherr.gitfit.presentation.shared.OnBackPress
 import io.github.jakubherr.gitfit.presentation.shared.StringInputField
 import io.github.jakubherr.gitfit.presentation.shared.WorkoutPlanListItem
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PlanCreationScreen(
@@ -40,10 +50,10 @@ fun PlanCreationScreen(
     OnBackPress { showDialog = true }
     if (showDialog) {
         ConfirmationDialog(
-            title = "Discard plan changes",
-            text = "The current plan will not be saved",
-            confirmText = "Discard changes",
-            dismissText = "Cancel",
+            title = stringResource(Res.string.discard_plan_changes),
+            text = stringResource(Res.string.discard_plan_changes_explanation),
+            confirmText = stringResource(Res.string.discard_changes),
+            dismissText = stringResource(Res.string.cancel),
             onDismiss = { showDialog = false },
             onConfirm = {
                 showDialog = false
@@ -60,7 +70,7 @@ fun PlanCreationScreen(
             value = plan.name,
             onValueChange = { onAction(PlanAction.RenamePlan(it)) },
             maxLength = 20,
-            label = { Text("Plan name") },
+            label = { Text(stringResource(Res.string.plan_name)) },
             placeholder = { Text(plan.name, Modifier.alpha(0.5f)) }
         )
 
@@ -71,12 +81,12 @@ fun PlanCreationScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text("Workout days")
+            Text(stringResource(Res.string.workout_days))
 
             Button({
                 onAction(PlanAction.AddWorkout(WorkoutPlan.Empty(plan.workoutPlans.size)))
             }) {
-                Text("Add workout day")
+                Text(stringResource(Res.string.add_workout_day))
             }
         }
 
@@ -99,9 +109,9 @@ fun PlanCreationScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
-            Button({ onAction(PlanAction.SavePlan) }) { Text("Save plan") }
+            Button({ onAction(PlanAction.SavePlan) }) { Text(stringResource(Res.string.save)) }
 
-            Button({ showDialog = true }) { Text("Discard changes") }
+            Button({ showDialog = true }) { Text(stringResource(Res.string.discard_changes)) }
         }
     }
 }

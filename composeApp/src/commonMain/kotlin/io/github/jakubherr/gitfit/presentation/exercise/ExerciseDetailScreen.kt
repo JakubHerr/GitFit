@@ -24,6 +24,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.cancel
+import gitfit.composeapp.generated.resources.delete
+import gitfit.composeapp.generated.resources.delete_custom_exercise
+import gitfit.composeapp.generated.resources.delete_custom_exercise_explanation
+import gitfit.composeapp.generated.resources.error_exercise_not_found
+import gitfit.composeapp.generated.resources.last_10_workouts
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.presentation.graph.BasicLineGraph
 import io.github.jakubherr.gitfit.presentation.graph.ExerciseMetric
@@ -32,6 +39,7 @@ import io.github.jakubherr.gitfit.presentation.graph.GraphViewModel
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import io.github.jakubherr.gitfit.presentation.shared.SingleChoiceChipSelection
 import io.github.koalaplot.core.xygraph.DefaultPoint
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ExerciseDetailScreenRoot(
@@ -48,10 +56,10 @@ fun ExerciseDetailScreenRoot(
     exercise?.let {
         if (showDialog) {
             ConfirmationDialog(
-                title = "Delete custom exercise",
-                text = "The exercise will be deleted. Workouts with this exercise will not be changed",
-                confirmText = "Delete exercise",
-                dismissText = "Cancel",
+                title = stringResource(Res.string.delete_custom_exercise),
+                text = stringResource(Res.string.delete_custom_exercise_explanation),
+                confirmText = stringResource(Res.string.delete),
+                dismissText = stringResource(Res.string.cancel),
                 onDismiss = { showDialog = false },
                 onConfirm = {
                     showDialog = false
@@ -71,7 +79,7 @@ fun ExerciseDetailScreenRoot(
     }
 
     if (exercise == null) {
-        Text("Some error occurred :(")
+        Text(stringResource(Res.string.error_exercise_not_found))
     }
 }
 
@@ -125,7 +133,7 @@ fun ExerciseDetailScreen(
         BasicLineGraph(
             graphData,
             Modifier.fillMaxWidth().height(256.dp),
-            "Last 10 workouts - ${exercise.name}",
+            "${stringResource(Res.string.last_10_workouts)} - ${exercise.name}",
         )
 
         SingleChoiceChipSelection(

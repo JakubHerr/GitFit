@@ -32,7 +32,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.add_exercise
+import gitfit.composeapp.generated.resources.continue_workout
+import gitfit.composeapp.generated.resources.delete_exercise
+import gitfit.composeapp.generated.resources.delete_last_set
 import gitfit.composeapp.generated.resources.delete_workout
+import gitfit.composeapp.generated.resources.delete_workout_explanation
 import gitfit.composeapp.generated.resources.done
 import gitfit.composeapp.generated.resources.kg
 import gitfit.composeapp.generated.resources.reps
@@ -41,6 +45,7 @@ import gitfit.composeapp.generated.resources.set
 import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import io.github.jakubherr.gitfit.presentation.shared.WorkoutBlockItem
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -60,10 +65,10 @@ fun WorkoutInProgressScreenRoot(
 
     if (showDialog) {
         ConfirmationDialog(
-            title = "Delete workout",
-            text = "The current workout will be deleted",
-            confirmText = "Delete workout",
-            dismissText = "Continue workout",
+            title = stringResource(Res.string.delete_workout),
+            text = stringResource(Res.string.delete_workout_explanation),
+            confirmText = stringResource(Res.string.delete_workout),
+            dismissText = stringResource(Res.string.continue_workout),
             onDismiss = { showDialog = false },
             onConfirm = {
                 showDialog = false
@@ -161,14 +166,14 @@ fun WorkoutBlockItemDropdownMenu(
             onDismissRequest = { expanded = false }
         ) {
             DropdownMenuItem(
-                text = { Text("Delete exercise") },
+                text = { Text(stringResource(Res.string.delete_exercise)) },
                 onClick = {
                     expanded = false
                     onDeleteExercise()
                 }
             )
             DropdownMenuItem(
-                text = { Text("Delete last set") },
+                text = { Text(stringResource(Res.string.delete_last_set)) },
                 onClick = {
                     expanded = false
                     onDeleteSet()
@@ -178,7 +183,6 @@ fun WorkoutBlockItemDropdownMenu(
     }
 }
 
-// maybe easier to just have this info inline than trying to line up two different rows
 @Composable
 fun SetHeader(modifier: Modifier = Modifier) {
     Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

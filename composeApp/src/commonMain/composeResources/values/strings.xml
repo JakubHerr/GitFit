@@ -5,18 +5,59 @@
     <string name="profile">Profile</string>
     <string name="measurement">Measure</string>
     <string name="history">History</string>
+
+    <string name="delete">Delete</string>
+    <string name="save">Save</string>
+
     <string name="add_exercise">Add exercise</string>
+    <string name="delete_exercise">Delete exercise</string>
+    <string name="delete_custom_exercise">Delete custom exercise</string>
+    <string name="delete_custom_exercise_explanation">The exercise will be deleted. Workouts with this exercise will not be changed</string>
+
     <string name="save_workout">Save</string>
     <string name="delete_workout">Delete</string>
+
     <string name="add_set">Add set</string>
+    <string name="delete_last_set">Delete last set</string>
     <string name="set">Set</string>
+
     <string name="kg">KG</string>
     <string name="reps">Reps</string>
     <string name="done">Done</string>
-    <string name="error_no_exercise_found">No exercise found</string>
+
+    <string name="see_all">See all</string>
+
+    <string name="error_exercise_list_empty">No exercises found</string>
+    <string name="error_exercise_not_found">Exercise not found</string>
+
+    <string name="your_plans">Your plans</string>
+    <string name="predefined_plans">Predefined plans</string>
+    <string name="create_new_plan">Create new plan</string>
+    <string name="plan_name">Plan name</string>
+    <string name="workout_days">Workout days</string>
+    <string name="add_workout_day">Add Workout day</string>
+
+    <string name="discard_changes">Discard changes</string>
+    <string name="discard_plan_changes">Discard plan changes</string>
+    <string name="discard_plan_changes_explanation">The current plan will not be saved</string>
+
+    <string name="edit_progression">Edit progression</string>
+    <string name="starting_values">Starting values:</string>
+    <string name="minimum_weight">Minimum weight (kg)</string>
+    <string name="minimum_repetitions">Minimum repetitions</string>
+    <string name="progresison_type">Progression type</string>
+    <string name="weight_increase">Weight increase</string>
+    <string name="repetition_increase">Repetition increase</string>
+
     <string name="create_exercise">Create exercise</string>
     <string name="search_exercise">Search exercise</string>
     <string name="save_exercise">Save exercise</string>
+
+    <string name="cancel_exercise_creation">Cancel exercise creation</string>
+    <string name="cancel_exercise_creation_explanation">If you quit, the exercise will not be saved</string>
+
+    <string name="last_10_workouts">Last 10 workouts</string>
+
     <string name="name">Name</string>
     <string name="cancel">Cancel</string>
     <string name="register">Register</string>
@@ -26,20 +67,58 @@
     <string name="secondary_muscle">Secondary muscle</string>
     <string name="planned_workouts">Planned workouts</string>
     <string name="start_unplanned_workout">Start unplanned workout</string>
-    <string name="resume_workout">resume workout</string>
-    <string name="weight">weight</string>
-    <string name="height">height</string>
-    <string name="neck">neck</string>
-    <string name="chest">chest</string>
-    <string name="waist">waist</string>
-    <string name="left_arm">left arm</string>
-    <string name="right_arm">right arm</string>
-    <string name="left_forearm">left forearm</string>
-    <string name="right_forearm">right forearm</string>
-    <string name="left_thigh">left thigh</string>
-    <string name="right_thigh">right thigh</string>
-    <string name="left_calf">left calf</string>
-    <string name="right_calf">right calf</string>
-    <string name="save_measurement">save measurement</string>
-    <string name="delete_account">delete account</string>
+    <string name="resume_workout">Resume workout</string>
+
+    <string name="latest_measurements">Latest measurements</string>
+    <string name="add_todays_measurement">Add today's measurement</string>
+    <string name="edit_todays_measurement">Edit today's measurement</string>
+    <string name="weight">Weight</string>
+    <string name="height">Height</string>
+    <string name="neck">Neck</string>
+    <string name="chest">Chest</string>
+    <string name="waist">Waist</string>
+    <string name="left_arm">Left arm</string>
+    <string name="right_arm">Right arm</string>
+    <string name="left_forearm">Left forearm</string>
+    <string name="right_forearm">Right forearm</string>
+    <string name="left_thigh">Left thigh</string>
+    <string name="right_thigh">Right thigh</string>
+    <string name="left_calf">Left calf</string>
+    <string name="right_calf">Right calf</string>
+    <string name="save_measurement">Save measurement</string>
+
+    <string name="delete_account">Delete account</string>
+    <string name="delete_account_explanaiton">Are sure you want to delete your account? All of your data will be lost</string>
+    <string name="confirm_account_deletion">Please confirm account deletion by entering your password</string>
+    <string name="forgot_password">Forgot password</string>
+
+    <string name="error_email_used_already">Email is used already</string>
+    <string name="error_failed_to_send_email">Failed to send email</string>
+    <string name="error_firebase_auth">Firebase auth error</string>
+    <string name="error_unknown">Unknown error</string>
+    <string name="error_invalid_credentials">Invalid credentials</string>
+    <string name="error_no_internet">No internet connection</string>
+    <string name="error_password_too_weak">Password should be at least 12 characters long</string>
+    <string name="error_user_logged_out">User is logged out</string>
+
+    <string name="enter_email">Please enter your email</string>
+    <string name="send_reset_email">Send reset email</string>
+    <string name="send_verification_email">Send verification email</string>
+    <string name="email_not_verified">Your email is not verified. If you forget your password, you might be unable to delete your account</string>
+    <string name="skip_verification">Skip verification</string>
+
+    <string name="error_block_with_progression">Blocks with progression can not be removed</string>
+    <string name="error_block_not_found">Block not found</string>
+    <string name="empty_workout_history">No workout history</string>
+    <string name="error_workout_not_found">Failed to fetch workout</string>
+
+    <string name="error_workout_in_progress">A different workout is already in progress!</string>
+
+    <string name="browse_exercise_history">Browse exercise history</string>
+    <string name="browse_workout_history">Browse workout history</string>
+    <string name="browse_measurement_history">Browse measurement history</string>
+
+    <string name="delete_workout_record">Delete workout record</string>
+    <string name="delete_workout_explanation">The current workout will be deleted</string>
+    <string name="continue_workout">Continue workout</string>
 </resources>

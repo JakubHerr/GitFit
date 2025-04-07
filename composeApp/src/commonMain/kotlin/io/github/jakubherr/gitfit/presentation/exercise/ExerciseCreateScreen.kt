@@ -17,6 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.cancel
+import gitfit.composeapp.generated.resources.cancel_exercise_creation
+import gitfit.composeapp.generated.resources.cancel_exercise_creation_explanation
+import gitfit.composeapp.generated.resources.delete_exercise
 import gitfit.composeapp.generated.resources.name
 import gitfit.composeapp.generated.resources.primary_muscle
 import gitfit.composeapp.generated.resources.save_exercise
@@ -57,10 +60,10 @@ fun ExerciseCreateScreen(
     OnBackPress { showDialog = true }
     if (showDialog) {
         ConfirmationDialog(
-            title = "Cancel creation",
-            text = "If you quit, the exercise will not be saved",
-            confirmText = "Quit",
-            dismissText = "Continue creation",
+            title = stringResource(Res.string.cancel_exercise_creation),
+            text = stringResource(Res.string.cancel_exercise_creation_explanation),
+            confirmText = stringResource(Res.string.delete_exercise),
+            dismissText = stringResource(Res.string.cancel),
             onDismiss = { showDialog = false },
             onConfirm = {
                 showDialog = false

@@ -49,10 +49,6 @@ fun DashboardScreenRoot(
     }
 }
 
-// TODO Scrollable list with composables
-//  show section with data and meaurements,
-//      - maybe add some customization options
-//  show section with exercises
 @Composable
 fun DashboardScreen(
     modifier: Modifier = Modifier,
@@ -83,7 +79,6 @@ fun DashboardScreen(
     }
 }
 
-// TODO show today's plan and this week's plan
 @Composable
 fun WorkoutSection(
     workouts: List<Workout>,

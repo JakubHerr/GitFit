@@ -7,8 +7,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.browse_exercise_history
+import gitfit.composeapp.generated.resources.browse_measurement_history
+import gitfit.composeapp.generated.resources.browse_workout_history
+import org.jetbrains.compose.resources.stringResource
 
-// use case: browse previous records, measurements, exercises etc.
 @Composable
 fun HistoryScreenRoot(
     modifier: Modifier = Modifier,
@@ -21,15 +25,15 @@ fun HistoryScreenRoot(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(onBrowseExerciseData) {
-            Text("Browse exercise history")
+            Text(stringResource(Res.string.browse_exercise_history))
         }
 
         Button(onBrowseWorkoutData) {
-            Text("Browse workout history")
+            Text(stringResource(Res.string.browse_workout_history))
         }
 
         Button(onBrowseMeasurementData) {
-            Text("Browse measurement history")
+            Text(stringResource(Res.string.browse_measurement_history))
         }
     }
 }
