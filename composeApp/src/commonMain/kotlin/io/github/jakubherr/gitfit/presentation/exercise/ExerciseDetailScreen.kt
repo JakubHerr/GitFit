@@ -34,7 +34,9 @@ import gitfit.composeapp.generated.resources.enum_exercise_metric_heaviest_weigh
 import gitfit.composeapp.generated.resources.enum_exercise_metric_total_repetitions
 import gitfit.composeapp.generated.resources.enum_exercise_metric_total_workout_volume
 import gitfit.composeapp.generated.resources.error_exercise_not_found
+import gitfit.composeapp.generated.resources.kg
 import gitfit.composeapp.generated.resources.last_10_workouts
+import gitfit.composeapp.generated.resources.reps
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.presentation.graph.BasicLineGraph
 import io.github.jakubherr.gitfit.presentation.graph.ExerciseMetric
@@ -87,7 +89,6 @@ fun ExerciseDetailScreenRoot(
     }
 }
 
-// use case: show a detail of exercise and records, graphs
 @Composable
 fun ExerciseDetailScreen(
     exercise: Exercise,
@@ -101,11 +102,6 @@ fun ExerciseDetailScreen(
         onGraphAction(GraphAction.ExerciseAndMetricSelected(exercise, ExerciseMetric.HEAVIEST_WEIGHT))
     }
 
-    LaunchedEffect(graphData) {
-        println("DBG: data size: ${graphData.size}")
-    }
-
-    // name, description, primary, secondary muscle etc.
     Column(modifier.fillMaxSize()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -129,7 +125,7 @@ fun ExerciseDetailScreen(
         Row {
             val maxValue = graphData.maxByOrNull { it.y }
             maxValue?.let {
-                val unit = if (selectedMetric == ExerciseMetric.TOTAL_REPETITIONS) "reps" else "kg"
+                val unit = if (selectedMetric == ExerciseMetric.TOTAL_REPETITIONS) stringResource(Res.string.reps) else stringResource(Res.string.kg)
                 Text("${maxValue.x} - ${maxValue.y} $unit")
             }
         }
@@ -153,7 +149,6 @@ fun ExerciseDetailScreen(
             selected = selectedMetric,
             modifier = Modifier.padding(16.dp),
             onChoiceSelected = { metric ->
-                println("DBG: ${metric.name} selected")
                 onGraphAction(GraphAction.ExerciseAndMetricSelected(exercise, metric))
             }
         )

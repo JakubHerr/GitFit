@@ -30,6 +30,7 @@
 
     <string name="kg">KG</string>
     <string name="reps">Reps</string>
+    <string name="repetitions">Repetitions</string>
     <string name="done">Done</string>
 
     <string name="see_all">See all</string>
@@ -161,4 +162,7 @@
     <string name="enum_exercise_metric_best_set_volume">Best set volume</string>
     <string name="enum_exercise_metric_total_workout_volume">Total workout volume</string>
     <string name="enum_exercise_metric_total_repetitions">Total repetitions</string>
+
+    <string name="progression_explanation_1">Progression will start when you reach %1$d repetitions with a weight of %2$d kg every set.</string>
+    <string name="progression_explanation_2"> After every successful workout, the %1$s will increase by %2$d</string>
 </resources>

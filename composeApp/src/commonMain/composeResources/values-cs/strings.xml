@@ -29,6 +29,7 @@
 
     <string name="kg">KG</string>
     <string name="reps">Opak.</string>
+    <string name="repetitions">Opakování</string>
     <string name="done">Hotovo</string>
 
     <string name="see_all">Zobrazit vše</string>
@@ -156,8 +157,11 @@
     <string name="enum_muscle_group_chest">Hrudník</string>
     <string name="enum_muscle_group_forearms">Předloktí</string>
 
-    <string name="enum_exercise_metric_heaviest_weight">Heaviest weight</string>
-    <string name="enum_exercise_metric_best_set_volume">Best set volume</string>
-    <string name="enum_exercise_metric_total_workout_volume">Total workout volume</string>
-    <string name="enum_exercise_metric_total_repetitions">Total repetitions</string>
+    <string name="enum_exercise_metric_heaviest_weight">Nejtěžší váha</string>
+    <string name="enum_exercise_metric_best_set_volume">Největší objem série</string>
+    <string name="enum_exercise_metric_total_workout_volume">Celkový objem tréninku</string>
+    <string name="enum_exercise_metric_total_repetitions">Počet opakování v tréninku</string>
+
+    <string name="progression_explanation_1">Progrese začne, když dosáhnete alespoň %1$d opakování s váhou %2$d kg v každé sérii.</string>
+    <string name="progression_explanation_2"> Po každém úspešném tréninku se %1$s zvýší o %2$d</string>
 </resources>

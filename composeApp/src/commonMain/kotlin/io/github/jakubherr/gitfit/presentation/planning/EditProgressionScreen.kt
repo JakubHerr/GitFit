@@ -32,9 +32,14 @@ import gitfit.composeapp.generated.resources.enum_progression_type_icrease_weigh
 import gitfit.composeapp.generated.resources.minimum_repetitions
 import gitfit.composeapp.generated.resources.minimum_weight
 import gitfit.composeapp.generated.resources.progresison_type
+import gitfit.composeapp.generated.resources.progression_explanation_1
+import gitfit.composeapp.generated.resources.progression_explanation_2
 import gitfit.composeapp.generated.resources.repetition_increase
+import gitfit.composeapp.generated.resources.repetitions
+import gitfit.composeapp.generated.resources.reps
 import gitfit.composeapp.generated.resources.save
 import gitfit.composeapp.generated.resources.starting_values
+import gitfit.composeapp.generated.resources.weight
 import gitfit.composeapp.generated.resources.weight_increase
 import io.github.jakubherr.gitfit.domain.isPositiveDouble
 import io.github.jakubherr.gitfit.domain.isPositiveInt
@@ -168,16 +173,16 @@ fun ProgressionHint(
     repIncrease: String,
     minimumReps: Int
 ) {
-    // TODO translate
     if (validateInputs(selectedProgressionType, minimumWeight, weightIncrease, repIncrease)) {
-        val text =
-            "Progression will start when you reach $minimumReps repetitions with a weight of ${minimumWeight.toDouble()} kg every set."
-        val value = if (selectedProgressionType == ProgressionType.INCREASE_WEIGHT) "weight" else "repetitions"
+        val value = if (selectedProgressionType == ProgressionType.INCREASE_WEIGHT) stringResource(Res.string.weight).lowercase()
+            else stringResource(Res.string.repetitions).lowercase()
+
         val increment =
             if (selectedProgressionType == ProgressionType.INCREASE_WEIGHT) "$weightIncrease kg" else repIncrease
-        val text2 = " After every successful workout, the $value will increase by $increment"
 
-        Text(text + text2)
+        val string1 = stringResource(Res.string.progression_explanation_1, minimumReps, minimumWeight.toDouble())
+        val string2 = stringResource(Res.string.progression_explanation_2, value, increment)
+        Text(string1 + string2)
     }
 }
 
