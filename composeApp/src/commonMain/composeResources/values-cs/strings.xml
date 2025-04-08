@@ -2,7 +2,7 @@
     <string name="email">Email</string>
     <string name="password">Heslo</string>
     <string name="confirm">Potvrdit</string>
-    <string name="password_reset_sent">Password reset link sent to</string>
+    <string name="password_reset_sent">Odkaz na obnovení odeslán na</string>
     <string name="verification_email_sent">Ověřovací email odeslán</string>
     <string name="account_deleted">Účet byl smazán</string>
 
@@ -37,7 +37,7 @@
     <string name="error_exercise_not_found">Cvik nebyl nalezen</string>
 
     <string name="your_plans">Vaše plány</string>
-    <string name="predefined_plans">Predefined plans</string>
+    <string name="predefined_plans">Předdefinované plány</string>
     <string name="create_new_plan">Vytvořit nový plán</string>
     <string name="plan_name">Název plánu</string>
     <string name="workout_days">Tréninkové dny</string>
@@ -75,9 +75,9 @@
     <string name="start_unplanned_workout">Spustit neplánovaný trénink</string>
     <string name="resume_workout">Pokračovat v záznamu</string>
 
-    <string name="latest_measurements">Latest measurements</string>
-    <string name="add_todays_measurement">Add today's measurement</string>
-    <string name="edit_todays_measurement">Edit today's measurement</string>
+    <string name="latest_measurements">Poslední měření</string>
+    <string name="add_todays_measurement">Přidat dnešní měření</string>
+    <string name="edit_todays_measurement">Upravit dnešní měření</string>
     <string name="weight">Váha</string>
     <string name="height">Výška</string>
     <string name="neck">Krk</string>
@@ -99,9 +99,9 @@
     <string name="confirm_account_deletion">Potvrďtě smazání účtu zadáním hesla</string>
     <string name="forgot_password">Zapomenuté heslo</string>
 
-    <string name="error_email_used_already">Email is used already</string>
+    <string name="error_email_used_already">Email je již zaregistrovaný</string>
     <string name="error_failed_to_send_email">Nepodařilo se odeslat email</string>
-    <string name="error_firebase_auth">Firebase auth error</string>
+    <string name="error_firebase_auth">Chyba autentizace</string>
     <string name="error_unknown">Neznámá chyba</string>
     <string name="error_invalid_credentials">Neplatné údaje</string>
     <string name="error_invalid_user">Neplatný uživatel</string>
@@ -117,7 +117,7 @@
 
     <string name="error_block_with_progression">Bloky s progresí nelze odstranit</string>
     <string name="error_block_not_found">Blok nenalezen</string>
-    <string name="empty_workout_history">No workout history</string>
+    <string name="empty_workout_history">Žádné záznamy nenalezeny</string>
     <string name="error_workout_not_found">Záznam cvičení nenalezen</string>
 
     <string name="error_workout_in_progress">Právě máte spuštěný jiný trénink!</string>
