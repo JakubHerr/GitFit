@@ -99,6 +99,8 @@ class AuthViewModel(
                 exerciseRepository.removeAllCustomExercises(userId).onFailure { return@deleteUser Result.failure(it) }
             }.onFailure {
                 println("DBG: Failed to delete user, cause ${it.stackTraceToString()}")
+            }.onSuccess {
+                _finishedAction.value = AuthAction.DeleteAccount("")
             }
         }
     }

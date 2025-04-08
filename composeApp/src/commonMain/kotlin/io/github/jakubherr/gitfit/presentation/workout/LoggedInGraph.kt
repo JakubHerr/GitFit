@@ -24,6 +24,7 @@ import io.github.jakubherr.gitfit.presentation.SettingsRoute
 import io.github.jakubherr.gitfit.presentation.WorkoutDetailRoute
 import io.github.jakubherr.gitfit.presentation.WorkoutHistoryRoute
 import io.github.jakubherr.gitfit.presentation.WorkoutInProgressRoute
+import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardAction
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardScreenRoot
 import io.github.jakubherr.gitfit.presentation.exercise.exerciseNavigation
@@ -40,6 +41,7 @@ import org.koin.core.annotation.KoinExperimentalAPI
 fun NavGraphBuilder.loggedInGraph(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
+    authViewModel: AuthViewModel,
 ) {
     navigation<LoggedInRoute>(
         startDestination = DashboardRoute
@@ -147,7 +149,7 @@ fun NavGraphBuilder.loggedInGraph(
         }
 
         composable<SettingsRoute> {
-            SettingsScreenRoot()
+            SettingsScreenRoot(authViewModel)
         }
     }
 }

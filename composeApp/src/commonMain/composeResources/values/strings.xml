@@ -4,6 +4,7 @@
     <string name="confirm">Confirm</string>
     <string name="password_reset_sent">Password reset link sent to</string>
     <string name="verification_email_sent">Verification link sent</string>
+    <string name="account_deleted">Account deleted</string>
 
     <string name="dashboard">Dashboard</string>
     <string name="plan">Plan</string>

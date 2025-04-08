@@ -30,13 +30,12 @@ import io.github.jakubherr.gitfit.presentation.shared.PasswordInputField
 import io.github.jakubherr.gitfit.presentation.auth.toMessage
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SettingsScreenRoot(
+    auth: AuthViewModel,
     modifier: Modifier = Modifier,
 ) {
-    val auth: AuthViewModel = koinViewModel()
 
     SettingsScreen(
         onLogout = { auth.onAction(AuthAction.SignOut) },
@@ -97,7 +96,6 @@ fun SettingsScreen(
 
                 // TODO some better UI
                 if (state.loading) CircularProgressIndicator()
-                state.error?.let { Text(it.toMessage()) }
             }
         }
     }

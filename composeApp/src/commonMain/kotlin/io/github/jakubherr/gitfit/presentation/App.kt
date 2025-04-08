@@ -19,6 +19,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -34,9 +35,12 @@ fun App() {
         MaterialTheme {
             val navController = rememberNavController()
             val snackbarHostState = remember { SnackbarHostState() }
+            val scope = rememberCoroutineScope()
 
             val destination = navController.currentBackStackEntryAsState().value?.destination
             val topLevelDestination = TopLevelDestination.entries.firstOrNull { destination?.hasRoute(it.route) == true }
+
+
 
             GitFitNavScaffold(
                 currentDestination = topLevelDestination,

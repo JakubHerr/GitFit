@@ -25,43 +25,20 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.enter_email
-import gitfit.composeapp.generated.resources.password_reset_sent
 import gitfit.composeapp.generated.resources.send_reset_email
-import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ResetPasswordScreenRoot(
-    vm: AuthViewModel = koinViewModel(),
-    snackbarHostState: SnackbarHostState,
+    vm: AuthViewModel,
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
-    val scope = rememberCoroutineScope()
     val finishedAction by vm.finishedAction.collectAsStateWithLifecycle()
 
-    LaunchedEffect(state.error, finishedAction) {
-        val error = state.error
-        val action = finishedAction
-
-        if (error != null) {
-            scope.launch {
-                snackbarHostState.showSnackbar(error.getMessage())
-                vm.onAction(AuthAction.ErrorHandled)
-            }
-        }
-
-        if (action != null && action is AuthAction.RequestPasswordReset) {
-            scope.launch {
-                val message = "${getString(Res.string.password_reset_sent)} ${action.email}"
-                snackbarHostState.showSnackbar(message)
-                vm.onAction(AuthAction.ActionHandled)
-                onBack()
-            }
-        }
+    LaunchedEffect(finishedAction) {
+        if (finishedAction is AuthAction.RequestPasswordReset) onBack()
     }
 
     ResetPasswordScreen(

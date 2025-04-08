@@ -4,15 +4,24 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.account_deleted
+import gitfit.composeapp.generated.resources.password_reset_sent
+import gitfit.composeapp.generated.resources.verification_email_sent
+import io.github.jakubherr.gitfit.presentation.auth.AuthAction
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
 import io.github.jakubherr.gitfit.presentation.auth.VerifyEmailScreenRoot
 import io.github.jakubherr.gitfit.presentation.auth.authGraph
+import io.github.jakubherr.gitfit.presentation.auth.getMessage
 import io.github.jakubherr.gitfit.presentation.workout.loggedInGraph
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -21,27 +30,61 @@ fun GitFitNavHost(
     modifier: Modifier = Modifier,
     snackbarHostState: SnackbarHostState
 ) {
+    // this viewmodel is global because it is needed for the entire app lifecycle
     val authViewModel: AuthViewModel = koinViewModel()
-    val auth by authViewModel.state.collectAsStateWithLifecycle()
+    val authState by authViewModel.state.collectAsStateWithLifecycle()
+    val finishedAction by authViewModel.finishedAction.collectAsStateWithLifecycle()
 
-    LaunchedEffect(auth) {
-        println("DBG: auth state is ${auth.user.loggedIn}")
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(authState) {
+        println("DBG: auth state is ${authState.user.loggedIn}, error: ${authState.error}")
+    }
+
+    LaunchedEffect(authState.error, finishedAction) {
+        val error = authState.error
+        val action = finishedAction
+
+        if (error != null) {
+            scope.launch {
+                snackbarHostState.showSnackbar(error.getMessage())
+                authViewModel.onAction(AuthAction.ErrorHandled)
+            }
+        }
+
+        if (action != null) {
+            scope.launch {
+                when (action) {
+                    is AuthAction.VerifyEmail -> {
+                        snackbarHostState.showSnackbar(getString(Res.string.verification_email_sent))
+                    }
+                    is AuthAction.RequestPasswordReset -> {
+                        snackbarHostState.showSnackbar("${getString(Res.string.password_reset_sent)} ${action.email}")
+                    }
+                    is AuthAction.DeleteAccount -> {
+                        snackbarHostState.showSnackbar(getString(Res.string.account_deleted))
+                    }
+                    else -> { }
+                }
+                authViewModel.onAction(AuthAction.ActionHandled)
+            }
+        }
     }
 
     NavHost(
         navController = navController,
         startDestination = when {
-            auth.user.loggedIn && auth.user.emailVerified -> LoggedInRoute
-            auth.user.loggedIn && !auth.user.emailVerified -> VerifyEmailRoute
+            authState.user.loggedIn && authState.user.emailVerified -> LoggedInRoute
+            authState.user.loggedIn && !authState.user.emailVerified -> VerifyEmailRoute
             else -> AuthGraphRoute
         },
         modifier = modifier,
     ) {
-        authGraph(navController, snackbarHostState)
-        loggedInGraph(navController, snackbarHostState)
+        authGraph(navController, authViewModel)
+        loggedInGraph(navController, snackbarHostState, authViewModel)
         composable<VerifyEmailRoute> {
             VerifyEmailScreenRoot(
-                snackbarHostState = snackbarHostState,
+                authViewModel,
                 onSkip = { navController.navigate(DashboardRoute) }
             )
         }
