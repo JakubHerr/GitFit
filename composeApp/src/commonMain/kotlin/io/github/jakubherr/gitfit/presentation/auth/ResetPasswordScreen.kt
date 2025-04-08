@@ -1,9 +1,13 @@
 package io.github.jakubherr.gitfit.presentation.auth
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -25,25 +29,39 @@ fun ResetPasswordScreenRoot(
     vm: AuthViewModel = koinViewModel(),
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier.fillMaxSize().padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        var email by remember { mutableStateOf("") }
+    ResetPasswordScreen(
+        modifier,
+        onResetPassword = { vm.onAction(AuthAction.RequestPasswordReset(it)) }
+    )
+}
 
-        Text(stringResource(Res.string.enter_email))
+@Composable
+fun ResetPasswordScreen(
+    modifier: Modifier = Modifier,
+    onResetPassword: (String) -> Unit = {},
+) {
+    var email by remember { mutableStateOf("") }
 
-        TextField(
-            email,
-            onValueChange = { email = it },
-            singleLine = true
-        )
+    Surface {
+        Column(
+            modifier.fillMaxSize().padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Text(stringResource(Res.string.enter_email))
 
-        // TODO rate limit in UI
-        Button(onClick = {
-            vm.onAction(AuthAction.RequestPasswordReset(email))
-        }) {
-            Text(stringResource(Res.string.send_reset_email))
+            TextField(
+                email,
+                onValueChange = { email = it },
+                singleLine = true
+            )
+
+            Spacer(Modifier.height(32.dp))
+
+            // TODO rate limit in UI
+            Button(onClick = { onResetPassword(email)} ) {
+                Text(stringResource(Res.string.send_reset_email))
+            }
         }
     }
 }

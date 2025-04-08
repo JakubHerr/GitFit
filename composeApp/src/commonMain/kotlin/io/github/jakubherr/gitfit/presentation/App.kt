@@ -110,6 +110,7 @@ private fun NavHostController.destinationSettings(): Pair<String?, Boolean> {
         destination.hasRoute<PlanDetailRoute>() -> "Workout plan" to true
         destination.hasRoute<CreateExerciseRoute>() -> "Create exercise" to false
         destination.hasRoute<ExerciseDetailRoute>() -> "Exercise detail" to true
+        destination.hasRoute<VerifyEmailRoute>() -> "Verify email" to false
         else -> null to false
     }
 }
