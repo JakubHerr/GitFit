@@ -20,8 +20,8 @@
     <string name="delete_custom_exercise">Odstranit vlastní cvik</string>
     <string name="delete_custom_exercise_explanation">Cvik bude smazán. Záznamy cvičení nebudou změněny</string>
 
-    <string name="save_workout">Save</string>
-    <string name="delete_workout">Delete</string>
+    <string name="save_workout">Ukončit záznam</string>
+    <string name="delete_workout">Odstranit záznam</string>
 
     <string name="add_set">Přidat sérii</string>
     <string name="delete_last_set">Smazat poslední sérii</string>
@@ -129,4 +129,17 @@
     <string name="delete_workout_record">Smazat záznam cvičení</string>
     <string name="delete_workout_explanation">Záznam cvičení bude trvale smazán</string>
     <string name="continue_workout">Pokračovat v záznamu</string>
+
+    <string name="reset_password_route">Resetovat heslo</string>
+    <string name="plan_creation_route">Vytvořit nebo upravit plán</string>
+    <string name="select_exercise_route">Výběr cviku</string>
+    <string name="workout_history_route">Vybrat záznam</string>
+    <string name="add_edit_measurement_route">Přidat nebo upravit měření</string>
+    <string name="workout_in_progress_route">Záznam tréninku</string>
+    <string name="workout_detail_route">Záznam tréninku</string>
+    <string name="planing_workout_route">Upravit tréninkový den</string>
+    <string name="plan_detail_route">Tréninkový plán</string>
+    <string name="create_exercise_route">Tvorba cviku</string>
+    <string name="exercise_detail_route">Detail cviku</string>
+    <string name="verify_email_route">Ověření emailu</string>
 </resources>

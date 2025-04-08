@@ -25,8 +25,22 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.add_edit_measurement_route
+import gitfit.composeapp.generated.resources.create_exercise_route
+import gitfit.composeapp.generated.resources.exercise_detail_route
+import gitfit.composeapp.generated.resources.plan_creation_route
+import gitfit.composeapp.generated.resources.plan_detail_route
+import gitfit.composeapp.generated.resources.planing_workout_route
+import gitfit.composeapp.generated.resources.reset_password_route
+import gitfit.composeapp.generated.resources.select_exercise_route
+import gitfit.composeapp.generated.resources.verify_email_route
+import gitfit.composeapp.generated.resources.workout_detail_route
+import gitfit.composeapp.generated.resources.workout_history_route
+import gitfit.composeapp.generated.resources.workout_in_progress_route
 import io.github.jakubherr.gitfit.ui.theme.GitFitTheme
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.KoinContext
 
 @Composable
@@ -103,22 +117,21 @@ fun GitFitTopAppBar(
 private fun NavHostController.destinationSettings(): Pair<String?, Boolean> {
     val destination = currentBackStackEntryAsState().value?.destination ?: return null to false
 
-    // TODO string resources
     return when {
-        destination.hasRoute<ResetPasswordRoute>() -> "Reset password" to true
-        destination.hasRoute<PlanCreationRoute>() -> "Create or edit plan" to false
-        destination.hasRoute<ExerciseListRoute>() -> "Select exercise" to true
-        destination.hasRoute<AddExerciseToWorkoutRoute>() -> "Select exercise" to true
-        destination.hasRoute<AddExerciseToPlanRoute>() -> "Select exercise" to true
-        destination.hasRoute<WorkoutHistoryRoute>() -> "Select workout" to true
-        destination.hasRoute<MeasurementAddEditRoute>() -> "Add or edit measurement" to true
-        destination.hasRoute<WorkoutInProgressRoute>() -> "Record workout" to true
-        destination.hasRoute<WorkoutDetailRoute>() -> "Workout record" to true
-        destination.hasRoute<PlanningWorkoutRoute>() -> "Edit workout" to true
-        destination.hasRoute<PlanDetailRoute>() -> "Workout plan" to true
-        destination.hasRoute<CreateExerciseRoute>() -> "Create exercise" to false
-        destination.hasRoute<ExerciseDetailRoute>() -> "Exercise detail" to true
-        destination.hasRoute<VerifyEmailRoute>() -> "Verify email" to false
+        destination.hasRoute<ResetPasswordRoute>() -> stringResource(Res.string.reset_password_route) to true
+        destination.hasRoute<PlanCreationRoute>() -> stringResource(Res.string.plan_creation_route) to false
+        destination.hasRoute<ExerciseListRoute>() -> stringResource(Res.string.select_exercise_route) to true
+        destination.hasRoute<AddExerciseToWorkoutRoute>() -> stringResource(Res.string.select_exercise_route) to true
+        destination.hasRoute<AddExerciseToPlanRoute>() -> stringResource(Res.string.select_exercise_route) to true
+        destination.hasRoute<WorkoutHistoryRoute>() -> stringResource(Res.string.workout_history_route) to true
+        destination.hasRoute<MeasurementAddEditRoute>() -> stringResource(Res.string.add_edit_measurement_route) to true
+        destination.hasRoute<WorkoutInProgressRoute>() -> stringResource(Res.string.workout_in_progress_route) to true
+        destination.hasRoute<WorkoutDetailRoute>() -> stringResource(Res.string.workout_detail_route) to true
+        destination.hasRoute<PlanningWorkoutRoute>() -> stringResource(Res.string.planing_workout_route) to true
+        destination.hasRoute<PlanDetailRoute>() -> stringResource(Res.string.plan_detail_route) to true
+        destination.hasRoute<CreateExerciseRoute>() -> stringResource(Res.string.create_exercise_route) to false
+        destination.hasRoute<ExerciseDetailRoute>() -> stringResource(Res.string.exercise_detail_route) to true
+        destination.hasRoute<VerifyEmailRoute>() -> stringResource(Res.string.verify_email_route) to false
         else -> null to false
     }
 }
