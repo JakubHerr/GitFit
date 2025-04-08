@@ -1,6 +1,5 @@
 package io.github.jakubherr.gitfit.presentation.planning
 
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -11,7 +10,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.error_block_not_found
-import gitfit.composeapp.generated.resources.error_block_with_progression
 import gitfit.composeapp.generated.resources.error_workout_in_progress
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.presentation.AddExerciseToPlanRoute
@@ -34,12 +32,12 @@ import org.jetbrains.compose.resources.stringResource
 
 fun NavGraphBuilder.planningGraph(
     navController: NavHostController,
-    snackbarHostState: SnackbarHostState,
+    showSnackbar: (String) -> Unit,
 ) {
     fun handleError(error: Plan.Error?, scope: CoroutineScope, vm: PlanningViewModel) {
         if (error == null) navController.popBackStack()
         else scope.launch {
-            snackbarHostState.showSnackbar(error.message)
+            showSnackbar(error.message)
             vm.onAction(PlanAction.ErrorHandled)
         }
     }
@@ -77,7 +75,7 @@ fun NavGraphBuilder.planningGraph(
                         navController.navigate(WorkoutInProgressRoute)
                     } else {
                         scope.launch {
-                            snackbarHostState.showSnackbar(getString(Res.string.error_workout_in_progress))
+                            showSnackbar(getString(Res.string.error_workout_in_progress))
                         }
                     }
 
@@ -97,7 +95,7 @@ fun NavGraphBuilder.planningGraph(
         val exerciseViewModel = navController.sharedViewModel<ExerciseViewModel>()
 
         ExerciseListScreenRoot(
-            vm = exerciseViewModel, // TODO check
+            vm = exerciseViewModel,
             onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
             onExerciseClick = { exercise ->
                 planViewModel.onAction(PlanAction.AddExercise(idx, exercise))

@@ -1,6 +1,5 @@
 package io.github.jakubherr.gitfit.presentation
 
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,18 +27,13 @@ import org.koin.compose.viewmodel.koinViewModel
 fun GitFitNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    snackbarHostState: SnackbarHostState
+    showSnackbar: (String) -> Unit,
 ) {
     // this viewmodel is global because it is needed for the entire app lifecycle
     val authViewModel: AuthViewModel = koinViewModel()
     val authState by authViewModel.state.collectAsStateWithLifecycle()
     val finishedAction by authViewModel.finishedAction.collectAsStateWithLifecycle()
-
     val scope = rememberCoroutineScope()
-
-    LaunchedEffect(authState) {
-        println("DBG: auth state is ${authState.user.loggedIn}, error: ${authState.error}")
-    }
 
     LaunchedEffect(authState.error, finishedAction) {
         val error = authState.error
@@ -47,7 +41,7 @@ fun GitFitNavHost(
 
         if (error != null) {
             scope.launch {
-                snackbarHostState.showSnackbar(error.getMessage())
+                showSnackbar(error.getMessage())
                 authViewModel.onAction(AuthAction.ErrorHandled)
             }
         }
@@ -55,15 +49,9 @@ fun GitFitNavHost(
         if (action != null) {
             scope.launch {
                 when (action) {
-                    is AuthAction.VerifyEmail -> {
-                        snackbarHostState.showSnackbar(getString(Res.string.verification_email_sent))
-                    }
-                    is AuthAction.RequestPasswordReset -> {
-                        snackbarHostState.showSnackbar("${getString(Res.string.password_reset_sent)} ${action.email}")
-                    }
-                    is AuthAction.DeleteAccount -> {
-                        snackbarHostState.showSnackbar(getString(Res.string.account_deleted))
-                    }
+                    is AuthAction.VerifyEmail -> showSnackbar(getString(Res.string.verification_email_sent))
+                    is AuthAction.RequestPasswordReset -> showSnackbar("${getString(Res.string.password_reset_sent)} ${action.email}")
+                    is AuthAction.DeleteAccount -> showSnackbar(getString(Res.string.account_deleted))
                     else -> { }
                 }
                 authViewModel.onAction(AuthAction.ActionHandled)
@@ -81,7 +69,7 @@ fun GitFitNavHost(
         modifier = modifier,
     ) {
         authGraph(navController, authViewModel)
-        loggedInGraph(navController, snackbarHostState, authViewModel)
+        loggedInGraph(navController, showSnackbar, authViewModel)
         composable<VerifyEmailRoute> {
             VerifyEmailScreenRoot(
                 authViewModel,

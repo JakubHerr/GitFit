@@ -5,6 +5,7 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.FirebaseNetworkException
 import dev.gitlive.firebase.auth.FirebaseAuthException
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
+import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
 import dev.gitlive.firebase.auth.FirebaseAuthWeakPasswordException
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
@@ -96,6 +97,9 @@ class FirebaseAuthRepository: AuthRepository {
             return Result.failure(AuthError.NoInternet)
         } catch (e: FirebaseAuthUserCollisionException) {
             return Result.failure(AuthError.EmailInUseAlready)
+        }
+        catch (e: FirebaseAuthInvalidUserException) {
+            return Result.failure(AuthError.InvalidUser)
         }
         catch (e: FirebaseAuthException) {
             return Result.failure(AuthError.Generic)

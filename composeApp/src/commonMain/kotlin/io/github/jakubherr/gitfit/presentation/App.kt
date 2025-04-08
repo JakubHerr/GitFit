@@ -26,6 +26,7 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.launch
 import org.koin.compose.KoinContext
 
 @Composable
@@ -39,8 +40,6 @@ fun App() {
 
             val destination = navController.currentBackStackEntryAsState().value?.destination
             val topLevelDestination = TopLevelDestination.entries.firstOrNull { destination?.hasRoute(it.route) == true }
-
-
 
             GitFitNavScaffold(
                 currentDestination = topLevelDestination,
@@ -60,7 +59,11 @@ fun App() {
                     GitFitNavHost(
                         navController,
                         modifier = Modifier.padding(padding),
-                        snackbarHostState = snackbarHostState
+                        showSnackbar = { message ->
+                            scope.launch {
+                                snackbarHostState.showSnackbar(message)
+                            }
+                        }
                     )
                 }
             }

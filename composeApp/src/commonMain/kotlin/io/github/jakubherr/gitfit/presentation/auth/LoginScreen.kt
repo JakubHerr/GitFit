@@ -35,6 +35,7 @@ import gitfit.composeapp.generated.resources.email
 import gitfit.composeapp.generated.resources.error_email_used_already
 import gitfit.composeapp.generated.resources.error_failed_to_send_email
 import gitfit.composeapp.generated.resources.error_invalid_credentials
+import gitfit.composeapp.generated.resources.error_invalid_user
 import gitfit.composeapp.generated.resources.error_no_internet
 import gitfit.composeapp.generated.resources.error_password_too_weak
 import gitfit.composeapp.generated.resources.error_unknown
@@ -53,7 +54,6 @@ import org.jetbrains.compose.resources.vectorResource
 fun LoginScreenRoot(
     vm: AuthViewModel,
     modifier: Modifier = Modifier,
-    onLogin: () -> Unit = {},
     onForgotPassword: () -> Unit = {},
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
@@ -151,18 +151,6 @@ fun LoginScreen(
     }
 }
 
-@Composable
-fun AuthError.toMessage() = when (this) {
-    AuthError.EmailInUseAlready -> stringResource(Res.string.error_email_used_already)
-    AuthError.FailedToSendEmail -> stringResource(Res.string.error_failed_to_send_email)
-    AuthError.Generic -> stringResource(Res.string.error_unknown)
-    AuthError.InvalidCredentials -> stringResource(Res.string.error_invalid_credentials)
-    AuthError.NoInternet -> stringResource(Res.string.error_no_internet)
-    AuthError.PasswordTooWeak -> stringResource(Res.string.error_password_too_weak)
-    AuthError.Unknown -> stringResource(Res.string.error_unknown)
-    AuthError.UserLoggedOut -> stringResource(Res.string.error_user_logged_out)
-}
-
 suspend fun AuthError.getMessage() = when (this) {
     AuthError.EmailInUseAlready -> getString(Res.string.error_email_used_already)
     AuthError.FailedToSendEmail -> getString(Res.string.error_failed_to_send_email)
@@ -172,5 +160,5 @@ suspend fun AuthError.getMessage() = when (this) {
     AuthError.PasswordTooWeak -> getString(Res.string.error_password_too_weak)
     AuthError.Unknown -> getString(Res.string.error_unknown)
     AuthError.UserLoggedOut -> getString(Res.string.error_user_logged_out)
+    AuthError.InvalidUser -> getString(Res.string.error_invalid_user)
 }
-

@@ -27,7 +27,6 @@ import io.github.jakubherr.gitfit.presentation.auth.AuthAction
 import io.github.jakubherr.gitfit.presentation.auth.AuthState
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
 import io.github.jakubherr.gitfit.presentation.shared.PasswordInputField
-import io.github.jakubherr.gitfit.presentation.auth.toMessage
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import org.jetbrains.compose.resources.stringResource
 

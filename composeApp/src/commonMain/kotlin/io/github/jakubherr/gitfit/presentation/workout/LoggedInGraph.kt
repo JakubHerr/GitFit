@@ -40,7 +40,7 @@ import org.koin.core.annotation.KoinExperimentalAPI
 
 fun NavGraphBuilder.loggedInGraph(
     navController: NavHostController,
-    snackbarHostState: SnackbarHostState,
+    showSnackbar: (String) -> Unit,
     authViewModel: AuthViewModel,
 ) {
     navigation<LoggedInRoute>(
@@ -77,17 +77,13 @@ fun NavGraphBuilder.loggedInGraph(
                         is WorkoutAction.CompleteCurrentWorkout -> {
                             val error = vm.currentWorkout.value?.error
                             if (error == null) vm.onAction(action)
-                            else scope.launch { snackbarHostState.showSnackbar(error.message) }
+                            else showSnackbar(error.message)
                         }
-
                         is WorkoutAction.RemoveBlock -> {
                             if (action.block.progressionSettings != null) {
-                                scope.launch {
-                                    snackbarHostState.showSnackbar(getString(Res.string.error_block_with_progression))
-                                }
+                                scope.launch { showSnackbar(getString(Res.string.error_block_with_progression)) }
                             } else vm.onAction(action)
                         }
-
                         else -> {}
                     }
                 },
@@ -100,9 +96,9 @@ fun NavGraphBuilder.loggedInGraph(
 
         exerciseNavigation(navController)
 
-        measurementGraph(navController, snackbarHostState)
+        measurementGraph(navController, showSnackbar = showSnackbar)
 
-        planningGraph(navController, snackbarHostState)
+        planningGraph(navController, showSnackbar = showSnackbar)
 
         composable<HistoryRoute> {
             HistoryScreenRoot(

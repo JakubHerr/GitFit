@@ -93,6 +93,7 @@
     <string name="left_calf">Left calf</string>
     <string name="right_calf">Right calf</string>
     <string name="save_measurement">Save measurement</string>
+    <string name="error_invalid_measurement_values">All measurement values must be positive</string>
 
     <string name="delete_account">Delete account</string>
     <string name="delete_account_explanaiton">Are sure you want to delete your account? All of your data will be lost</string>
@@ -104,6 +105,7 @@
     <string name="error_firebase_auth">Firebase auth error</string>
     <string name="error_unknown">Unknown error</string>
     <string name="error_invalid_credentials">Invalid credentials</string>
+    <string name="error_invalid_user">Invalid user</string>
     <string name="error_no_internet">No internet connection</string>
     <string name="error_password_too_weak">Password should be at least 12 characters long</string>
     <string name="error_user_logged_out">User is logged out</string>

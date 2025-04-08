@@ -8,7 +8,6 @@ import io.github.jakubherr.gitfit.presentation.AuthGraphRoute
 import io.github.jakubherr.gitfit.presentation.ResetPasswordRoute
 import io.github.jakubherr.gitfit.presentation.LoginRoute
 import io.github.jakubherr.gitfit.presentation.OnboardingRoute
-import io.github.jakubherr.gitfit.presentation.RegisterRoute
 
 fun NavGraphBuilder.authGraph(
     navController: NavHostController,
@@ -17,8 +16,6 @@ fun NavGraphBuilder.authGraph(
     navigation<AuthGraphRoute>(
         startDestination = LoginRoute
     ) {
-        composable<RegisterRoute> { /* TODO */ }
-
         composable<LoginRoute> {
             LoginScreenRoot(
                 authViewModel,
