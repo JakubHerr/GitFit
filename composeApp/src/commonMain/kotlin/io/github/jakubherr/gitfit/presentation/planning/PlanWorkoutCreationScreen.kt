@@ -1,7 +1,10 @@
 package io.github.jakubherr.gitfit.presentation.planning
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,15 +21,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.add_exercise
+import gitfit.composeapp.generated.resources.confirm
 import gitfit.composeapp.generated.resources.delete_exercise
 import gitfit.composeapp.generated.resources.edit_progression
 import gitfit.composeapp.generated.resources.plan_name
-import gitfit.composeapp.generated.resources.save
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 import io.github.jakubherr.gitfit.presentation.shared.PlanBlockItem
@@ -45,15 +48,22 @@ fun PlanWorkoutCreationScreen(
     Column(
         modifier.padding(16.dp)
     ) {
-        StringInputField(
-            value = workoutPlan.name,
-            onValueChange = { onAction(PlanAction.RenameWorkout(workoutPlan, it)) },
-            maxLength = 20,
-            label = { Text(stringResource(Res.string.plan_name)) },
-            isError = workoutPlan.name.isBlank()
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            StringInputField(
+                value = workoutPlan.name,
+                onValueChange = { onAction(PlanAction.RenameWorkout(workoutPlan, it)) },
+                maxLength = 20,
+                label = { Text(stringResource(Res.string.plan_name)) },
+                isError = workoutPlan.name.isBlank()
+            )
+        }
 
-        LazyColumn {
+        LazyColumn(
+            Modifier.weight(1.0f)
+        ) {
             items(workoutPlan.blocks) { block ->
                 PlanBlockItem(
                     block,
@@ -64,15 +74,19 @@ fun PlanWorkoutCreationScreen(
                     onEditProgression = { onEditProgression(block) }
                 )
             }
-            item {
-                Button(onClick = { onAddExerciseClick(workoutPlan.idx) }) { Text(stringResource(Res.string.add_exercise)) }
-            }
-            item {
-                Button({
-                    onAction(PlanAction.ValidateWorkout(workoutPlan))
-                    onSave()
-                }) { Text(stringResource(Res.string.save)) }
-            }
+        }
+
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Button(onClick = { onAddExerciseClick(workoutPlan.idx) }) { Text(stringResource(Res.string.add_exercise)) }
+
+            Button({
+                onAction(PlanAction.ValidateWorkout(workoutPlan))
+                onSave()
+            }) { Text(stringResource(Res.string.confirm)) }
         }
     }
 }

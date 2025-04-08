@@ -1,5 +1,10 @@
 package io.github.jakubherr.gitfit.presentation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -14,15 +19,12 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import gitfit.composeapp.generated.resources.Res
-import gitfit.composeapp.generated.resources.weight
-import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.KoinContext
 
 @Composable
@@ -30,8 +32,6 @@ fun App() {
     KoinContext {
         // TODO add custom app theme
         MaterialTheme {
-            // TODO add application-level UI state holder
-
             val navController = rememberNavController()
             val snackbarHostState = remember { SnackbarHostState() }
 
@@ -46,10 +46,9 @@ fun App() {
             ) {
                 Scaffold(
                     topBar = {
-                        if (topLevelDestination == null) {
-                            GitFitTopAppBar(Res.string.weight) {
-                                navController.popBackStack()
-                            }
+                        val settings = navController.destinationSettings()
+                        GitFitTopAppBar(settings.first, settings.second) {
+                            navController.popBackStack()
                         }
                     },
                     snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -68,19 +67,51 @@ fun App() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GitFitTopAppBar(
-    titleRes: StringResource,
+    title: String?,
+    showBackButton: Boolean,
     modifier: Modifier = Modifier,
-    onBack: () -> Unit = { }, // TODO restrict back navigation on creation screens
-    // TODO maybe hack this by creating a function that explicitly maps routes to titles. If title is null -> no top bar
+    onBack: () -> Unit = { },
 ) {
-    CenterAlignedTopAppBar(
-        title = { Text(text = stringResource(titleRes)) },
-        navigationIcon = {
-            IconButton(onBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, "")
+    AnimatedVisibility(
+        title != null,
+        enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
+        exit = fadeOut() + shrinkOut(shrinkTowards = Alignment.Center),
+    ) {
+        CenterAlignedTopAppBar(
+            title = { Text(title ?: "") },
+            navigationIcon = {
+                if (showBackButton) {
+                    IconButton({ if (title != null) onBack() }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "")
+                    }
+                }
             }
-        }
-    )
+        )
+    }
+}
+
+// returns a pair with destination name and a boolean for disabling back button on critical operations (plan creation)
+@Composable
+private fun NavHostController.destinationSettings(): Pair<String?, Boolean> {
+    val destination = currentBackStackEntryAsState().value?.destination ?: return null to false
+
+    // TODO string resources
+    return when {
+        destination.hasRoute<ResetPasswordRoute>() -> "Reset password" to true
+        destination.hasRoute<PlanCreationRoute>() -> "Create or edit plan" to false
+        destination.hasRoute<ExerciseListRoute>() -> "Select exercise" to true
+        destination.hasRoute<AddExerciseToWorkoutRoute>() -> "Select exercise" to true
+        destination.hasRoute<AddExerciseToPlanRoute>() -> "Select exercise" to true
+        destination.hasRoute<WorkoutHistoryRoute>() -> "Select workout" to true
+        destination.hasRoute<MeasurementAddEditRoute>() -> "Add or edit measurement" to true
+        destination.hasRoute<WorkoutInProgressRoute>() -> "Record workout" to true
+        destination.hasRoute<WorkoutDetailRoute>() -> "Workout record" to true
+        destination.hasRoute<PlanningWorkoutRoute>() -> "Edit workout" to true
+        destination.hasRoute<PlanDetailRoute>() -> "Workout plan" to true
+        destination.hasRoute<CreateExerciseRoute>() -> "Create exercise" to false
+        destination.hasRoute<ExerciseDetailRoute>() -> "Exercise detail" to true
+        else -> null to false
+    }
 }
 
 private fun NavHostController.navigateToTopLevelDestination(destination: TopLevelDestination) {
