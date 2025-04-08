@@ -12,7 +12,6 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -26,14 +25,14 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import io.github.jakubherr.gitfit.ui.theme.GitFitTheme
 import kotlinx.coroutines.launch
 import org.koin.compose.KoinContext
 
 @Composable
 fun App() {
     KoinContext {
-        // TODO add custom app theme
-        MaterialTheme {
+        GitFitTheme {
             val navController = rememberNavController()
             val snackbarHostState = remember { SnackbarHostState() }
             val scope = rememberCoroutineScope()
@@ -41,30 +40,32 @@ fun App() {
             val destination = navController.currentBackStackEntryAsState().value?.destination
             val topLevelDestination = TopLevelDestination.entries.firstOrNull { destination?.hasRoute(it.route) == true }
 
-            GitFitNavScaffold(
-                currentDestination = topLevelDestination,
-                onDestinationClicked = {
-                    navController.navigateToTopLevelDestination(it)
-                },
-            ) {
-                Scaffold(
-                    topBar = {
-                        val settings = navController.destinationSettings()
-                        GitFitTopAppBar(settings.first, settings.second) {
-                            navController.popBackStack()
-                        }
+            GitFitTheme {
+                GitFitNavScaffold(
+                    currentDestination = topLevelDestination,
+                    onDestinationClicked = {
+                        navController.navigateToTopLevelDestination(it)
                     },
-                    snackbarHost = { SnackbarHost(snackbarHostState) }
-                ) { padding ->
-                    GitFitNavHost(
-                        navController,
-                        modifier = Modifier.padding(padding),
-                        showSnackbar = { message ->
-                            scope.launch {
-                                snackbarHostState.showSnackbar(message)
+                ) {
+                    Scaffold(
+                        topBar = {
+                            val settings = navController.destinationSettings()
+                            GitFitTopAppBar(settings.first, settings.second) {
+                                navController.popBackStack()
                             }
-                        }
-                    )
+                        },
+                        snackbarHost = { SnackbarHost(snackbarHostState) }
+                    ) { padding ->
+                        GitFitNavHost(
+                            navController,
+                            modifier = Modifier.padding(padding),
+                            showSnackbar = { message ->
+                                scope.launch {
+                                    snackbarHostState.showSnackbar(message)
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }

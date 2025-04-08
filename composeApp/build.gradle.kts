@@ -143,6 +143,7 @@ ktlint {
 }
 
 dependencies {
+    implementation(libs.androidx.material3.android) // note: why does this work on desktop?
     debugImplementation(compose.uiTooling)
 }
 

@@ -1,6 +1,5 @@
 package io.github.jakubherr.gitfit
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
@@ -10,11 +9,12 @@ import io.github.jakubherr.gitfit.presentation.dashboard.DashboardScreen
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseCreateScreen
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseListScreen
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutInProgressScreen
+import io.github.jakubherr.gitfit.ui.theme.GitFitTheme
 
 @Preview
 @Composable
 private fun DashboardScreenPreview() {
-    MaterialTheme {
+    GitFitTheme {
         Surface {
             DashboardScreen { }
         }
@@ -30,7 +30,7 @@ private fun WorkoutScreenPreview() {
 @Preview
 @Composable
 private fun ExerciseListScreenPreview() {
-    MaterialTheme {
+    GitFitTheme {
         Surface {
             ExerciseListScreen(
                 // emptyList(),
@@ -43,7 +43,7 @@ private fun ExerciseListScreenPreview() {
 @Preview
 @Composable
 private fun CreateExerciseScreenPreview() {
-    MaterialTheme {
+    GitFitTheme {
         Surface {
             ExerciseCreateScreen()
         }
@@ -53,7 +53,7 @@ private fun CreateExerciseScreenPreview() {
 @Preview
 @Composable
 private fun ExerciseDetailScreenPreview() {
-    MaterialTheme {
+    GitFitTheme {
         Surface {
             // ExerciseDetailScreen()
         }

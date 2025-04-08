@@ -35,7 +35,6 @@ fun SettingsScreenRoot(
     auth: AuthViewModel,
     modifier: Modifier = Modifier,
 ) {
-
     SettingsScreen(
         onLogout = { auth.onAction(AuthAction.SignOut) },
         onDeleteAccount = { auth.onAction(AuthAction.DeleteAccount(it))},
