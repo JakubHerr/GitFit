@@ -127,6 +127,8 @@
     <string name="browse_workout_history">Browse workout history</string>
     <string name="browse_measurement_history">Browse measurement history</string>
 
+    <string name="click_to_add_exercise">Click to add exercise</string>
+
     <string name="delete_workout_record">Delete workout record</string>
     <string name="delete_workout_explanation">The current workout will be deleted</string>
     <string name="continue_workout">Continue workout</string>
@@ -143,4 +145,20 @@
     <string name="create_exercise_route">Create exercise</string>
     <string name="exercise_detail_route">Exercise detail</string>
     <string name="verify_email_route">Verify email</string>
+
+    <string name="enum_progression_type_icrease_weight">Increase weight</string>
+    <string name="enum_progression_type_icrease_reps">Increase reps</string>
+
+    <string name="enum_muscle_group_arms">Arms</string>
+    <string name="enum_muscle_group_legs">Legs</string>
+    <string name="enum_muscle_group_shoulders">Shoulders</string>
+    <string name="enum_muscle_group_back">Back</string>
+    <string name="enum_muscle_group_abs">Abs</string>
+    <string name="enum_muscle_group_chest">Chest</string>
+    <string name="enum_muscle_group_forearms">Forearms</string>
+
+    <string name="enum_exercise_metric_heaviest_weight">Heaviest weight</string>
+    <string name="enum_exercise_metric_best_set_volume">Best set volume</string>
+    <string name="enum_exercise_metric_total_workout_volume">Total workout volume</string>
+    <string name="enum_exercise_metric_total_repetitions">Total repetitions</string>
 </resources>

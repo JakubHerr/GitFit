@@ -19,8 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.click_to_add_exercise
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun WorkoutPlanListItem(
@@ -64,7 +67,7 @@ fun ExerciseNames(
     modifier: Modifier = Modifier
 ) {
     Text(
-        if (blockList.isNotEmpty()) blockList.joinToString { it.exercise.name } else "Click to add exercise",
+        if (blockList.isNotEmpty()) blockList.joinToString { it.exercise.name } else stringResource(Res.string.click_to_add_exercise),
         overflow = TextOverflow.Ellipsis,
         maxLines = 2,
     )

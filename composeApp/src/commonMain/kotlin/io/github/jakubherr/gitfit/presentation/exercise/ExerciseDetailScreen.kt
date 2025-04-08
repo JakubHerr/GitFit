@@ -29,6 +29,10 @@ import gitfit.composeapp.generated.resources.cancel
 import gitfit.composeapp.generated.resources.delete
 import gitfit.composeapp.generated.resources.delete_custom_exercise
 import gitfit.composeapp.generated.resources.delete_custom_exercise_explanation
+import gitfit.composeapp.generated.resources.enum_exercise_metric_best_set_volume
+import gitfit.composeapp.generated.resources.enum_exercise_metric_heaviest_weight
+import gitfit.composeapp.generated.resources.enum_exercise_metric_total_repetitions
+import gitfit.composeapp.generated.resources.enum_exercise_metric_total_workout_volume
 import gitfit.composeapp.generated.resources.error_exercise_not_found
 import gitfit.composeapp.generated.resources.last_10_workouts
 import io.github.jakubherr.gitfit.domain.model.Exercise
@@ -136,8 +140,16 @@ fun ExerciseDetailScreen(
             "${stringResource(Res.string.last_10_workouts)} - ${exercise.name}",
         )
 
+        val translations = listOf(
+            stringResource(Res.string.enum_exercise_metric_heaviest_weight),
+            stringResource(Res.string.enum_exercise_metric_best_set_volume),
+            stringResource(Res.string.enum_exercise_metric_total_workout_volume),
+            stringResource(Res.string.enum_exercise_metric_total_repetitions),
+        )
+
         SingleChoiceChipSelection(
             ExerciseMetric.entries,
+            labels = translations,
             selected = selectedMetric,
             modifier = Modifier.padding(16.dp),
             onChoiceSelected = { metric ->

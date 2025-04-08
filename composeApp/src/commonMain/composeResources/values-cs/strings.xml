@@ -130,6 +130,8 @@
     <string name="delete_workout_explanation">Záznam cvičení bude trvale smazán</string>
     <string name="continue_workout">Pokračovat v záznamu</string>
 
+    <string name="click_to_add_exercise">Klikněte pro přidání cviků</string>
+
     <string name="reset_password_route">Resetovat heslo</string>
     <string name="plan_creation_route">Vytvořit nebo upravit plán</string>
     <string name="select_exercise_route">Výběr cviku</string>
@@ -142,4 +144,20 @@
     <string name="create_exercise_route">Tvorba cviku</string>
     <string name="exercise_detail_route">Detail cviku</string>
     <string name="verify_email_route">Ověření emailu</string>
+
+    <string name="enum_progression_type_icrease_weight">Zvýšení váhy</string>
+    <string name="enum_progression_type_icrease_reps">Zvýšení opakování</string>
+
+    <string name="enum_muscle_group_arms">Ruce</string>
+    <string name="enum_muscle_group_legs">Nohy</string>
+    <string name="enum_muscle_group_shoulders">Ramena</string>
+    <string name="enum_muscle_group_back">Záda</string>
+    <string name="enum_muscle_group_abs">Břicho</string>
+    <string name="enum_muscle_group_chest">Hrudník</string>
+    <string name="enum_muscle_group_forearms">Předloktí</string>
+
+    <string name="enum_exercise_metric_heaviest_weight">Heaviest weight</string>
+    <string name="enum_exercise_metric_best_set_volume">Best set volume</string>
+    <string name="enum_exercise_metric_total_workout_volume">Total workout volume</string>
+    <string name="enum_exercise_metric_total_repetitions">Total repetitions</string>
 </resources>

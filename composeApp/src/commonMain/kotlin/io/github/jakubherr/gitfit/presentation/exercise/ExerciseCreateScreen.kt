@@ -20,6 +20,13 @@ import gitfit.composeapp.generated.resources.cancel
 import gitfit.composeapp.generated.resources.cancel_exercise_creation
 import gitfit.composeapp.generated.resources.cancel_exercise_creation_explanation
 import gitfit.composeapp.generated.resources.delete_exercise
+import gitfit.composeapp.generated.resources.enum_muscle_group_abs
+import gitfit.composeapp.generated.resources.enum_muscle_group_arms
+import gitfit.composeapp.generated.resources.enum_muscle_group_back
+import gitfit.composeapp.generated.resources.enum_muscle_group_chest
+import gitfit.composeapp.generated.resources.enum_muscle_group_forearms
+import gitfit.composeapp.generated.resources.enum_muscle_group_legs
+import gitfit.composeapp.generated.resources.enum_muscle_group_shoulders
 import gitfit.composeapp.generated.resources.name
 import gitfit.composeapp.generated.resources.primary_muscle
 import gitfit.composeapp.generated.resources.save_exercise
@@ -84,8 +91,18 @@ fun ExerciseCreateScreen(
         )
 
         Text(stringResource(Res.string.primary_muscle))
+        val translations = listOf(
+            stringResource(Res.string.enum_muscle_group_arms),
+            stringResource(Res.string.enum_muscle_group_legs),
+            stringResource(Res.string.enum_muscle_group_shoulders),
+            stringResource(Res.string.enum_muscle_group_back),
+            stringResource(Res.string.enum_muscle_group_abs),
+            stringResource(Res.string.enum_muscle_group_chest),
+            stringResource(Res.string.enum_muscle_group_forearms),
+        )
         SingleChoiceChipSelection(
             MuscleGroup.entries,
+            translations,
             selectedPrimaryMuscle
         ) { selectedPrimaryMuscle = it }
 

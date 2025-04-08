@@ -27,6 +27,8 @@ import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.cancel
 import gitfit.composeapp.generated.resources.delete
 import gitfit.composeapp.generated.resources.edit_progression
+import gitfit.composeapp.generated.resources.enum_progression_type_icrease_reps
+import gitfit.composeapp.generated.resources.enum_progression_type_icrease_weight
 import gitfit.composeapp.generated.resources.minimum_repetitions
 import gitfit.composeapp.generated.resources.minimum_weight
 import gitfit.composeapp.generated.resources.progresison_type
@@ -84,7 +86,12 @@ fun EditProgressionScreenRoot(
             }
 
             Text(stringResource(Res.string.progresison_type))
-            SingleChoiceChipSelection(ProgressionType.entries, selectedProgressionType) {
+
+            val translations = listOf(
+                stringResource(Res.string.enum_progression_type_icrease_weight),
+                stringResource(Res.string.enum_progression_type_icrease_reps),
+            )
+            SingleChoiceChipSelection(ProgressionType.entries, translations, selectedProgressionType) {
                 selectedProgressionType = it
             }
 
@@ -135,7 +142,6 @@ fun EditProgressionScreenRoot(
                         trigger = ProgressionTrigger.MINIMUM_REPS_AND_WEIGHT_EVERY_SET
                     )
 
-                    println("DBG: saving progression: $settings")
                     onSave(settings)
                 }
             ) {
