@@ -1,5 +1,6 @@
 package io.github.jakubherr.gitfit.presentation.auth
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -11,7 +12,8 @@ import io.github.jakubherr.gitfit.presentation.OnboardingRoute
 import io.github.jakubherr.gitfit.presentation.RegisterRoute
 
 fun NavGraphBuilder.authGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    snackbarHostState: SnackbarHostState,
 ) {
     navigation<AuthGraphRoute>(
         startDestination = LoginRoute
@@ -20,11 +22,17 @@ fun NavGraphBuilder.authGraph(
 
         composable<LoginRoute> {
             LoginScreenRoot(
+                snackbarHostState = snackbarHostState,
                 onForgotPassword = { navController.navigate(ResetPasswordRoute) }
             )
         }
 
-        composable<ResetPasswordRoute> { ResetPasswordScreenRoot() }
+        composable<ResetPasswordRoute> {
+            ResetPasswordScreenRoot(
+                snackbarHostState = snackbarHostState,
+                onBack = { navController.popBackStack() }
+            )
+        }
 
         composable<OnboardingRoute> { /* TODO */ }
     }

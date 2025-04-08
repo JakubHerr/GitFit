@@ -37,8 +37,13 @@ fun GitFitNavHost(
         },
         modifier = modifier,
     ) {
-        authGraph(navController)
+        authGraph(navController, snackbarHostState)
         loggedInGraph(navController, snackbarHostState)
-        composable<VerifyEmailRoute> { VerifyEmailScreenRoot { navController.navigate(DashboardRoute) } }
+        composable<VerifyEmailRoute> {
+            VerifyEmailScreenRoot(
+                snackbarHostState = snackbarHostState,
+                onSkip = { navController.navigate(DashboardRoute) }
+            )
+        }
     }
 }

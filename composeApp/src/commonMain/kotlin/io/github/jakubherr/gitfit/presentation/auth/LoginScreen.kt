@@ -12,20 +12,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,6 +48,8 @@ import gitfit.composeapp.generated.resources.register
 import gitfit.composeapp.generated.resources.sign_in
 import io.github.jakubherr.gitfit.domain.repository.AuthError
 import io.github.jakubherr.gitfit.presentation.shared.PasswordInputField
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -54,14 +57,26 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun LoginScreenRoot(
     vm: AuthViewModel = koinViewModel(),
+    snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
     onLogin: () -> Unit = {},
     onForgotPassword: () -> Unit = {},
 ) {
-    val state = vm.state.collectAsStateWithLifecycle()
+    val state by vm.state.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(state.error) {
+        val error = state.error
+        if (error != null) {
+            scope.launch {
+                snackbarHostState.showSnackbar(error.getMessage())
+                vm.onAction(AuthAction.ErrorHandled)
+            }
+        }
+    }
 
     LoginScreen(
-        state.value,
+        state,
         onAction = { action -> vm.onAction(action) },
         onForgotPassword = onForgotPassword,
     )
@@ -95,11 +110,9 @@ fun LoginScreen(
                 contentScale = ContentScale.FillBounds
             )
 
-
             if (state.loading) {
                 CircularProgressIndicator()
             }
-            state.error?.let { Text(it.toMessage()) }
 
             Card(
                 modifier = Modifier.sizeIn(maxWidth = 512.dp).padding(16.dp)
@@ -166,3 +179,15 @@ fun AuthError.toMessage() = when (this) {
     AuthError.Unknown -> stringResource(Res.string.error_unknown)
     AuthError.UserLoggedOut -> stringResource(Res.string.error_user_logged_out)
 }
+
+suspend fun AuthError.getMessage() = when (this) {
+    AuthError.EmailInUseAlready -> getString(Res.string.error_email_used_already)
+    AuthError.FailedToSendEmail -> getString(Res.string.error_failed_to_send_email)
+    AuthError.Generic -> getString(Res.string.error_unknown)
+    AuthError.InvalidCredentials -> getString(Res.string.error_invalid_credentials)
+    AuthError.NoInternet -> getString(Res.string.error_no_internet)
+    AuthError.PasswordTooWeak -> getString(Res.string.error_password_too_weak)
+    AuthError.Unknown -> getString(Res.string.error_unknown)
+    AuthError.UserLoggedOut -> getString(Res.string.error_user_logged_out)
+}
+

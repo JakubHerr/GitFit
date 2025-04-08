@@ -25,6 +25,11 @@ class AuthViewModel(
 ) : ViewModel() {
     private val isLoading = MutableStateFlow(false)
     private val error = MutableStateFlow<AuthError?>(null)
+
+    // this flow is for notifying UI of successfully finished actions like password reset and verification sent
+    private val _finishedAction = MutableStateFlow<AuthAction?>(null)
+    val finishedAction: StateFlow<AuthAction?> = _finishedAction
+    
     val currentUser get() = authRepository.currentUser
 
     val state: StateFlow<AuthState> = combine(authRepository.currentUserFlow, error, isLoading) { user, error, loading ->
@@ -47,6 +52,8 @@ class AuthViewModel(
             is AuthAction.RequestPasswordReset -> sendPasswordResetEmail(action.email)
             is AuthAction.SignOut -> signOut()
             is AuthAction.DeleteAccount -> deleteAccount(action.password)
+            is AuthAction.ErrorHandled -> error.value = null
+            is AuthAction.ActionHandled -> _finishedAction.value = null
         }
     }
 
@@ -71,11 +78,11 @@ class AuthViewModel(
 
     private fun verifyEmail() {
         println("DBG: email verification requested")
-        launch { authRepository.sendVerificationEmail() }
+        launch { authRepository.sendVerificationEmail().onSuccess { _finishedAction.value = AuthAction.VerifyEmail } }
     }
 
     private fun sendPasswordResetEmail(email: String) {
-        launch { authRepository.sendPasswordResetEmail(email) }
+        launch { authRepository.sendPasswordResetEmail(email).onSuccess { _finishedAction.value = AuthAction.RequestPasswordReset(email) } }
     }
 
     private fun deleteAccount(password: String) {
@@ -113,6 +120,8 @@ sealed interface AuthAction {
 
     object SignOut : AuthAction
     object VerifyEmail : AuthAction
+    object ErrorHandled : AuthAction
+    object ActionHandled : AuthAction
 }
 
 data class AuthState(
