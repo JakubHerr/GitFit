@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.add_exercise
-import gitfit.composeapp.generated.resources.continue_workout
+import gitfit.composeapp.generated.resources.cancel
 import gitfit.composeapp.generated.resources.delete_exercise
 import gitfit.composeapp.generated.resources.delete_last_set
 import gitfit.composeapp.generated.resources.delete_workout
@@ -45,7 +45,6 @@ import gitfit.composeapp.generated.resources.set
 import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import io.github.jakubherr.gitfit.presentation.shared.WorkoutBlockItem
-import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -68,7 +67,7 @@ fun WorkoutInProgressScreenRoot(
             title = stringResource(Res.string.delete_workout),
             text = stringResource(Res.string.delete_workout_explanation),
             confirmText = stringResource(Res.string.delete_workout),
-            dismissText = stringResource(Res.string.continue_workout),
+            dismissText = stringResource(Res.string.cancel),
             onDismiss = { showDialog = false },
             onConfirm = {
                 showDialog = false

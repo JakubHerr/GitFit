@@ -1,0 +1,132 @@
+<resources>
+    <string name="email">Email</string>
+    <string name="password">Heslo</string>
+    <string name="confirm">Potvrdit</string>
+    <string name="password_reset_sent">Password reset link sent to</string>
+    <string name="verification_email_sent">Ověřovací email odeslán</string>
+    <string name="account_deleted">Účet byl smazán</string>
+
+    <string name="dashboard">Přehled</string>
+    <string name="plan">Plány</string>
+    <string name="profile">Profil</string>
+    <string name="measurement">Měření</string>
+    <string name="history">Historie</string>
+
+    <string name="delete">Smazat</string>
+    <string name="save">Uložit</string>
+
+    <string name="add_exercise">Přidat cvik</string>
+    <string name="delete_exercise">Smazat cvik</string>
+    <string name="delete_custom_exercise">Odstranit vlastní cvik</string>
+    <string name="delete_custom_exercise_explanation">Cvik bude smazán. Záznamy cvičení nebudou změněny</string>
+
+    <string name="save_workout">Save</string>
+    <string name="delete_workout">Delete</string>
+
+    <string name="add_set">Přidat sérii</string>
+    <string name="delete_last_set">Smazat poslední sérii</string>
+    <string name="set">Série</string>
+
+    <string name="kg">KG</string>
+    <string name="reps">Opak.</string>
+    <string name="done">Hotovo</string>
+
+    <string name="see_all">Zobrazit vše</string>
+
+    <string name="error_exercise_list_empty">Seznam cviků je prázdný</string>
+    <string name="error_exercise_not_found">Cvik nebyl nalezen</string>
+
+    <string name="your_plans">Vaše plány</string>
+    <string name="predefined_plans">Predefined plans</string>
+    <string name="create_new_plan">Vytvořit nový plán</string>
+    <string name="plan_name">Název plánu</string>
+    <string name="workout_days">Tréninkové dny</string>
+    <string name="add_workout_day">Přidat den</string>
+
+    <string name="discard_changes">Zahodit změny</string>
+    <string name="discard_plan_changes">Zahodit změny plánu</string>
+    <string name="discard_plan_changes_explanation">Současný plán nebude uložen</string>
+
+    <string name="edit_progression">Úprava progrese</string>
+    <string name="starting_values">Počáteční hodnoty:</string>
+    <string name="minimum_weight">Minimální váha (kg)</string>
+    <string name="minimum_repetitions">Minimální opakování</string>
+    <string name="progresison_type">Typ progrese</string>
+    <string name="weight_increase">Zvýšení váhy</string>
+    <string name="repetition_increase">Zvýšení opakování</string>
+
+    <string name="create_exercise">Vytvořit cvik</string>
+    <string name="search_exercise">Vyhledat cvik</string>
+    <string name="save_exercise">Uložit cvik</string>
+
+    <string name="cancel_exercise_creation">Zrušit tvorbu cviku</string>
+    <string name="cancel_exercise_creation_explanation">Pokud odejdete, cvik nebude uložen</string>
+
+    <string name="last_10_workouts">Posledních 10 záznamů</string>
+
+    <string name="name">Název</string>
+    <string name="cancel">Zrušit</string>
+    <string name="register">Registrovat</string>
+    <string name="sign_in">Přihlásit se</string>
+    <string name="log_out">Odhlásit se</string>
+    <string name="primary_muscle">Primární sval</string>
+    <string name="secondary_muscle">Sekundární svaly</string>
+    <string name="planned_workouts">Naplánované tréninky</string>
+    <string name="start_unplanned_workout">Spustit neplánovaný trénink</string>
+    <string name="resume_workout">Pokračovat v záznamu</string>
+
+    <string name="latest_measurements">Latest measurements</string>
+    <string name="add_todays_measurement">Add today's measurement</string>
+    <string name="edit_todays_measurement">Edit today's measurement</string>
+    <string name="weight">Váha</string>
+    <string name="height">Výška</string>
+    <string name="neck">Krk</string>
+    <string name="chest">Hrudník</string>
+    <string name="waist">Pas</string>
+    <string name="left_arm">Levá paže</string>
+    <string name="right_arm">Pravá paže</string>
+    <string name="left_forearm">Levé předloktí</string>
+    <string name="right_forearm">Pravé předloktí</string>
+    <string name="left_thigh">Levé stehno</string>
+    <string name="right_thigh">Pravé stehno</string>
+    <string name="left_calf">Levé lýtko</string>
+    <string name="right_calf">Pravé lýtko</string>
+    <string name="save_measurement">Uložit měření</string>
+    <string name="error_invalid_measurement_values">Všechny hodnoty musí být kladné</string>
+
+    <string name="delete_account">Smazat účet</string>
+    <string name="delete_account_explanaiton">Opravdu chcete smazat účet? Všechna data budou smazána</string>
+    <string name="confirm_account_deletion">Potvrďtě smazání účtu zadáním hesla</string>
+    <string name="forgot_password">Zapomenuté heslo</string>
+
+    <string name="error_email_used_already">Email is used already</string>
+    <string name="error_failed_to_send_email">Nepodařilo se odeslat email</string>
+    <string name="error_firebase_auth">Firebase auth error</string>
+    <string name="error_unknown">Neznámá chyba</string>
+    <string name="error_invalid_credentials">Neplatné údaje</string>
+    <string name="error_invalid_user">Neplatný uživatel</string>
+    <string name="error_no_internet">Zařizení je offline</string>
+    <string name="error_password_too_weak">Heslo musí být dlouhé alespoň 12 znaků</string>
+    <string name="error_user_logged_out">Uživatel je odhlášený</string>
+
+    <string name="enter_email">Zadejte email</string>
+    <string name="send_reset_email">Odeslat email</string>
+    <string name="send_verification_email">Odeslat ověřovací email</string>
+    <string name="email_not_verified">Vaše emailová adresa není ověřená</string>
+    <string name="skip_verification">Přeskočit ověření</string>
+
+    <string name="error_block_with_progression">Bloky s progresí nelze odstranit</string>
+    <string name="error_block_not_found">Blok nenalezen</string>
+    <string name="empty_workout_history">No workout history</string>
+    <string name="error_workout_not_found">Záznam cvičení nenalezen</string>
+
+    <string name="error_workout_in_progress">Právě máte spuštěný jiný trénink!</string>
+
+    <string name="browse_exercise_history">Procházet cviky</string>
+    <string name="browse_workout_history">Procházet záznamy cvičení</string>
+    <string name="browse_measurement_history">Procházet historii měření</string>
+
+    <string name="delete_workout_record">Smazat záznam cvičení</string>
+    <string name="delete_workout_explanation">Záznam cvičení bude trvale smazán</string>
+    <string name="continue_workout">Pokračovat v záznamu</string>
+</resources>

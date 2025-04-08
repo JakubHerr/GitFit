@@ -78,6 +78,8 @@ fun LoginScreen(
         email.isNotBlank() && password.isNotBlank()
     }
 
+    // val locale = koinInject<PlatformLocalization>()
+
     Surface {
         Column(
             Modifier.fillMaxSize().padding(16.dp),

@@ -152,7 +152,7 @@ compose.desktop {
         mainClass = "io.github.jakubherr.gitfit.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Msi, TargetFormat.Rpm, TargetFormat.AppImage)
             packageName = "io.github.jakubherr.gitfit"
             packageVersion = "1.0.0"
         }
