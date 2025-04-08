@@ -152,7 +152,11 @@ compose.desktop {
         mainClass = "io.github.jakubherr.gitfit.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Msi, TargetFormat.Rpm, TargetFormat.AppImage)
+            // TODO try to debug and improve
+            // include all modules is a hack to fix missing JVM libraries when packaging desktop
+            // see https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-native-distribution.html#including-jdk-modules
+            includeAllModules = true
+            targetFormats(TargetFormat.Msi, TargetFormat.Exe, TargetFormat.AppImage)
             packageName = "io.github.jakubherr.gitfit"
             packageVersion = "1.0.0"
         }
