@@ -36,18 +36,18 @@ fun PlanListScreenRoot(
     val userPlans by vm.userPlans.collectAsStateWithLifecycle(emptyList())
     val predefinedPlans by vm.predefinedPlans.collectAsStateWithLifecycle(emptyList())
 
-    Column(modifier.fillMaxSize()) {
+    Column(modifier.fillMaxSize().padding(16.dp)) {
 
         LazyColumn(
-            modifier = Modifier.padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(vertical = 16.dp)
+            modifier = Modifier.weight(1.0f),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item { Text(stringResource(Res.string.your_plans)) }
+
             items(userPlans) { plan ->
                 PlanListItem(
                     plan,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(8.dp)
                 ) {
                     onPlanSelected(plan)
                 }
@@ -59,12 +59,10 @@ fun PlanListScreenRoot(
                     // TODO predefined plans
                 }
             }
+        }
 
-            item {
-                Button(onCreateNewPlan) {
-                    Text(stringResource(Res.string.create_new_plan))
-                }
-            }
+        Button(onCreateNewPlan) {
+            Text(stringResource(Res.string.create_new_plan))
         }
     }
 }
@@ -73,11 +71,11 @@ fun PlanListScreenRoot(
 fun PlanListItem(
     plan: Plan,
     modifier: Modifier = Modifier,
-    onPlanClicked: () -> Unit = {}
+    onPlanClicked: (Plan) -> Unit = {}
 ) {
     // name of plan
-    Card(onPlanClicked) {
-        Column(modifier.fillMaxWidth()) {
+    Card({ onPlanClicked(plan) }) {
+        Column(modifier.fillMaxWidth().padding(8.dp)) {
             Text(plan.name, fontWeight = FontWeight.Bold)
             plan.workoutPlans.forEach { workout ->
                 Text(workout.name, fontWeight = FontWeight.SemiBold)

@@ -73,7 +73,9 @@ fun GitFitNavHost(
         composable<VerifyEmailRoute> {
             VerifyEmailScreenRoot(
                 authViewModel,
-                onSkip = { navController.navigate(DashboardRoute) }
+                onSkip = { navController.navigate(LoggedInRoute) {
+                    popUpTo(VerifyEmailRoute) { inclusive = true }
+                } }
             )
         }
     }

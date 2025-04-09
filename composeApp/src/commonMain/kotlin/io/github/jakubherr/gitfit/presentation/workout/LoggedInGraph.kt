@@ -1,6 +1,5 @@
 package io.github.jakubherr.gitfit.presentation.workout
 
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,6 +19,7 @@ import io.github.jakubherr.gitfit.presentation.DashboardRoute
 import io.github.jakubherr.gitfit.presentation.ExerciseListRoute
 import io.github.jakubherr.gitfit.presentation.HistoryRoute
 import io.github.jakubherr.gitfit.presentation.LoggedInRoute
+import io.github.jakubherr.gitfit.presentation.PlanDetailRoute
 import io.github.jakubherr.gitfit.presentation.SettingsRoute
 import io.github.jakubherr.gitfit.presentation.WorkoutDetailRoute
 import io.github.jakubherr.gitfit.presentation.WorkoutHistoryRoute
@@ -30,6 +30,7 @@ import io.github.jakubherr.gitfit.presentation.dashboard.DashboardScreenRoot
 import io.github.jakubherr.gitfit.presentation.exercise.exerciseNavigation
 import io.github.jakubherr.gitfit.presentation.graph.HistoryScreenRoot
 import io.github.jakubherr.gitfit.presentation.measurement.measurementGraph
+import io.github.jakubherr.gitfit.presentation.planning.PlanningViewModel
 import io.github.jakubherr.gitfit.presentation.planning.planningGraph
 import io.github.jakubherr.gitfit.presentation.settings.SettingsScreenRoot
 import kotlinx.coroutines.launch
@@ -48,16 +49,22 @@ fun NavGraphBuilder.loggedInGraph(
     ) {
         composable<DashboardRoute> {
             val vm = navController.sharedViewModel<WorkoutViewModel>()
+            val planVm = navController.sharedViewModel<PlanningViewModel>()
 
             DashboardScreenRoot(
                 vm = vm,
-            ) { action ->
-                when (action) {
-                    is DashboardAction.PlannedWorkoutClick, DashboardAction.UnplannedWorkoutClick, DashboardAction.ResumeWorkoutClick -> {
-                        navController.navigate(WorkoutInProgressRoute)
+                planVM = planVm,
+                onAction = { action ->
+                    when (action) {
+                        is DashboardAction.PlannedWorkoutClick, DashboardAction.UnplannedWorkoutClick, DashboardAction.ResumeWorkoutClick -> {
+                            navController.navigate(WorkoutInProgressRoute)
+                        }
                     }
+                },
+                onPlanSelected = {
+                    navController.navigate(PlanDetailRoute(it.id))
                 }
-            }
+            )
         }
 
         composable<WorkoutInProgressRoute> {

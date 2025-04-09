@@ -136,7 +136,7 @@ private fun NavHostController.destinationSettings(): Pair<String?, Boolean> {
     }
 }
 
-private fun NavHostController.navigateToTopLevelDestination(destination: TopLevelDestination) {
+fun NavHostController.navigateToTopLevelDestination(destination: TopLevelDestination) {
     val route: Any =
         when (destination) {
             TopLevelDestination.DASHBOARD -> DashboardRoute

@@ -93,6 +93,7 @@ fun PlanCreationScreen(
         HorizontalDivider(Modifier.fillMaxWidth().padding(vertical = 16.dp))
 
         LazyColumn(
+            modifier = Modifier.weight(1.0f),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             items(plan.workoutPlans) { workout ->
@@ -105,7 +106,7 @@ fun PlanCreationScreen(
         }
 
         Row(
-            Modifier.fillMaxWidth().weight(1.0f),
+            Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {

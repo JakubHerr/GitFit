@@ -38,6 +38,7 @@
     <string name="error_exercise_list_empty">No exercises found</string>
     <string name="error_exercise_not_found">Exercise not found</string>
 
+    <string name="training_plans">Training plans</string>
     <string name="your_plans">Your plans</string>
     <string name="predefined_plans">Predefined plans</string>
     <string name="create_new_plan">Create new plan</string>

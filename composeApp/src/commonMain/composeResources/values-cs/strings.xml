@@ -20,7 +20,7 @@
     <string name="delete_custom_exercise">Odstranit vlastní cvik</string>
     <string name="delete_custom_exercise_explanation">Cvik bude smazán. Záznamy cvičení nebudou změněny</string>
 
-    <string name="save_workout">Ukončit záznam</string>
+    <string name="save_workout">Dokončit trénink</string>
     <string name="delete_workout">Odstranit záznam</string>
 
     <string name="add_set">Přidat sérii</string>
@@ -37,6 +37,7 @@
     <string name="error_exercise_list_empty">Seznam cviků je prázdný</string>
     <string name="error_exercise_not_found">Cvik nebyl nalezen</string>
 
+    <string name="training_plans">Tréninkové plány</string>
     <string name="your_plans">Vaše plány</string>
     <string name="predefined_plans">Předdefinované plány</string>
     <string name="create_new_plan">Vytvořit nový plán</string>

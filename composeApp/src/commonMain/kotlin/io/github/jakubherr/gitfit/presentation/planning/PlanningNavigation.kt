@@ -19,9 +19,11 @@ import io.github.jakubherr.gitfit.presentation.PlanCreationRoute
 import io.github.jakubherr.gitfit.presentation.PlanDetailRoute
 import io.github.jakubherr.gitfit.presentation.PlanOverviewRoute
 import io.github.jakubherr.gitfit.presentation.PlanningWorkoutRoute
+import io.github.jakubherr.gitfit.presentation.TopLevelDestination
 import io.github.jakubherr.gitfit.presentation.WorkoutInProgressRoute
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseListScreenRoot
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseViewModel
+import io.github.jakubherr.gitfit.presentation.navigateToTopLevelDestination
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
 import io.github.jakubherr.gitfit.presentation.workout.sharedViewModel
@@ -72,6 +74,7 @@ fun NavGraphBuilder.planningGraph(
 
                     if (currentWorkout == null) {
                         workoutViewModel.onAction(WorkoutAction.StartPlannedWorkout(plan, workout.idx))
+                        navController.navigateToTopLevelDestination(TopLevelDestination.DASHBOARD)
                         navController.navigate(WorkoutInProgressRoute)
                     } else {
                         scope.launch {
