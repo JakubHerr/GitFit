@@ -16,6 +16,4 @@ interface PlanRepository {
     suspend fun deleteAllCustomPlans(userId: String): Result<Unit>
 
     suspend fun getCustomPlan(userId: String, planId: String) : Plan?
-
-    suspend fun getCustomWorkout(userId: String, planId: String, workoutIdx: Int): WorkoutPlan
 }

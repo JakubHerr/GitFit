@@ -25,18 +25,7 @@ class WorkoutViewModel(
     private val planRepository: PlanRepository,
     private val authRepository: AuthRepository,
 ) : ViewModel() {
-    // TODO: how to detect a workout modification? If device is offline, the launched coroutine will not finish
-    //  maybe make all repository actions return result?
     private val currentUser = authRepository.currentUserFlow
-
-    init {
-        println("DBG: WorkoutViewModel initiated")
-    }
-
-    override fun onCleared() {
-        println("DBG: WorkoutViewModel cleared")
-        super.onCleared()
-    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     var currentWorkout = currentUser.flatMapLatest { user ->
@@ -118,7 +107,6 @@ class WorkoutViewModel(
     }
 
     private fun completeCurrentWorkout() {
-        println("DBG: completing current workout ${currentWorkout.value}")
         val workout = currentWorkout.value ?: return
 
         if (workout.error == null) {

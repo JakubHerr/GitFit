@@ -16,10 +16,6 @@ interface ExerciseRepository {
 
     suspend fun removeAllCustomExercises(userId: String): Result<Unit>
 
-    suspend fun getDefaultExercise(exerciseId: String): Result<Exercise>
-
-    suspend fun getCustomExercise(userId: String, exerciseId: String): Result<Exercise>
-
     // TODO use to fill Firebase with predefined exercises and remove
     suspend fun addDefaultExercise(exercise: Exercise)
 }

@@ -70,8 +70,6 @@ fun NavGraphBuilder.planningGraph(
             PlanDetailScreen(
                 plan,
                 onWorkoutSelected = { workout ->
-                    println("DBG: Plan selected: ${plan.id}, workout index ${workout.idx}")
-
                     if (currentWorkout == null) {
                         workoutViewModel.onAction(WorkoutAction.StartPlannedWorkout(plan, workout.idx))
                         navController.navigateToTopLevelDestination(TopLevelDestination.DASHBOARD)

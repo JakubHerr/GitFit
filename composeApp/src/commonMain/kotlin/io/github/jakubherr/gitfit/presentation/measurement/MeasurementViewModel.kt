@@ -45,11 +45,6 @@ class MeasurementViewModel(
             measurementRepository.deleteMeasurement(user.id, measurement)
         }
     }
-
-    override fun onCleared() {
-        println("DBG: Measurement viewmodel destroyed :((((")
-        super.onCleared()
-    }
 }
 
 sealed interface MeasurementAction {

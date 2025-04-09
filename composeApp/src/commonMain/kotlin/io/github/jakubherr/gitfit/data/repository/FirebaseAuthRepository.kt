@@ -31,7 +31,6 @@ class FirebaseAuthRepository: AuthRepository {
         email: String,
         password: String,
     ): Result<User> {
-        println("DBG: Registering user...")
         return runWithErrorChecking {
             val result = auth.createUserWithEmailAndPassword(email, password)
             Result.success(result.user.toUser())
@@ -42,7 +41,6 @@ class FirebaseAuthRepository: AuthRepository {
         email: String,
         password: String,
     ): Result<User> {
-        println("DBG: Signing in user...")
         return runWithErrorChecking {
             val result = auth.signInWithEmailAndPassword(email, password)
             Result.success(result.user.toUser())
@@ -65,7 +63,6 @@ class FirebaseAuthRepository: AuthRepository {
             }
             return Result.success(Unit)
         } catch (e: FirebaseAuthException) {
-            println("DBG: Firebase auth failed: ${e.stackTraceToString()}")
             return Result.failure(AuthError.Generic)
         }
     }
@@ -88,10 +85,8 @@ class FirebaseAuthRepository: AuthRepository {
         try {
             return block()
         } catch (e: FirebaseAuthWeakPasswordException) {
-            println("DBG: attempt to register with password that is too weak")
             return Result.failure(AuthError.PasswordTooWeak)
         } catch (e: FirebaseAuthInvalidCredentialsException) {
-            println("DBG: user entered invalid account credentials")
             return Result.failure(AuthError.InvalidCredentials)
         } catch (e: FirebaseNetworkException) {
             return Result.failure(AuthError.NoInternet)
@@ -104,7 +99,6 @@ class FirebaseAuthRepository: AuthRepository {
         catch (e: FirebaseAuthException) {
             return Result.failure(AuthError.Generic)
         } catch (e: Exception) {
-            println("DBG: warning! Unknown and unexpected error encountered: \n ${e.stackTraceToString()}")
             return Result.failure(AuthError.Unknown)
         }
     }

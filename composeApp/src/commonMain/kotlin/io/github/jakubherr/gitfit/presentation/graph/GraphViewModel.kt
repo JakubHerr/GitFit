@@ -56,7 +56,6 @@ class GraphViewModel(
     fun onAction(action: GraphAction) {
         when (action) {
             is GraphAction.ExerciseAndMetricSelected -> {
-                println("DBG: selecting metric ${action.metric} for exercise ${action.exercise.id}")
                 selectedMetric.value = action.metric
                 selectedExercise.value = action.exercise
             }

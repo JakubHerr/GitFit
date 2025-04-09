@@ -53,7 +53,6 @@ fun WorkoutInProgressScreenRoot(
     onAction: (WorkoutAction) -> Unit = {},
     onSaveComplete: () -> Unit = {}, // this mainly prevents cancelling viewmodel before it handles progression
 ) {
-    // TODO loading indicator when workout modification hangs
     val workout by vm.currentWorkout.collectAsStateWithLifecycle(null)
     val workoutSaved = vm.workoutSaved
     var showDialog by remember { mutableStateOf(false) }
@@ -135,7 +134,7 @@ fun WorkoutInProgressScreen(
                 }
 
                 Row(Modifier.fillMaxWidth().padding(16.dp)) {
-                    Button(onClick = { onAction(WorkoutAction.DeleteWorkout(workout.id)) }) { // TODO "are you sure?" dialog
+                    Button(onClick = { onAction(WorkoutAction.DeleteWorkout(workout.id)) }) {
                         Text(stringResource(Res.string.delete_workout))
                     }
                     Button(onClick = { onAction(WorkoutAction.CompleteCurrentWorkout) }) {

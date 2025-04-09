@@ -40,7 +40,6 @@ fun VerifyEmailScreenRoot(
 
     LaunchedEffect(null) {
         while (true) {
-            println("DBG: Checking for email verification...")
             if (checkEmailValidation()) break
             delay(5_000L)
         }

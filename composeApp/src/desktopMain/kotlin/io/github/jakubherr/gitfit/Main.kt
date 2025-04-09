@@ -37,11 +37,7 @@ fun main() =
 
         Firebase.initialize(Application(), options)
 
-        val state =
-            rememberWindowState(
-                size = DpSize(1000.dp, 800.dp),
-                // position = WindowPosition(300.dp, 300.dp)
-            )
+        val state = rememberWindowState(size = DpSize(1000.dp, 800.dp),)
 
         initKoin()
 

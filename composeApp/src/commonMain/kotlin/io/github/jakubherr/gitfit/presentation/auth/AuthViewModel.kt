@@ -72,12 +72,10 @@ class AuthViewModel(
     }
 
     private fun signOut() {
-        println("DBG: signing out ${state.value.user.id}...")
         launch { authRepository.signOut() }
     }
 
     private fun verifyEmail() {
-        println("DBG: email verification requested")
         launch { authRepository.sendVerificationEmail().onSuccess { _finishedAction.value = AuthAction.VerifyEmail } }
     }
 
@@ -86,7 +84,6 @@ class AuthViewModel(
     }
 
     private fun deleteAccount(password: String) {
-        println("DBG: deleting user ${state.value.user.id}")
         launch {
             authRepository.deleteUser(password) { userId ->
                 // nuke all user workouts
@@ -97,8 +94,6 @@ class AuthViewModel(
                 measurementRepository.deleteAllMeasurements(userId).onFailure { return@deleteUser Result.failure(it) }
                 // nuke all user custom exercises
                 exerciseRepository.removeAllCustomExercises(userId).onFailure { return@deleteUser Result.failure(it) }
-            }.onFailure {
-                println("DBG: Failed to delete user, cause ${it.stackTraceToString()}")
             }.onSuccess {
                 _finishedAction.value = AuthAction.DeleteAccount("")
             }

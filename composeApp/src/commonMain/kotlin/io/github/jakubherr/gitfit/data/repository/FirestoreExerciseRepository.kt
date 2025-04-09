@@ -85,36 +85,4 @@ class FirestoreExerciseRepository : ExerciseRepository {
             defaultExerciseRef.document(id).set(exercise.copy(id = id))
         }
     }
-
-    // offline-first: if id is not found in cache, it will search server -> exception
-    // not finding an exercise could either mean the exercise is custom or the user is offline
-    override suspend fun getDefaultExercise(exerciseId: String): Result<Exercise> {
-        println("DBG: beginning default exercise fetch")
-        return withContext(context) {
-            try {
-                val exercise = defaultExerciseRef.document(exerciseId).get()
-                Result.success(exercise.data<Exercise>())
-            } catch (e: FirebaseException) {
-                Result.failure(e)
-            } catch (e: IllegalArgumentException) {
-               Result.failure(e)
-            }
-        }.also { println("DBG: default exercise fetch ended") }
-    }
-
-    override suspend fun getCustomExercise(userId: String, exerciseId: String): Result<Exercise> {
-        println("DBG: beginning custom exercise fetch")
-        if (userId.isBlank()) return Result.failure(AuthError.UserLoggedOut)
-
-        return withContext(context) {
-            try {
-                val result = userExerciseRef(userId).document(exerciseId).get()
-                Result.success(result.data<Exercise>())
-            } catch (e: FirebaseException) {
-                Result.failure(e)
-            } catch (e: IllegalArgumentException) {
-                Result.failure(e)
-            }
-        }.also { println("DBG: custom exercise fetch ended") }
-    }
 }
