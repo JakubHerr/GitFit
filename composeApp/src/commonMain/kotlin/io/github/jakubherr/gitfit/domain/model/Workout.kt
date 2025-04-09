@@ -87,10 +87,3 @@ data class Workout(
         object BlankName : Error("Workout plan has no name")
     }
 }
-
-val mockWorkout =
-    Workout(
-        id = "mock",
-        blocks = listOf(mockBlock, mockBlock),
-        date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
-    )

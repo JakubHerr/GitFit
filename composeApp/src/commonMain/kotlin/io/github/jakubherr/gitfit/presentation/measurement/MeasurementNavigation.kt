@@ -11,7 +11,7 @@ import gitfit.composeapp.generated.resources.error_invalid_measurement_values
 import io.github.jakubherr.gitfit.presentation.MeasurementAddEditRoute
 import io.github.jakubherr.gitfit.presentation.MeasurementHistoryRoute
 import io.github.jakubherr.gitfit.presentation.MeasurementRoute
-import io.github.jakubherr.gitfit.presentation.workout.sharedViewModel
+import io.github.jakubherr.gitfit.presentation.sharedViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
@@ -34,7 +34,7 @@ fun NavGraphBuilder.measurementNavigation(
         val today by vm.todayMeasurement.collectAsStateWithLifecycle()
         val scope = rememberCoroutineScope()
 
-        AddEditMeasurement(
+        AddEditMeasurementScreen(
             oldMeasurement = today,
             onSave = { measurement ->
                 if (!measurement.isValid) {

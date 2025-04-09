@@ -50,11 +50,3 @@ data class Block(
         return copy(series = newSeries, progressionSettings = newProgression)
     }
 }
-
-val mockBlock =
-    Block(
-        idx = 0,
-        exercise = mockExercise,
-        series = listOf(mockSeries),
-        restTimeSeconds = 69,
-    )

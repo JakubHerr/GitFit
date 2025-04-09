@@ -1,31 +1,14 @@
-package io.github.jakubherr.gitfit
+package io.github.jakubherr.gitfit.previews
 
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import io.github.jakubherr.gitfit.domain.model.mockExercise
-import io.github.jakubherr.gitfit.domain.model.mockWorkout
-import io.github.jakubherr.gitfit.presentation.dashboard.DashboardScreen
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseCreateScreen
+import io.github.jakubherr.gitfit.presentation.exercise.ExerciseDetailScreen
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseListScreen
-import io.github.jakubherr.gitfit.presentation.workout.WorkoutInProgressScreen
+import io.github.jakubherr.gitfit.presentation.graph.ExerciseMetric
 import io.github.jakubherr.gitfit.ui.theme.GitFitTheme
-
-@Preview
-@Composable
-private fun DashboardScreenPreview() {
-    GitFitTheme {
-        Surface {
-            DashboardScreen { }
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun WorkoutScreenPreview() {
-    WorkoutInProgressScreen(mockWorkout) {}
-}
+import io.github.koalaplot.core.xygraph.DefaultPoint
 
 @Preview
 @Composable
@@ -33,16 +16,15 @@ private fun ExerciseListScreenPreview() {
     GitFitTheme {
         Surface {
             ExerciseListScreen(
-                // emptyList(),
                 listOf(mockExercise, mockExercise, mockExercise),
-            ) { }
+            )
         }
     }
 }
 
 @Preview
 @Composable
-private fun CreateExerciseScreenPreview() {
+private fun ExerciseCreateScreenPreview() {
     GitFitTheme {
         Surface {
             ExerciseCreateScreen()
@@ -55,7 +37,14 @@ private fun CreateExerciseScreenPreview() {
 private fun ExerciseDetailScreenPreview() {
     GitFitTheme {
         Surface {
-            // ExerciseDetailScreen()
+            // note: graph does not show values in preview
+            ExerciseDetailScreen(
+                mockExercise,
+                graphData = listOf(
+                    DefaultPoint("2024-04-09", 70)
+                ),
+                selectedMetric = ExerciseMetric.HEAVIEST_WEIGHT,
+            )
         }
     }
 }

@@ -17,10 +17,6 @@ object LoginRoute
 
 @Serializable
 @Keep
-object RegisterRoute
-
-@Serializable
-@Keep
 object ResetPasswordRoute
 
 @Serializable
@@ -45,7 +41,7 @@ object ExerciseListRoute
 
 @Serializable
 @Keep
-class AddExerciseToWorkoutRoute(val workoutId: String)
+object AddExerciseToWorkoutRoute
 
 @Serializable
 @Keep

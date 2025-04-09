@@ -20,7 +20,7 @@ import gitfit.composeapp.generated.resources.browse_workout_history
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun HistoryScreenRoot(
+fun HistoryScreen(
     modifier: Modifier = Modifier,
     onBrowseExerciseData: () -> Unit = {},
     onBrowseMeasurementData: () -> Unit = {},

@@ -20,6 +20,7 @@ import io.github.jakubherr.gitfit.presentation.AddExerciseToWorkoutRoute
 import io.github.jakubherr.gitfit.presentation.WorkoutDetailRoute
 import io.github.jakubherr.gitfit.presentation.WorkoutHistoryRoute
 import io.github.jakubherr.gitfit.presentation.WorkoutInProgressRoute
+import io.github.jakubherr.gitfit.presentation.sharedViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
@@ -40,7 +41,7 @@ fun NavGraphBuilder.workoutNavigation(
                 )
 
                 when (action) {
-                    is WorkoutAction.AskForExercise -> navController.navigate(AddExerciseToWorkoutRoute(action.workoutId))
+                    is WorkoutAction.AskForExercise -> navController.navigate(AddExerciseToWorkoutRoute)
                     is WorkoutAction.DeleteWorkout -> navController.popBackStack()
                     is WorkoutAction.CompleteCurrentWorkout -> {
                         val error = vm.currentWorkout.value?.error

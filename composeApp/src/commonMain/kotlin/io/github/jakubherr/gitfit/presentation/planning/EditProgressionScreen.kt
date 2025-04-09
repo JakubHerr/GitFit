@@ -36,7 +36,6 @@ import gitfit.composeapp.generated.resources.progression_explanation_1
 import gitfit.composeapp.generated.resources.progression_explanation_2
 import gitfit.composeapp.generated.resources.repetition_increase
 import gitfit.composeapp.generated.resources.repetitions
-import gitfit.composeapp.generated.resources.reps
 import gitfit.composeapp.generated.resources.save
 import gitfit.composeapp.generated.resources.starting_values
 import gitfit.composeapp.generated.resources.weight
@@ -53,7 +52,7 @@ import io.github.jakubherr.gitfit.presentation.shared.toPrettyString
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun EditProgressionScreenRoot(
+fun EditProgressionScreen(
     block: Block,
     modifier: Modifier = Modifier,
     onCancel: () -> Unit = {},

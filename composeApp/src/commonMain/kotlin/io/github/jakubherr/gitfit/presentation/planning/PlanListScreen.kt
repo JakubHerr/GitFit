@@ -35,6 +35,23 @@ fun PlanListScreenRoot(
     val userPlans by vm.userPlans.collectAsStateWithLifecycle(emptyList())
     val predefinedPlans by vm.predefinedPlans.collectAsStateWithLifecycle(emptyList())
 
+    PlanListScreen(
+        userPlans,
+        predefinedPlans,
+        modifier,
+        onCreateNewPlan,
+        onPlanSelected,
+    )
+}
+
+@Composable
+fun PlanListScreen(
+    userPlans: List<Plan>,
+    predefinedPlans: List<Plan>,
+    modifier: Modifier = Modifier,
+    onCreateNewPlan: () -> Unit = {},
+    onPlanSelected: (Plan) -> Unit = { },
+) {
     Column(modifier.fillMaxSize().padding(16.dp)) {
         LazyColumn(
             modifier = Modifier.weight(1.0f),

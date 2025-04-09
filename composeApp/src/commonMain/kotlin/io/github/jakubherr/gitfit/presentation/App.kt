@@ -72,7 +72,7 @@ fun App() {
                         },
                         snackbarHost = { SnackbarHost(snackbarHostState) },
                     ) { padding ->
-                        GitFitNavHost(
+                        GitFitNavigation(
                             navController,
                             modifier = Modifier.padding(padding),
                             showSnackbar = { message ->

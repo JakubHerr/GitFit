@@ -18,14 +18,13 @@ import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
 import io.github.jakubherr.gitfit.presentation.auth.VerifyEmailScreenRoot
 import io.github.jakubherr.gitfit.presentation.auth.authGraph
 import io.github.jakubherr.gitfit.presentation.auth.getMessage
-import io.github.jakubherr.gitfit.presentation.workout.loggedInGraph
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import org.koin.compose.viewmodel.koinViewModel
 
 // This is the top-level navigation component and contains destinations for the entire application
 @Composable
-fun GitFitNavHost(
+fun GitFitNavigation(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     showSnackbar: (String) -> Unit,
@@ -72,7 +71,7 @@ fun GitFitNavHost(
         modifier = modifier,
     ) {
         authGraph(navController, authViewModel)
-        loggedInGraph(navController, showSnackbar, authViewModel)
+        loggedInNavigation(navController, showSnackbar, authViewModel)
         composable<VerifyEmailRoute> {
             VerifyEmailScreenRoot(
                 authViewModel,

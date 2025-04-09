@@ -22,12 +22,4 @@ enum class MuscleGroup {
     FOREARMS,
 }
 
-val mockExercise =
-    Exercise(
-        "mock",
-        "Bench press",
-        "",
-        false,
-        MuscleGroup.CHEST,
-        listOf(MuscleGroup.SHOULDERS),
-    )
+
