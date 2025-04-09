@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -17,7 +16,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -71,14 +69,14 @@ fun ResetPasswordScreen(
             TextField(
                 email,
                 onValueChange = { email = it },
-                singleLine = true
+                singleLine = true,
             )
 
             Spacer(Modifier.height(32.dp))
 
             Button(
-                onClick = { onResetPassword(email)},
-                enabled = !state.loading
+                onClick = { onResetPassword(email) },
+                enabled = !state.loading,
             ) {
                 Text(stringResource(Res.string.send_reset_email))
             }

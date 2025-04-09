@@ -66,7 +66,7 @@ fun SharedBlockItem(
             if (!readOnly) {
                 Button(
                     onClick = onAddSet,
-                    Modifier.fillMaxWidth()
+                    Modifier.fillMaxWidth(),
                 ) {
                     Text(stringResource(Res.string.add_set))
                 }
@@ -107,10 +107,10 @@ fun PlanBlockItem(
                         IconButton({ onDeleteSeries(series) }) {
                             Icon(Icons.Default.Delete, "")
                         }
-                    }
+                    },
                 )
             }
-        }
+        },
     )
 }
 
@@ -122,7 +122,7 @@ fun WorkoutBlockItem(
     readOnly: Boolean = false,
     onAction: (WorkoutAction) -> Unit = {},
     onAddSetClicked: () -> Unit = {},
-    dropdownMenu: @Composable () -> Unit = {}
+    dropdownMenu: @Composable () -> Unit = {},
 ) {
     SharedBlockItem(
         block,
@@ -133,7 +133,7 @@ fun WorkoutBlockItem(
 
                 if (readOnly) {
                     ReadOnlySet(seriesIdx, series)
-                } else{
+                } else {
                     CheckableSetInput(
                         seriesIdx,
                         series,
@@ -155,6 +155,6 @@ fun WorkoutBlockItem(
             }
         },
         onAddSet = onAddSetClicked,
-        dropdownMenu = dropdownMenu
+        dropdownMenu = dropdownMenu,
     )
 }

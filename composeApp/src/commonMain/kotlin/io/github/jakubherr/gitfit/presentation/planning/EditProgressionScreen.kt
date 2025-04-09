@@ -76,12 +76,12 @@ fun EditProgressionScreenRoot(
             Text(stringResource(Res.string.starting_values))
 
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(stringResource(Res.string.minimum_weight))
                 DoubleInputField(
                     minimumWeight,
-                    onValueChange = { minimumWeight = it }
+                    onValueChange = { minimumWeight = it },
                 )
             }
 
@@ -92,36 +92,37 @@ fun EditProgressionScreenRoot(
 
             Text(stringResource(Res.string.progresison_type))
 
-            val translations = listOf(
-                stringResource(Res.string.enum_progression_type_icrease_weight),
-                stringResource(Res.string.enum_progression_type_icrease_reps),
-            )
+            val translations =
+                listOf(
+                    stringResource(Res.string.enum_progression_type_icrease_weight),
+                    stringResource(Res.string.enum_progression_type_icrease_reps),
+                )
             SingleChoiceChipSelection(ProgressionType.entries, translations, selectedProgressionType) {
                 selectedProgressionType = it
             }
 
             if (selectedProgressionType == ProgressionType.INCREASE_WEIGHT) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(stringResource(Res.string.weight_increase))
                     DoubleInputField(
                         weightIncrease,
                         isError = !weightIncrease.isPositiveDouble(),
-                        onValueChange = { weightIncrease = it }
+                        onValueChange = { weightIncrease = it },
                     )
                 }
             }
 
             if (selectedProgressionType == ProgressionType.INCREASE_REPS) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(stringResource(Res.string.repetition_increase))
                     DoubleInputField(
                         repIncrease,
                         isError = !repIncrease.isPositiveInt(),
-                        onValueChange = { repIncrease = it }
+                        onValueChange = { repIncrease = it },
                     )
                 }
             }
@@ -138,17 +139,18 @@ fun EditProgressionScreenRoot(
             Button(
                 enabled = validateInputs(selectedProgressionType, minimumWeight, weightIncrease, repIncrease),
                 onClick = {
-                    val settings = ProgressionSettings(
-                        incrementWeightByKg = weightIncrease.toDoubleOrNull() ?: 0.0,
-                        incrementRepsBy = repIncrease.toIntOrNull() ?: 0,
-                        type = selectedProgressionType,
-                        weightThreshold = minimumWeight.toDouble(),
-                        repThreshold = minimumReps,
-                        trigger = ProgressionTrigger.MINIMUM_REPS_AND_WEIGHT_EVERY_SET
-                    )
+                    val settings =
+                        ProgressionSettings(
+                            incrementWeightByKg = weightIncrease.toDoubleOrNull() ?: 0.0,
+                            incrementRepsBy = repIncrease.toIntOrNull() ?: 0,
+                            type = selectedProgressionType,
+                            weightThreshold = minimumWeight.toDouble(),
+                            repThreshold = minimumReps,
+                            trigger = ProgressionTrigger.MINIMUM_REPS_AND_WEIGHT_EVERY_SET,
+                        )
 
                     onSave(settings)
-                }
+                },
             ) {
                 Text(stringResource(Res.string.save))
             }
@@ -171,11 +173,15 @@ fun ProgressionHint(
     minimumWeight: String,
     weightIncrease: String,
     repIncrease: String,
-    minimumReps: Int
+    minimumReps: Int,
 ) {
     if (validateInputs(selectedProgressionType, minimumWeight, weightIncrease, repIncrease)) {
-        val value = if (selectedProgressionType == ProgressionType.INCREASE_WEIGHT) stringResource(Res.string.weight).lowercase()
-            else stringResource(Res.string.repetitions).lowercase()
+        val value =
+            if (selectedProgressionType == ProgressionType.INCREASE_WEIGHT) {
+                stringResource(Res.string.weight).lowercase()
+            } else {
+                stringResource(Res.string.repetitions).lowercase()
+            }
 
         val increment =
             if (selectedProgressionType == ProgressionType.INCREASE_WEIGHT) "$weightIncrease kg" else repIncrease
@@ -209,9 +215,10 @@ private fun validateInputs(
     weightIncrease: String,
     repIncrease: String,
 ): Boolean {
-    val validProgression = when (type) {
-        ProgressionType.INCREASE_WEIGHT -> weightIncrease.isPositiveDouble()
-        ProgressionType.INCREASE_REPS -> repIncrease.isPositiveInt()
-    }
+    val validProgression =
+        when (type) {
+            ProgressionType.INCREASE_WEIGHT -> weightIncrease.isPositiveDouble()
+            ProgressionType.INCREASE_REPS -> repIncrease.isPositiveInt()
+        }
     return validProgression && minimumWeight.isPositiveDouble()
 }

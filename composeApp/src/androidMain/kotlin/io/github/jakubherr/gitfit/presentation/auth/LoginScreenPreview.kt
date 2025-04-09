@@ -10,11 +10,12 @@ import io.github.jakubherr.gitfit.ui.theme.GitFitTheme
 private fun LoginScreenPreview() {
     GitFitTheme {
         LoginScreen(
-            state = AuthState(
-                user = User.LoggedOut,
-                error = null,
-                loading = false
-            )
+            state =
+                AuthState(
+                    user = User.LoggedOut,
+                    error = null,
+                    loading = false,
+                ),
         )
     }
 }

@@ -53,7 +53,7 @@ fun ExerciseListScreenRoot(
     ExerciseListScreen(
         exerciseList = default + custom,
         onExerciseClick = { onExerciseClick(it) },
-        onAddExerciseClick = { onCreateExerciseClick() }
+        onAddExerciseClick = { onCreateExerciseClick() },
     )
 }
 

@@ -52,7 +52,7 @@ fun WorkoutDetailScreen(
             onConfirm = {
                 showDialog = false
                 onDelete()
-            }
+            },
         )
     }
 

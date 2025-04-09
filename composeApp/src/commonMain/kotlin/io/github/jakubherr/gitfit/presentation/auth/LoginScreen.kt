@@ -86,13 +86,12 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-
             Text("GitFit", style = MaterialTheme.typography.headlineLarge)
             Image(
                 imageVector = vectorResource(Res.drawable.ic_launcher_foreground),
                 "",
                 modifier = Modifier.size(128.dp),
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.FillBounds,
             )
 
             if (state.loading) {
@@ -100,48 +99,48 @@ fun LoginScreen(
             }
 
             Card(
-                modifier = Modifier.sizeIn(maxWidth = 512.dp).padding(16.dp)
-            ){
+                modifier = Modifier.sizeIn(maxWidth = 512.dp).padding(16.dp),
+            ) {
                 Column(
-                    Modifier.padding(16.dp)
+                    Modifier.padding(16.dp),
                 ) {
                     OutlinedTextField(
                         email,
                         onValueChange = { email = it },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        label = { Text(stringResource(Res.string.email)) }
+                        label = { Text(stringResource(Res.string.email)) },
                     )
                     Spacer(Modifier.height(16.dp))
                     PasswordInputField(
                         password,
                         onPasswordChange = { password = it },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     )
 
                     Spacer(Modifier.height(16.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Button(
                             onClick = { onAction(AuthAction.Register(email, password)) },
-                            enabled = isValidLogin
+                            enabled = isValidLogin,
                         ) {
                             Text(stringResource(Res.string.register))
                         }
                         Spacer(Modifier.width(16.dp))
                         Button(
                             onClick = { onAction(AuthAction.SignIn(email, password)) },
-                            enabled = isValidLogin
+                            enabled = isValidLogin,
                         ) {
                             Text(stringResource(Res.string.sign_in))
                         }
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
+                        horizontalArrangement = Arrangement.End,
                     ) {
                         TextButton(onClick = onForgotPassword) {
                             Text(stringResource(Res.string.forgot_password))
@@ -153,14 +152,15 @@ fun LoginScreen(
     }
 }
 
-suspend fun AuthError.getMessage() = when (this) {
-    AuthError.EmailInUseAlready -> getString(Res.string.error_email_used_already)
-    AuthError.FailedToSendEmail -> getString(Res.string.error_failed_to_send_email)
-    AuthError.Generic -> getString(Res.string.error_unknown)
-    AuthError.InvalidCredentials -> getString(Res.string.error_invalid_credentials)
-    AuthError.NoInternet -> getString(Res.string.error_no_internet)
-    AuthError.PasswordTooWeak -> getString(Res.string.error_password_too_weak)
-    AuthError.Unknown -> getString(Res.string.error_unknown)
-    AuthError.UserLoggedOut -> getString(Res.string.error_user_logged_out)
-    AuthError.InvalidUser -> getString(Res.string.error_invalid_user)
-}
+suspend fun AuthError.getMessage() =
+    when (this) {
+        AuthError.EmailInUseAlready -> getString(Res.string.error_email_used_already)
+        AuthError.FailedToSendEmail -> getString(Res.string.error_failed_to_send_email)
+        AuthError.Generic -> getString(Res.string.error_unknown)
+        AuthError.InvalidCredentials -> getString(Res.string.error_invalid_credentials)
+        AuthError.NoInternet -> getString(Res.string.error_no_internet)
+        AuthError.PasswordTooWeak -> getString(Res.string.error_password_too_weak)
+        AuthError.Unknown -> getString(Res.string.error_unknown)
+        AuthError.UserLoggedOut -> getString(Res.string.error_user_logged_out)
+        AuthError.InvalidUser -> getString(Res.string.error_invalid_user)
+    }

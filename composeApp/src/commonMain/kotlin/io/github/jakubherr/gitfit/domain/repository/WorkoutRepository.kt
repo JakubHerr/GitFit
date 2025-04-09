@@ -15,7 +15,10 @@ interface WorkoutRepository {
 
     suspend fun startNewWorkout(): Result<Unit>
 
-    suspend fun startWorkoutFromPlan(plan: Plan, workoutIdx: Int): Result<Unit>
+    suspend fun startWorkoutFromPlan(
+        plan: Plan,
+        workoutIdx: Int,
+    ): Result<Unit>
 
     suspend fun completeWorkout(workout: Workout)
 

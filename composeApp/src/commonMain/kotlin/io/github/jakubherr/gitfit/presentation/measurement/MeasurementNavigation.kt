@@ -25,7 +25,7 @@ fun NavGraphBuilder.measurementGraph(
         MeasurementScreenRoot(
             vm = vm,
             onRequestAddEditMeasurement = { navController.navigate(MeasurementAddEditRoute) },
-            onShowHistory = { navController.navigate(MeasurementHistoryRoute) }
+            onShowHistory = { navController.navigate(MeasurementHistoryRoute) },
         )
     }
 
@@ -37,12 +37,13 @@ fun NavGraphBuilder.measurementGraph(
         AddEditMeasurement(
             oldMeasurement = today,
             onSave = { measurement ->
-                if (!measurement.isValid) scope.launch { showSnackbar(getString(Res.string.error_invalid_measurement_values)) }
-                else {
+                if (!measurement.isValid) {
+                    scope.launch { showSnackbar(getString(Res.string.error_invalid_measurement_values)) }
+                } else {
                     vm.onAction(MeasurementAction.SaveMeasurement(measurement))
                     navController.popBackStack()
                 }
-            }
+            },
         )
     }
 
@@ -54,7 +55,7 @@ fun NavGraphBuilder.measurementGraph(
             measurements,
             onDeleteMeasurement = {
                 vm.onAction(MeasurementAction.DeleteMeasurement(it))
-            }
+            },
         )
     }
 }

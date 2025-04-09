@@ -10,11 +10,12 @@ import io.github.jakubherr.gitfit.ui.theme.GitFitTheme
 private fun ResetPasswordScreenPreview() {
     GitFitTheme {
         ResetPasswordScreen(
-            state = AuthState(
-                User.LoggedOut,
-                error = null,
-                loading = false
-            )
+            state =
+                AuthState(
+                    User.LoggedOut,
+                    error = null,
+                    loading = false,
+                ),
         )
     }
 }

@@ -71,7 +71,7 @@ fun ExerciseDetailScreenRoot(
                     showDialog = false
                     exerciseViewModel.onAction(ExerciseAction.DeleteCustomExercise(exercise.id))
                     onBack()
-                }
+                },
             )
         }
 
@@ -80,7 +80,7 @@ fun ExerciseDetailScreenRoot(
             graphData = data,
             selectedMetric = selectedMetric,
             onGraphAction = { graphViewModel.onAction(it) },
-            onDeleteExercise = { showDialog = true }
+            onDeleteExercise = { showDialog = true },
         )
     }
 
@@ -96,7 +96,7 @@ fun ExerciseDetailScreen(
     selectedMetric: ExerciseMetric,
     modifier: Modifier = Modifier,
     onGraphAction: (GraphAction) -> Unit = {},
-    onDeleteExercise: (String) -> Unit = {}
+    onDeleteExercise: (String) -> Unit = {},
 ) {
     LaunchedEffect(exercise) {
         onGraphAction(GraphAction.ExerciseAndMetricSelected(exercise, ExerciseMetric.HEAVIEST_WEIGHT))
@@ -105,7 +105,7 @@ fun ExerciseDetailScreen(
     Column(modifier.fillMaxSize()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(exercise.name)
 
@@ -125,7 +125,12 @@ fun ExerciseDetailScreen(
         Row {
             val maxValue = graphData.maxByOrNull { it.y }
             maxValue?.let {
-                val unit = if (selectedMetric == ExerciseMetric.TOTAL_REPETITIONS) stringResource(Res.string.reps) else stringResource(Res.string.kg)
+                val unit =
+                    if (selectedMetric == ExerciseMetric.TOTAL_REPETITIONS) {
+                        stringResource(Res.string.reps)
+                    } else {
+                        stringResource(Res.string.kg)
+                    }
                 Text("${maxValue.x} - ${maxValue.y} $unit")
             }
         }
@@ -136,12 +141,13 @@ fun ExerciseDetailScreen(
             "${stringResource(Res.string.last_10_workouts)} - ${exercise.name}",
         )
 
-        val translations = listOf(
-            stringResource(Res.string.enum_exercise_metric_heaviest_weight),
-            stringResource(Res.string.enum_exercise_metric_best_set_volume),
-            stringResource(Res.string.enum_exercise_metric_total_workout_volume),
-            stringResource(Res.string.enum_exercise_metric_total_repetitions),
-        )
+        val translations =
+            listOf(
+                stringResource(Res.string.enum_exercise_metric_heaviest_weight),
+                stringResource(Res.string.enum_exercise_metric_best_set_volume),
+                stringResource(Res.string.enum_exercise_metric_total_workout_volume),
+                stringResource(Res.string.enum_exercise_metric_total_repetitions),
+            )
 
         SingleChoiceChipSelection(
             ExerciseMetric.entries,
@@ -150,7 +156,7 @@ fun ExerciseDetailScreen(
             modifier = Modifier.padding(16.dp),
             onChoiceSelected = { metric ->
                 onGraphAction(GraphAction.ExerciseAndMetricSelected(exercise, metric))
-            }
+            },
         )
     }
 }

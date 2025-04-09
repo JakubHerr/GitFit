@@ -26,8 +26,8 @@ import gitfit.composeapp.generated.resources.log_out
 import io.github.jakubherr.gitfit.presentation.auth.AuthAction
 import io.github.jakubherr.gitfit.presentation.auth.AuthState
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
-import io.github.jakubherr.gitfit.presentation.shared.PasswordInputField
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
+import io.github.jakubherr.gitfit.presentation.shared.PasswordInputField
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -37,8 +37,8 @@ fun SettingsScreenRoot(
 ) {
     SettingsScreen(
         onLogout = { auth.onAction(AuthAction.SignOut) },
-        onDeleteAccount = { auth.onAction(AuthAction.DeleteAccount(it))},
-        authState = auth.state.collectAsState()
+        onDeleteAccount = { auth.onAction(AuthAction.DeleteAccount(it)) },
+        authState = auth.state.collectAsState(),
     )
 }
 
@@ -48,7 +48,7 @@ fun SettingsScreen(
     onLogout: () -> Unit,
     onDeleteAccount: (String) -> Unit,
     authState: State<AuthState>? = null,
-    ) {
+) {
     var showAccountDeletionDialog by remember { mutableStateOf(false) }
     var showPasswordField by remember { mutableStateOf(false) }
 
@@ -59,7 +59,7 @@ fun SettingsScreen(
             Text(stringResource(Res.string.confirm_account_deletion))
             PasswordInputField(
                 password = password,
-                onPasswordChange = { password = it }
+                onPasswordChange = { password = it },
             )
             Button(onClick = {
                 showPasswordField = false

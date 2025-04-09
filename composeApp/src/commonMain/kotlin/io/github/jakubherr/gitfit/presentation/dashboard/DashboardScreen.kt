@@ -60,7 +60,7 @@ fun DashboardScreenRoot(
             if (action is DashboardAction.UnplannedWorkoutClick) vm.onAction(WorkoutAction.StartNewWorkout)
             onAction(action)
         },
-        onPlanSelected = { onPlanSelected(it) }
+        onPlanSelected = { onPlanSelected(it) },
     )
 }
 
@@ -95,7 +95,7 @@ fun DashboardScreen(
 
             WorkoutPlanSection(
                 userPlans,
-                onClick = { onPlanSelected(it) }
+                onClick = { onPlanSelected(it) },
             )
         }
     }
@@ -111,7 +111,7 @@ fun WorkoutPlanSection(
     Row(
         Modifier.fillMaxWidth().sizeIn(minHeight = 48.dp).clickable { expanded = !expanded },
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(stringResource(Res.string.training_plans))
 
@@ -121,7 +121,7 @@ fun WorkoutPlanSection(
     Spacer(Modifier.height(8.dp))
     LazyColumn(
         modifier = Modifier.animateContentSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         items(workouts) { plan ->
             if (expanded) PlanListItem(plan) { onClick(it) }

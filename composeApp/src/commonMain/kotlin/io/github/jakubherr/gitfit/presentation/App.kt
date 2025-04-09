@@ -69,7 +69,7 @@ fun App() {
                                 navController.popBackStack()
                             }
                         },
-                        snackbarHost = { SnackbarHost(snackbarHostState) }
+                        snackbarHost = { SnackbarHost(snackbarHostState) },
                     ) { padding ->
                         GitFitNavHost(
                             navController,
@@ -78,7 +78,7 @@ fun App() {
                                 scope.launch {
                                     snackbarHostState.showSnackbar(message)
                                 }
-                            }
+                            },
                         )
                     }
                 }
@@ -108,7 +108,7 @@ fun GitFitTopAppBar(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, "")
                     }
                 }
-            }
+            },
         )
     }
 }

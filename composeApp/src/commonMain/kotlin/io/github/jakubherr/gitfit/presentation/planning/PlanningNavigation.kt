@@ -36,11 +36,18 @@ fun NavGraphBuilder.planningGraph(
     navController: NavHostController,
     showSnackbar: (String) -> Unit,
 ) {
-    fun handleError(error: Plan.Error?, scope: CoroutineScope, vm: PlanningViewModel) {
-        if (error == null) navController.popBackStack()
-        else scope.launch {
-            showSnackbar(error.message)
-            vm.onAction(PlanAction.ErrorHandled)
+    fun handleError(
+        error: Plan.Error?,
+        scope: CoroutineScope,
+        vm: PlanningViewModel,
+    ) {
+        if (error == null) {
+            navController.popBackStack()
+        } else {
+            scope.launch {
+                showSnackbar(error.message)
+                vm.onAction(PlanAction.ErrorHandled)
+            }
         }
     }
 
@@ -50,7 +57,7 @@ fun NavGraphBuilder.planningGraph(
         PlanListScreenRoot(
             vm = vm,
             onCreateNewPlan = { navController.navigate(PlanCreationRoute) },
-            onPlanSelected = { navController.navigate(PlanDetailRoute(it.id)) }
+            onPlanSelected = { navController.navigate(PlanDetailRoute(it.id)) },
         )
     }
 
@@ -79,13 +86,12 @@ fun NavGraphBuilder.planningGraph(
                             showSnackbar(getString(Res.string.error_workout_in_progress))
                         }
                     }
-
                 },
                 onAction = { action ->
                     planViewModel.onAction(action)
                     if (action is PlanAction.DeletePlan) navController.popBackStack()
                     if (action is PlanAction.EditPlan) navController.navigate(PlanCreationRoute)
-                }
+                },
             )
         }
     }
@@ -137,7 +143,7 @@ fun NavGraphBuilder.planningGraph(
                 navController.navigate(AddExerciseToPlanRoute(workoutIdx))
             },
             onSave = { handleError(vm.error, scope, vm) },
-            onEditProgression = { block -> navController.navigate(EditProgressionRoute(idx, block.idx)) }
+            onEditProgression = { block -> navController.navigate(EditProgressionRoute(idx, block.idx)) },
         )
     }
 
@@ -160,7 +166,7 @@ fun NavGraphBuilder.planningGraph(
                 onSave = {
                     vm.onAction(PlanAction.SaveProgression(workout, block, it))
                     navController.popBackStack()
-                }
+                },
             )
         }
     }

@@ -3,9 +3,9 @@ package io.github.jakubherr.gitfit.presentation.graph
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.jakubherr.gitfit.domain.model.Exercise
-import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.domain.repository.AuthRepository
+import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import io.github.koalaplot.core.xygraph.DefaultPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -24,21 +24,22 @@ data class Measurement(
     // maybe add some simple values calculated from stored and available data
     val isValid: Boolean
         get() {
-            val list = listOf(
-                neck,
-                chest,
-                leftArm,
-                rightArm,
-                leftForearm,
-                rightForearm,
-                waist,
-                leftThigh,
-                rightThigh,
-                leftCalf,
-                rightCalf,
-                bodyweight,
-                height
-            )
+            val list =
+                listOf(
+                    neck,
+                    chest,
+                    leftArm,
+                    rightArm,
+                    leftForearm,
+                    rightForearm,
+                    waist,
+                    leftThigh,
+                    rightThigh,
+                    leftCalf,
+                    rightCalf,
+                    bodyweight,
+                    height,
+                )
             return list.all { it != null && it >= 0.0 }
         }
 }

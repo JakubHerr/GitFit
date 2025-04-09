@@ -9,19 +9,15 @@ import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
 import dev.gitlive.firebase.auth.FirebaseAuthWeakPasswordException
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
+import io.github.jakubherr.gitfit.domain.model.User
 import io.github.jakubherr.gitfit.domain.repository.AuthError
 import io.github.jakubherr.gitfit.domain.repository.AuthRepository
-import io.github.jakubherr.gitfit.domain.model.User
-import io.github.jakubherr.gitfit.domain.repository.ExerciseRepository
-import io.github.jakubherr.gitfit.domain.repository.MeasurementRepository
-import io.github.jakubherr.gitfit.domain.repository.PlanRepository
-import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 // note: all Firebase function calls MUST be in a try-catch block to handle errors and missing features in GitLive SDK
-class FirebaseAuthRepository: AuthRepository {
+class FirebaseAuthRepository : AuthRepository {
     private val auth = Firebase.auth
     override val currentUser: User get() = auth.currentUser?.toUser() ?: User.LoggedOut
     override val currentUserFlow: Flow<User?> = auth.authStateChanged.map { it?.toUser() }
@@ -54,7 +50,10 @@ class FirebaseAuthRepository: AuthRepository {
         }
     }
 
-    override suspend fun deleteUser(password: String, beforeDelete: suspend (String) -> Result<Unit>): Result<Unit> {
+    override suspend fun deleteUser(
+        password: String,
+        beforeDelete: suspend (String) -> Result<Unit>,
+    ): Result<Unit> {
         try {
             Firebase.auth.currentUser?.let { user ->
                 signInUser(user.email!!, password).onFailure { return Result.failure(it) }
@@ -92,11 +91,9 @@ class FirebaseAuthRepository: AuthRepository {
             return Result.failure(AuthError.NoInternet)
         } catch (e: FirebaseAuthUserCollisionException) {
             return Result.failure(AuthError.EmailInUseAlready)
-        }
-        catch (e: FirebaseAuthInvalidUserException) {
+        } catch (e: FirebaseAuthInvalidUserException) {
             return Result.failure(AuthError.InvalidUser)
-        }
-        catch (e: FirebaseAuthException) {
+        } catch (e: FirebaseAuthException) {
             return Result.failure(AuthError.Generic)
         } catch (e: Exception) {
             return Result.failure(AuthError.Unknown)
@@ -104,9 +101,10 @@ class FirebaseAuthRepository: AuthRepository {
     }
 }
 
-private fun FirebaseUser?.toUser() = User(
-    this?.uid ?: "",
-    this?.email ?: "",
-    this != null,
-    this?.isEmailVerified ?: false,
-)
+private fun FirebaseUser?.toUser() =
+    User(
+        this?.uid ?: "",
+        this?.email ?: "",
+        this != null,
+        this?.isEmailVerified ?: false,
+    )

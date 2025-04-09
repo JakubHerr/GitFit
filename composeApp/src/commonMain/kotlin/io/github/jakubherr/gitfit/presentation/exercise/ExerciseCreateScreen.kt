@@ -44,12 +44,12 @@ import org.jetbrains.compose.resources.stringResource
 fun ExerciseCreateScreenRoot(
     modifier: Modifier = Modifier,
     onExerciseCreated: (Exercise) -> Unit = {},
-    onCancel: () -> Unit = {}
+    onCancel: () -> Unit = {},
 ) {
     ExerciseCreateScreen(
         Modifier.fillMaxSize(),
         onExerciseCreated = { onExerciseCreated(it) },
-        onCancel = onCancel
+        onCancel = onCancel,
     )
 }
 
@@ -75,7 +75,7 @@ fun ExerciseCreateScreen(
             onConfirm = {
                 showDialog = false
                 onCancel()
-            }
+            },
         )
     }
 
@@ -91,26 +91,27 @@ fun ExerciseCreateScreen(
         )
 
         Text(stringResource(Res.string.primary_muscle))
-        val translations = listOf(
-            stringResource(Res.string.enum_muscle_group_arms),
-            stringResource(Res.string.enum_muscle_group_legs),
-            stringResource(Res.string.enum_muscle_group_shoulders),
-            stringResource(Res.string.enum_muscle_group_back),
-            stringResource(Res.string.enum_muscle_group_abs),
-            stringResource(Res.string.enum_muscle_group_chest),
-            stringResource(Res.string.enum_muscle_group_forearms),
-        )
+        val translations =
+            listOf(
+                stringResource(Res.string.enum_muscle_group_arms),
+                stringResource(Res.string.enum_muscle_group_legs),
+                stringResource(Res.string.enum_muscle_group_shoulders),
+                stringResource(Res.string.enum_muscle_group_back),
+                stringResource(Res.string.enum_muscle_group_abs),
+                stringResource(Res.string.enum_muscle_group_chest),
+                stringResource(Res.string.enum_muscle_group_forearms),
+            )
         SingleChoiceChipSelection(
             MuscleGroup.entries,
             translations,
-            selectedPrimaryMuscle
+            selectedPrimaryMuscle,
         ) { selectedPrimaryMuscle = it }
 
         Text(stringResource(Res.string.secondary_muscle))
         MultipleChoiceChipSelection(
             MuscleGroup.entries,
             translations,
-            selectedSecondaryMuscle
+            selectedSecondaryMuscle,
         ) {
             if (selectedSecondaryMuscle.contains(it)) selectedSecondaryMuscle.remove(it) else selectedSecondaryMuscle.add(it)
         }

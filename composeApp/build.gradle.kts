@@ -67,7 +67,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.swing)
         }
 
-        commonTest.dependencies { 
+        commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
     }
@@ -96,7 +96,7 @@ android {
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
         create("staging") {
@@ -104,7 +104,7 @@ android {
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
 
             signingConfig = signingConfigs.getByName("debug")

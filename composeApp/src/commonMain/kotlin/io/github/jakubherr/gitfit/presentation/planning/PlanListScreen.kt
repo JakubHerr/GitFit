@@ -2,7 +2,6 @@ package io.github.jakubherr.gitfit.presentation.planning
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -37,7 +36,6 @@ fun PlanListScreenRoot(
     val predefinedPlans by vm.predefinedPlans.collectAsStateWithLifecycle(emptyList())
 
     Column(modifier.fillMaxSize().padding(16.dp)) {
-
         LazyColumn(
             modifier = Modifier.weight(1.0f),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -47,7 +45,7 @@ fun PlanListScreenRoot(
             items(userPlans) { plan ->
                 PlanListItem(
                     plan,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(8.dp),
                 ) {
                     onPlanSelected(plan)
                 }
@@ -71,7 +69,7 @@ fun PlanListScreenRoot(
 fun PlanListItem(
     plan: Plan,
     modifier: Modifier = Modifier,
-    onPlanClicked: (Plan) -> Unit = {}
+    onPlanClicked: (Plan) -> Unit = {},
 ) {
     // name of plan
     Card({ onPlanClicked(plan) }) {

@@ -18,11 +18,11 @@ fun HistoryScreenRoot(
     modifier: Modifier = Modifier,
     onBrowseExerciseData: () -> Unit = {},
     onBrowseMeasurementData: () -> Unit = {},
-    onBrowseWorkoutData: () -> Unit
+    onBrowseWorkoutData: () -> Unit,
 ) {
     Column(
         modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Button(onBrowseExerciseData) {
             Text(stringResource(Res.string.browse_exercise_history))
@@ -38,10 +38,9 @@ fun HistoryScreenRoot(
     }
 }
 
-enum class ExerciseMetric{
+enum class ExerciseMetric {
     HEAVIEST_WEIGHT,
     BEST_SET_VOLUME,
     TOTAL_WORKOUT_VOLUME,
-    TOTAL_REPETITIONS
+    TOTAL_REPETITIONS,
 }
-

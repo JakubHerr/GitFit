@@ -9,32 +9,35 @@ class BlockTest {
     @Test
     fun weightProgressionWorks() {
         // given a completed block with valid weight progression settings that meet progression criteria
-        val originalBlock = Block(
-            idx = 0,
-            exercise = testExercise,
-            series = listOf(
-                Series(
-                    idx = 0,
-                    repetitions = 10,
-                    weight = 25.0,
-                    completed = true
-                ),
-                Series(
-                    idx = 0,
-                    repetitions = 10,
-                    weight = 20.0,
-                    completed = true
-                )
-            ),
-            progressionSettings = ProgressionSettings(
-                incrementWeightByKg = 5.12,
-                type = ProgressionType.INCREASE_WEIGHT,
-                trigger = ProgressionTrigger.MINIMUM_REPS_AND_WEIGHT_EVERY_SET,
-                incrementRepsBy = 0,
-                weightThreshold = 20.0,
-                repThreshold = 10,
+        val originalBlock =
+            Block(
+                idx = 0,
+                exercise = testExercise,
+                series =
+                    listOf(
+                        Series(
+                            idx = 0,
+                            repetitions = 10,
+                            weight = 25.0,
+                            completed = true,
+                        ),
+                        Series(
+                            idx = 0,
+                            repetitions = 10,
+                            weight = 20.0,
+                            completed = true,
+                        ),
+                    ),
+                progressionSettings =
+                    ProgressionSettings(
+                        incrementWeightByKg = 5.12,
+                        type = ProgressionType.INCREASE_WEIGHT,
+                        trigger = ProgressionTrigger.MINIMUM_REPS_AND_WEIGHT_EVERY_SET,
+                        incrementRepsBy = 0,
+                        weightThreshold = 20.0,
+                        repThreshold = 10,
+                    ),
             )
-        )
 
         // when block is progressed
         val updatedBlock = originalBlock.progressWeight()
@@ -55,32 +58,35 @@ class BlockTest {
     @Test
     fun repetitionProgressionWorks() {
         // given a completed block with valid repetition progression settings that meet progression criteria
-        val originalBlock = Block(
-            idx = 0,
-            exercise = testExercise,
-            series = listOf(
-                Series(
-                    idx = 0,
-                    repetitions = 10,
-                    weight = 25.0,
-                    completed = true
-                ),
-                Series(
-                    idx = 0,
-                    repetitions = 10,
-                    weight = 20.0,
-                    completed = true
-                )
-            ),
-            progressionSettings = ProgressionSettings(
-                incrementWeightByKg = 0.0,
-                type = ProgressionType.INCREASE_REPS,
-                trigger = ProgressionTrigger.MINIMUM_REPS_AND_WEIGHT_EVERY_SET,
-                incrementRepsBy = 2,
-                weightThreshold = 20.0,
-                repThreshold = 10,
+        val originalBlock =
+            Block(
+                idx = 0,
+                exercise = testExercise,
+                series =
+                    listOf(
+                        Series(
+                            idx = 0,
+                            repetitions = 10,
+                            weight = 25.0,
+                            completed = true,
+                        ),
+                        Series(
+                            idx = 0,
+                            repetitions = 10,
+                            weight = 20.0,
+                            completed = true,
+                        ),
+                    ),
+                progressionSettings =
+                    ProgressionSettings(
+                        incrementWeightByKg = 0.0,
+                        type = ProgressionType.INCREASE_REPS,
+                        trigger = ProgressionTrigger.MINIMUM_REPS_AND_WEIGHT_EVERY_SET,
+                        incrementRepsBy = 2,
+                        weightThreshold = 20.0,
+                        repThreshold = 10,
+                    ),
             )
-        )
 
         // when block is updated
         val updatedBlock = originalBlock.progressReps()

@@ -46,23 +46,23 @@ fun PlanWorkoutCreationScreen(
     onEditProgression: (Block) -> Unit = {},
 ) {
     Column(
-        modifier.padding(16.dp)
+        modifier.padding(16.dp),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
         ) {
             StringInputField(
                 value = workoutPlan.name,
                 onValueChange = { onAction(PlanAction.RenameWorkout(workoutPlan, it)) },
                 maxLength = 20,
                 label = { Text(stringResource(Res.string.plan_name)) },
-                isError = workoutPlan.name.isBlank()
+                isError = workoutPlan.name.isBlank(),
             )
         }
 
         LazyColumn(
-            Modifier.weight(1.0f)
+            Modifier.weight(1.0f),
         ) {
             items(workoutPlan.blocks) { block ->
                 PlanBlockItem(
@@ -71,7 +71,7 @@ fun PlanWorkoutCreationScreen(
                     onValidSetEntered = { onAction(PlanAction.EditSet(workoutPlan, block, it)) },
                     onDeleteSeries = { onAction(PlanAction.RemoveSet(workoutPlan, block, it)) },
                     onDeleteExercise = { onAction(PlanAction.RemoveExercise(workoutPlan, block)) },
-                    onEditProgression = { onEditProgression(block) }
+                    onEditProgression = { onEditProgression(block) },
                 )
             }
         }
@@ -106,21 +106,21 @@ fun PlanBlockItemDropdownMenu(
 
         DropdownMenu(
             expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
         ) {
             DropdownMenuItem(
                 text = { Text(stringResource(Res.string.delete_exercise)) },
                 onClick = {
                     onDeleteExercise()
                     expanded = false
-                }
+                },
             )
             DropdownMenuItem(
                 text = { Text(stringResource(Res.string.edit_progression)) },
                 onClick = {
                     onEditProgression()
                     expanded = false
-                }
+                },
             )
         }
     }

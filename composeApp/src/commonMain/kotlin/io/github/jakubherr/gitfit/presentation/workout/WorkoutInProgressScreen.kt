@@ -73,7 +73,7 @@ fun WorkoutInProgressScreenRoot(
                 workout?.let {
                     onAction(WorkoutAction.DeleteWorkout(it.id))
                 }
-            }
+            },
         )
     }
 
@@ -87,8 +87,11 @@ fun WorkoutInProgressScreenRoot(
         }
     } else {
         WorkoutInProgressScreen(workout!!) { action ->
-            if (action is WorkoutAction.DeleteWorkout) showDialog = true
-            else onAction(action)
+            if (action is WorkoutAction.DeleteWorkout) {
+                showDialog = true
+            } else {
+                onAction(action)
+            }
         }
     }
 }
@@ -103,7 +106,7 @@ fun WorkoutInProgressScreen(
             Column(Modifier.padding(padding)) {
                 LazyColumn(
                     Modifier.fillMaxSize().weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     items(workout.blocks) { block ->
                         WorkoutBlockItem(
@@ -115,15 +118,15 @@ fun WorkoutInProgressScreen(
                             },
                             dropdownMenu = {
                                 WorkoutBlockItemDropdownMenu(
-                                    onDeleteExercise = { onAction(WorkoutAction.RemoveBlock(workout, block) )},
+                                    onDeleteExercise = { onAction(WorkoutAction.RemoveBlock(workout, block)) },
                                     onDeleteSet = {
                                         val series = block.series.lastOrNull()
                                         series?.let {
                                             onAction(WorkoutAction.DeleteLastSeries(workout, block.idx, it))
                                         }
-                                    }
+                                    },
                                 )
-                            }
+                            },
                         )
                     }
                     item {
@@ -161,21 +164,21 @@ fun WorkoutBlockItemDropdownMenu(
 
         DropdownMenu(
             expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
         ) {
             DropdownMenuItem(
                 text = { Text(stringResource(Res.string.delete_exercise)) },
                 onClick = {
                     expanded = false
                     onDeleteExercise()
-                }
+                },
             )
             DropdownMenuItem(
                 text = { Text(stringResource(Res.string.delete_last_set)) },
                 onClick = {
                     expanded = false
                     onDeleteSet()
-                }
+                },
             )
         }
     }

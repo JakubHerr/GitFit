@@ -14,9 +14,7 @@ import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
 import io.github.jakubherr.gitfit.presentation.workout.sharedViewModel
 
-fun NavGraphBuilder.exerciseNavigation(
-    navController: NavHostController,
-) {
+fun NavGraphBuilder.exerciseNavigation(navController: NavHostController) {
     composable<ExerciseListRoute> {
         val vm = navController.sharedViewModel<ExerciseViewModel>()
 
@@ -25,7 +23,8 @@ fun NavGraphBuilder.exerciseNavigation(
             onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
             onExerciseClick = {
                 vm.onAction(ExerciseAction.SelectExercise(it))
-                navController.navigate(ExerciseDetailRoute(it.id, it.isCustom)) },
+                navController.navigate(ExerciseDetailRoute(it.id, it.isCustom))
+            },
         )
     }
 
@@ -54,7 +53,7 @@ fun NavGraphBuilder.exerciseNavigation(
         ExerciseDetailScreenRoot(
             graphViewModel = graphVm,
             exerciseViewModel = exerciseViewModel,
-            onBack = { navController.popBackStack() }
+            onBack = { navController.popBackStack() },
         )
     }
 
@@ -66,7 +65,7 @@ fun NavGraphBuilder.exerciseNavigation(
                 exerciseViewModel.onAction(ExerciseAction.CreateExercise(it))
                 navController.popBackStack()
             },
-            onCancel = { navController.popBackStack() }
+            onCancel = { navController.popBackStack() },
         )
     }
 }

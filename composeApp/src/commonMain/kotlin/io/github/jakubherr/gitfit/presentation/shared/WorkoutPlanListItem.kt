@@ -35,15 +35,15 @@ fun WorkoutPlanListItem(
 ) {
     Card(
         onItemClicked,
-        modifier
+        modifier,
     ) {
         Column(
-            Modifier.padding(8.dp)
+            Modifier.padding(8.dp),
         ) {
             Row(
                 modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(workout.name, fontWeight = FontWeight.Bold)
 
@@ -64,7 +64,7 @@ fun WorkoutPlanListItem(
 @Composable
 fun ExerciseNames(
     blockList: List<Block>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Text(
         if (blockList.isNotEmpty()) blockList.joinToString { it.exercise.name } else stringResource(Res.string.click_to_add_exercise),

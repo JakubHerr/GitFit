@@ -5,21 +5,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.jakubherr.gitfit.domain.repository.AuthRepository
-import io.github.jakubherr.gitfit.domain.repository.PlanRepository
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.ProgressionSettings
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
+import io.github.jakubherr.gitfit.domain.repository.AuthRepository
+import io.github.jakubherr.gitfit.domain.repository.PlanRepository
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 class PlanningViewModel(
     private val planRepository: PlanRepository,
     private val authRepository: AuthRepository,
-): ViewModel() {
+) : ViewModel() {
     var plan: Plan by mutableStateOf(Plan.Empty)
     var error: Plan.Error? by mutableStateOf(null)
 
@@ -76,7 +76,10 @@ class PlanningViewModel(
         viewModelScope.launch { planRepository.deleteCustomPlan(user.id, planId) }
     }
 
-    private fun renameWorkoutPlan(workoutPlan: WorkoutPlan, name: String) {
+    private fun renameWorkoutPlan(
+        workoutPlan: WorkoutPlan,
+        name: String,
+    ) {
         plan = plan.updateWorkoutPlan(workoutPlan.copy(name = name))
     }
 
@@ -88,24 +91,35 @@ class PlanningViewModel(
 
 sealed interface PlanAction {
     object SavePlan : PlanAction
+
     class RenamePlan(val name: String) : PlanAction
+
     class EditPlan(val plan: Plan) : PlanAction
+
     object DiscardPlan : PlanAction
+
     class DeletePlan(val planId: String) : PlanAction
 
     class AddWorkout(val workout: WorkoutPlan) : PlanAction
+
     class RenameWorkout(val workout: WorkoutPlan, val name: String) : PlanAction
+
     class ValidateWorkout(val workout: WorkoutPlan) : PlanAction
+
     class DeleteWorkout(val workout: WorkoutPlan) : PlanAction
 
     class AddExercise(val workoutIdx: Int, val exercise: Exercise) : PlanAction
+
     class RemoveExercise(val workout: WorkoutPlan, val block: Block) : PlanAction
 
     class AddSet(val workout: WorkoutPlan, val block: Block) : PlanAction
+
     class EditSet(val workout: WorkoutPlan, val block: Block, val set: Series) : PlanAction
+
     class RemoveSet(val workout: WorkoutPlan, val block: Block, val set: Series) : PlanAction
 
     class SaveProgression(val workout: WorkoutPlan, val block: Block, val progression: ProgressionSettings) : PlanAction
+
     class DeleteProgression(val workout: WorkoutPlan, val block: Block) : PlanAction
 
     object ErrorHandled : PlanAction

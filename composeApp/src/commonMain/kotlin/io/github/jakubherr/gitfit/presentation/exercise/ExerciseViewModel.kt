@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.jakubherr.gitfit.domain.repository.ExerciseRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.repository.AuthRepository
+import io.github.jakubherr.gitfit.domain.repository.ExerciseRepository
 import io.github.jakubherr.gitfit.presentation.shared.Resource
 import kotlinx.coroutines.launch
 
@@ -53,12 +53,13 @@ class ExerciseViewModel(
             exerciseRepository.removeCustomExercise(authRepository.currentUser.id, exerciseId)
         }
     }
-
 }
 
 sealed interface ExerciseAction {
     class CreateExercise(val exercise: Exercise) : ExerciseAction
+
     class EditCustomExercise(val exercise: Exercise) : ExerciseAction
+
     class DeleteCustomExercise(val exerciseId: String) : ExerciseAction
 
     class SelectExercise(val exercise: Exercise) : ExerciseAction

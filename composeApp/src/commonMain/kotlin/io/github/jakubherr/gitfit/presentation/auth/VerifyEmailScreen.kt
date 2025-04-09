@@ -27,7 +27,7 @@ import gitfit.composeapp.generated.resources.skip_verification
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
 
-expect suspend fun checkEmailValidation() : Boolean
+expect suspend fun checkEmailValidation(): Boolean
 
 @Composable
 fun VerifyEmailScreenRoot(
@@ -54,7 +54,7 @@ fun VerifyEmailScreenRoot(
         modifier,
         state.loading,
         onSendVerification = { vm.onAction(AuthAction.VerifyEmail) },
-        onSkip = onSkip
+        onSkip = onSkip,
     )
 }
 
@@ -79,19 +79,19 @@ fun VerifyEmailScreen(
 
             Column(
                 Modifier.width(IntrinsicSize.Max),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Button(
                     onClick = onSendVerification,
                     Modifier.fillMaxWidth(),
-                    enabled = !loading
+                    enabled = !loading,
                 ) {
                     Text(stringResource(Res.string.send_verification_email))
                 }
 
                 Button(
                     onClick = onSkip,
-                    Modifier.fillMaxWidth()
+                    Modifier.fillMaxWidth(),
                 ) {
                     Text(stringResource(Res.string.skip_verification))
                 }

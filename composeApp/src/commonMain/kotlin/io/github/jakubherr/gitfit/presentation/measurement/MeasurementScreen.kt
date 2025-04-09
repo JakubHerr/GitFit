@@ -59,7 +59,6 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import kotlin.enums.EnumEntries
 
@@ -103,7 +102,7 @@ fun MeasurementScreenRoot(
     var selectedMeasurementType by remember { mutableStateOf(MeasurementType.CHEST) }
 
     Column(
-        modifier.fillMaxSize().padding(16.dp)
+        modifier.fillMaxSize().padding(16.dp),
     ) {
         Row(
             Modifier.fillMaxWidth(),
@@ -113,7 +112,7 @@ fun MeasurementScreenRoot(
             Text(stringResource(Res.string.measurement_graph))
 
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(stringResource(selectedMeasurementType.label))
 
@@ -126,7 +125,7 @@ fun MeasurementScreenRoot(
         MeasurementLineGraph(
             measurements,
             selectedMeasurementType,
-            modifier = Modifier.fillMaxHeight(0.5f)
+            modifier = Modifier.fillMaxHeight(0.5f),
         )
 
         Row(
@@ -141,7 +140,7 @@ fun MeasurementScreenRoot(
         }
 
         LazyColumn(
-            modifier.weight(1.0f)
+            modifier.weight(1.0f),
         ) {
             items(measurements) { measurement ->
                 Text(measurement.date.toString())
@@ -150,7 +149,7 @@ fun MeasurementScreenRoot(
 
         Row(
             Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
+            horizontalArrangement = Arrangement.End,
         ) {
             val add = stringResource(Res.string.add_todays_measurement)
             val edit = stringResource(Res.string.edit_todays_measurement)
@@ -186,7 +185,7 @@ fun AddEditMeasurement(
                     measurement.backingField.value,
                     measurement.label,
                     measurement.unit,
-                    Modifier.padding(16.dp)
+                    Modifier.padding(16.dp),
                 ) {
                     measurement.backingField.value = it
                 }
@@ -195,7 +194,7 @@ fun AddEditMeasurement(
 
         Row(
             Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
         ) {
             Button(onClick = {
                 // TODO notify of error
@@ -225,7 +224,7 @@ fun MeasurementInputField(
 
         Row(
             Modifier.wrapContentWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             DoubleInputField(value, onValueChange = onValueChange)
             Spacer(Modifier.width(12.dp))
@@ -247,7 +246,7 @@ fun MeasurementSelectionDropdown(
 
     DropdownMenu(
         expanded,
-        onDismissRequest = { expanded = false }
+        onDismissRequest = { expanded = false },
     ) {
         MeasurementType.entries.forEach { type ->
             DropdownMenuItem(
@@ -255,28 +254,29 @@ fun MeasurementSelectionDropdown(
                 onClick = {
                     onSelected(type)
                     expanded = false
-                }
+                },
             )
         }
     }
 }
 
-private fun EnumEntries<MeasurementType>.toMeasurement() = Measurement(
-    date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
-    get(0).value(),
-    get(1).value(),
-    get(2).value(),
-    get(3).value(),
-    get(4).value(),
-    get(5).value(),
-    get(6).value(),
-    get(7).value(),
-    get(8).value(),
-    get(9).value(),
-    get(10).value(),
-    get(11).value(),
-    get(12).value(),
-)
+private fun EnumEntries<MeasurementType>.toMeasurement() =
+    Measurement(
+        date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
+        get(0).value(),
+        get(1).value(),
+        get(2).value(),
+        get(3).value(),
+        get(4).value(),
+        get(5).value(),
+        get(6).value(),
+        get(7).value(),
+        get(8).value(),
+        get(9).value(),
+        get(10).value(),
+        get(11).value(),
+        get(12).value(),
+    )
 
 private fun EnumEntries<MeasurementType>.fromMeasurement(measurement: Measurement) {
     measurement.neck?.let { get(0).setInitialValue(it.toString()) }

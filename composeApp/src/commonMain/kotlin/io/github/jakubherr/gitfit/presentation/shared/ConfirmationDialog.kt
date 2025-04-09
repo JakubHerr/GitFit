@@ -34,6 +34,6 @@ fun ConfirmationDialog(
             TextButton(onDismiss) {
                 Text(dismissText)
             }
-        }
+        },
     )
 }

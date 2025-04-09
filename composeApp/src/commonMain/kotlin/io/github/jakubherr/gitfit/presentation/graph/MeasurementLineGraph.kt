@@ -57,12 +57,15 @@ fun MeasurementLineGraph(
         .map { DefaultPoint(it.first.toString(), it.second!!) }
 
     val title =
-        if (data.isNotEmpty()) "${stringResource(Res.string.latest_measurements)} ${data.last().y} ${measurementType.unit}"
-        else stringResource(Res.string.no_data)
+        if (data.isNotEmpty()) {
+            "${stringResource(Res.string.latest_measurements)} ${data.last().y} ${measurementType.unit}"
+        } else {
+            stringResource(Res.string.no_data)
+        }
 
     ChartLayout(
         modifier.padding(16.dp),
-        title = { Text(title) }
+        title = { Text(title) },
     ) {
         XYGraph(
             CategoryAxisModel(data.map { it.x }),
@@ -74,9 +77,9 @@ fun MeasurementLineGraph(
                 symbol = {
                     Symbol(
                         shape = RoundedCornerShape(8.dp),
-                        fillBrush = SolidColor(MaterialTheme.colorScheme.primary)
+                        fillBrush = SolidColor(MaterialTheme.colorScheme.primary),
                     )
-                }
+                },
             )
         }
     }

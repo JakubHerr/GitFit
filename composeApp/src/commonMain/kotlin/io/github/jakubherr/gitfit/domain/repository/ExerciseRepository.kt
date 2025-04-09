@@ -8,11 +8,20 @@ interface ExerciseRepository {
 
     fun getCustomExercises(userId: String): Flow<List<Exercise>>
 
-    suspend fun addCustomExercise(userId: String, exercise: Exercise): Result<Unit>
+    suspend fun addCustomExercise(
+        userId: String,
+        exercise: Exercise,
+    ): Result<Unit>
 
-    suspend fun editCustomExercise(userId: String, exercise: Exercise): Result<Unit>
+    suspend fun editCustomExercise(
+        userId: String,
+        exercise: Exercise,
+    ): Result<Unit>
 
-    suspend fun removeCustomExercise(userId: String, exerciseId: String): Result<Unit>
+    suspend fun removeCustomExercise(
+        userId: String,
+        exerciseId: String,
+    ): Result<Unit>
 
     suspend fun removeAllCustomExercises(userId: String): Result<Unit>
 

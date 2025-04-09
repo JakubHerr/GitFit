@@ -65,7 +65,7 @@ fun MeasurementHistoryScreen(
             measurements,
             onDeleteMeasurement = {
                 onDeleteMeasurement(it)
-            }
+            },
         )
     }
 }
@@ -77,7 +77,7 @@ fun MeasurementList(
     onDeleteMeasurement: (Measurement) -> Unit = {},
 ) {
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(measurements) { measurement ->
             MeasurementListItem(measurement) {
@@ -120,7 +120,7 @@ fun MeasurementListItem(
             Row(
                 Modifier.fillMaxWidth().sizeIn(minHeight = 48.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(measurement.date.toString(), fontWeight = FontWeight.Bold)
 
@@ -147,15 +147,16 @@ fun MeasurementListItem(
 
                 Row(
                     Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.Center,
                 ) {
                     Button(
                         onClick = { showDialog = true },
                         modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.error,
-                            contentColor = MaterialTheme.colorScheme.onError
-                        )
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.error,
+                                contentColor = MaterialTheme.colorScheme.onError,
+                            ),
                     ) {
                         Text(stringResource(Res.string.delete_measurement))
                     }

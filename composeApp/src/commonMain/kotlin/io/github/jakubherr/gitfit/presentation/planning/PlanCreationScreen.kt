@@ -58,20 +58,20 @@ fun PlanCreationScreen(
             onConfirm = {
                 showDialog = false
                 onAction(PlanAction.DiscardPlan)
-            }
+            },
         )
     }
 
     Column(
         modifier.fillMaxSize().padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         StringInputField(
             value = plan.name,
             onValueChange = { onAction(PlanAction.RenamePlan(it)) },
             maxLength = 20,
             label = { Text(stringResource(Res.string.plan_name)) },
-            placeholder = { Text(plan.name, Modifier.alpha(0.5f)) }
+            placeholder = { Text(plan.name, Modifier.alpha(0.5f)) },
         )
 
         Spacer(Modifier.height(16.dp))
@@ -79,7 +79,7 @@ fun PlanCreationScreen(
         Row(
             Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(stringResource(Res.string.workout_days))
 
@@ -100,7 +100,7 @@ fun PlanCreationScreen(
                 WorkoutPlanListItem(
                     workout,
                     onItemClicked = { onWorkoutSelected(workout.idx) },
-                    onActionClicked = { onAction(PlanAction.DeleteWorkout(workout))}
+                    onActionClicked = { onAction(PlanAction.DeleteWorkout(workout)) },
                 )
             }
         }
@@ -108,7 +108,7 @@ fun PlanCreationScreen(
         Row(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Bottom
+            verticalAlignment = Alignment.Bottom,
         ) {
             Button({ onAction(PlanAction.SavePlan) }) { Text(stringResource(Res.string.save)) }
 

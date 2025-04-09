@@ -29,13 +29,11 @@ import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.cancel
 import gitfit.composeapp.generated.resources.confirm
-import gitfit.composeapp.generated.resources.delete
 import gitfit.composeapp.generated.resources.delete_plan
 import gitfit.composeapp.generated.resources.plan_deletion_expalantion
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
-import io.github.jakubherr.gitfit.presentation.shared.OnBackPress
 import io.github.jakubherr.gitfit.presentation.shared.WorkoutPlanListItem
 import org.jetbrains.compose.resources.stringResource
 
@@ -58,7 +56,7 @@ fun PlanDetailScreen(
             onConfirm = {
                 showDialog = false
                 onAction(PlanAction.DeletePlan(plan.id))
-            }
+            },
         )
     }
 
@@ -90,11 +88,11 @@ fun PlanDetailScreen(
                 WorkoutPlanListItem(
                     workout,
                     onActionClicked = { onWorkoutSelected(workout) },
-                    actionSlot = { Icon(Icons.Default.PlayArrow, "") }
+                    actionSlot = { Icon(Icons.Default.PlayArrow, "") },
                 )
             }
         }
     }
-    
+
     // nice to have: user has the ability to schedule a workout for a certain date
 }

@@ -9,14 +9,15 @@ import io.github.jakubherr.gitfit.ui.theme.GitFitTheme
 @Preview
 @Composable
 private fun DashboardScreenPreview() {
-    val currentWorkout = Workout(
-        id = "mockId",
-        blocks = emptyList()
-    )
+    val currentWorkout =
+        Workout(
+            id = "mockId",
+            blocks = emptyList(),
+        )
 
     GitFitTheme {
         DashboardScreen(
-            currentWorkout = currentWorkout
+            currentWorkout = currentWorkout,
         )
     }
 }

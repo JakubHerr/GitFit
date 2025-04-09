@@ -12,7 +12,7 @@ fun StringInputField(
     modifier: Modifier = Modifier,
     isError: Boolean = value.isBlank(),
     label: @Composable (() -> Unit)? = null,
-    placeholder: @Composable (() -> Unit)? = null
+    placeholder: @Composable (() -> Unit)? = null,
 ) {
     TextField(
         value,
@@ -21,6 +21,6 @@ fun StringInputField(
         singleLine = true,
         label = label,
         isError = isError,
-        placeholder = placeholder
+        placeholder = placeholder,
     )
 }

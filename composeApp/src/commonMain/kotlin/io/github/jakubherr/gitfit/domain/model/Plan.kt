@@ -8,10 +8,10 @@ data class Plan(
     val userId: String?,
     val name: String,
     val description: String,
-    val workoutPlans: List<WorkoutPlan> = emptyList()
+    val workoutPlans: List<WorkoutPlan> = emptyList(),
 ) {
     companion object {
-        val Empty = Plan("","","New plan","")
+        val Empty = Plan("", "", "New plan", "")
     }
 
     val error: Error? get() {
@@ -42,32 +42,55 @@ data class Plan(
         return copy(workoutPlans = workouts)
     }
 
-    fun addExercise(workoutPlanIdx: Int, exercise: Exercise): Plan {
+    fun addExercise(
+        workoutPlanIdx: Int,
+        exercise: Exercise,
+    ): Plan {
         val workout = workoutPlans[workoutPlanIdx]
         return updateWorkoutPlan(workout.addBlock(exercise))
     }
 
-    fun removeBlock(workoutPlan: WorkoutPlan, block: Block): Plan = updateWorkoutPlan(workoutPlan.removeBlock(block))
+    fun removeBlock(
+        workoutPlan: WorkoutPlan,
+        block: Block,
+    ): Plan = updateWorkoutPlan(workoutPlan.removeBlock(block))
 
-    fun addSeries(workoutPlan: WorkoutPlan, block: Block) : Plan {
+    fun addSeries(
+        workoutPlan: WorkoutPlan,
+        block: Block,
+    ): Plan {
         return updateWorkoutPlan(workoutPlan.updateBlock(block.addSeries()))
     }
 
-    fun updateSeries(workoutPlan: WorkoutPlan, block: Block, series: Series) : Plan {
+    fun updateSeries(
+        workoutPlan: WorkoutPlan,
+        block: Block,
+        series: Series,
+    ): Plan {
         return updateWorkoutPlan(workoutPlan.updateBlock(block.updateSeries(series)))
     }
 
-    fun removeSeries(workoutPlan: WorkoutPlan, block: Block, series: Series) : Plan {
+    fun removeSeries(
+        workoutPlan: WorkoutPlan,
+        block: Block,
+        series: Series,
+    ): Plan {
         return updateWorkoutPlan(workoutPlan.updateBlock(block.removeSeries(series)))
     }
 
-    fun setProgression(workoutPlan: WorkoutPlan, block: Block, progressionSettings: ProgressionSettings?): Plan {
+    fun setProgression(
+        workoutPlan: WorkoutPlan,
+        block: Block,
+        progressionSettings: ProgressionSettings?,
+    ): Plan {
         return updateWorkoutPlan(workoutPlan.updateBlock(block.copy(progressionSettings = progressionSettings)))
     }
 
     sealed class Error(val message: String) {
-        object InvalidPlanName: Error("Plan name can not be blank")
-        object NoWorkoutInPlan: Error("Plan has no workout days")
-        class InvalidWorkout(val error: Workout.Error): Error(error.message)
+        object InvalidPlanName : Error("Plan name can not be blank")
+
+        object NoWorkoutInPlan : Error("Plan has no workout days")
+
+        class InvalidWorkout(val error: Workout.Error) : Error(error.message)
     }
 }

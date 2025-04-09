@@ -40,14 +40,15 @@ fun PasswordInputField(
             IconButton({ showPassword = !showPassword }) {
                 Icon(
                     if (showPassword) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                    ""
+                    "",
                 )
             }
         },
         label = { Text(stringResource(Res.string.password)) },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Password,
-            imeAction = ImeAction.Done
-        )
+        keyboardOptions =
+            KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done,
+            ),
     )
 }

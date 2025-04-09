@@ -61,11 +61,12 @@ fun GitFitNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = when {
-            authState.user.loggedIn && authState.user.emailVerified -> LoggedInRoute
-            authState.user.loggedIn && !authState.user.emailVerified -> VerifyEmailRoute
-            else -> AuthGraphRoute
-        },
+        startDestination =
+            when {
+                authState.user.loggedIn && authState.user.emailVerified -> LoggedInRoute
+                authState.user.loggedIn && !authState.user.emailVerified -> VerifyEmailRoute
+                else -> AuthGraphRoute
+            },
         modifier = modifier,
     ) {
         authGraph(navController, authViewModel)
@@ -73,9 +74,11 @@ fun GitFitNavHost(
         composable<VerifyEmailRoute> {
             VerifyEmailScreenRoot(
                 authViewModel,
-                onSkip = { navController.navigate(LoggedInRoute) {
-                    popUpTo(VerifyEmailRoute) { inclusive = true }
-                } }
+                onSkip = {
+                    navController.navigate(LoggedInRoute) {
+                        popUpTo(VerifyEmailRoute) { inclusive = true }
+                    }
+                },
             )
         }
     }

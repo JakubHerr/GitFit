@@ -51,7 +51,7 @@ fun NavGraphBuilder.loggedInGraph(
     authViewModel: AuthViewModel,
 ) {
     navigation<LoggedInRoute>(
-        startDestination = DashboardRoute
+        startDestination = DashboardRoute,
     ) {
         composable<DashboardRoute> {
             val vm = navController.sharedViewModel<WorkoutViewModel>()
@@ -62,14 +62,17 @@ fun NavGraphBuilder.loggedInGraph(
                 planVM = planVm,
                 onAction = { action ->
                     when (action) {
-                        is DashboardAction.PlannedWorkoutClick, DashboardAction.UnplannedWorkoutClick, DashboardAction.ResumeWorkoutClick -> {
+                        is DashboardAction.PlannedWorkoutClick,
+                        DashboardAction.UnplannedWorkoutClick,
+                        DashboardAction.ResumeWorkoutClick,
+                        -> {
                             navController.navigate(WorkoutInProgressRoute)
                         }
                     }
                 },
                 onPlanSelected = {
                     navController.navigate(PlanDetailRoute(it.id))
-                }
+                },
             )
         }
 
@@ -89,13 +92,18 @@ fun NavGraphBuilder.loggedInGraph(
                         is WorkoutAction.DeleteWorkout -> navController.popBackStack()
                         is WorkoutAction.CompleteCurrentWorkout -> {
                             val error = vm.currentWorkout.value?.error
-                            if (error == null) vm.onAction(action)
-                            else showSnackbar(error.message)
+                            if (error == null) {
+                                vm.onAction(action)
+                            } else {
+                                showSnackbar(error.message)
+                            }
                         }
                         is WorkoutAction.RemoveBlock -> {
                             if (action.block.progressionSettings != null) {
                                 scope.launch { showSnackbar(getString(Res.string.error_block_with_progression)) }
-                            } else vm.onAction(action)
+                            } else {
+                                vm.onAction(action)
+                            }
                         }
                         else -> {}
                     }
@@ -103,7 +111,7 @@ fun NavGraphBuilder.loggedInGraph(
                 onSaveComplete = {
                     vm.onAction(WorkoutAction.NotifyWorkoutSaved)
                     navController.popBackStack()
-                }
+                },
             )
         }
 
@@ -119,7 +127,7 @@ fun NavGraphBuilder.loggedInGraph(
                     navController.navigate(WorkoutHistoryRoute)
                 },
                 onBrowseExerciseData = { navController.navigate(ExerciseListRoute) },
-                onBrowseMeasurementData = { navController.navigate(MeasurementHistoryRoute) }
+                onBrowseMeasurementData = { navController.navigate(MeasurementHistoryRoute) },
             )
         }
 
@@ -141,7 +149,7 @@ fun NavGraphBuilder.loggedInGraph(
                     onWorkoutSelected = {
                         vm.onAction(WorkoutAction.SelectWorkout(it))
                         navController.navigate(WorkoutDetailRoute)
-                    }
+                    },
                 )
             }
         }
@@ -155,7 +163,7 @@ fun NavGraphBuilder.loggedInGraph(
                     onDelete = {
                         vm.onAction(WorkoutAction.DeleteWorkout(it.id))
                         navController.popBackStack()
-                    }
+                    },
                 )
             }
             if (workout == null) {
@@ -174,6 +182,6 @@ fun NavGraphBuilder.loggedInGraph(
 // basically, when the user logs out, all viewModels that may be holding his data are destroyed
 @OptIn(KoinExperimentalAPI::class)
 @Composable
-inline fun <reified T: ViewModel> NavHostController.sharedViewModel(): T {
+inline fun <reified T : ViewModel> NavHostController.sharedViewModel(): T {
     return koinNavViewModel<T>(viewModelStoreOwner = getBackStackEntry(LoggedInRoute))
 }
