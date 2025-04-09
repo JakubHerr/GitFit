@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import org.koin.compose.viewmodel.koinViewModel
 
+// This is the top-level navigation component and contains destinations for the entire application
 @Composable
 fun GitFitNavHost(
     navController: NavHostController,
@@ -30,6 +31,7 @@ fun GitFitNavHost(
     showSnackbar: (String) -> Unit,
 ) {
     // this viewmodel is global because it is needed for the entire app lifecycle
+    // it checks the user auth state and handles snackbars for authentication errors and events
     val authViewModel: AuthViewModel = koinViewModel()
     val authState by authViewModel.state.collectAsStateWithLifecycle()
     val finishedAction by authViewModel.finishedAction.collectAsStateWithLifecycle()

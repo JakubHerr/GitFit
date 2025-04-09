@@ -44,6 +44,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.KoinContext
 
+// This is the shared entry point for both the desktop and mobile application
 @Composable
 fun App() {
     KoinContext {

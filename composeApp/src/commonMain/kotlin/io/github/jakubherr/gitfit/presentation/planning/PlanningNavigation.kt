@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 
-fun NavGraphBuilder.planningGraph(
+fun NavGraphBuilder.planningNavigation(
     navController: NavHostController,
     showSnackbar: (String) -> Unit,
 ) {

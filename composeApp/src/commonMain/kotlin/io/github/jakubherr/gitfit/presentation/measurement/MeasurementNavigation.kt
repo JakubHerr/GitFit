@@ -15,7 +15,7 @@ import io.github.jakubherr.gitfit.presentation.workout.sharedViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
-fun NavGraphBuilder.measurementGraph(
+fun NavGraphBuilder.measurementNavigation(
     navController: NavHostController,
     showSnackbar: (String) -> Unit,
 ) {
