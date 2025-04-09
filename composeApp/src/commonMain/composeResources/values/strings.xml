@@ -1,43 +1,103 @@
 <resources>
+    <!--authentication-->
     <string name="email">Email</string>
+    <string name="enter_email">Please enter your email</string>
     <string name="password">Password</string>
-    <string name="confirm">Confirm</string>
+
+    <string name="register">Register</string>
+    <string name="sign_in">Sign in</string>
+    <string name="log_out">Log out</string>
+
+    <string name="forgot_password">Forgot password</string>
+    <string name="send_reset_email">Send reset email</string>
     <string name="password_reset_sent">Password reset link sent to</string>
+
+    <string name="email_not_verified">Your email is not verified</string>
+    <string name="send_verification_email">Send verification email</string>
     <string name="verification_email_sent">Verification link sent</string>
+    <string name="skip_verification">Skip verification</string>
+
+    <string name="delete_account">Delete account</string>
+    <string name="delete_account_explanaiton">Are sure you want to delete your account? All of your data will be lost</string>
+    <string name="confirm_account_deletion">Please confirm account deletion by entering your password</string>
     <string name="account_deleted">Account deleted</string>
 
-    <string name="dashboard">Dashboard</string>
-    <string name="plan">Plan</string>
-    <string name="workout">Workout</string>
-    <string name="profile">Profile</string>
-    <string name="measurement">Measure</string>
-    <string name="history">History</string>
+    <string name="error_email_used_already">Email is used already</string>
+    <string name="error_failed_to_send_email">Failed to send email</string>
+    <string name="error_firebase_auth">Firebase auth error</string>
+    <string name="error_unknown">Unknown error</string>
+    <string name="error_invalid_credentials">Invalid credentials</string>
+    <string name="error_invalid_user">Invalid user</string>
+    <string name="error_no_internet">No internet connection</string>
+    <string name="error_password_too_weak">Password should be at least 12 characters long</string>
+    <string name="error_user_logged_out">User is logged out</string>
 
+    <!--generic operations-->
+    <string name="name">Name</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="see_all">See all</string>
     <string name="delete">Delete</string>
     <string name="save">Save</string>
 
-    <string name="add_exercise">Add exercise</string>
-    <string name="delete_exercise">Delete exercise</string>
-    <string name="delete_custom_exercise">Delete custom exercise</string>
-    <string name="delete_custom_exercise_explanation">The exercise will be deleted. Workouts with this exercise will not be changed</string>
+    <!--navigation bar destinations-->
+    <string name="dashboard">Dashboard</string>
+    <string name="plan">Plan</string>
+    <string name="measurement">Measure</string>
+    <string name="history">History</string>
+    <string name="profile">Profile</string>
 
+    <!--workout CRUD-->
+    <string name="planned_workouts">Planned workouts</string>
+    <string name="start_unplanned_workout">Start unplanned workout</string>
+    <string name="resume_workout">Resume workout</string>
     <string name="save_workout">Save</string>
     <string name="delete_workout">Delete</string>
 
+    <string name="browse_workout_history">Browse workout history</string>
+    <string name="delete_workout_record">Delete workout record</string>
+    <string name="delete_workout_explanation">The current workout will be deleted</string>
+    <string name="continue_workout">Continue workout</string>
+
+    <string name="error_workout_not_found">Failed to fetch workout</string>
+    <string name="error_workout_in_progress">A different workout is already in progress!</string>
+
+    <string name="last_10_workouts">Last 10 workouts</string>
+
+    <!--exercise CRUD-->
+    <string name="search_exercise">Search exercise</string>
+    <string name="add_exercise">Add exercise</string>
+    <string name="delete_exercise">Delete exercise</string>
+    <string name="create_exercise">Create exercise</string>
+    <string name="save_exercise">Save exercise</string>
+    <string name="cancel_exercise_creation">Cancel exercise creation</string>
+    <string name="cancel_exercise_creation_explanation">If you quit, the exercise will not be saved</string>
+    <string name="delete_custom_exercise">Delete custom exercise</string>
+    <string name="delete_custom_exercise_explanation">The exercise will be deleted. Workouts with this exercise will not be changed</string>
+    <string name="browse_exercise_history">Browse exercise history</string>
+
+    <string name="primary_muscle">Primary muscle</string>
+    <string name="secondary_muscle">Secondary muscle</string>
+
+    <!--Block CRUD-->
+    <string name="error_block_with_progression">Blocks with progression can not be removed</string>
+    <string name="error_block_not_found">Block not found</string>
+
+    <!--series CRUD-->
     <string name="add_set">Add set</string>
     <string name="delete_last_set">Delete last set</string>
     <string name="set">Set</string>
-
     <string name="kg">KG</string>
     <string name="reps">Reps</string>
     <string name="repetitions">Repetitions</string>
     <string name="done">Done</string>
 
-    <string name="see_all">See all</string>
-
+    <!--empty screens-->
     <string name="error_exercise_list_empty">No exercises found</string>
     <string name="error_exercise_not_found">Exercise not found</string>
+    <string name="empty_workout_history">No workout history</string>
 
+    <!--training plan CRUD-->
     <string name="training_plans">Training plans</string>
     <string name="your_plans">Your plans</string>
     <string name="predefined_plans">Predefined plans</string>
@@ -45,7 +105,7 @@
     <string name="plan_name">Plan name</string>
     <string name="workout_days">Workout days</string>
     <string name="add_workout_day">Add Workout day</string>
-
+    <string name="click_to_add_exercise">Click to add exercise</string>
     <string name="plan_deletion_expalantion">The selected plan will be deleted</string>
     <string name="delete_plan">Delete plan</string>
 
@@ -53,6 +113,7 @@
     <string name="discard_plan_changes">Discard plan changes</string>
     <string name="discard_plan_changes_explanation">The current plan will not be saved</string>
 
+    <!--progression CRUD-->
     <string name="edit_progression">Edit progression</string>
     <string name="starting_values">Starting values:</string>
     <string name="minimum_weight">Minimum weight (kg)</string>
@@ -60,30 +121,14 @@
     <string name="progresison_type">Progression type</string>
     <string name="weight_increase">Weight increase</string>
     <string name="repetition_increase">Repetition increase</string>
+    <string name="progression_explanation_1">Progression will start when you reach %1$d repetitions with a weight of %2$d kg every set.</string>
+    <string name="progression_explanation_2"> After every successful workout, the %1$s will increase by %2$d</string>
 
-    <string name="create_exercise">Create exercise</string>
-    <string name="search_exercise">Search exercise</string>
-    <string name="save_exercise">Save exercise</string>
-
-    <string name="cancel_exercise_creation">Cancel exercise creation</string>
-    <string name="cancel_exercise_creation_explanation">If you quit, the exercise will not be saved</string>
-
-    <string name="last_10_workouts">Last 10 workouts</string>
-
-    <string name="name">Name</string>
-    <string name="cancel">Cancel</string>
-    <string name="register">Register</string>
-    <string name="sign_in">Sign in</string>
-    <string name="log_out">Log out</string>
-    <string name="primary_muscle">Primary muscle</string>
-    <string name="secondary_muscle">Secondary muscle</string>
-    <string name="planned_workouts">Planned workouts</string>
-    <string name="start_unplanned_workout">Start unplanned workout</string>
-    <string name="resume_workout">Resume workout</string>
-
+    <!--measurement CRUD-->
     <string name="latest_measurements">Latest measurements</string>
     <string name="add_todays_measurement">Add today's measurement</string>
     <string name="edit_todays_measurement">Edit today's measurement</string>
+
     <string name="weight">Weight</string>
     <string name="height">Height</string>
     <string name="neck">Neck</string>
@@ -97,50 +142,17 @@
     <string name="right_thigh">Right thigh</string>
     <string name="left_calf">Left calf</string>
     <string name="right_calf">Right calf</string>
+
     <string name="save_measurement">Save measurement</string>
     <string name="error_invalid_measurement_values">All measurement values must be positive</string>
+    <string name="delete_measurement">Delete measurement</string>
+    <string name="delete_measurement_explanation">Measurement will be deleted</string>
+
     <string name="measurement_graph">Measurement graph</string>
     <string name="no_data">No data</string>
-    <string name="delete_measurement">Delete measurement</string>
-
-    <string name="delete_account">Delete account</string>
-    <string name="delete_account_explanaiton">Are sure you want to delete your account? All of your data will be lost</string>
-    <string name="confirm_account_deletion">Please confirm account deletion by entering your password</string>
-    <string name="forgot_password">Forgot password</string>
-
-    <string name="error_email_used_already">Email is used already</string>
-    <string name="error_failed_to_send_email">Failed to send email</string>
-    <string name="error_firebase_auth">Firebase auth error</string>
-    <string name="error_unknown">Unknown error</string>
-    <string name="error_invalid_credentials">Invalid credentials</string>
-    <string name="error_invalid_user">Invalid user</string>
-    <string name="error_no_internet">No internet connection</string>
-    <string name="error_password_too_weak">Password should be at least 12 characters long</string>
-    <string name="error_user_logged_out">User is logged out</string>
-
-    <string name="enter_email">Please enter your email</string>
-    <string name="send_reset_email">Send reset email</string>
-    <string name="send_verification_email">Send verification email</string>
-    <string name="email_not_verified">Your email is not verified. If you forget your password, you might be unable to delete your account</string>
-    <string name="skip_verification">Skip verification</string>
-
-    <string name="error_block_with_progression">Blocks with progression can not be removed</string>
-    <string name="error_block_not_found">Block not found</string>
-    <string name="empty_workout_history">No workout history</string>
-    <string name="error_workout_not_found">Failed to fetch workout</string>
-
-    <string name="error_workout_in_progress">A different workout is already in progress!</string>
-
-    <string name="browse_exercise_history">Browse exercise history</string>
-    <string name="browse_workout_history">Browse workout history</string>
     <string name="browse_measurement_history">Browse measurement history</string>
 
-    <string name="click_to_add_exercise">Click to add exercise</string>
-
-    <string name="delete_workout_record">Delete workout record</string>
-    <string name="delete_workout_explanation">The current workout will be deleted</string>
-    <string name="continue_workout">Continue workout</string>
-
+    <!--route destination titles-->
     <string name="reset_password_route">Reset password</string>
     <string name="plan_creation_route">Create or edit plan</string>
     <string name="select_exercise_route">Select exercise</string>
@@ -155,6 +167,7 @@
     <string name="verify_email_route">Verify email</string>
     <string name="measurement_history_route">Measurement history</string>
 
+    <!--enum translations-->
     <string name="enum_progression_type_icrease_weight">Increase weight</string>
     <string name="enum_progression_type_icrease_reps">Increase reps</string>
 
@@ -170,7 +183,4 @@
     <string name="enum_exercise_metric_best_set_volume">Best set volume</string>
     <string name="enum_exercise_metric_total_workout_volume">Total workout volume</string>
     <string name="enum_exercise_metric_total_repetitions">Total repetitions</string>
-
-    <string name="progression_explanation_1">Progression will start when you reach %1$d repetitions with a weight of %2$d kg every set.</string>
-    <string name="progression_explanation_2"> After every successful workout, the %1$s will increase by %2$d</string>
 </resources>
