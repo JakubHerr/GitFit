@@ -33,8 +33,9 @@ private fun ResetPasswordScreenPreview() {
             AuthState(
                 User.LoggedOut,
                 error = null,
-                loading = false,
+                loading = true,
             ),
+            onResetPassword = { }
         )
     }
 }

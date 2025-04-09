@@ -1,21 +1,9 @@
 package io.github.jakubherr.gitfit.presentation.auth
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,10 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.email
@@ -41,14 +26,13 @@ import gitfit.composeapp.generated.resources.error_password_too_weak
 import gitfit.composeapp.generated.resources.error_unknown
 import gitfit.composeapp.generated.resources.error_user_logged_out
 import gitfit.composeapp.generated.resources.forgot_password
-import gitfit.composeapp.generated.resources.ic_launcher_foreground
 import gitfit.composeapp.generated.resources.register
 import gitfit.composeapp.generated.resources.sign_in
 import io.github.jakubherr.gitfit.domain.repository.AuthError
+import io.github.jakubherr.gitfit.presentation.shared.AuthCard
 import io.github.jakubherr.gitfit.presentation.shared.PasswordInputField
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun LoginScreenRoot(
@@ -60,6 +44,7 @@ fun LoginScreenRoot(
 
     LoginScreen(
         state,
+        modifier,
         onAction = { action -> vm.onAction(action) },
         onForgotPassword = onForgotPassword,
     )
@@ -68,6 +53,7 @@ fun LoginScreenRoot(
 @Composable
 fun LoginScreen(
     state: AuthState,
+    modifier: Modifier = Modifier,
     onAction: (AuthAction) -> Unit = {},
     onForgotPassword: () -> Unit = {},
 ) {
@@ -78,74 +64,50 @@ fun LoginScreen(
         email.isNotBlank() && password.isNotBlank()
     }
 
-    // val locale = koinInject<PlatformLocalization>()
-
     Surface {
-        Column(
-            Modifier.fillMaxSize().padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+        AuthCard(
+            modifier,
+            state.loading
         ) {
-            Text("GitFit", style = MaterialTheme.typography.headlineLarge)
-            Image(
-                imageVector = vectorResource(Res.drawable.ic_launcher_foreground),
-                "",
-                modifier = Modifier.size(128.dp),
-                contentScale = ContentScale.FillBounds,
+            OutlinedTextField(
+                email,
+                onValueChange = { email = it },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                label = { Text(stringResource(Res.string.email)) },
             )
 
-            if (state.loading) {
-                CircularProgressIndicator()
+            PasswordInputField(
+                password,
+                onPasswordChange = { password = it },
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Button(
+                    onClick = { onAction(AuthAction.Register(email, password)) },
+                    enabled = isValidLogin,
+                ) {
+                    Text(stringResource(Res.string.register))
+                }
+
+                Button(
+                    onClick = { onAction(AuthAction.SignIn(email, password)) },
+                    enabled = isValidLogin,
+                ) {
+                    Text(stringResource(Res.string.sign_in))
+                }
             }
 
-            Card(
-                modifier = Modifier.sizeIn(maxWidth = 512.dp).padding(16.dp),
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
             ) {
-                Column(
-                    Modifier.padding(16.dp),
-                ) {
-                    OutlinedTextField(
-                        email,
-                        onValueChange = { email = it },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        label = { Text(stringResource(Res.string.email)) },
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    PasswordInputField(
-                        password,
-                        onPasswordChange = { password = it },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-
-                    Spacer(Modifier.height(16.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Button(
-                            onClick = { onAction(AuthAction.Register(email, password)) },
-                            enabled = isValidLogin,
-                        ) {
-                            Text(stringResource(Res.string.register))
-                        }
-                        Spacer(Modifier.width(16.dp))
-                        Button(
-                            onClick = { onAction(AuthAction.SignIn(email, password)) },
-                            enabled = isValidLogin,
-                        ) {
-                            Text(stringResource(Res.string.sign_in))
-                        }
-                    }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End,
-                    ) {
-                        TextButton(onClick = onForgotPassword) {
-                            Text(stringResource(Res.string.forgot_password))
-                        }
-                    }
+                TextButton(onClick = onForgotPassword) {
+                    Text(stringResource(Res.string.forgot_password))
                 }
             }
         }
