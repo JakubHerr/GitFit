@@ -23,6 +23,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -65,12 +68,13 @@ fun ExerciseListScreen(
         Modifier.fillMaxSize().statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        // TODO implement basic search and filtering based on category
+        var query by remember { mutableStateOf("") }
         SearchBar(
-            "",
-            onQueryChange = {},
+            query,
+            onQueryChange = { query = it },
             Modifier.padding(16.dp),
         )
+
         Spacer(Modifier.height(32.dp))
 
         if (exerciseList.isEmpty()) {
@@ -83,11 +87,14 @@ fun ExerciseListScreen(
                 Text(stringResource(Res.string.error_exercise_list_empty))
             }
         } else {
+            val filteredList =
+                if (query.isNotBlank()) exerciseList.filter { it.name.startsWith(query, ignoreCase = true) } else exerciseList
+
             LazyColumn(
                 Modifier.weight(1f),
                 contentPadding = PaddingValues(16.dp),
             ) {
-                items(exerciseList) { exercise ->
+                items(filteredList) { exercise ->
                     ExerciseListItem(exercise) { onExerciseClick(exercise) }
                     HorizontalDivider(Modifier.height(1.dp))
                 }
@@ -111,6 +118,7 @@ fun SearchBar(
         query,
         onQueryChange,
         modifier = modifier.fillMaxWidth(),
+        singleLine = true,
         leadingIcon = { Icon(Icons.Default.Search, "") },
         placeholder = { Text(stringResource(Res.string.search_exercise)) },
     )

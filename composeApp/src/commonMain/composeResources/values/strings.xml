@@ -46,6 +46,9 @@
     <string name="workout_days">Workout days</string>
     <string name="add_workout_day">Add Workout day</string>
 
+    <string name="plan_deletion_expalantion">The selected plan will be deleted</string>
+    <string name="delete_plan">Delete plan</string>
+
     <string name="discard_changes">Discard changes</string>
     <string name="discard_plan_changes">Discard plan changes</string>
     <string name="discard_plan_changes_explanation">The current plan will not be saved</string>

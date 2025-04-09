@@ -8,6 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.latest_measurements
 import io.github.jakubherr.gitfit.domain.model.Measurement
 import io.github.jakubherr.gitfit.presentation.measurement.MeasurementType
 import io.github.koalaplot.core.ChartLayout
@@ -54,7 +56,7 @@ fun MeasurementLineGraph(
         .map { DefaultPoint(it.first.toString(), it.second!!) }
 
     // TODO string resource
-    val title = if (data.isNotEmpty()) "last measurement: ${data.last().y} ${measurementType.unit}" else "No data"
+    val title = if (data.isNotEmpty()) "${stringResource(Res.string.latest_measurements)} ${data.last().y} ${measurementType.unit}" else "No data"
 
     ChartLayout(
         modifier.padding(16.dp),

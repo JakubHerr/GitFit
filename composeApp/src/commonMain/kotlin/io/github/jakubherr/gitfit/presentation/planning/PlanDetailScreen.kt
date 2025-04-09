@@ -26,11 +26,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.cancel
+import gitfit.composeapp.generated.resources.confirm
+import gitfit.composeapp.generated.resources.delete
+import gitfit.composeapp.generated.resources.delete_plan
+import gitfit.composeapp.generated.resources.plan_deletion_expalantion
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import io.github.jakubherr.gitfit.presentation.shared.OnBackPress
 import io.github.jakubherr.gitfit.presentation.shared.WorkoutPlanListItem
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PlanDetailScreen(
@@ -43,10 +50,10 @@ fun PlanDetailScreen(
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
         ConfirmationDialog(
-            title = "Delete",
-            text = "The selected plan will be deleted",
-            confirmText = "Delete plan",
-            dismissText = "Cancel",
+            title = stringResource(Res.string.delete_plan),
+            text = stringResource(Res.string.plan_deletion_expalantion),
+            confirmText = stringResource(Res.string.confirm),
+            dismissText = stringResource(Res.string.cancel),
             onDismiss = { showDialog = false },
             onConfirm = {
                 showDialog = false
@@ -72,7 +79,6 @@ fun PlanDetailScreen(
                     Icon(Icons.Default.Delete, "")
                 }
             }
-
         }
 
         Spacer(Modifier.height(32.dp))

@@ -109,6 +109,7 @@ fun ExerciseCreateScreen(
         Text(stringResource(Res.string.secondary_muscle))
         MultipleChoiceChipSelection(
             MuscleGroup.entries,
+            translations,
             selectedSecondaryMuscle
         ) {
             if (selectedSecondaryMuscle.contains(it)) selectedSecondaryMuscle.remove(it) else selectedSecondaryMuscle.add(it)

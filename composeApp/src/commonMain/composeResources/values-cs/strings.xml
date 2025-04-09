@@ -49,6 +49,9 @@
     <string name="discard_plan_changes">Zahodit změny plánu</string>
     <string name="discard_plan_changes_explanation">Současný plán nebude uložen</string>
 
+    <string name="plan_deletion_expalantion">Současný plán bude trvale smazán</string>
+    <string name="delete_plan">Smazat plán</string>
+
     <string name="edit_progression">Úprava progrese</string>
     <string name="starting_values">Počáteční hodnoty:</string>
     <string name="minimum_weight">Minimální váha (kg)</string>
