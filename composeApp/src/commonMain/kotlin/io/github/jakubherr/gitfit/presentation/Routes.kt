@@ -69,6 +69,10 @@ object MeasurementAddEditRoute
 
 @Serializable
 @Keep
+object MeasurementHistoryRoute
+
+@Serializable
+@Keep
 object PlanOverviewRoute
 
 @Serializable

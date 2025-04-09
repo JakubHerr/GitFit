@@ -20,6 +20,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -41,6 +42,7 @@ import gitfit.composeapp.generated.resources.left_arm
 import gitfit.composeapp.generated.resources.left_calf
 import gitfit.composeapp.generated.resources.left_forearm
 import gitfit.composeapp.generated.resources.left_thigh
+import gitfit.composeapp.generated.resources.measurement_graph
 import gitfit.composeapp.generated.resources.neck
 import gitfit.composeapp.generated.resources.right_arm
 import gitfit.composeapp.generated.resources.right_calf
@@ -65,7 +67,6 @@ enum class MeasurementType(
     val label: StringResource,
     val unit: String = "cm",
     val backingField: MutableState<String> = mutableStateOf(""),
-    val minValue: Double = 0.0,
 ) {
     NECK(Res.string.neck),
     CHEST(Res.string.chest),
@@ -95,21 +96,21 @@ fun MeasurementScreenRoot(
     vm: MeasurementViewModel,
     modifier: Modifier = Modifier,
     onRequestAddEditMeasurement: () -> Unit = {},
+    onShowHistory: () -> Unit = {},
 ) {
     val todaysMeasurement by vm.todayMeasurement.collectAsStateWithLifecycle(null)
     val measurements by vm.allUserMeasurements.collectAsStateWithLifecycle(emptyList())
     var selectedMeasurementType by remember { mutableStateOf(MeasurementType.CHEST) }
 
     Column(
-        modifier.fillMaxSize()
+        modifier.fillMaxSize().padding(16.dp)
     ) {
-
         Row(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(stringResource(Res.string.latest_measurements))
+            Text(stringResource(Res.string.measurement_graph))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -122,8 +123,6 @@ fun MeasurementScreenRoot(
             }
         }
 
-
-
         MeasurementLineGraph(
             measurements,
             selectedMeasurementType,
@@ -132,11 +131,15 @@ fun MeasurementScreenRoot(
 
         Row(
             modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(stringResource(Res.string.latest_measurements))
-            Text(stringResource(Res.string.see_all)) // TODO
+            TextButton(onShowHistory) {
+                Text(stringResource(Res.string.see_all))
+            }
         }
+
         LazyColumn(
             modifier.weight(1.0f)
         ) {
@@ -158,8 +161,6 @@ fun MeasurementScreenRoot(
             }
         }
     }
-
-
 }
 
 @Composable
@@ -176,8 +177,7 @@ fun AddEditMeasurement(
         }
     }
 
-
-    Column {
+    Column(Modifier.padding(16.dp)) {
         LazyColumn(
             modifier.fillMaxSize().weight(1.0f),
         ) {

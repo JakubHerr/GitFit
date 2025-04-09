@@ -19,36 +19,34 @@ class FirestoreMeasurementRepository : MeasurementRepository {
     private val today get() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
     private val dispatcher = Dispatchers.IO
 
-    override fun getAllMeasurements(userId: String): Flow<List<Measurement>> {
-        if (userId.isBlank()) return emptyFlow()
-
-        return measurementsRef(userId).snapshots.map { snapshot ->
-            snapshot.documents.map { it.data<Measurement>() }
-        }
-    }
-
     override fun userMeasurementFlow(userId: String): Flow<List<Measurement>> {
         if (userId.isBlank()) return emptyFlow()
+
         return measurementsRef(userId).snapshots.map { list ->
-            list.documents.map { it.data<Measurement>() }
+            list.documents.mapNotNull {
+                runCatching { it.data<Measurement>() }.getOrNull()
+            }
         }
     }
 
     override fun todayMeasurementFlow(userId: String): Flow<Measurement?> {
         if (userId.isBlank()) return emptyFlow()
+
         return measurementsRef(userId).document(today).snapshots.map {
-            if (it.exists) it.data<Measurement>() else null
+            runCatching { it.data<Measurement>() }.getOrNull()
         }
     }
 
-    override suspend fun saveMeasurement(userId: String, measurement: Measurement) {
-        withContext(dispatcher) {
-            measurementsRef(userId).document(today).set(measurement)
+    override suspend fun saveMeasurement(userId: String, measurement: Measurement): Result<Unit> {
+        return withContext(dispatcher) {
+            runCatching { measurementsRef(userId).document(today).set(measurement) }
         }
     }
 
-    override suspend fun deleteMeasurement(userId: String, measurementId: String) {
-        measurementsRef(userId).document(measurementId).delete()
+    override suspend fun deleteMeasurement(userId: String, measurement: Measurement): Result<Unit> {
+        return withContext(dispatcher) {
+            runCatching { measurementsRef(userId).document(measurement.date.toString()).delete() }
+        }
     }
 
     override suspend fun deleteAllMeasurements(userId: String): Result<Unit> {

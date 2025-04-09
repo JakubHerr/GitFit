@@ -29,6 +29,7 @@ import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.add_edit_measurement_route
 import gitfit.composeapp.generated.resources.create_exercise_route
 import gitfit.composeapp.generated.resources.exercise_detail_route
+import gitfit.composeapp.generated.resources.measurement_history_route
 import gitfit.composeapp.generated.resources.plan_creation_route
 import gitfit.composeapp.generated.resources.plan_detail_route
 import gitfit.composeapp.generated.resources.planing_workout_route
@@ -132,6 +133,7 @@ private fun NavHostController.destinationSettings(): Pair<String?, Boolean> {
         destination.hasRoute<CreateExerciseRoute>() -> stringResource(Res.string.create_exercise_route) to false
         destination.hasRoute<ExerciseDetailRoute>() -> stringResource(Res.string.exercise_detail_route) to true
         destination.hasRoute<VerifyEmailRoute>() -> stringResource(Res.string.verify_email_route) to false
+        destination.hasRoute<MeasurementHistoryRoute>() -> stringResource(Res.string.measurement_history_route) to true
         else -> null to false
     }
 }

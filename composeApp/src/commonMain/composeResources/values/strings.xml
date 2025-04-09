@@ -99,6 +99,9 @@
     <string name="right_calf">Right calf</string>
     <string name="save_measurement">Save measurement</string>
     <string name="error_invalid_measurement_values">All measurement values must be positive</string>
+    <string name="measurement_graph">Measurement graph</string>
+    <string name="no_data">No data</string>
+    <string name="delete_measurement">Delete measurement</string>
 
     <string name="delete_account">Delete account</string>
     <string name="delete_account_explanaiton">Are sure you want to delete your account? All of your data will be lost</string>
@@ -150,6 +153,7 @@
     <string name="create_exercise_route">Create exercise</string>
     <string name="exercise_detail_route">Exercise detail</string>
     <string name="verify_email_route">Verify email</string>
+    <string name="measurement_history_route">Measurement history</string>
 
     <string name="enum_progression_type_icrease_weight">Increase weight</string>
     <string name="enum_progression_type_icrease_reps">Increase reps</string>

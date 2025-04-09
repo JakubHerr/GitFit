@@ -98,6 +98,10 @@
     <string name="right_calf">Pravé lýtko</string>
     <string name="save_measurement">Uložit měření</string>
     <string name="error_invalid_measurement_values">Všechny hodnoty musí být kladné</string>
+    <string name="delete_measurement">Smazat měření</string>
+    <string name="measurement_graph">Graf měření</string>
+    <string name="no_data">Žádná data</string>
+    <string name="delete_measurement_explanation">Měření bude smazáno</string>
 
     <string name="delete_account">Smazat účet</string>
     <string name="delete_account_explanaiton">Opravdu chcete smazat účet? Všechna data budou smazána</string>
@@ -149,6 +153,7 @@
     <string name="create_exercise_route">Tvorba cviku</string>
     <string name="exercise_detail_route">Detail cviku</string>
     <string name="verify_email_route">Ověření emailu</string>
+    <string name="measurement_history_route">Historie měření</string>
 
     <string name="enum_progression_type_icrease_weight">Zvýšení váhy</string>
     <string name="enum_progression_type_icrease_reps">Zvýšení opakování</string>

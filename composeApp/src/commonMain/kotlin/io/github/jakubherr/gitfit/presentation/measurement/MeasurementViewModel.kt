@@ -24,6 +24,7 @@ class MeasurementViewModel(
     fun onAction(action: MeasurementAction) {
         when (action) {
             is MeasurementAction.SaveMeasurement -> saveMeasurement(action.measurement)
+            is MeasurementAction.DeleteMeasurement -> deleteMeasurement(action.measurement)
         }
     }
 
@@ -36,6 +37,15 @@ class MeasurementViewModel(
         }
     }
 
+    private fun deleteMeasurement(measurement: Measurement) {
+        val user = authRepository.currentUser
+        if (!user.loggedIn) return
+
+        viewModelScope.launch {
+            measurementRepository.deleteMeasurement(user.id, measurement)
+        }
+    }
+
     override fun onCleared() {
         println("DBG: Measurement viewmodel destroyed :((((")
         super.onCleared()
@@ -44,4 +54,5 @@ class MeasurementViewModel(
 
 sealed interface MeasurementAction {
     class SaveMeasurement(val measurement: Measurement) : MeasurementAction
+    class DeleteMeasurement(val measurement: Measurement) : MeasurementAction
 }

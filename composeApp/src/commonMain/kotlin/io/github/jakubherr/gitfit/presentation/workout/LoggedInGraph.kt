@@ -1,9 +1,14 @@
 package io.github.jakubherr.gitfit.presentation.workout
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -19,6 +24,7 @@ import io.github.jakubherr.gitfit.presentation.DashboardRoute
 import io.github.jakubherr.gitfit.presentation.ExerciseListRoute
 import io.github.jakubherr.gitfit.presentation.HistoryRoute
 import io.github.jakubherr.gitfit.presentation.LoggedInRoute
+import io.github.jakubherr.gitfit.presentation.MeasurementHistoryRoute
 import io.github.jakubherr.gitfit.presentation.PlanDetailRoute
 import io.github.jakubherr.gitfit.presentation.SettingsRoute
 import io.github.jakubherr.gitfit.presentation.WorkoutDetailRoute
@@ -112,7 +118,8 @@ fun NavGraphBuilder.loggedInGraph(
                 onBrowseWorkoutData = {
                     navController.navigate(WorkoutHistoryRoute)
                 },
-                onBrowseExerciseData = { navController.navigate(ExerciseListRoute) }
+                onBrowseExerciseData = { navController.navigate(ExerciseListRoute) },
+                onBrowseMeasurementData = { navController.navigate(MeasurementHistoryRoute) }
             )
         }
 
@@ -121,8 +128,13 @@ fun NavGraphBuilder.loggedInGraph(
             val completedWorkouts by vm.completedWorkouts.collectAsStateWithLifecycle()
 
             if (completedWorkouts.isEmpty()) {
-                // TODO screen
-                Text(stringResource(Res.string.empty_workout_history))
+                Column(
+                    Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(stringResource(Res.string.empty_workout_history))
+                }
             } else {
                 WorkoutListScreen(
                     completedWorkouts,
