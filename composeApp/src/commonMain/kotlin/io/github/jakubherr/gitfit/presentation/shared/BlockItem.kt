@@ -21,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.add_set
+import gitfit.composeapp.generated.resources.delete
+import gitfit.composeapp.generated.resources.done
 import io.github.jakubherr.gitfit.domain.isNonNegativeDouble
 import io.github.jakubherr.gitfit.domain.isNonNegativeLong
 import io.github.jakubherr.gitfit.domain.model.Block
@@ -38,6 +40,7 @@ fun SharedBlockItem(
     readOnly: Boolean = false,
     dropdownMenu: @Composable () -> Unit = {},
     seriesItems: @Composable () -> Unit = {},
+    seriesAction: String = stringResource(Res.string.done),
     onAddSet: () -> Unit = {},
 ) {
     Card(modifier.fillMaxWidth().padding(16.dp)) {
@@ -56,7 +59,7 @@ fun SharedBlockItem(
             HorizontalDivider(Modifier.padding(8.dp))
 
             Column {
-                SetHeader()
+                SetHeader(seriesAction = seriesAction)
                 Spacer(Modifier.height(16.dp))
                 seriesItems()
             }
@@ -95,6 +98,7 @@ fun PlanBlockItem(
                 onEditProgression = onEditProgression,
             )
         },
+        seriesAction = stringResource(Res.string.delete),
         seriesItems = {
             block.series.forEachIndexed { seriesIdx, series ->
                 SetInput(

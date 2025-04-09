@@ -5,6 +5,7 @@ import androidx.compose.material.icons.automirrored.filled.ManageSearch
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SettingsAccessibility
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -20,7 +21,7 @@ import gitfit.composeapp.generated.resources.dashboard
 import gitfit.composeapp.generated.resources.history
 import gitfit.composeapp.generated.resources.measurement
 import gitfit.composeapp.generated.resources.plan
-import gitfit.composeapp.generated.resources.profile
+import gitfit.composeapp.generated.resources.settings
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import kotlin.reflect.KClass
@@ -34,7 +35,7 @@ enum class TopLevelDestination(
     PLAN(Res.string.plan, Icons.Default.EditCalendar, PlanOverviewRoute::class),
     MEASUREMENT(Res.string.measurement, Icons.Default.SettingsAccessibility, MeasurementRoute::class),
     HISTORY(Res.string.history, Icons.AutoMirrored.Filled.ManageSearch, HistoryRoute::class),
-    PROFILE(Res.string.profile, Icons.Default.AccountBox, SettingsRoute::class),
+    SETTINGS(Res.string.settings, Icons.Default.Settings, SettingsRoute::class),
 }
 
 @Composable

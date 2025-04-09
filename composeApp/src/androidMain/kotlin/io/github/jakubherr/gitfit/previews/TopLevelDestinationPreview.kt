@@ -4,6 +4,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import io.github.jakubherr.gitfit.domain.model.User
+import io.github.jakubherr.gitfit.presentation.auth.AuthState
 import io.github.jakubherr.gitfit.presentation.dashboard.DashboardScreen
 import io.github.jakubherr.gitfit.presentation.graph.HistoryScreen
 import io.github.jakubherr.gitfit.presentation.measurement.MeasurementScreen
@@ -70,6 +72,7 @@ private fun SettingsScreenPreview() {
     GitFitTheme {
         Surface {
             SettingsScreen(
+                authState = AuthState(User.LoggedOut, loading = true, error = null),
                 onLogout = { },
                 onDeleteAccount = { }
             )

@@ -20,6 +20,7 @@ import io.github.jakubherr.gitfit.presentation.AddExerciseToWorkoutRoute
 import io.github.jakubherr.gitfit.presentation.WorkoutDetailRoute
 import io.github.jakubherr.gitfit.presentation.WorkoutHistoryRoute
 import io.github.jakubherr.gitfit.presentation.WorkoutInProgressRoute
+import io.github.jakubherr.gitfit.presentation.shared.toMessage
 import io.github.jakubherr.gitfit.presentation.sharedViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
@@ -48,7 +49,9 @@ fun NavGraphBuilder.workoutNavigation(
                         if (error == null) {
                             vm.onAction(action)
                         } else {
-                            showSnackbar(error.message)
+                            scope.launch {
+                                showSnackbar(error.toMessage())
+                            }
                         }
                     }
                     is WorkoutAction.RemoveBlock -> {

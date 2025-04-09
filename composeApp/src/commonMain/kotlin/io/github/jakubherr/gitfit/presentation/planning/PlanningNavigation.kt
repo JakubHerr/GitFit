@@ -24,6 +24,7 @@ import io.github.jakubherr.gitfit.presentation.WorkoutInProgressRoute
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseListScreenRoot
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseViewModel
 import io.github.jakubherr.gitfit.presentation.navigateToTopLevelDestination
+import io.github.jakubherr.gitfit.presentation.shared.toMessage
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
 import io.github.jakubherr.gitfit.presentation.sharedViewModel
@@ -45,7 +46,7 @@ fun NavGraphBuilder.planningNavigation(
             navController.popBackStack()
         } else {
             scope.launch {
-                showSnackbar(error.message)
+                showSnackbar(error.toMessage())
                 vm.onAction(PlanAction.ErrorHandled)
             }
         }
@@ -57,7 +58,7 @@ fun NavGraphBuilder.planningNavigation(
         PlanListScreenRoot(
             vm = vm,
             onCreateNewPlan = { navController.navigate(PlanCreationRoute) },
-            onPlanSelected = { navController.navigate(PlanDetailRoute(it.id)) },
+            onUserPlanSelected = { navController.navigate(PlanDetailRoute(it.id)) },
         )
     }
 

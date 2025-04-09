@@ -185,11 +185,14 @@ fun WorkoutBlockItemDropdownMenu(
 }
 
 @Composable
-fun SetHeader(modifier: Modifier = Modifier) {
+fun SetHeader(
+    modifier: Modifier = Modifier,
+    seriesAction: String = stringResource(Res.string.done)
+) {
     Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         Text(stringResource(Res.string.set))
         Text(stringResource(Res.string.kg))
         Text(stringResource(Res.string.reps))
-        Text(stringResource(Res.string.done))
+        Text(seriesAction)
     }
 }

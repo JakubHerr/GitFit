@@ -146,7 +146,7 @@ fun NavHostController.navigateToTopLevelDestination(destination: TopLevelDestina
             TopLevelDestination.HISTORY -> HistoryRoute
             TopLevelDestination.MEASUREMENT -> MeasurementRoute
             TopLevelDestination.PLAN -> PlanOverviewRoute
-            TopLevelDestination.PROFILE -> SettingsRoute
+            TopLevelDestination.SETTINGS -> SettingsRoute
         }
     navigate(route) {
         popUpTo(graph.startDestinationId) {

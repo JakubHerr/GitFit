@@ -77,13 +77,13 @@ data class Workout(
 
     fun hasExercise(exerciseId: String?) = blocks.any { it.exercise.id == exerciseId }
 
-    sealed class Error(val message: String) {
-        object NoExerciseInWorkout : Error("Workout has no exercises")
+    sealed class Error {
+        object NoExerciseInWorkout : Error()
 
-        object NoSetInExercise : Error("Some exercise has no sets")
+        object NoSetInExercise : Error()
 
-        object InvalidSetInExercise : Error("Some set has invalid values")
+        object InvalidSetInExercise : Error()
 
-        object BlankName : Error("Workout plan has no name")
+        object BlankName : Error()
     }
 }

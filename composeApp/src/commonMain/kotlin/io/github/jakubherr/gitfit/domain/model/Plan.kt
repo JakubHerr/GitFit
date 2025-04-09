@@ -86,11 +86,11 @@ data class Plan(
         return updateWorkoutPlan(workoutPlan.updateBlock(block.copy(progressionSettings = progressionSettings)))
     }
 
-    sealed class Error(val message: String) {
-        object InvalidPlanName : Error("Plan name can not be blank")
+    sealed class Error {
+        object InvalidPlanName : Error()
 
-        object NoWorkoutInPlan : Error("Plan has no workout days")
+        object NoWorkoutInPlan : Error()
 
-        class InvalidWorkout(val error: Workout.Error) : Error(error.message)
+        class InvalidWorkout(val error: Workout.Error) : Error()
     }
 }

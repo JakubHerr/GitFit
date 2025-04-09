@@ -19,7 +19,7 @@
 
     <string name="delete_account">Smazat účet</string>
     <string name="delete_account_explanaiton">Opravdu chcete smazat účet? Všechna data budou smazána</string>
-    <string name="confirm_account_deletion">Potvrďtě smazání účtu zadáním hesla</string>
+    <string name="confirm_account_deletion">Potvrďte smazání účtu zadáním hesla</string>
     <string name="account_deleted">Účet byl smazán</string>
 
     <string name="error_email_used_already">Email je již zaregistrovaný</string>
@@ -45,7 +45,7 @@
     <string name="plan">Plány</string>
     <string name="measurement">Měření</string>
     <string name="history">Historie</string>
-    <string name="profile">Profil</string>
+    <string name="settings">Nastavení</string>
 
     <!--workout CRUD-->
     <string name="planned_workouts">Naplánované tréninky</string>
@@ -61,6 +61,9 @@
 
     <string name="error_workout_not_found">Záznam cvičení nenalezen</string>
     <string name="error_workout_in_progress">Právě máte spuštěný jiný trénink!</string>
+    <string name="error_no_exercise_in_workout">Tréninkový den nemá žádné cviky</string>
+    <string name="error_no_series_for_exercise">Některý cvik nemá žádné série</string>
+    <string name="error_invalid_series_values">Některá série má neplatné hodnoty</string>
 
     <string name="last_10_workouts">Posledních 10 záznamů</string>
 
@@ -96,6 +99,8 @@
     <string name="error_exercise_list_empty">Seznam cviků je prázdný</string>
     <string name="error_exercise_not_found">Cvik nebyl nalezen</string>
     <string name="empty_workout_history">Žádné záznamy nenalezeny</string>
+    <string name="empty_workout_plans">Žádné tréninkové plány</string>
+    <string name="list_is_empty">Seznam je prázdný</string>
 
     <!--training plan CRUD-->
     <string name="training_plans">Tréninkové plány</string>
@@ -112,6 +117,10 @@
     <string name="discard_changes">Zahodit změny</string>
     <string name="discard_plan_changes">Zahodit změny plánu</string>
     <string name="discard_plan_changes_explanation">Současný plán nebude uložen</string>
+
+    <string name="error_unnamed_workout_plan">Název dne nemůže byt prázdný</string>
+    <string name="error_unnamed_plan">Název plánu nemůže byt prázdný</string>
+    <string name="error_no_workouts_in_plan">Plan has no workout days</string>
 
     <!--progression CRUD-->
     <string name="edit_progression">Úprava progrese</string>
@@ -183,4 +192,6 @@
     <string name="enum_exercise_metric_best_set_volume">Největší objem série</string>
     <string name="enum_exercise_metric_total_workout_volume">Celkový objem tréninku</string>
     <string name="enum_exercise_metric_total_repetitions">Počet opakování v tréninku</string>
+
+    <string name="app_explanation">GitFit je open-source multiplatformní applikace, která byla vytvořena v rámci bakalářské práce na FIS VŠE.\nZdrojový kód je dostupný na https://github.com/JakubHerr/GitFit\nautor: Jakub Herrmann</string>
 </resources>

@@ -45,7 +45,7 @@
     <string name="plan">Plan</string>
     <string name="measurement">Measure</string>
     <string name="history">History</string>
-    <string name="profile">Profile</string>
+    <string name="settings">Settings</string>
 
     <!--workout CRUD-->
     <string name="planned_workouts">Planned workouts</string>
@@ -61,6 +61,9 @@
 
     <string name="error_workout_not_found">Failed to fetch workout</string>
     <string name="error_workout_in_progress">A different workout is already in progress!</string>
+    <string name="error_no_exercise_in_workout">Workout has no exercises</string>
+    <string name="error_no_series_for_exercise">Some exercise has no sets</string>
+    <string name="error_invalid_series_values">Some set has invalid values</string>
 
     <string name="last_10_workouts">Last 10 workouts</string>
 
@@ -96,6 +99,8 @@
     <string name="error_exercise_list_empty">No exercises found</string>
     <string name="error_exercise_not_found">Exercise not found</string>
     <string name="empty_workout_history">No workout history</string>
+    <string name="empty_workout_plans">No training plans</string>
+    <string name="list_is_empty">List is empty</string>
 
     <!--training plan CRUD-->
     <string name="training_plans">Training plans</string>
@@ -112,6 +117,10 @@
     <string name="discard_changes">Discard changes</string>
     <string name="discard_plan_changes">Discard plan changes</string>
     <string name="discard_plan_changes_explanation">The current plan will not be saved</string>
+
+    <string name="error_unnamed_workout_plan">Workout plan has no name</string>
+    <string name="error_unnamed_plan">Plan name can not be blank</string>
+    <string name="error_no_workouts_in_plan">Plan has no workout days</string>
 
     <!--progression CRUD-->
     <string name="edit_progression">Edit progression</string>
@@ -183,4 +192,6 @@
     <string name="enum_exercise_metric_best_set_volume">Best set volume</string>
     <string name="enum_exercise_metric_total_workout_volume">Total workout volume</string>
     <string name="enum_exercise_metric_total_repetitions">Total repetitions</string>
+
+    <string name="app_explanation">GitFit is an open-source multiplatform application that was created as part of a bachelor's thesis at FIS VŠE.\n The source code is available at https://github.com/JakubHerr/GitFit\n author: Jakub Herrmann</string>
 </resources>
