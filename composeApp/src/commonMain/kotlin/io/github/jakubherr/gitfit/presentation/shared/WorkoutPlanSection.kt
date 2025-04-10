@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,12 +29,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.list_is_empty
+import gitfit.composeapp.generated.resources.predefined_plans
+import gitfit.composeapp.generated.resources.your_plans
 import io.github.jakubherr.gitfit.domain.model.Plan
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun WorkoutPlanSection(
-    workoutsPlans: List<Plan>,
+fun PlanLazyColumn(
+    plans: List<Plan>,
     title: String,
     modifier: Modifier = Modifier,
     onPlanSelected: (Plan) -> Unit,
@@ -45,16 +46,11 @@ fun WorkoutPlanSection(
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
-        Row(
-            Modifier.fillMaxWidth().sizeIn(minHeight = 48.dp).clickable { expanded = !expanded },
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(title)
-
-            val icon = if (expanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown
-            Icon(icon, "")
-        }
+        ExpandableSection(
+            title,
+            expanded,
+            onExpanded = { expanded = !expanded }
+        )
 
         Spacer(Modifier.height(8.dp))
 
@@ -62,11 +58,76 @@ fun WorkoutPlanSection(
             modifier = Modifier.animateContentSize(),
             verticalArrangement = if (expanded) Arrangement.spacedBy(16.dp) else Arrangement.spacedBy(0.dp),
         ) {
-            items(workoutsPlans) { plan ->
+            items(plans) { plan ->
                 if (expanded) PlanListItem(plan) { onPlanSelected(it) }
             }
             item {
-                if (expanded && workoutsPlans.isEmpty()) Text(stringResource(Res.string.list_is_empty), fontWeight = FontWeight.Light)
+                if (expanded && plans.isEmpty()) Text(stringResource(Res.string.list_is_empty), fontWeight = FontWeight.Light)
+            }
+        }
+    }
+}
+
+@Composable
+fun ExpandableSection(
+    title: String,
+    expanded: Boolean,
+    onExpanded: () -> Unit,
+) {
+    Row(
+        Modifier.fillMaxWidth().sizeIn(minHeight = 48.dp).clickable { onExpanded() },
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(title, fontWeight = FontWeight.Bold)
+
+        val icon = if (expanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown
+        Icon(icon, "")
+    }
+}
+
+@Composable
+fun PlanSectionLazyColumn(
+    userPlans: List<Plan>,
+    predefinedPlans: List<Plan>,
+    onUserPlanSelected: (Plan) -> Unit,
+    onPredefinedPlanSelected: (Plan) -> Unit,
+    modifier: Modifier = Modifier.fillMaxWidth()
+) {
+    var userPlansExpanded by remember { mutableStateOf(true) }
+    var predefinedPlansExpanded by remember { mutableStateOf(true) }
+
+    LazyColumn(
+        modifier,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
+            ExpandableSection(
+                stringResource(Res.string.your_plans),
+                userPlansExpanded,
+                onExpanded = { userPlansExpanded = !userPlansExpanded }
+            )
+        }
+        if (userPlansExpanded) {
+            items(userPlans) { plan ->
+                PlanListItem(plan) {
+                    onUserPlanSelected(it)
+                }
+            }
+        }
+
+        item {
+            ExpandableSection(
+                stringResource(Res.string.predefined_plans),
+                predefinedPlansExpanded,
+                onExpanded = { predefinedPlansExpanded = !predefinedPlansExpanded }
+            )
+        }
+        if (predefinedPlansExpanded) {
+            items(predefinedPlans) { plan ->
+                PlanListItem(plan) {
+                    onPredefinedPlanSelected(it)
+                }
             }
         }
     }

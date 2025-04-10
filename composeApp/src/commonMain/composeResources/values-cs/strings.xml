@@ -122,6 +122,8 @@
     <string name="error_unnamed_plan">Název plánu nemůže byt prázdný</string>
     <string name="error_no_workouts_in_plan">Plan has no workout days</string>
 
+    <string name="add_to_your_plans">Přidat k vaším plánům</string>
+
     <!--progression CRUD-->
     <string name="edit_progression">Úprava progrese</string>
     <string name="starting_values">Počáteční hodnoty:</string>

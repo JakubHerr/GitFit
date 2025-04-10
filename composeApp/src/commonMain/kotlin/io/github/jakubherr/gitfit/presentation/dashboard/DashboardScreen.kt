@@ -22,7 +22,7 @@ import gitfit.composeapp.generated.resources.training_plans
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.presentation.planning.PlanningViewModel
-import io.github.jakubherr.gitfit.presentation.shared.WorkoutPlanSection
+import io.github.jakubherr.gitfit.presentation.shared.PlanLazyColumn
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
 import org.jetbrains.compose.resources.stringResource
@@ -61,7 +61,7 @@ fun DashboardScreen(
         Column(
             Modifier.padding(16.dp).fillMaxSize(),
         ) {
-            WorkoutPlanSection(
+            PlanLazyColumn(
                 userPlans,
                 stringResource(Res.string.training_plans),
                 modifier = Modifier.weight(1.0f),

@@ -12,8 +12,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.cancel
@@ -70,12 +73,16 @@ fun EditProgressionScreen(
     var repIncrease by remember { mutableStateOf("") }
 
     Column(modifier.fillMaxSize().padding(16.dp)) {
-        Column(Modifier.weight(1.0f)) {
-            Text("${stringResource(Res.string.edit_progression)} ${block.exercise.name}")
-            Text(stringResource(Res.string.starting_values))
+        Column(
+            Modifier.weight(1.0f),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text("${stringResource(Res.string.edit_progression)}: ${block.exercise.name}")
+            Text(stringResource(Res.string.starting_values), fontWeight = FontWeight.Bold)
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Text(stringResource(Res.string.minimum_weight))
                 DoubleInputField(
@@ -84,12 +91,15 @@ fun EditProgressionScreen(
                 )
             }
 
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
                 Text(stringResource(Res.string.minimum_repetitions))
                 MinimumRepSelector(minimumReps) { minimumReps = it }
             }
 
-            Text(stringResource(Res.string.progresison_type))
+            Text(stringResource(Res.string.progresison_type), fontWeight = FontWeight.Bold)
 
             val translations =
                 listOf(
@@ -100,10 +110,12 @@ fun EditProgressionScreen(
                 selectedProgressionType = it
             }
 
-            if (selectedProgressionType == ProgressionType.INCREASE_WEIGHT) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                if (selectedProgressionType == ProgressionType.INCREASE_WEIGHT) {
                     Text(stringResource(Res.string.weight_increase))
                     DoubleInputField(
                         weightIncrease,
@@ -111,12 +123,7 @@ fun EditProgressionScreen(
                         onValueChange = { weightIncrease = it },
                     )
                 }
-            }
-
-            if (selectedProgressionType == ProgressionType.INCREASE_REPS) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
+                if (selectedProgressionType == ProgressionType.INCREASE_REPS) {
                     Text(stringResource(Res.string.repetition_increase))
                     DoubleInputField(
                         repIncrease,
@@ -135,6 +142,22 @@ fun EditProgressionScreen(
             modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
+            if (block.progressionSettings != null) {
+                Button(
+                    onClick = onDelete,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    )
+                ) {
+                    Text(stringResource(Res.string.delete))
+                }
+            }
+
+            Button(onCancel) {
+                Text(stringResource(Res.string.cancel))
+            }
+
             Button(
                 enabled = validateInputs(selectedProgressionType, minimumWeight, weightIncrease, repIncrease),
                 onClick = {
@@ -152,15 +175,6 @@ fun EditProgressionScreen(
                 },
             ) {
                 Text(stringResource(Res.string.save))
-            }
-            Button(onCancel) {
-                Text(stringResource(Res.string.cancel))
-            }
-
-            if (block.progressionSettings != null) {
-                Button(onDelete) {
-                    Text(stringResource(Res.string.delete))
-                }
             }
         }
     }
@@ -192,7 +206,7 @@ fun ProgressionHint(
 }
 
 @Composable
-fun MinimumRepSelector(
+private fun MinimumRepSelector(
     reps: Int,
     modifier: Modifier = Modifier,
     onRepChange: (Int) -> Unit = {},

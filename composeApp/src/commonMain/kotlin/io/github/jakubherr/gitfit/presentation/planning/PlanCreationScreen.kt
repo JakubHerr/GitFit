@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -110,9 +112,16 @@ fun PlanCreationScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom,
         ) {
-            Button({ onAction(PlanAction.SavePlan) }) { Text(stringResource(Res.string.save)) }
+            Button(
+                onClick = { showDialog = true },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError,
+                ),
 
-            Button({ showDialog = true }) { Text(stringResource(Res.string.discard_changes)) }
+            ) { Text(stringResource(Res.string.discard_changes)) }
+
+            Button({ onAction(PlanAction.SavePlan) }) { Text(stringResource(Res.string.save)) }
         }
     }
 }

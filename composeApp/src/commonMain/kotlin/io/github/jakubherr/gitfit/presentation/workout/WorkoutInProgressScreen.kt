@@ -7,16 +7,19 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -101,52 +104,64 @@ fun WorkoutInProgressScreen(
     workout: Workout,
     onAction: (WorkoutAction) -> Unit = {},
 ) {
-    Scaffold { padding ->
-        Surface {
-            Column(Modifier.padding(padding)) {
-                LazyColumn(
-                    Modifier.fillMaxSize().weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    items(workout.blocks) { block ->
-                        WorkoutBlockItem(
-                            workout,
-                            block,
-                            onAction = onAction,
-                            onAddSetClicked = {
-                                onAction(WorkoutAction.AddSet(workout, block.idx))
-                            },
-                            dropdownMenu = {
-                                WorkoutBlockItemDropdownMenu(
-                                    onDeleteExercise = { onAction(WorkoutAction.RemoveBlock(workout, block)) },
-                                    onDeleteSet = {
-                                        val series = block.series.lastOrNull()
-                                        series?.let {
-                                            onAction(WorkoutAction.DeleteLastSeries(workout, block.idx, it))
-                                        }
-                                    },
-                                )
-                            },
-                        )
-                    }
-                    item {
-                        Button({ onAction(WorkoutAction.AskForExercise(workout.id)) }) {
-                            Text(stringResource(Res.string.add_exercise))
-                        }
+    Surface {
+        Column {
+            LazyColumn(
+                Modifier.fillMaxSize().weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                items(workout.blocks) { block ->
+                    WorkoutBlockItem(
+                        workout,
+                        block,
+                        Modifier.sizeIn(maxWidth = 512.dp), // TODO limit desktop UI sizes
+                        onAction = onAction,
+                        onAddSetClicked = {
+                            onAction(WorkoutAction.AddSet(workout, block.idx))
+                        },
+                        dropdownMenu = {
+                            WorkoutBlockItemDropdownMenu(
+                                onDeleteExercise = { onAction(WorkoutAction.RemoveBlock(workout, block)) },
+                                onDeleteSet = {
+                                    val series = block.series.lastOrNull()
+                                    series?.let {
+                                        onAction(WorkoutAction.DeleteLastSeries(workout, block.idx, it))
+                                    }
+                                },
+                            )
+                        },
+                    )
+                }
+                item {
+                    Button(
+                        onClick = { onAction(WorkoutAction.AskForExercise(workout.id)) },
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp)
+                    ) {
+                        Text(stringResource(Res.string.add_exercise))
                     }
                 }
+            }
 
-                Row(Modifier.fillMaxWidth().padding(16.dp)) {
-                    Button(onClick = { onAction(WorkoutAction.DeleteWorkout(workout.id)) }) {
-                        Text(stringResource(Res.string.delete_workout))
-                    }
-                    Button(onClick = { onAction(WorkoutAction.CompleteCurrentWorkout) }) {
-                        Text(stringResource(Res.string.save_workout))
-                    }
+            Row(
+                Modifier.fillMaxWidth().sizeIn(maxWidth = 512.dp).padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Button(
+                    onClick = { onAction(WorkoutAction.DeleteWorkout(workout.id)) },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    )
+                ) {
+                    Text(stringResource(Res.string.delete_workout))
+                }
+                Button(onClick = { onAction(WorkoutAction.CompleteCurrentWorkout) }) {
+                    Text(stringResource(Res.string.save_workout))
                 }
             }
         }
     }
+
 }
 
 @Composable

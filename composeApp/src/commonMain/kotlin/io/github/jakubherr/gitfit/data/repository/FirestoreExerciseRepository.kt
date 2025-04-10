@@ -92,7 +92,7 @@ class FirestoreExerciseRepository : ExerciseRepository {
     override suspend fun addDefaultExercise(exercise: Exercise) {
         withContext(context) {
             val id = defaultExerciseRef.document.id
-            defaultExerciseRef.document(id).set(exercise.copy(id = id))
+            defaultExerciseRef.document(id).set(exercise.copy(id = id, isCustom = false))
         }
     }
 }

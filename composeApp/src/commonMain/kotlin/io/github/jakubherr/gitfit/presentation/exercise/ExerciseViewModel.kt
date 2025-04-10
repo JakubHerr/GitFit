@@ -18,9 +18,6 @@ class ExerciseViewModel(
     val defaultExercises = exerciseRepository.getDefaultExercises()
     val customExercises = exerciseRepository.getCustomExercises(authRepository.currentUser.id)
 
-    var fetchedExercise by mutableStateOf<Resource<Exercise>>(Resource.Loading)
-        private set
-
     var selectedExercise by mutableStateOf<Exercise?>(null)
         private set
 

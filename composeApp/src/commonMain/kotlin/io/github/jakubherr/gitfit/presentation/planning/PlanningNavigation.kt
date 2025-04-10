@@ -59,6 +59,7 @@ fun NavGraphBuilder.planningNavigation(
             vm = vm,
             onCreateNewPlan = { navController.navigate(PlanCreationRoute) },
             onUserPlanSelected = { navController.navigate(PlanDetailRoute(it.id)) },
+            onDefaultPlanSelected = { navController.navigate(PlanDetailRoute(it.id)) }
         )
     }
 
@@ -67,16 +68,20 @@ fun NavGraphBuilder.planningNavigation(
         val workoutViewModel = navController.sharedViewModel<WorkoutViewModel>()
 
         val planId = backstackEntry.toRoute<PlanDetailRoute>().planId
-        val userPlans = planViewModel.userPlans.collectAsStateWithLifecycle(emptyList())
-        val scope = rememberCoroutineScope()
-        val currentWorkout by workoutViewModel.currentWorkout.collectAsStateWithLifecycle()
 
-        // TODO differentiate user and predefined plan
-        val userPlan = userPlans.value.find { it.id == planId }
+        val currentWorkout by workoutViewModel.currentWorkout.collectAsStateWithLifecycle()
+        val userPlans by planViewModel.userPlans.collectAsStateWithLifecycle(emptyList())
+        val predefinedPlans by planViewModel.predefinedPlans.collectAsStateWithLifecycle(emptyList())
+
+        val scope = rememberCoroutineScope()
+
+        val userPlan = userPlans.find { it.id == planId }
+        val predefinedPlan = predefinedPlans.find { it.id == planId }
 
         userPlan?.let { plan ->
             PlanDetailScreen(
                 plan,
+                isPredefined = false,
                 onWorkoutSelected = { workout ->
                     if (currentWorkout == null) {
                         workoutViewModel.onAction(WorkoutAction.StartPlannedWorkout(plan, workout.idx))
@@ -93,6 +98,17 @@ fun NavGraphBuilder.planningNavigation(
                     if (action is PlanAction.DeletePlan) navController.popBackStack()
                     if (action is PlanAction.EditPlan) navController.navigate(PlanCreationRoute)
                 },
+            )
+        }
+
+        predefinedPlan?.let { plan ->
+            PlanDetailScreen(
+                plan,
+                isPredefined = true,
+                onAction = { action ->
+                    planViewModel.onAction(action)
+                    navController.popBackStack()
+                }
             )
         }
     }

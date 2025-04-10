@@ -40,6 +40,13 @@ class FirebasePlanRepository : PlanRepository {
         }
     }
 
+    override suspend fun saveDefaultPlan(plan: Plan) {
+        withContext(context) {
+            val id = plan.id.ifBlank { planRef.document.id }
+            planRef.document(id).set(plan.copy(id = id))
+        }
+    }
+
     override suspend fun deleteCustomPlan(
         userId: String,
         planId: String,

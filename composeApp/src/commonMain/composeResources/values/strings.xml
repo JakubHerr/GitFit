@@ -122,6 +122,8 @@
     <string name="error_unnamed_plan">Plan name can not be blank</string>
     <string name="error_no_workouts_in_plan">Plan has no workout days</string>
 
+    <string name="add_to_your_plans">Add to your plans</string>
+
     <!--progression CRUD-->
     <string name="edit_progression">Edit progression</string>
     <string name="starting_values">Starting values:</string>

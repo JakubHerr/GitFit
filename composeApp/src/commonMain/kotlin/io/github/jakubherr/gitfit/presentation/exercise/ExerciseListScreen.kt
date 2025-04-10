@@ -51,7 +51,7 @@ fun ExerciseListScreenRoot(
     val custom by vm.customExercises.collectAsStateWithLifecycle(emptyList())
 
     ExerciseListScreen(
-        exerciseList = default + custom,
+        exerciseList = (default + custom).sortedBy { it.name },
         onExerciseClick = { onExerciseClick(it) },
         onAddExerciseClick = { onCreateExerciseClick() },
     )

@@ -15,7 +15,8 @@ private fun PlanDetailPreview() {
     GitFitTheme {
         Surface {
             PlanDetailScreen(
-                plan = mockPlan
+                plan = mockPlan,
+                isPredefined = false
             )
         }
     }

@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,7 +31,7 @@ fun WorkoutPlanListItem(
     workout: WorkoutPlan,
     modifier: Modifier = Modifier,
     onItemClicked: () -> Unit = {},
-    actionSlot: @Composable () -> Unit = { Icon(Icons.Default.Delete, "") },
+    actionSlot: @Composable () -> Unit = { Icon(Icons.Default.Delete, "", tint = MaterialTheme.colorScheme.error) },
     onActionClicked: () -> Unit = {},
 ) {
     Card(

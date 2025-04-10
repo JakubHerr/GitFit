@@ -1,28 +1,17 @@
 package io.github.jakubherr.gitfit.presentation.planning
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
@@ -30,8 +19,8 @@ import gitfit.composeapp.generated.resources.create_new_plan
 import gitfit.composeapp.generated.resources.predefined_plans
 import gitfit.composeapp.generated.resources.your_plans
 import io.github.jakubherr.gitfit.domain.model.Plan
-import io.github.jakubherr.gitfit.presentation.shared.ExerciseNames
-import io.github.jakubherr.gitfit.presentation.shared.WorkoutPlanSection
+import io.github.jakubherr.gitfit.presentation.shared.PlanLazyColumn
+import io.github.jakubherr.gitfit.presentation.shared.PlanSectionLazyColumn
 import org.jetbrains.compose.resources.stringResource
 
 // use case: plan workouts to be performed in the future (weeks, months)
@@ -41,6 +30,7 @@ fun PlanListScreenRoot(
     modifier: Modifier = Modifier,
     onCreateNewPlan: () -> Unit = {},
     onUserPlanSelected: (Plan) -> Unit = {},
+    onDefaultPlanSelected: (Plan) -> Unit = { },
 ) {
     val userPlans by vm.userPlans.collectAsStateWithLifecycle(emptyList())
     val predefinedPlans by vm.predefinedPlans.collectAsStateWithLifecycle(emptyList())
@@ -51,6 +41,7 @@ fun PlanListScreenRoot(
         modifier,
         onCreateNewPlan,
         onUserPlanSelected,
+        onDefaultPlanSelected,
     )
 }
 
@@ -61,6 +52,7 @@ fun PlanListScreen(
     modifier: Modifier = Modifier,
     onCreateNewPlan: () -> Unit = {},
     onUserPlanSelected: (Plan) -> Unit = { },
+    onDefaultPlanSelected: (Plan) -> Unit = { },
 ) {
     Surface {
         Column(
@@ -70,18 +62,11 @@ fun PlanListScreen(
             Column(
                 Modifier.weight(1.0f)
             ) {
-                WorkoutPlanSection(
+                PlanSectionLazyColumn(
                     userPlans,
-                    stringResource(Res.string.your_plans),
-                    modifier = Modifier.weight(1.0f, fill = false),
-                    onPlanSelected = onUserPlanSelected
-                )
-
-                WorkoutPlanSection(
                     predefinedPlans,
-                    stringResource(Res.string.predefined_plans),
-                    modifier = Modifier.weight(1.0f, fill = false),
-                    onPlanSelected = { /* TODO */ }
+                    onUserPlanSelected,
+                    onDefaultPlanSelected
                 )
             }
 

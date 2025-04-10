@@ -1,5 +1,6 @@
 package io.github.jakubherr.gitfit.presentation.shared
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -48,19 +49,21 @@ fun SharedBlockItem(
             Row(
                 Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(Modifier.weight(1.0f)) {
+                Row {
                     Text(block.exercise.name, style = MaterialTheme.typography.titleLarge)
                 }
 
                 dropdownMenu()
             }
 
-            HorizontalDivider(Modifier.padding(8.dp))
+            HorizontalDivider(Modifier.padding(vertical = 12.dp))
 
-            Column {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 SetHeader(seriesAction = seriesAction)
-                Spacer(Modifier.height(16.dp))
                 seriesItems()
             }
 
@@ -109,7 +112,7 @@ fun PlanBlockItem(
                     onValidSetEntered = { onValidSetEntered(it) },
                     actionSlot = {
                         IconButton({ onDeleteSeries(series) }) {
-                            Icon(Icons.Default.Delete, "")
+                            Icon(Icons.Default.Delete, "", tint = MaterialTheme.colorScheme.error)
                         }
                     },
                 )

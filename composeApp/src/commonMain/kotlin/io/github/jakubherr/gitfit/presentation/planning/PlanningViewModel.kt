@@ -32,6 +32,7 @@ class PlanningViewModel(
     fun onAction(action: PlanAction) {
         when (action) {
             is PlanAction.SavePlan -> savePlan()
+            is PlanAction.CopyDefaultPlan -> copyDefaultPlan(action.plan)
             is PlanAction.RenamePlan -> plan = plan.copy(name = action.name)
             is PlanAction.EditPlan -> plan = action.plan
             is PlanAction.DiscardPlan -> plan = Plan.Empty
@@ -50,9 +51,17 @@ class PlanningViewModel(
             is PlanAction.RemoveSet -> plan = plan.removeSeries(action.workout, action.block, action.set)
 
             is PlanAction.DeleteProgression -> plan = plan.setProgression(action.workout, action.block, null)
-            is PlanAction.SaveProgression -> plan = plan.setProgression(action.workout, action.block, action.progression)
+            is PlanAction.SaveProgression -> plan =
+                plan.setProgression(action.workout, action.block, action.progression)
 
-            PlanAction.ErrorHandled -> error = null
+            is PlanAction.ErrorHandled -> error = null
+            is PlanAction.SaveDefaultPlan -> saveDefaultPlan(action.plan)
+        }
+    }
+
+    private fun saveDefaultPlan(plan: Plan) {
+        viewModelScope.launch {
+            planRepository.saveDefaultPlan(plan)
         }
     }
 
@@ -67,6 +76,13 @@ class PlanningViewModel(
             planRepository.saveCustomPlan(user.id, plan)
             plan = Plan.Empty
         }
+    }
+
+    private fun copyDefaultPlan(plan: Plan) {
+        val user = authRepository.currentUser
+        if (!user.loggedIn) return
+
+        viewModelScope.launch { planRepository.saveCustomPlan(user.id, plan.copy(id = "")) }
     }
 
     private fun deletePlan(planId: String) {
@@ -91,6 +107,10 @@ class PlanningViewModel(
 
 sealed interface PlanAction {
     object SavePlan : PlanAction
+
+    class SaveDefaultPlan(val plan: Plan) : PlanAction // TODO REMOVE
+
+    class CopyDefaultPlan(val plan: Plan) : PlanAction
 
     class RenamePlan(val name: String) : PlanAction
 

@@ -13,6 +13,10 @@ interface PlanRepository {
         plan: Plan,
     )
 
+    suspend fun saveDefaultPlan(
+        plan: Plan,
+    )
+
     suspend fun deleteCustomPlan(
         userId: String,
         planId: String,

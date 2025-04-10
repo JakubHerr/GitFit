@@ -14,8 +14,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.add_to_your_plans
 import gitfit.composeapp.generated.resources.cancel
 import gitfit.composeapp.generated.resources.confirm
 import gitfit.composeapp.generated.resources.delete_plan
@@ -40,9 +43,9 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun PlanDetailScreen(
     plan: Plan,
+    isPredefined: Boolean,
     modifier: Modifier = Modifier,
     onWorkoutSelected: (WorkoutPlan) -> Unit = {},
-    onPlanSelected: () -> Unit = {}, // TODO User can add a predefined plan to his plans, where he can edit it etc.
     onAction: (PlanAction) -> Unit = {},
 ) {
     var showDialog by remember { mutableStateOf(false) }
@@ -69,12 +72,22 @@ fun PlanDetailScreen(
             Text(plan.name, fontWeight = FontWeight.Bold)
 
             Row {
-                IconButton({ onAction(PlanAction.EditPlan(plan)) }) {
-                    Icon(Icons.Default.Edit, "")
-                }
+                if (isPredefined) {
+                    Button(
+                        { onAction(PlanAction.CopyDefaultPlan(plan)) }
+                    ) {
+                        Text(stringResource(Res.string.add_to_your_plans))
+                    }
+                } else {
+                    IconButton({ onAction(PlanAction.EditPlan(plan)) }) {
+                        Icon(Icons.Default.Edit, "")
+                    }
 
-                IconButton({ showDialog = true }) {
-                    Icon(Icons.Default.Delete, "")
+                    IconButton(
+                        onClick = { showDialog = true },
+                    ) {
+                        Icon(Icons.Default.Delete, "", tint = MaterialTheme.colorScheme.error)
+                    }
                 }
             }
         }
@@ -88,7 +101,9 @@ fun PlanDetailScreen(
                 WorkoutPlanListItem(
                     workout,
                     onActionClicked = { onWorkoutSelected(workout) },
-                    actionSlot = { Icon(Icons.Default.PlayArrow, "") },
+                    actionSlot = {
+                        if (!isPredefined) Icon(Icons.Default.PlayArrow, "", tint = MaterialTheme.colorScheme.primary)
+                    },
                 )
             }
         }
