@@ -7,6 +7,6 @@ data class User(
     val emailVerified: Boolean,
 ) {
     companion object {
-        val LoggedOut = User("","", false, false)
+        val LoggedOut = User("", "", false, false)
     }
 }

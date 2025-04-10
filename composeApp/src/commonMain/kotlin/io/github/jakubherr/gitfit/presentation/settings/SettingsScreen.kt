@@ -3,39 +3,57 @@ package io.github.jakubherr.gitfit.presentation.settings
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.about_app
+import gitfit.composeapp.generated.resources.app_explanation
+import gitfit.composeapp.generated.resources.cancel
+import gitfit.composeapp.generated.resources.confirm_account_deletion
+import gitfit.composeapp.generated.resources.delete
 import gitfit.composeapp.generated.resources.delete_account
+import gitfit.composeapp.generated.resources.delete_account_explanaiton
 import gitfit.composeapp.generated.resources.log_out
 import io.github.jakubherr.gitfit.presentation.auth.AuthAction
 import io.github.jakubherr.gitfit.presentation.auth.AuthState
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
-import io.github.jakubherr.gitfit.presentation.shared.PasswordInputField
-import io.github.jakubherr.gitfit.presentation.auth.toMessage
+import io.github.jakubherr.gitfit.presentation.shared.AuthCard
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
+import io.github.jakubherr.gitfit.presentation.shared.PasswordInputField
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun SettingsScreenRoot(modifier: Modifier = Modifier) {
-    val auth: AuthViewModel = koinViewModel()
+fun SettingsScreenRoot(
+    auth: AuthViewModel,
+    modifier: Modifier = Modifier,
+) {
+    val state by auth.state.collectAsStateWithLifecycle()
 
     SettingsScreen(
         onLogout = { auth.onAction(AuthAction.SignOut) },
-        onDeleteAccount = { auth.onAction(AuthAction.DeleteAccount(it))},
-        authState = auth.state.collectAsState()
+        onDeleteAccount = { auth.onAction(AuthAction.DeleteAccount(it)) },
+        authState = state,
     )
 }
 
@@ -44,55 +62,107 @@ fun SettingsScreen(
     modifier: Modifier = Modifier,
     onLogout: () -> Unit,
     onDeleteAccount: (String) -> Unit,
-    authState: State<AuthState>? = null,
-    ) {
+    authState: AuthState,
+) {
     var showAccountDeletionDialog by remember { mutableStateOf(false) }
-    var showPasswordField by remember { mutableStateOf(false) }
+    var showPasswordInput by remember { mutableStateOf(false) }
+    var showInfoDialog by remember { mutableStateOf(false) }
 
-    Column(modifier.fillMaxSize()) {
-        if (showPasswordField) {
+    if (showInfoDialog) InfoDialog(onDismiss = { showInfoDialog = false })
+
+    if (showAccountDeletionDialog) {
+        ConfirmationDialog(
+            title = stringResource(Res.string.delete_account),
+            text = stringResource(Res.string.delete_account_explanaiton),
+            dismissText = stringResource(Res.string.cancel),
+            onDismiss = { showAccountDeletionDialog = false },
+            confirmText = stringResource(Res.string.delete),
+            onConfirm = {
+                showAccountDeletionDialog = false
+                showPasswordInput = true
+            },
+        )
+    }
+
+    Column(modifier.fillMaxSize().padding(16.dp)) {
+        IconButton(
+            onClick = { showInfoDialog = true },
+        ) {
+            Icon(
+                Icons.Default.Info,
+                stringResource(Res.string.about_app),
+                modifier = Modifier.size(80.dp)
+            )
+        }
+        if (showPasswordInput) {
             var password by remember { mutableStateOf("") }
 
-            Text("Please confirm account deletion by entering your password")
-            PasswordInputField(
-                password = password,
-                onPasswordChange = { password = it }
-            )
-            Button(onClick = {
-                showPasswordField = false
-                onDeleteAccount(password)
-            }) {
-                Text("Delete account")
+            AuthCard(
+                modifier,
+                authState.loading
+            ) {
+                Text(stringResource(Res.string.confirm_account_deletion))
+                PasswordInputField(
+                    password = password,
+                    onPasswordChange = { password = it },
+                )
+
+                Button(
+                    onClick = {
+                        showPasswordInput = false
+                        onDeleteAccount(password)
+                    },
+                    Modifier.fillMaxWidth(),
+                    colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    )
+                ) {
+                    Text(stringResource(Res.string.delete_account))
+                }
             }
         } else {
-            Button(onLogout) { Text(stringResource(Res.string.log_out)) }
+            AuthCard(
+                Modifier,
+                loading = authState.loading
+            ) {
+                Button(onLogout) { Text(stringResource(Res.string.log_out)) }
 
-            Button(onClick = { showAccountDeletionDialog = true }) {
-                Text(stringResource(Res.string.delete_account))
+                Spacer(Modifier.height(16.dp))
+
+                Button(
+                    onClick = { showAccountDeletionDialog = true },
+                    colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    )
+                ) {
+                    Text(stringResource(Res.string.delete_account))
+                }
             }
+        }
+    }
+}
 
-            if (showAccountDeletionDialog) {
-                ConfirmationDialog(
-                    title = "Delete account",
-                    text = "Are sure you want to delete your account? All of your data will be lost",
-                    dismissText = "confirm",
-                    onDismiss = { showAccountDeletionDialog = false },
-                    confirmText = "Delete",
-                    onConfirm = {
-                        showAccountDeletionDialog = false
-                        showPasswordField = true
-                    },
-                )
-            }
-
-            authState?.value?.let { state ->
-                Spacer(Modifier.width(32.dp))
-                Text("DEBUG INFO:\n user id: ${state.user.id} \n email verified: ${state.user.emailVerified}")
-
-                // TODO some better UI
-                if (state.loading) CircularProgressIndicator()
-                state.error?.let { Text(it.toMessage()) }
-            }
+@Composable
+fun InfoDialog(
+    onDismiss: () -> Unit,
+) {
+    Dialog(
+        onDismissRequest = onDismiss
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(16.dp),
+        ) {
+            Text(
+                modifier = Modifier.padding(16.dp),
+                text = stringResource(Res.string.app_explanation),
+            )
         }
     }
 }

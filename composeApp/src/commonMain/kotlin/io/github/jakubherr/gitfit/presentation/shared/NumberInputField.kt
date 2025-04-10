@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import io.github.jakubherr.gitfit.domain.isNonNegativeDouble
 import io.github.jakubherr.gitfit.domain.isNonNegativeInt
 import io.github.jakubherr.gitfit.domain.validDecimals
-import jdk.jfr.Enabled
 
 // For user input sanitation, one of these input fields should ALWAYS be used
 // maxLength prevents users from entering numbers larger than the KoalaGraph library can handle
@@ -60,7 +59,7 @@ fun IntegerInputField(
         label,
         isError,
         enabled,
-        maxlength
+        maxlength,
     )
 }
 
@@ -87,6 +86,6 @@ fun DoubleInputField(
         label,
         isError,
         enabled,
-        maxlength
+        maxlength,
     )
 }

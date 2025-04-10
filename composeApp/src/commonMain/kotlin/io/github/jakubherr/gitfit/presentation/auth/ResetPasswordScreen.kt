@@ -2,44 +2,69 @@ package io.github.jakubherr.gitfit.presentation.auth
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import org.koin.compose.viewmodel.koinViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.enter_email
+import gitfit.composeapp.generated.resources.send_reset_email
+import io.github.jakubherr.gitfit.presentation.shared.AuthCard
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ResetPasswordScreenRoot(
-    vm: AuthViewModel = koinViewModel(),
-    modifier: Modifier = Modifier
+    vm: AuthViewModel,
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit,
 ) {
-    Column(
-        modifier.fillMaxSize().padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        var email by remember { mutableStateOf("") }
+    val state by vm.state.collectAsStateWithLifecycle()
+    val finishedAction by vm.finishedAction.collectAsStateWithLifecycle()
 
-        Text("Please enter your email")
+    LaunchedEffect(finishedAction) {
+        if (finishedAction is AuthAction.RequestPasswordReset) onBack()
+    }
 
-        TextField(
-            email,
-            onValueChange = { email = it },
-            singleLine = true
-        )
+    ResetPasswordScreen(
+        modifier,
+        state = state,
+        onResetPassword = { vm.onAction(AuthAction.RequestPasswordReset(it)) },
+    )
+}
 
-        // TODO rate limit in UI
-        Button(onClick = {
-            vm.onAction(AuthAction.RequestPasswordReset(email))
-        }) {
-            Text("Send reset email")
+@Composable
+fun ResetPasswordScreen(
+    modifier: Modifier = Modifier,
+    state: AuthState,
+    onResetPassword: (String) -> Unit,
+) {
+    var email by remember { mutableStateOf("") }
+
+    Column(Modifier.fillMaxSize()) {
+        AuthCard(modifier, state.loading) {
+            OutlinedTextField(
+                email,
+                onValueChange = { email = it },
+                singleLine = true,
+                label = { Text(stringResource(Res.string.enter_email)) }
+            )
+
+            Button(
+                onClick = { onResetPassword(email) },
+                modifier.fillMaxWidth(),
+                enabled = !state.loading,
+            ) {
+                Text(stringResource(Res.string.send_reset_email))
+            }
         }
     }
 }

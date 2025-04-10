@@ -2,9 +2,9 @@ package io.github.jakubherr.gitfit.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.jakubherr.gitfit.domain.model.User
 import io.github.jakubherr.gitfit.domain.repository.AuthError
 import io.github.jakubherr.gitfit.domain.repository.AuthRepository
-import io.github.jakubherr.gitfit.domain.model.User
 import io.github.jakubherr.gitfit.domain.repository.ExerciseRepository
 import io.github.jakubherr.gitfit.domain.repository.MeasurementRepository
 import io.github.jakubherr.gitfit.domain.repository.PlanRepository
@@ -25,19 +25,25 @@ class AuthViewModel(
 ) : ViewModel() {
     private val isLoading = MutableStateFlow(false)
     private val error = MutableStateFlow<AuthError?>(null)
+
+    // this flow is for notifying UI of successfully finished actions like password reset and verification sent
+    private val _finishedAction = MutableStateFlow<AuthAction?>(null)
+    val finishedAction: StateFlow<AuthAction?> = _finishedAction
+
     val currentUser get() = authRepository.currentUser
 
-    val state: StateFlow<AuthState> = combine(authRepository.currentUserFlow, error, isLoading) { user, error, loading ->
-        AuthState(
-            user ?: User.LoggedOut,
-            error,
-            loading
+    val state: StateFlow<AuthState> =
+        combine(authRepository.currentUserFlow, error, isLoading) { user, error, loading ->
+            AuthState(
+                user ?: User.LoggedOut,
+                error,
+                loading,
+            )
+        }.stateIn(
+            scope = viewModelScope,
+            initialValue = AuthState(authRepository.currentUser, null, false),
+            started = SharingStarted.WhileSubscribed(5_000L),
         )
-    }.stateIn(
-        scope = viewModelScope,
-        initialValue = AuthState(authRepository.currentUser, null, false),
-        started = SharingStarted.WhileSubscribed(5_000L),
-    )
 
     fun onAction(action: AuthAction) {
         when (action) {
@@ -47,6 +53,8 @@ class AuthViewModel(
             is AuthAction.RequestPasswordReset -> sendPasswordResetEmail(action.email)
             is AuthAction.SignOut -> signOut()
             is AuthAction.DeleteAccount -> deleteAccount(action.password)
+            is AuthAction.ErrorHandled -> error.value = null
+            is AuthAction.ActionHandled -> _finishedAction.value = null
         }
     }
 
@@ -65,21 +73,18 @@ class AuthViewModel(
     }
 
     private fun signOut() {
-        println("DBG: signing out ${state.value.user.id}...")
         launch { authRepository.signOut() }
     }
 
     private fun verifyEmail() {
-        println("DBG: email verification requested")
-        launch { authRepository.sendVerificationEmail() }
+        launch { authRepository.sendVerificationEmail().onSuccess { _finishedAction.value = AuthAction.VerifyEmail } }
     }
 
     private fun sendPasswordResetEmail(email: String) {
-        launch { authRepository.sendPasswordResetEmail(email) }
+        launch { authRepository.sendPasswordResetEmail(email).onSuccess { _finishedAction.value = AuthAction.RequestPasswordReset(email) } }
     }
 
     private fun deleteAccount(password: String) {
-        println("DBG: deleting user ${state.value.user.id}")
         launch {
             authRepository.deleteUser(password) { userId ->
                 // nuke all user workouts
@@ -90,8 +95,8 @@ class AuthViewModel(
                 measurementRepository.deleteAllMeasurements(userId).onFailure { return@deleteUser Result.failure(it) }
                 // nuke all user custom exercises
                 exerciseRepository.removeAllCustomExercises(userId).onFailure { return@deleteUser Result.failure(it) }
-            }.onFailure {
-                println("DBG: Failed to delete user, cause ${it.stackTraceToString()}")
+            }.onSuccess {
+                _finishedAction.value = AuthAction.DeleteAccount("")
             }
         }
     }
@@ -107,16 +112,24 @@ class AuthViewModel(
 
 sealed interface AuthAction {
     class SignIn(val email: String, val password: String) : AuthAction
+
     class Register(val email: String, val password: String) : AuthAction
+
     class RequestPasswordReset(val email: String) : AuthAction
+
     class DeleteAccount(val password: String) : AuthAction
 
     object SignOut : AuthAction
+
     object VerifyEmail : AuthAction
+
+    object ErrorHandled : AuthAction
+
+    object ActionHandled : AuthAction
 }
 
 data class AuthState(
     val user: User,
     val error: AuthError?,
-    val loading: Boolean
+    val loading: Boolean,
 )

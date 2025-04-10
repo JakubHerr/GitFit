@@ -69,8 +69,8 @@ The application has the following major features and use cases:
 ### User body measurements
 - user can input their body measurements
 - measurements are tracked over time on a graph
-- TODO user can browse all previous measurements
-- TODO user can delete measurements
+- user can browse all previous measurements 
+- user can delete measurements
 
 ### Data visualization with graphs
 - user can observe exercise and body measurement progress over time
@@ -108,6 +108,6 @@ The application has the following major features and use cases:
 - If user is not signed-in, the app starts with a login screen
 - (mobile only) If a user was signed-in already, the app starts with a dashboard screen
 - User can navigate between top-level destinations using a navigation bar
-- TODO user can navigate to the previous destination using a back button on desktop
+- user can navigate to the previous destination using a back button on desktop
 - User can start a predefined workout by clicking on a plan and selecting a workout day
 - When user is exiting an operation with unsaved progress (workout plan), they must confirm this action

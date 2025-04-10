@@ -5,13 +5,9 @@ import androidx.compose.material.icons.automirrored.filled.ManageSearch
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.ManageSearch
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SettingsAccessibility
-import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -25,7 +21,7 @@ import gitfit.composeapp.generated.resources.dashboard
 import gitfit.composeapp.generated.resources.history
 import gitfit.composeapp.generated.resources.measurement
 import gitfit.composeapp.generated.resources.plan
-import gitfit.composeapp.generated.resources.profile
+import gitfit.composeapp.generated.resources.settings
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import kotlin.reflect.KClass
@@ -39,16 +35,15 @@ enum class TopLevelDestination(
     PLAN(Res.string.plan, Icons.Default.EditCalendar, PlanOverviewRoute::class),
     MEASUREMENT(Res.string.measurement, Icons.Default.SettingsAccessibility, MeasurementRoute::class),
     HISTORY(Res.string.history, Icons.AutoMirrored.Filled.ManageSearch, HistoryRoute::class),
-    PROFILE(Res.string.profile, Icons.Default.AccountBox, SettingsRoute::class),
+    SETTINGS(Res.string.settings, Icons.Default.Settings, SettingsRoute::class),
 }
 
 @Composable
-fun GitFitScaffold(
+fun GitFitNavScaffold(
     modifier: Modifier = Modifier,
-    showDestinations: Boolean = true,
     currentDestination: TopLevelDestination?,
+    showDestinations: Boolean = currentDestination != null,
     onDestinationClicked: (TopLevelDestination) -> Unit = {},
-    snackbarHostState: SnackbarHostState = SnackbarHostState(),
     content: @Composable () -> Unit,
 ) {
     val layoutType =
@@ -68,7 +63,7 @@ fun GitFitScaffold(
                         icon = {
                             Icon(
                                 it.icon,
-                                null,
+                                stringResource(it.label),
                             )
                         },
                         label = { Text(stringResource(it.label)) },
@@ -79,15 +74,9 @@ fun GitFitScaffold(
             },
             layoutType = layoutType,
             modifier = modifier,
-            content = {
-                Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) {
-                    content()
-                }
-            },
+            content = content,
         )
     } else {
-        Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) {
-            content()
-        }
+        content()
     }
 }

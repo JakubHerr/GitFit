@@ -24,15 +24,15 @@ fun WorkoutListItem(
 ) {
     Card(
         onClick = { onClick(workout.id) },
-        modifier
+        modifier,
     ) {
         Column(
-            Modifier.padding(8.dp)
+            Modifier.padding(8.dp),
         ) {
             Row(
                 modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(workout.date.toString(), fontWeight = FontWeight.Bold)
             }

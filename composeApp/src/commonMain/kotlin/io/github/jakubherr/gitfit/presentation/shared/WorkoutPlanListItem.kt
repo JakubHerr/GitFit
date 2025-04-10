@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,28 +20,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.click_to_add_exercise
+import gitfit.composeapp.generated.resources.delete_series
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun WorkoutPlanListItem(
     workout: WorkoutPlan,
     modifier: Modifier = Modifier,
     onItemClicked: () -> Unit = {},
-    actionSlot: @Composable () -> Unit = { Icon(Icons.Default.Delete, "") },
+    actionSlot: @Composable () -> Unit = { Icon(Icons.Default.Delete, stringResource(Res.string.delete_series), tint = MaterialTheme.colorScheme.error) },
     onActionClicked: () -> Unit = {},
 ) {
     Card(
         onItemClicked,
-        modifier
+        modifier,
     ) {
         Column(
-            Modifier.padding(8.dp)
+            Modifier.padding(8.dp),
         ) {
             Row(
                 modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(workout.name, fontWeight = FontWeight.Bold)
 
@@ -61,10 +66,10 @@ fun WorkoutPlanListItem(
 @Composable
 fun ExerciseNames(
     blockList: List<Block>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Text(
-        if (blockList.isNotEmpty()) blockList.joinToString { it.exercise.name } else "Click to add exercise",
+        if (blockList.isNotEmpty()) blockList.joinToString { it.exercise.name } else stringResource(Res.string.click_to_add_exercise),
         overflow = TextOverflow.Ellipsis,
         maxLines = 2,
     )

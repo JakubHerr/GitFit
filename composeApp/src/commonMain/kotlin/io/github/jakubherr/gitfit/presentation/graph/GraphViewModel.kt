@@ -3,9 +3,9 @@ package io.github.jakubherr.gitfit.presentation.graph
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.jakubherr.gitfit.domain.model.Exercise
-import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.domain.repository.AuthRepository
+import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import io.github.koalaplot.core.xygraph.DefaultPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,7 +32,7 @@ class GraphViewModel(
         workoutRepository.getCompletedWorkouts(user?.id ?: "")
     }
     .map { wo ->
-        wo.filter { it.hasExercise(selectedExercise.value?.id) }.sortedBy { it.date }
+        wo.filter { it.hasExercise(selectedExercise.value?.id) }.sortedByDescending { it.date }
     }
     .take(10)
     .stateIn(
@@ -56,7 +56,6 @@ class GraphViewModel(
     fun onAction(action: GraphAction) {
         when (action) {
             is GraphAction.ExerciseAndMetricSelected -> {
-                println("DBG: selecting metric ${action.metric} for exercise ${action.exercise.id}")
                 selectedMetric.value = action.metric
                 selectedExercise.value = action.exercise
             }

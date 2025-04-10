@@ -20,8 +20,8 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,18 +32,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.add_todays_measurement
 import gitfit.composeapp.generated.resources.chest
+import gitfit.composeapp.generated.resources.edit_todays_measurement
 import gitfit.composeapp.generated.resources.height
+import gitfit.composeapp.generated.resources.latest_measurements
 import gitfit.composeapp.generated.resources.left_arm
 import gitfit.composeapp.generated.resources.left_calf
 import gitfit.composeapp.generated.resources.left_forearm
 import gitfit.composeapp.generated.resources.left_thigh
+import gitfit.composeapp.generated.resources.measurement_graph
 import gitfit.composeapp.generated.resources.neck
 import gitfit.composeapp.generated.resources.right_arm
 import gitfit.composeapp.generated.resources.right_calf
 import gitfit.composeapp.generated.resources.right_forearm
 import gitfit.composeapp.generated.resources.right_thigh
-import gitfit.composeapp.generated.resources.save_measurement
+import gitfit.composeapp.generated.resources.see_all
+import gitfit.composeapp.generated.resources.select_measurement_category
 import gitfit.composeapp.generated.resources.waist
 import gitfit.composeapp.generated.resources.weight
 import io.github.jakubherr.gitfit.domain.model.Measurement
@@ -54,62 +59,50 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 import kotlin.enums.EnumEntries
-
-enum class MeasurementType(
-    val label: StringResource,
-    val unit: String = "cm",
-    val backingField: MutableState<String> = mutableStateOf(""),
-    val minValue: Double = 0.0,
-) {
-    NECK(Res.string.neck),
-    CHEST(Res.string.chest),
-    LEFT_ARM(Res.string.left_arm),
-    RIGHT_ARM(Res.string.right_arm),
-    LEFT_FOREARM(Res.string.left_forearm),
-    RIGHT_FOREARM(Res.string.right_forearm),
-    WAIST(Res.string.waist),
-    LEFT_THIGH(Res.string.left_thigh),
-    RIGHT_THIGH(Res.string.right_thigh),
-    LEFT_CALF(Res.string.left_calf),
-    RIGHT_CALF(Res.string.right_calf),
-    WEIGHT(Res.string.weight, "kg"),
-    HEIGHT(Res.string.height),
-    ;
-
-    fun value() = backingField.value.toDoubleOrNull()
-
-    fun setInitialValue(value: String) {
-        backingField.value = value
-    }
-}
 
 // use case: add, edit and review body measurements over time
 @Composable
 fun MeasurementScreenRoot(
-    vm: MeasurementViewModel = koinViewModel(),
+    vm: MeasurementViewModel,
     modifier: Modifier = Modifier,
     onRequestAddEditMeasurement: () -> Unit = {},
+    onShowHistory: () -> Unit = {},
 ) {
     val todaysMeasurement by vm.todayMeasurement.collectAsStateWithLifecycle(null)
     val measurements by vm.allUserMeasurements.collectAsStateWithLifecycle(emptyList())
+
+    MeasurementScreen(
+        measurements,
+        todaysMeasurement,
+        modifier,
+        onRequestAddEditMeasurement,
+        onShowHistory
+    )
+}
+
+@Composable
+fun MeasurementScreen(
+    measurements: List<Measurement>,
+    todaysMeasurement: Measurement?,
+    modifier: Modifier = Modifier,
+    onRequestAddEditMeasurement: () -> Unit = {},
+    onShowHistory: () -> Unit = {},
+) {
     var selectedMeasurementType by remember { mutableStateOf(MeasurementType.CHEST) }
 
     Column(
-        modifier.fillMaxSize()
+        modifier.fillMaxSize().padding(16.dp),
     ) {
-
         Row(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text("Latest measurements")
-
+            Text(stringResource(Res.string.measurement_graph))
 
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(stringResource(selectedMeasurementType.label))
 
@@ -119,23 +112,25 @@ fun MeasurementScreenRoot(
             }
         }
 
-
-
         MeasurementLineGraph(
             measurements,
             selectedMeasurementType,
-            modifier = Modifier.fillMaxHeight(0.5f)
+            modifier = Modifier.fillMaxHeight(0.5f),
         )
 
         Row(
             modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text("Latest measurements")
-            Text("See all") // TODO
+            Text(stringResource(Res.string.latest_measurements))
+            TextButton(onShowHistory) {
+                Text(stringResource(Res.string.see_all))
+            }
         }
+
         LazyColumn(
-            modifier.weight(1.0f)
+            modifier.weight(1.0f),
         ) {
             items(measurements) { measurement ->
                 Text(measurement.date.toString())
@@ -144,59 +139,14 @@ fun MeasurementScreenRoot(
 
         Row(
             Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
+            horizontalArrangement = Arrangement.End,
         ) {
+            val add = stringResource(Res.string.add_todays_measurement)
+            val edit = stringResource(Res.string.edit_todays_measurement)
+
             Button(onRequestAddEditMeasurement) {
-                val text = if (todaysMeasurement == null) "Add today's measurement" else "Edit today's measurement"
+                val text = if (todaysMeasurement == null) add else edit
                 Text(text)
-            }
-        }
-    }
-
-
-}
-
-@Composable
-fun AddEditMeasurement(
-    modifier: Modifier = Modifier,
-    oldMeasurement: Measurement?,
-    onSave: (Measurement) -> Unit = {},
-) {
-    val measurementTypes = remember { MeasurementType.entries }
-
-    LaunchedEffect(oldMeasurement) {
-        if (oldMeasurement != null) {
-            measurementTypes.fromMeasurement(oldMeasurement)
-        }
-    }
-
-
-    Column {
-        LazyColumn(
-            modifier.fillMaxSize().weight(1.0f),
-        ) {
-            items(measurementTypes) { measurement ->
-                MeasurementInputField(
-                    measurement.backingField.value,
-                    measurement.label,
-                    measurement.unit,
-                    Modifier.padding(16.dp)
-                ) {
-                    measurement.backingField.value = it
-                }
-            }
-        }
-
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Button(onClick = {
-                // TODO notify of error
-                val measurement = measurementTypes.toMeasurement()
-                onSave(measurement)
-            }) {
-                Text(stringResource(Res.string.save_measurement))
             }
         }
     }
@@ -219,7 +169,7 @@ fun MeasurementInputField(
 
         Row(
             Modifier.wrapContentWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             DoubleInputField(value, onValueChange = onValueChange)
             Spacer(Modifier.width(12.dp))
@@ -236,12 +186,12 @@ fun MeasurementSelectionDropdown(
     var expanded by remember { mutableStateOf(false) }
 
     IconButton({ expanded = !expanded }) {
-        Icon(Icons.Default.KeyboardArrowDown, "")
+        Icon(Icons.Default.KeyboardArrowDown, stringResource(Res.string.select_measurement_category))
     }
 
     DropdownMenu(
         expanded,
-        onDismissRequest = { expanded = false }
+        onDismissRequest = { expanded = false },
     ) {
         MeasurementType.entries.forEach { type ->
             DropdownMenuItem(
@@ -249,41 +199,35 @@ fun MeasurementSelectionDropdown(
                 onClick = {
                     onSelected(type)
                     expanded = false
-                }
+                },
             )
         }
     }
 }
 
-private fun EnumEntries<MeasurementType>.toMeasurement() = Measurement(
-    date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
-    get(0).value(),
-    get(1).value(),
-    get(2).value(),
-    get(3).value(),
-    get(4).value(),
-    get(5).value(),
-    get(6).value(),
-    get(7).value(),
-    get(8).value(),
-    get(9).value(),
-    get(10).value(),
-    get(11).value(),
-    get(12).value(),
-)
+enum class MeasurementType(
+    val label: StringResource,
+    val unit: String = "cm",
+    val backingField: MutableState<String> = mutableStateOf(""),
+) {
+    NECK(Res.string.neck),
+    CHEST(Res.string.chest),
+    LEFT_ARM(Res.string.left_arm),
+    RIGHT_ARM(Res.string.right_arm),
+    LEFT_FOREARM(Res.string.left_forearm),
+    RIGHT_FOREARM(Res.string.right_forearm),
+    WAIST(Res.string.waist),
+    LEFT_THIGH(Res.string.left_thigh),
+    RIGHT_THIGH(Res.string.right_thigh),
+    LEFT_CALF(Res.string.left_calf),
+    RIGHT_CALF(Res.string.right_calf),
+    WEIGHT(Res.string.weight, "kg"),
+    HEIGHT(Res.string.height),
+    ;
 
-private fun EnumEntries<MeasurementType>.fromMeasurement(measurement: Measurement) {
-    measurement.neck?.let { get(0).setInitialValue(it.toString()) }
-    measurement.chest?.let { get(1).setInitialValue(it.toString()) }
-    measurement.leftArm?.let { get(2).setInitialValue(it.toString()) }
-    measurement.rightArm?.let { get(3).setInitialValue(it.toString()) }
-    measurement.leftForearm?.let { get(4).setInitialValue(it.toString()) }
-    measurement.rightForearm?.let { get(5).setInitialValue(it.toString()) }
-    measurement.waist?.let { get(6).setInitialValue(it.toString()) }
-    measurement.leftThigh?.let { get(7).setInitialValue(it.toString()) }
-    measurement.rightThigh?.let { get(8).setInitialValue(it.toString()) }
-    measurement.leftCalf?.let { get(9).setInitialValue(it.toString()) }
-    measurement.rightCalf?.let { get(10).setInitialValue(it.toString()) }
-    measurement.bodyweight?.let { get(11).setInitialValue(it.toString()) }
-    measurement.height?.let { get(12).setInitialValue(it.toString()) }
+    fun value() = backingField.value.toDoubleOrNull()
+
+    fun setInitialValue(value: String) {
+        backingField.value = value
+    }
 }

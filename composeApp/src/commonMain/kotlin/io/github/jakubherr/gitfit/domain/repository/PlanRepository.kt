@@ -1,7 +1,6 @@
 package io.github.jakubherr.gitfit.domain.repository
 
 import io.github.jakubherr.gitfit.domain.model.Plan
-import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 import kotlinx.coroutines.flow.Flow
 
 interface PlanRepository {
@@ -9,13 +8,24 @@ interface PlanRepository {
 
     fun getCustomPlans(userId: String): Flow<List<Plan>>
 
-    suspend fun saveCustomPlan(userId: String, plan: Plan)
+    suspend fun saveCustomPlan(
+        userId: String,
+        plan: Plan,
+    )
 
-    suspend fun deleteCustomPlan(userId: String, planId: String)
+    suspend fun saveDefaultPlan(
+        plan: Plan,
+    )
+
+    suspend fun deleteCustomPlan(
+        userId: String,
+        planId: String,
+    )
 
     suspend fun deleteAllCustomPlans(userId: String): Result<Unit>
 
-    suspend fun getCustomPlan(userId: String, planId: String) : Plan?
-
-    suspend fun getCustomWorkout(userId: String, planId: String, workoutIdx: Int): WorkoutPlan
+    suspend fun getCustomPlan(
+        userId: String,
+        planId: String,
+    ): Plan?
 }

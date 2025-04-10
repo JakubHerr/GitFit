@@ -14,8 +14,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,32 +28,41 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.add_to_your_plans
+import gitfit.composeapp.generated.resources.cancel
+import gitfit.composeapp.generated.resources.confirm
+import gitfit.composeapp.generated.resources.delete_plan
+import gitfit.composeapp.generated.resources.delete_workout
+import gitfit.composeapp.generated.resources.edit_plan
+import gitfit.composeapp.generated.resources.plan_deletion_expalantion
+import gitfit.composeapp.generated.resources.start_workout
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
-import io.github.jakubherr.gitfit.presentation.shared.OnBackPress
 import io.github.jakubherr.gitfit.presentation.shared.WorkoutPlanListItem
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PlanDetailScreen(
     plan: Plan,
+    isPredefined: Boolean,
     modifier: Modifier = Modifier,
     onWorkoutSelected: (WorkoutPlan) -> Unit = {},
-    onPlanSelected: () -> Unit = {}, // TODO User can add a predefined plan to his plans, where he can edit it etc.
     onAction: (PlanAction) -> Unit = {},
 ) {
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
         ConfirmationDialog(
-            title = "Delete",
-            text = "The selected plan will be deleted",
-            confirmText = "Delete plan",
-            dismissText = "Cancel",
+            title = stringResource(Res.string.delete_plan),
+            text = stringResource(Res.string.plan_deletion_expalantion),
+            confirmText = stringResource(Res.string.confirm),
+            dismissText = stringResource(Res.string.cancel),
             onDismiss = { showDialog = false },
             onConfirm = {
                 showDialog = false
                 onAction(PlanAction.DeletePlan(plan.id))
-            }
+            },
         )
     }
 
@@ -64,15 +75,24 @@ fun PlanDetailScreen(
             Text(plan.name, fontWeight = FontWeight.Bold)
 
             Row {
-                IconButton({ onAction(PlanAction.EditPlan(plan)) }) {
-                    Icon(Icons.Default.Edit, "")
-                }
+                if (isPredefined) {
+                    Button(
+                        { onAction(PlanAction.CopyDefaultPlan(plan)) }
+                    ) {
+                        Text(stringResource(Res.string.add_to_your_plans))
+                    }
+                } else {
+                    IconButton({ onAction(PlanAction.EditPlan(plan)) }) {
+                        Icon(Icons.Default.Edit, stringResource(Res.string.edit_plan))
+                    }
 
-                IconButton({ showDialog = true }) {
-                    Icon(Icons.Default.Delete, "")
+                    IconButton(
+                        onClick = { showDialog = true },
+                    ) {
+                        Icon(Icons.Default.Delete, stringResource(Res.string.delete_workout), tint = MaterialTheme.colorScheme.error)
+                    }
                 }
             }
-
         }
 
         Spacer(Modifier.height(32.dp))
@@ -84,11 +104,13 @@ fun PlanDetailScreen(
                 WorkoutPlanListItem(
                     workout,
                     onActionClicked = { onWorkoutSelected(workout) },
-                    actionSlot = { Icon(Icons.Default.PlayArrow, "") }
+                    actionSlot = {
+                        if (!isPredefined) Icon(Icons.Default.PlayArrow, stringResource(Res.string.start_workout), tint = MaterialTheme.colorScheme.primary)
+                    },
                 )
             }
         }
     }
-    
+
     // nice to have: user has the ability to schedule a workout for a certain date
 }

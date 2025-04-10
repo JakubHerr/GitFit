@@ -1,11 +1,13 @@
 package io.github.jakubherr.gitfit.presentation.shared
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
@@ -21,6 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.add_set
+import gitfit.composeapp.generated.resources.delete
+import gitfit.composeapp.generated.resources.delete_series
+import gitfit.composeapp.generated.resources.done
 import io.github.jakubherr.gitfit.domain.isNonNegativeDouble
 import io.github.jakubherr.gitfit.domain.isNonNegativeLong
 import io.github.jakubherr.gitfit.domain.model.Block
@@ -38,37 +43,45 @@ fun SharedBlockItem(
     readOnly: Boolean = false,
     dropdownMenu: @Composable () -> Unit = {},
     seriesItems: @Composable () -> Unit = {},
+    seriesAction: String = stringResource(Res.string.done),
     onAddSet: () -> Unit = {},
 ) {
-    Card(modifier.fillMaxWidth().padding(16.dp)) {
+    Card(modifier.sizeIn(maxWidth = 512.dp).fillMaxWidth().padding(16.dp)) {
         Column(Modifier.padding(16.dp)) {
             Row(
                 Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(Modifier.weight(1.0f)) {
+                Row {
                     Text(block.exercise.name, style = MaterialTheme.typography.titleLarge)
                 }
 
                 dropdownMenu()
             }
 
-            HorizontalDivider(Modifier.padding(8.dp))
+            HorizontalDivider(Modifier.padding(vertical = 12.dp))
 
-            Column {
-                SetHeader()
-                Spacer(Modifier.height(16.dp))
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                SetHeader(seriesAction = seriesAction)
                 seriesItems()
             }
 
             Spacer(Modifier.height(8.dp))
 
             if (!readOnly) {
-                Button(
-                    onClick = onAddSet,
-                    Modifier.fillMaxWidth()
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
                 ) {
-                    Text(stringResource(Res.string.add_set))
+                    Button(
+                        onClick = onAddSet,
+                        Modifier.sizeIn(maxWidth = 320.dp).fillMaxWidth(),
+                    ) {
+                        Text(stringResource(Res.string.add_set))
+                    }
                 }
             }
         }
@@ -95,6 +108,7 @@ fun PlanBlockItem(
                 onEditProgression = onEditProgression,
             )
         },
+        seriesAction = stringResource(Res.string.delete),
         seriesItems = {
             block.series.forEachIndexed { seriesIdx, series ->
                 SetInput(
@@ -105,12 +119,12 @@ fun PlanBlockItem(
                     onValidSetEntered = { onValidSetEntered(it) },
                     actionSlot = {
                         IconButton({ onDeleteSeries(series) }) {
-                            Icon(Icons.Default.Delete, "")
+                            Icon(Icons.Default.Delete, stringResource(Res.string.delete_series), tint = MaterialTheme.colorScheme.error)
                         }
-                    }
+                    },
                 )
             }
-        }
+        },
     )
 }
 
@@ -122,7 +136,7 @@ fun WorkoutBlockItem(
     readOnly: Boolean = false,
     onAction: (WorkoutAction) -> Unit = {},
     onAddSetClicked: () -> Unit = {},
-    dropdownMenu: @Composable () -> Unit = {}
+    dropdownMenu: @Composable () -> Unit = {},
 ) {
     SharedBlockItem(
         block,
@@ -133,7 +147,7 @@ fun WorkoutBlockItem(
 
                 if (readOnly) {
                     ReadOnlySet(seriesIdx, series)
-                } else{
+                } else {
                     CheckableSetInput(
                         seriesIdx,
                         series,
@@ -155,6 +169,6 @@ fun WorkoutBlockItem(
             }
         },
         onAddSet = onAddSetClicked,
-        dropdownMenu = dropdownMenu
+        dropdownMenu = dropdownMenu,
     )
 }

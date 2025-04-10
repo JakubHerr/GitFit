@@ -8,7 +8,7 @@ data class Block(
     val exercise: Exercise,
     val series: List<Series> = emptyList(),
     val restTimeSeconds: Long? = null,
-    val progressionSettings: ProgressionSettings? = null
+    val progressionSettings: ProgressionSettings? = null,
 ) {
     fun addSeries(): Block = copy(series = series + Series(series.size, null, null, false))
 
@@ -33,7 +33,10 @@ data class Block(
         newSeries.forEachIndexed { idx, series ->
             newSeries[idx] = series.copy(weight = (series.weight ?: 0.0) + progressionSettings.incrementWeightByKg, completed = false)
         }
-        val newProgression = progressionSettings.copy(weightThreshold = progressionSettings.weightThreshold + progressionSettings.incrementWeightByKg)
+        val newProgression =
+            progressionSettings.copy(
+                weightThreshold = progressionSettings.weightThreshold + progressionSettings.incrementWeightByKg,
+            )
         return copy(series = newSeries, progressionSettings = newProgression)
     }
 
@@ -47,11 +50,3 @@ data class Block(
         return copy(series = newSeries, progressionSettings = newProgression)
     }
 }
-
-val mockBlock =
-    Block(
-        idx = 0,
-        exercise = mockExercise,
-        series = listOf(mockSeries),
-        restTimeSeconds = 69,
-    )

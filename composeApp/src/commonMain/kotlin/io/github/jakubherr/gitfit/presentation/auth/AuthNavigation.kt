@@ -3,28 +3,33 @@ package io.github.jakubherr.gitfit.presentation.auth
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import io.github.jakubherr.gitfit.presentation.DashboardRoute
-import io.github.jakubherr.gitfit.presentation.ResetPasswordRoute
+import androidx.navigation.compose.navigation
+import io.github.jakubherr.gitfit.presentation.AuthGraphRoute
 import io.github.jakubherr.gitfit.presentation.LoginRoute
 import io.github.jakubherr.gitfit.presentation.OnboardingRoute
-import io.github.jakubherr.gitfit.presentation.RegisterRoute
-import io.github.jakubherr.gitfit.presentation.VerifyEmailRoute
+import io.github.jakubherr.gitfit.presentation.ResetPasswordRoute
 
 fun NavGraphBuilder.authGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    authViewModel: AuthViewModel,
 ) {
-    composable<RegisterRoute> { /* TODO */ }
+    navigation<AuthGraphRoute>(
+        startDestination = LoginRoute,
+    ) {
+        composable<LoginRoute> {
+            LoginScreenRoot(
+                authViewModel,
+                onForgotPassword = { navController.navigate(ResetPasswordRoute) },
+            )
+        }
 
-    composable<LoginRoute> {
-        LoginScreenRoot(
-            onForgotPassword = { navController.navigate(ResetPasswordRoute) }
-        )
+        composable<ResetPasswordRoute> {
+            ResetPasswordScreenRoot(
+                authViewModel,
+                onBack = { navController.popBackStack() },
+            )
+        }
+
+        composable<OnboardingRoute> { /* TODO */ }
     }
-
-    // TODO skip to dashboard after email is sent successfully
-    composable<VerifyEmailRoute> { VerifyEmailScreenRoot { navController.navigate(DashboardRoute) } }
-
-    composable<ResetPasswordRoute> { ResetPasswordScreenRoot() }
-
-    composable<OnboardingRoute> { /* TODO */ }
 }

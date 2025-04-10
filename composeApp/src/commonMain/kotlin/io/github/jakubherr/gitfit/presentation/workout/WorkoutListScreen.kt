@@ -18,10 +18,10 @@ fun WorkoutListScreen(
     onWorkoutSelected: (Workout) -> Unit,
 ) {
     Column(
-        modifier.padding(16.dp)
+        modifier.padding(16.dp),
     ) {
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             items(workoutList) { workout ->
                 WorkoutListItem(workout) { onWorkoutSelected(workout) }

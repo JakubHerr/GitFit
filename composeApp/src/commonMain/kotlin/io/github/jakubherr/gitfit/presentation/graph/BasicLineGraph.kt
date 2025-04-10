@@ -2,10 +2,10 @@ package io.github.jakubherr.gitfit.presentation.graph
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import io.github.koalaplot.core.ChartLayout
@@ -28,7 +28,7 @@ fun BasicLineGraph(
 ) {
     ChartLayout(
         modifier.padding(16.dp),
-        title = { Text(title) }
+        title = { Text(title) },
     ) {
         val dates = data.map { it.x }
         XYGraph(
@@ -37,13 +37,13 @@ fun BasicLineGraph(
         ) {
             LinePlot(
                 data,
-                lineStyle = LineStyle(SolidColor(Color.Blue), 2.dp),
+                lineStyle = LineStyle(SolidColor(MaterialTheme.colorScheme.primary), 2.dp),
                 symbol = {
                     Symbol(
                         shape = RoundedCornerShape(8.dp),
-                        fillBrush = SolidColor(Color.Blue)
+                        fillBrush = SolidColor(MaterialTheme.colorScheme.primary),
                     )
-                }
+                },
             )
         }
     }

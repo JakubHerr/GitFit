@@ -24,7 +24,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.cancel
+import gitfit.composeapp.generated.resources.delete
+import gitfit.composeapp.generated.resources.delete_custom_exercise
+import gitfit.composeapp.generated.resources.delete_custom_exercise_explanation
+import gitfit.composeapp.generated.resources.enum_exercise_metric_best_set_volume
+import gitfit.composeapp.generated.resources.enum_exercise_metric_heaviest_weight
+import gitfit.composeapp.generated.resources.enum_exercise_metric_total_repetitions
+import gitfit.composeapp.generated.resources.enum_exercise_metric_total_workout_volume
+import gitfit.composeapp.generated.resources.error_exercise_not_found
+import gitfit.composeapp.generated.resources.kg
+import gitfit.composeapp.generated.resources.last_10_workouts
+import gitfit.composeapp.generated.resources.reps
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.presentation.graph.BasicLineGraph
 import io.github.jakubherr.gitfit.presentation.graph.ExerciseMetric
@@ -32,13 +44,14 @@ import io.github.jakubherr.gitfit.presentation.graph.GraphAction
 import io.github.jakubherr.gitfit.presentation.graph.GraphViewModel
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import io.github.jakubherr.gitfit.presentation.shared.SingleChoiceChipSelection
+import io.github.jakubherr.gitfit.presentation.shared.translation
 import io.github.koalaplot.core.xygraph.DefaultPoint
-import org.koin.compose.viewmodel.koinViewModel
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ExerciseDetailScreenRoot(
     modifier: Modifier = Modifier,
-    graphViewModel: GraphViewModel = koinViewModel(),
+    graphViewModel: GraphViewModel,
     exerciseViewModel: ExerciseViewModel,
     onBack: () -> Unit = {},
 ) {
@@ -50,16 +63,16 @@ fun ExerciseDetailScreenRoot(
     exercise?.let {
         if (showDialog) {
             ConfirmationDialog(
-                title = "Delete custom exercise",
-                text = "The exercise will be deleted. Workouts with this exercise will not be changed",
-                confirmText = "Delete exercise",
-                dismissText = "Cancel",
+                title = stringResource(Res.string.delete_custom_exercise),
+                text = stringResource(Res.string.delete_custom_exercise_explanation),
+                confirmText = stringResource(Res.string.delete),
+                dismissText = stringResource(Res.string.cancel),
                 onDismiss = { showDialog = false },
                 onConfirm = {
                     showDialog = false
                     exerciseViewModel.onAction(ExerciseAction.DeleteCustomExercise(exercise.id))
                     onBack()
-                }
+                },
             )
         }
 
@@ -68,16 +81,15 @@ fun ExerciseDetailScreenRoot(
             graphData = data,
             selectedMetric = selectedMetric,
             onGraphAction = { graphViewModel.onAction(it) },
-            onDeleteExercise = { showDialog = true }
+            onDeleteExercise = { showDialog = true },
         )
     }
 
     if (exercise == null) {
-        Text("Some error occurred :(")
+        Text(stringResource(Res.string.error_exercise_not_found))
     }
 }
 
-// use case: show a detail of exercise and records, graphs
 @Composable
 fun ExerciseDetailScreen(
     exercise: Exercise,
@@ -85,33 +97,28 @@ fun ExerciseDetailScreen(
     selectedMetric: ExerciseMetric,
     modifier: Modifier = Modifier,
     onGraphAction: (GraphAction) -> Unit = {},
-    onDeleteExercise: (String) -> Unit = {}
+    onDeleteExercise: (String) -> Unit = {},
 ) {
     LaunchedEffect(exercise) {
         onGraphAction(GraphAction.ExerciseAndMetricSelected(exercise, ExerciseMetric.HEAVIEST_WEIGHT))
     }
 
-    LaunchedEffect(graphData) {
-        println("DBG: data size: ${graphData.size}")
-    }
-
-    // name, description, primary, secondary muscle etc.
-    Column(modifier.fillMaxSize()) {
+    Column(modifier.padding(16.dp).fillMaxSize()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(exercise.name)
+            Text(exercise.name, fontWeight = FontWeight.Bold)
 
             if (exercise.isCustom) {
                 IconButton({ onDeleteExercise(exercise.id) }) {
-                    Icon(Icons.Default.Delete, "")
+                    Icon(Icons.Default.Delete, stringResource(Res.string.delete_custom_exercise))
                 }
             }
         }
 
-        Text(exercise.primaryMuscle.name, fontWeight = FontWeight.Bold)
-        if (exercise.secondaryMuscle.isNotEmpty()) Text(exercise.secondaryMuscle.joinToString())
+        Text(exercise.primaryMuscle.translation(), fontWeight = FontWeight.Bold)
+        if (exercise.secondaryMuscle.isNotEmpty()) Text(exercise.secondaryMuscle.map { it.translation() }.joinToString())
 
         Spacer(Modifier.height(16.dp))
 
@@ -119,7 +126,12 @@ fun ExerciseDetailScreen(
         Row {
             val maxValue = graphData.maxByOrNull { it.y }
             maxValue?.let {
-                val unit = if (selectedMetric == ExerciseMetric.TOTAL_REPETITIONS) "reps" else "kg"
+                val unit =
+                    if (selectedMetric == ExerciseMetric.TOTAL_REPETITIONS) {
+                        stringResource(Res.string.reps)
+                    } else {
+                        stringResource(Res.string.kg)
+                    }
                 Text("${maxValue.x} - ${maxValue.y} $unit")
             }
         }
@@ -127,17 +139,25 @@ fun ExerciseDetailScreen(
         BasicLineGraph(
             graphData,
             Modifier.fillMaxWidth().height(256.dp),
-            "Last 10 workouts - ${exercise.name}",
+            "${stringResource(Res.string.last_10_workouts)} - ${exercise.name}",
         )
+
+        val translations =
+            listOf(
+                stringResource(Res.string.enum_exercise_metric_heaviest_weight),
+                stringResource(Res.string.enum_exercise_metric_best_set_volume),
+                stringResource(Res.string.enum_exercise_metric_total_workout_volume),
+                stringResource(Res.string.enum_exercise_metric_total_repetitions),
+            )
 
         SingleChoiceChipSelection(
             ExerciseMetric.entries,
+            labels = translations,
             selected = selectedMetric,
             modifier = Modifier.padding(16.dp),
             onChoiceSelected = { metric ->
-                println("DBG: ${metric.name} selected")
                 onGraphAction(GraphAction.ExerciseAndMetricSelected(exercise, metric))
-            }
+            },
         )
     }
 }

@@ -6,13 +6,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.jakubherr.gitfit.domain.model.Block
-import io.github.jakubherr.gitfit.domain.repository.AuthRepository
-import io.github.jakubherr.gitfit.domain.repository.PlanRepository
-import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
+import io.github.jakubherr.gitfit.domain.repository.AuthRepository
+import io.github.jakubherr.gitfit.domain.repository.PlanRepository
+import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,36 +25,37 @@ class WorkoutViewModel(
     private val planRepository: PlanRepository,
     private val authRepository: AuthRepository,
 ) : ViewModel() {
-    // TODO: how to detect a workout modification? If device is offline, the launched coroutine will not finish
-    //  maybe make all repository actions return result?
     private val currentUser = authRepository.currentUserFlow
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var currentWorkout = currentUser.flatMapLatest { user ->
-        workoutRepository.observeCurrentWorkoutOrNull(user?.id ?: "")
-    }.stateIn(
-        scope = viewModelScope,
-        initialValue = null,
-        started = SharingStarted.WhileSubscribed(5_000L),
-    )
+    var currentWorkout =
+        currentUser.flatMapLatest { user ->
+            workoutRepository.observeCurrentWorkoutOrNull(user?.id ?: "")
+        }.stateIn(
+            scope = viewModelScope,
+            initialValue = null,
+            started = SharingStarted.WhileSubscribed(5_000L),
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val plannedWorkouts = currentUser.flatMapLatest { user ->
-        workoutRepository.getPlannedWorkouts(user?.id ?: "")
-    }.stateIn(
-        scope = viewModelScope,
-        initialValue = emptyList(),
-        started = SharingStarted.WhileSubscribed(5_000L),
-    )
+    val plannedWorkouts =
+        currentUser.flatMapLatest { user ->
+            workoutRepository.getPlannedWorkouts(user?.id ?: "")
+        }.stateIn(
+            scope = viewModelScope,
+            initialValue = emptyList(),
+            started = SharingStarted.WhileSubscribed(5_000L),
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val completedWorkouts = currentUser.flatMapLatest { user ->
-        workoutRepository.getCompletedWorkouts(user?.id ?: "")
-    }.stateIn(
-        scope = viewModelScope,
-        initialValue = emptyList(),
-        started = SharingStarted.WhileSubscribed(5_000L),
-    )
+    val completedWorkouts =
+        currentUser.flatMapLatest { user ->
+            workoutRepository.getCompletedWorkouts(user?.id ?: "")
+        }.stateIn(
+            scope = viewModelScope,
+            initialValue = emptyList(),
+            started = SharingStarted.WhileSubscribed(5_000L),
+        )
 
     var selectedWorkout by mutableStateOf<Workout?>(null)
 
@@ -86,7 +87,10 @@ class WorkoutViewModel(
         }
     }
 
-    private fun removeBlock(workout: Workout, block: Block) {
+    private fun removeBlock(
+        workout: Workout,
+        block: Block,
+    ) {
         viewModelScope.launch {
             workoutRepository.removeBlock(workout, block.idx)
         }
@@ -100,7 +104,10 @@ class WorkoutViewModel(
         }
     }
 
-    private fun startPlannedWorkout(plan: Plan, workoutIdx: Int) {
+    private fun startPlannedWorkout(
+        plan: Plan,
+        workoutIdx: Int,
+    ) {
         if (currentWorkout.value == null) {
             viewModelScope.launch {
                 workoutRepository.startWorkoutFromPlan(plan, workoutIdx)
@@ -109,7 +116,6 @@ class WorkoutViewModel(
     }
 
     private fun completeCurrentWorkout() {
-        println("DBG: completing current workout ${currentWorkout.value}")
         val workout = currentWorkout.value ?: return
 
         if (workout.error == null) {
@@ -127,7 +133,6 @@ class WorkoutViewModel(
             }
         }
     }
-
 
     private suspend fun handleProgression(workout: Workout) {
         workout.let {
@@ -161,7 +166,7 @@ class WorkoutViewModel(
 
     private fun addSeries(
         workout: Workout,
-        blockIdx: Int
+        blockIdx: Int,
     ) {
         viewModelScope.launch { workoutRepository.addSeries(workout, blockIdx) }
     }
@@ -177,7 +182,7 @@ class WorkoutViewModel(
     private fun deleteLastSeries(
         workout: Workout,
         blockIdx: Int,
-        series: Series
+        series: Series,
     ) {
         viewModelScope.launch {
             workoutRepository.removeSeries(workout, blockIdx, series)
@@ -187,18 +192,26 @@ class WorkoutViewModel(
 
 sealed interface WorkoutAction {
     object StartNewWorkout : WorkoutAction
+
     class StartPlannedWorkout(val plan: Plan, val workoutIdx: Int) : WorkoutAction
+
     object CompleteCurrentWorkout : WorkoutAction
+
     class DeleteWorkout(val workoutId: String) : WorkoutAction
+
     class SelectWorkout(val workout: Workout) : WorkoutAction
 
     class AddBlock(val workout: Workout, val exercise: Exercise) : WorkoutAction
+
     class RemoveBlock(val workout: Workout, val block: Block) : WorkoutAction
 
     class AddSet(val workout: Workout, val blockIdx: Int) : WorkoutAction
+
     class ModifySeries(val workout: Workout, val blockIdx: Int, val series: Series) : WorkoutAction
+
     class DeleteLastSeries(val workout: Workout, val blockIdx: Int, val series: Series) : WorkoutAction
 
     class AskForExercise(val workoutId: String) : WorkoutAction
+
     object NotifyWorkoutSaved : WorkoutAction
 }

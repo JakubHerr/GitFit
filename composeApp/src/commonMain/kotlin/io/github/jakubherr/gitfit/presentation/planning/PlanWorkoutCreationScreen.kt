@@ -1,7 +1,10 @@
 package io.github.jakubherr.gitfit.presentation.planning
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,13 +21,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.add_exercise
+import gitfit.composeapp.generated.resources.confirm
+import gitfit.composeapp.generated.resources.delete_exercise
+import gitfit.composeapp.generated.resources.edit_progression
+import gitfit.composeapp.generated.resources.plan_name
+import gitfit.composeapp.generated.resources.show_exercise_dropdown_menu
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 import io.github.jakubherr.gitfit.presentation.shared.PlanBlockItem
 import io.github.jakubherr.gitfit.presentation.shared.StringInputField
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PlanWorkoutCreationScreen(
@@ -36,18 +47,25 @@ fun PlanWorkoutCreationScreen(
     onEditProgression: (Block) -> Unit = {},
 ) {
     Column(
-        modifier.padding(16.dp)
+        modifier.padding(16.dp),
     ) {
-        StringInputField(
-            value = workoutPlan.name,
-            onValueChange = { onAction(PlanAction.RenameWorkout(workoutPlan, it)) },
-            maxLength = 20,
-            label = { Text("Plan name") },
-            // placeholder = { Text(workoutPlan.name, Modifier.alpha(0.5f)) },
-            isError = workoutPlan.name.isBlank()
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            StringInputField(
+                value = workoutPlan.name,
+                onValueChange = { onAction(PlanAction.RenameWorkout(workoutPlan, it)) },
+                maxLength = 20,
+                label = { Text(stringResource(Res.string.plan_name)) },
+                isError = workoutPlan.name.isBlank(),
+            )
+        }
 
-        LazyColumn {
+        LazyColumn(
+            Modifier.weight(1.0f).fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             items(workoutPlan.blocks) { block ->
                 PlanBlockItem(
                     block,
@@ -55,18 +73,22 @@ fun PlanWorkoutCreationScreen(
                     onValidSetEntered = { onAction(PlanAction.EditSet(workoutPlan, block, it)) },
                     onDeleteSeries = { onAction(PlanAction.RemoveSet(workoutPlan, block, it)) },
                     onDeleteExercise = { onAction(PlanAction.RemoveExercise(workoutPlan, block)) },
-                    onEditProgression = { onEditProgression(block) }
+                    onEditProgression = { onEditProgression(block) },
                 )
             }
-            item {
-                Button(onClick = { onAddExerciseClick(workoutPlan.idx) }) { Text("Add exercise") }
-            }
-            item {
-                Button({
-                    onAction(PlanAction.ValidateWorkout(workoutPlan))
-                    onSave()
-                }) { Text("Save workout") }
-            }
+        }
+
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Button(onClick = { onAddExerciseClick(workoutPlan.idx) }) { Text(stringResource(Res.string.add_exercise)) }
+
+            Button({
+                onAction(PlanAction.ValidateWorkout(workoutPlan))
+                onSave()
+            }) { Text(stringResource(Res.string.confirm)) }
         }
     }
 }
@@ -81,26 +103,26 @@ fun PlanBlockItemDropdownMenu(
 
     Box {
         IconButton({ expanded = !expanded }) {
-            Icon(Icons.Default.MoreVert, "")
+            Icon(Icons.Default.MoreVert, stringResource(Res.string.show_exercise_dropdown_menu))
         }
 
         DropdownMenu(
             expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
         ) {
             DropdownMenuItem(
-                text = { Text("Delete exercise") },
+                text = { Text(stringResource(Res.string.delete_exercise)) },
                 onClick = {
                     onDeleteExercise()
                     expanded = false
-                }
+                },
             )
             DropdownMenuItem(
-                text = { Text("Edit progression") },
+                text = { Text(stringResource(Res.string.edit_progression)) },
                 onClick = {
                     onEditProgression()
                     expanded = false
-                }
+                },
             )
         }
     }

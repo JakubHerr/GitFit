@@ -77,17 +77,13 @@ data class Workout(
 
     fun hasExercise(exerciseId: String?) = blocks.any { it.exercise.id == exerciseId }
 
-    sealed class Error(val message: String) {
-        object NoExerciseInWorkout: Error("Workout has no exercises")
-        object NoSetInExercise: Error("Some exercise has no sets")
-        object InvalidSetInExercise: Error("Some set has invalid values")
-        object BlankName: Error("Workout plan has no name")
+    sealed class Error {
+        object NoExerciseInWorkout : Error()
+
+        object NoSetInExercise : Error()
+
+        object InvalidSetInExercise : Error()
+
+        object BlankName : Error()
     }
 }
-
-val mockWorkout =
-    Workout(
-        id = "mock",
-        blocks = listOf(mockBlock, mockBlock),
-        date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
-    )

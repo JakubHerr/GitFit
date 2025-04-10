@@ -2,12 +2,15 @@ package io.github.jakubherr.gitfit.presentation.graph
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
+import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.latest_measurements
+import gitfit.composeapp.generated.resources.no_data
 import io.github.jakubherr.gitfit.domain.model.Measurement
 import io.github.jakubherr.gitfit.presentation.measurement.MeasurementType
 import io.github.koalaplot.core.ChartLayout
@@ -53,11 +56,16 @@ fun MeasurementLineGraph(
         }.filter { it.second != null }
         .map { DefaultPoint(it.first.toString(), it.second!!) }
 
-    val title = if (data.isNotEmpty()) "last measurement: ${data.last().y} ${measurementType.unit}" else "No data"
+    val title =
+        if (data.isNotEmpty()) {
+            "${stringResource(Res.string.latest_measurements)} ${data.last().y} ${measurementType.unit}"
+        } else {
+            stringResource(Res.string.no_data)
+        }
 
     ChartLayout(
         modifier.padding(16.dp),
-        title = { Text(title) }
+        title = { Text(title) },
     ) {
         XYGraph(
             CategoryAxisModel(data.map { it.x }),
@@ -65,13 +73,13 @@ fun MeasurementLineGraph(
         ) {
             LinePlot(
                 data,
-                lineStyle = LineStyle(SolidColor(Color.Blue), 2.dp),
+                lineStyle = LineStyle(SolidColor(MaterialTheme.colorScheme.primary), 2.dp),
                 symbol = {
                     Symbol(
                         shape = RoundedCornerShape(8.dp),
-                        fillBrush = SolidColor(Color.Blue)
+                        fillBrush = SolidColor(MaterialTheme.colorScheme.primary),
                     )
-                }
+                },
             )
         }
     }

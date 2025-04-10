@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Icon
@@ -15,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.jakubherr.gitfit.domain.model.Exercise
+import io.github.jakubherr.gitfit.presentation.shared.translation
 
 @Composable
 fun ExerciseListItem(
@@ -23,14 +25,14 @@ fun ExerciseListItem(
     onItemClick: (String) -> Unit,
 ) {
     Row(
-        modifier.fillMaxWidth().clickable { onItemClick(exercise.id) },
+        modifier.fillMaxWidth().sizeIn(minHeight = 48.dp).clickable { onItemClick(exercise.id) },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Column {
             Text(exercise.name)
-            Text(exercise.primaryMuscle.name.lowercase())
+            Text(exercise.primaryMuscle.translation())
         }
-        Icon(Icons.Default.ChevronRight, "", modifier.size(32.dp))
+        Icon(Icons.Default.ChevronRight, null, modifier.size(32.dp))
     }
 }

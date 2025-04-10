@@ -12,24 +12,26 @@ import io.github.jakubherr.gitfit.presentation.ExerciseListRoute
 import io.github.jakubherr.gitfit.presentation.graph.GraphViewModel
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
-import org.koin.compose.viewmodel.koinViewModel
+import io.github.jakubherr.gitfit.presentation.sharedViewModel
 
-fun NavGraphBuilder.exerciseNavigation(
-    navController: NavHostController,
-    exerciseViewModel: ExerciseViewModel,
-    workoutViewModel: WorkoutViewModel,
-) {
+fun NavGraphBuilder.exerciseNavigation(navController: NavHostController) {
     composable<ExerciseListRoute> {
+        val vm = navController.sharedViewModel<ExerciseViewModel>()
+
         ExerciseListScreenRoot(
-            vm = exerciseViewModel,
+            vm = vm,
             onCreateExerciseClick = { navController.navigate(CreateExerciseRoute) },
             onExerciseClick = {
-                exerciseViewModel.onAction(ExerciseAction.SelectExercise(it))
-                navController.navigate(ExerciseDetailRoute(it.id, it.isCustom)) },
+                vm.onAction(ExerciseAction.SelectExercise(it))
+                navController.navigate(ExerciseDetailRoute(it.id, it.isCustom))
+            },
         )
     }
 
     composable<AddExerciseToWorkoutRoute> {
+        val workoutViewModel = navController.sharedViewModel<WorkoutViewModel>()
+        val exerciseViewModel = navController.sharedViewModel<ExerciseViewModel>()
+
         val currentWorkout by workoutViewModel.currentWorkout.collectAsStateWithLifecycle()
 
         ExerciseListScreenRoot(
@@ -45,22 +47,25 @@ fun NavGraphBuilder.exerciseNavigation(
     }
 
     composable<ExerciseDetailRoute> {
-        val graphVm: GraphViewModel = koinViewModel()
+        val exerciseViewModel = navController.sharedViewModel<ExerciseViewModel>()
+        val graphVm = navController.sharedViewModel<GraphViewModel>()
 
         ExerciseDetailScreenRoot(
             graphViewModel = graphVm,
             exerciseViewModel = exerciseViewModel,
-            onBack = { navController.popBackStack() }
+            onBack = { navController.popBackStack() },
         )
     }
 
     composable<CreateExerciseRoute> {
+        val exerciseViewModel = navController.sharedViewModel<ExerciseViewModel>()
+
         ExerciseCreateScreenRoot(
             onExerciseCreated = {
                 exerciseViewModel.onAction(ExerciseAction.CreateExercise(it))
                 navController.popBackStack()
             },
-            onCancel = { navController.popBackStack() }
+            onCancel = { navController.popBackStack() },
         )
     }
 }

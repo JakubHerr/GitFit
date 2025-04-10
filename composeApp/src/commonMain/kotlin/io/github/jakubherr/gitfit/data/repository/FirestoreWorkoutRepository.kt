@@ -2,14 +2,13 @@ package io.github.jakubherr.gitfit.data.repository
 
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.firestore
-import io.github.jakubherr.gitfit.domain.repository.AuthRepository
-import io.github.jakubherr.gitfit.domain.repository.PlanRepository
-import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.domain.repository.AuthError
+import io.github.jakubherr.gitfit.domain.repository.AuthRepository
+import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -22,14 +21,13 @@ import kotlinx.datetime.todayIn
 
 class FirestoreWorkoutRepository(
     private val authRepository: AuthRepository,
-    private val planRepository: PlanRepository
 ) : WorkoutRepository {
     private val firestore = Firebase.firestore
     private val dispatcher = Dispatchers.IO
+
     private fun workoutRef(userId: String) = firestore.collection("USERS").document(userId).collection("WORKOUTS")
 
     override fun observeCurrentWorkoutOrNull(userId: String): Flow<Workout?> {
-        println("DBG: observe current workout flow function triggered for userId $userId")
         userId.ifBlank { return emptyFlow() }
 
         return workoutRef(userId)
@@ -77,35 +75,38 @@ class FirestoreWorkoutRepository(
         return withContext(dispatcher) {
             val id = workoutRef(userId).document.id
 
-            println("DBG: starting new workout with id $id")
-            val workout = Workout(
-                id = id,
-                date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
-                blocks = emptyList(),
-                completed = false,
-                inProgress = true,
-            )
+            val workout =
+                Workout(
+                    id = id,
+                    date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
+                    blocks = emptyList(),
+                    completed = false,
+                    inProgress = true,
+                )
 
             workoutRef(userId).document(id).set(workout)
             Result.success(Unit)
         }
     }
 
-    override suspend fun startWorkoutFromPlan(plan: Plan, workoutIdx: Int): Result<Unit> {
+    override suspend fun startWorkoutFromPlan(
+        plan: Plan,
+        workoutIdx: Int,
+    ): Result<Unit> {
         val userId = authRepository.currentUser.id.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
-        println("DBG: starting planned workout with index $workoutIdx from plan ${plan.id}")
 
         return withContext(dispatcher) {
             val id = workoutRef(userId).document.id
 
-            val workout = Workout(
-                id = id,
-                blocks = plan.workoutPlans[workoutIdx].blocks,
-                completed = false,
-                inProgress = true,
-                planId = plan.id,
-                planWorkoutIdx = workoutIdx,
-            )
+            val workout =
+                Workout(
+                    id = id,
+                    blocks = plan.workoutPlans[workoutIdx].blocks,
+                    completed = false,
+                    inProgress = true,
+                    planId = plan.id,
+                    planWorkoutIdx = workoutIdx,
+                )
 
             workoutRef(userId).document(id).set(workout)
             Result.success(Unit)
@@ -116,7 +117,6 @@ class FirestoreWorkoutRepository(
         val userId = authRepository.currentUser.id.ifBlank { return }
 
         withContext(dispatcher) {
-            println("DBG: completing workout ${workout.id} of user $userId")
             val newWorkout = workout.copy(completed = true, inProgress = false)
             workoutRef(userId).document(workout.id).set(newWorkout)
         }
@@ -124,7 +124,6 @@ class FirestoreWorkoutRepository(
 
     override suspend fun deleteWorkout(workoutId: String) {
         val userId = authRepository.currentUser.id.ifBlank { return }
-        println("DBG: deleting workout $workoutId of user $userId")
         withContext(dispatcher) { workoutRef(userId).document(workoutId).delete() }
     }
 
@@ -143,9 +142,11 @@ class FirestoreWorkoutRepository(
         }
     }
 
-    override suspend fun addBlock(workout: Workout, exercise: Exercise) {
+    override suspend fun addBlock(
+        workout: Workout,
+        exercise: Exercise,
+    ) {
         val userId = authRepository.currentUser.id.ifBlank { return }
-        println("DBG: Adding new block to workout $workout.id with ${exercise.name}")
 
         withContext(dispatcher) {
             val newWorkout = workout.addBlock(exercise)
@@ -153,8 +154,10 @@ class FirestoreWorkoutRepository(
         }
     }
 
-    override suspend fun removeBlock(workout: Workout, blockIdx: Int) {
-        println("DBG removing block")
+    override suspend fun removeBlock(
+        workout: Workout,
+        blockIdx: Int,
+    ) {
         val userId = authRepository.currentUser.id.ifBlank { return }
 
         withContext(dispatcher) {
@@ -163,7 +166,11 @@ class FirestoreWorkoutRepository(
         }
     }
 
-    override suspend fun setBlockTimer(workout: Workout, blockIdx: Int, seconds: Long?) {
+    override suspend fun setBlockTimer(
+        workout: Workout,
+        blockIdx: Int,
+        seconds: Long?,
+    ) {
         val userId = authRepository.currentUser.id.ifBlank { return }
 
         withContext(dispatcher) {
@@ -172,8 +179,10 @@ class FirestoreWorkoutRepository(
         }
     }
 
-    override suspend fun addSeries(workout: Workout, blockIdx: Int) {
-        println("DBG: Adding series to block")
+    override suspend fun addSeries(
+        workout: Workout,
+        blockIdx: Int,
+    ) {
         val userId = authRepository.currentUser.id.ifBlank { return }
 
         withContext(dispatcher) {
@@ -182,8 +191,11 @@ class FirestoreWorkoutRepository(
         }
     }
 
-    override suspend fun modifySeries(workout: Workout, blockIdx: Int, set: Series) {
-        println("DBG: updating series of block $blockIdx to $set")
+    override suspend fun modifySeries(
+        workout: Workout,
+        blockIdx: Int,
+        set: Series,
+    ) {
         val userId = authRepository.currentUser.id.ifBlank { return }
 
         withContext(dispatcher) {
@@ -192,8 +204,11 @@ class FirestoreWorkoutRepository(
         }
     }
 
-    override suspend fun removeSeries(workout: Workout, blockIdx: Int, set: Series) {
-        println("DBG: removing series $set")
+    override suspend fun removeSeries(
+        workout: Workout,
+        blockIdx: Int,
+        set: Series,
+    ) {
         val userId = authRepository.currentUser.id.ifBlank { return }
 
         withContext(dispatcher) {

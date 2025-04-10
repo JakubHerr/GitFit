@@ -48,7 +48,7 @@ data class WorkoutPlan(
         // check both record and plan have the same amount of progression blocks at the same indexes
         // if this check fails, the record is too different from the plan and progression will not happen
         val planProgressionBlocks = workoutPlanCopy.blocks.filter { it.progressionSettings != null }
-        if (blocksWithProgression.map { it.idx } != planProgressionBlocks.map {it.idx}) return this
+        if (blocksWithProgression.map { it.idx } != planProgressionBlocks.map { it.idx }) return this
 
         // check every recorded block with progression for progress threshold criteria
         blocksWithProgression.forEach { recordedBlock ->

@@ -67,7 +67,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.swing)
         }
 
-        commonTest.dependencies { 
+        commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
     }
@@ -96,7 +96,7 @@ android {
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
         create("staging") {
@@ -104,7 +104,7 @@ android {
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
 
             signingConfig = signingConfigs.getByName("debug")
@@ -143,6 +143,7 @@ ktlint {
 }
 
 dependencies {
+    implementation(libs.androidx.material3.android) // note: why does this work on desktop?
     debugImplementation(compose.uiTooling)
 }
 
@@ -151,7 +152,11 @@ compose.desktop {
         mainClass = "io.github.jakubherr.gitfit.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            // TODO try to debug and improve
+            // include all modules is a hack to fix missing JVM libraries when packaging desktop
+            // see https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-native-distribution.html#including-jdk-modules
+            includeAllModules = true
+            targetFormats(TargetFormat.Msi, TargetFormat.Exe, TargetFormat.AppImage)
             packageName = "io.github.jakubherr.gitfit"
             packageVersion = "1.0.0"
         }

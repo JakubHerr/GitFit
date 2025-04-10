@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,6 +24,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -30,11 +34,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.create_exercise
-import gitfit.composeapp.generated.resources.error_no_exercise_found
+import gitfit.composeapp.generated.resources.error_exercise_list_empty
 import gitfit.composeapp.generated.resources.search_exercise
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
 
 // Use case: show a list of existing exercises
 // the purpose is to either browse and show detail or add exercise to workout (real time or planned)
@@ -49,9 +52,9 @@ fun ExerciseListScreenRoot(
     val custom by vm.customExercises.collectAsStateWithLifecycle(emptyList())
 
     ExerciseListScreen(
-        exerciseList = default + custom,
+        exerciseList = (default + custom).sortedBy { it.name },
         onExerciseClick = { onExerciseClick(it) },
-        onAddExerciseClick = { onCreateExerciseClick() }
+        onAddExerciseClick = { onCreateExerciseClick() },
     )
 }
 
@@ -66,12 +69,13 @@ fun ExerciseListScreen(
         Modifier.fillMaxSize().statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        // TODO implement basic search and filtering based on category
+        var query by remember { mutableStateOf("") }
         SearchBar(
-            "",
-            onQueryChange = {},
-            Modifier.padding(16.dp),
+            query,
+            onQueryChange = { query = it },
+            Modifier.padding(16.dp).sizeIn(maxWidth = 488.dp),
         )
+
         Spacer(Modifier.height(32.dp))
 
         if (exerciseList.isEmpty()) {
@@ -80,15 +84,18 @@ fun ExerciseListScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Icon(Icons.Default.Block, "", Modifier.size(128.dp).alpha(0.6f))
-                Text(stringResource(Res.string.error_no_exercise_found))
+                Icon(Icons.Default.Block, null, Modifier.size(128.dp).alpha(0.6f))
+                Text(stringResource(Res.string.error_exercise_list_empty))
             }
         } else {
+            val filteredList =
+                if (query.isNotBlank()) exerciseList.filter { it.name.startsWith(query, ignoreCase = true) } else exerciseList
+
             LazyColumn(
                 Modifier.weight(1f),
                 contentPadding = PaddingValues(16.dp),
             ) {
-                items(exerciseList) { exercise ->
+                items(filteredList) { exercise ->
                     ExerciseListItem(exercise) { onExerciseClick(exercise) }
                     HorizontalDivider(Modifier.height(1.dp))
                 }
@@ -112,7 +119,8 @@ fun SearchBar(
         query,
         onQueryChange,
         modifier = modifier.fillMaxWidth(),
-        leadingIcon = { Icon(Icons.Default.Search, "") },
+        singleLine = true,
+        leadingIcon = { Icon(Icons.Default.Search, null) },
         placeholder = { Text(stringResource(Res.string.search_exercise)) },
     )
 }

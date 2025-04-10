@@ -14,11 +14,3 @@ data class Series(
 
     val isNotNull get() = weight != null && repetitions != null
 }
-
-val mockSeries =
-    Series(
-        0,
-        repetitions = 3,
-        weight = 40.0,
-        completed = false,
-    )

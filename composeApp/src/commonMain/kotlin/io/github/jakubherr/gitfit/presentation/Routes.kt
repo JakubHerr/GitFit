@@ -5,11 +5,15 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @Keep
-object LoginRoute
+object AuthGraphRoute
 
 @Serializable
 @Keep
-object RegisterRoute
+object LoggedInRoute
+
+@Serializable
+@Keep
+object LoginRoute
 
 @Serializable
 @Keep
@@ -37,7 +41,7 @@ object ExerciseListRoute
 
 @Serializable
 @Keep
-class AddExerciseToWorkoutRoute(val workoutId: String)
+object AddExerciseToWorkoutRoute
 
 @Serializable
 @Keep
@@ -58,6 +62,10 @@ object MeasurementRoute
 @Serializable
 @Keep
 object MeasurementAddEditRoute
+
+@Serializable
+@Keep
+object MeasurementHistoryRoute
 
 @Serializable
 @Keep

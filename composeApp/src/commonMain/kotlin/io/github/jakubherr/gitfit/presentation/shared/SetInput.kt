@@ -43,7 +43,7 @@ fun SetInput(
                 if (validator(weight, reps)) {
                     onValidSetEntered(set.copy(weight = weight.toDouble(), repetitions = reps.toLong()))
                 }
-            }
+            },
         )
 
         IntegerInputField(
@@ -54,7 +54,7 @@ fun SetInput(
                 if (validator(weight, reps)) {
                     onValidSetEntered(set.copy(weight = weight.toDouble(), repetitions = reps.toLong()))
                 }
-            }
+            },
         )
 
         actionSlot()
@@ -76,7 +76,7 @@ fun CheckableSetInput(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text((index+1).toString())
+        Text((index + 1).toString())
 
         DoubleInputField(weight, onValueChange = { weight = it }, enabled = !set.completed)
         IntegerInputField(reps, onValueChange = { reps = it }, enabled = !set.completed)
@@ -93,7 +93,7 @@ fun CheckableSetInput(
 fun ReadOnlySet(
     index: Int,
     set: Series,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier.fillMaxWidth(),
@@ -112,4 +112,3 @@ fun ReadOnlySet(
         )
     }
 }
-
