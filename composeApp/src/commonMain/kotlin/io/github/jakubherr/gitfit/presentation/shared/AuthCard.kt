@@ -32,12 +32,12 @@ fun AuthCard(
         }
 
         Card(
-            modifier = Modifier.sizeIn(maxWidth = 512.dp).padding(16.dp)
+            modifier = Modifier.sizeIn(maxWidth = 512.dp)
         ) {
             Column(
-                Modifier.padding(16.dp).width(IntrinsicSize.Max),
+                Modifier.padding(8.dp).width(IntrinsicSize.Max),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 content()
             }

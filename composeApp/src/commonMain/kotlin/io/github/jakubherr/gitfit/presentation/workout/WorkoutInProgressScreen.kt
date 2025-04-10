@@ -115,7 +115,6 @@ fun WorkoutInProgressScreen(
                     WorkoutBlockItem(
                         workout,
                         block,
-                        Modifier.sizeIn(maxWidth = 512.dp), // TODO limit desktop UI sizes
                         onAction = onAction,
                         onAddSetClicked = {
                             onAction(WorkoutAction.AddSet(workout, block.idx))
@@ -136,7 +135,7 @@ fun WorkoutInProgressScreen(
                 item {
                     Button(
                         onClick = { onAction(WorkoutAction.AskForExercise(workout.id)) },
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp)
+                        modifier = Modifier.sizeIn(maxWidth = 320.dp).fillMaxWidth().padding(horizontal = 32.dp)
                     ) {
                         Text(stringResource(Res.string.add_exercise))
                     }

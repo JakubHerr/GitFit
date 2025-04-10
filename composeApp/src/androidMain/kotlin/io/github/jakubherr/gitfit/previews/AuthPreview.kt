@@ -1,5 +1,6 @@
 package io.github.jakubherr.gitfit.previews
 
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import io.github.jakubherr.gitfit.domain.model.User
@@ -28,15 +29,17 @@ private fun LoginScreenPreview() {
 @Composable
 private fun ResetPasswordScreenPreview() {
     GitFitTheme {
-        ResetPasswordScreen(
-            state =
-            AuthState(
-                User.LoggedOut,
-                error = null,
-                loading = true,
-            ),
-            onResetPassword = { }
-        )
+        Surface {
+            ResetPasswordScreen(
+                state =
+                AuthState(
+                    User.LoggedOut,
+                    error = null,
+                    loading = true,
+                ),
+                onResetPassword = { }
+            )
+        }
     }
 }
 

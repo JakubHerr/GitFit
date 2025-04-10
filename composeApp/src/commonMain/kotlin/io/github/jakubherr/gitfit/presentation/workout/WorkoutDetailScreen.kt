@@ -71,7 +71,10 @@ fun WorkoutDetailScreen(
 
         Spacer(Modifier.height(32.dp))
 
-        LazyColumn {
+        LazyColumn(
+            Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             items(workout.blocks) { block ->
                 WorkoutBlockItem(workout, block, readOnly = true)
             }

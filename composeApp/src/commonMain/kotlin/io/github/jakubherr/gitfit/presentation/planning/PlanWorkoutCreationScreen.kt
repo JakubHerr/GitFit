@@ -63,7 +63,8 @@ fun PlanWorkoutCreationScreen(
         }
 
         LazyColumn(
-            Modifier.weight(1.0f),
+            Modifier.weight(1.0f).fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             items(workoutPlan.blocks) { block ->
                 PlanBlockItem(

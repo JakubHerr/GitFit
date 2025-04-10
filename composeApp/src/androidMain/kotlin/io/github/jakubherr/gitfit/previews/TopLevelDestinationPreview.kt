@@ -30,7 +30,7 @@ private fun DashboardScreenPreview() {
 
 @Composable
 @Preview
-fun PlanOverviewPreview(modifier: Modifier = Modifier) {
+fun PlanListScreenPreview(modifier: Modifier = Modifier) {
     GitFitTheme {
         Surface {
             PlanListScreen(

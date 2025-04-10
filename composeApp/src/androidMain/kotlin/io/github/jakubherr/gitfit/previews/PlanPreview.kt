@@ -11,7 +11,7 @@ import io.github.jakubherr.gitfit.ui.theme.GitFitTheme
 
 @Preview
 @Composable
-private fun PlanDetailPreview() {
+private fun PlanDetailScreenPreview() {
     GitFitTheme {
         Surface {
             PlanDetailScreen(
@@ -53,6 +53,18 @@ private fun PlanCreationScreenPreview() {
         Surface {
             PlanCreationScreen(
                 plan = mockPlan
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun PlanWorkoutCreationPreview() {
+    GitFitTheme {
+        Surface {
+            PlanWorkoutCreationScreen(
+                mockWorkoutPlan
             )
         }
     }

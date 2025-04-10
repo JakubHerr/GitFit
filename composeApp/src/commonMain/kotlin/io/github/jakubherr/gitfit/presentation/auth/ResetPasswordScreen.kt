@@ -1,5 +1,7 @@
 package io.github.jakubherr.gitfit.presentation.auth
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
@@ -47,7 +49,7 @@ fun ResetPasswordScreen(
 ) {
     var email by remember { mutableStateOf("") }
 
-    Surface {
+    Column(Modifier.fillMaxSize()) {
         AuthCard(modifier, state.loading) {
             OutlinedTextField(
                 email,

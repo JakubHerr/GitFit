@@ -44,6 +44,7 @@ import io.github.jakubherr.gitfit.presentation.graph.GraphAction
 import io.github.jakubherr.gitfit.presentation.graph.GraphViewModel
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import io.github.jakubherr.gitfit.presentation.shared.SingleChoiceChipSelection
+import io.github.jakubherr.gitfit.presentation.shared.translation
 import io.github.koalaplot.core.xygraph.DefaultPoint
 import org.jetbrains.compose.resources.stringResource
 
@@ -102,12 +103,12 @@ fun ExerciseDetailScreen(
         onGraphAction(GraphAction.ExerciseAndMetricSelected(exercise, ExerciseMetric.HEAVIEST_WEIGHT))
     }
 
-    Column(modifier.fillMaxSize()) {
+    Column(modifier.padding(16.dp).fillMaxSize()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(exercise.name)
+            Text(exercise.name, fontWeight = FontWeight.Bold)
 
             if (exercise.isCustom) {
                 IconButton({ onDeleteExercise(exercise.id) }) {
@@ -116,8 +117,8 @@ fun ExerciseDetailScreen(
             }
         }
 
-        Text(exercise.primaryMuscle.name, fontWeight = FontWeight.Bold)
-        if (exercise.secondaryMuscle.isNotEmpty()) Text(exercise.secondaryMuscle.joinToString())
+        Text(exercise.primaryMuscle.translation(), fontWeight = FontWeight.Bold)
+        if (exercise.secondaryMuscle.isNotEmpty()) Text(exercise.secondaryMuscle.map { it.translation() }.joinToString())
 
         Spacer(Modifier.height(16.dp))
 

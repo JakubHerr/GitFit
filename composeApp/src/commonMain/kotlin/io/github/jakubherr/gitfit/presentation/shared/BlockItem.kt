@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
@@ -45,7 +46,7 @@ fun SharedBlockItem(
     seriesAction: String = stringResource(Res.string.done),
     onAddSet: () -> Unit = {},
 ) {
-    Card(modifier.fillMaxWidth().padding(16.dp)) {
+    Card(modifier.sizeIn(maxWidth = 512.dp).fillMaxWidth().padding(16.dp)) {
         Column(Modifier.padding(16.dp)) {
             Row(
                 Modifier.fillMaxWidth(),
@@ -71,11 +72,16 @@ fun SharedBlockItem(
             Spacer(Modifier.height(8.dp))
 
             if (!readOnly) {
-                Button(
-                    onClick = onAddSet,
+                Row(
                     Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
                 ) {
-                    Text(stringResource(Res.string.add_set))
+                    Button(
+                        onClick = onAddSet,
+                        Modifier.sizeIn(maxWidth = 320.dp).fillMaxWidth(),
+                    ) {
+                        Text(stringResource(Res.string.add_set))
+                    }
                 }
             }
         }
