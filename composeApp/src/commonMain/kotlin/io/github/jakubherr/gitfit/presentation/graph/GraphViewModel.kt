@@ -32,7 +32,7 @@ class GraphViewModel(
         workoutRepository.getCompletedWorkouts(user?.id ?: "")
     }
     .map { wo ->
-        wo.filter { it.hasExercise(selectedExercise.value?.id) }.sortedBy { it.date }
+        wo.filter { it.hasExercise(selectedExercise.value?.id) }.sortedByDescending { it.date }
     }
     .take(10)
     .stateIn(

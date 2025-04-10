@@ -52,7 +52,7 @@ fun NavGraphBuilder.measurementNavigation(
         val measurements by vm.allUserMeasurements.collectAsStateWithLifecycle(emptyList())
 
         MeasurementHistoryScreen(
-            measurements.sortedBy { it.date },
+            measurements.sortedByDescending { it.date },
             onDeleteMeasurement = {
                 vm.onAction(MeasurementAction.DeleteMeasurement(it))
             },

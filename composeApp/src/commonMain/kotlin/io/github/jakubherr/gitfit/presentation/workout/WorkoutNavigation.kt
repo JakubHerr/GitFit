@@ -85,7 +85,7 @@ fun NavGraphBuilder.workoutNavigation(
             }
         } else {
             WorkoutListScreen(
-                completedWorkouts.sortedBy { it.date },
+                completedWorkouts.sortedByDescending { it.date },
                 onWorkoutSelected = {
                     vm.onAction(WorkoutAction.SelectWorkout(it))
                     navController.navigate(WorkoutDetailRoute)

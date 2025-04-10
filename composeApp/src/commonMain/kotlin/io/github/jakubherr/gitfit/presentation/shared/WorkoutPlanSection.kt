@@ -109,6 +109,7 @@ fun PlanSectionLazyColumn(
             )
         }
         if (userPlansExpanded) {
+            if (userPlans.isEmpty()) item { Text(stringResource(Res.string.list_is_empty)) }
             items(userPlans) { plan ->
                 PlanListItem(plan) {
                     onUserPlanSelected(it)
@@ -124,6 +125,7 @@ fun PlanSectionLazyColumn(
             )
         }
         if (predefinedPlansExpanded) {
+            if (predefinedPlans.isEmpty()) item { Text(stringResource(Res.string.list_is_empty)) }
             items(predefinedPlans) { plan ->
                 PlanListItem(plan) {
                     onPredefinedPlanSelected(it)
