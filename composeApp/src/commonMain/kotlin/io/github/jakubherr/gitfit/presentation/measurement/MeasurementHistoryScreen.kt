@@ -33,9 +33,11 @@ import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.cancel
 import gitfit.composeapp.generated.resources.chest
+import gitfit.composeapp.generated.resources.collapse
 import gitfit.composeapp.generated.resources.delete
 import gitfit.composeapp.generated.resources.delete_measurement
 import gitfit.composeapp.generated.resources.delete_measurement_explanation
+import gitfit.composeapp.generated.resources.expand
 import gitfit.composeapp.generated.resources.height
 import gitfit.composeapp.generated.resources.left_arm
 import gitfit.composeapp.generated.resources.left_calf
@@ -125,7 +127,8 @@ fun MeasurementListItem(
                 Text(measurement.date.toString(), fontWeight = FontWeight.Bold)
 
                 val icon = if (expanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown
-                Icon(icon, "")
+                val description = if (expanded) stringResource(Res.string.collapse) else stringResource(Res.string.expand)
+                Icon(icon, description)
             }
 
             if (expanded) {

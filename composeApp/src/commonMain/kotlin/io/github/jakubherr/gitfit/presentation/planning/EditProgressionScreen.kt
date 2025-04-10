@@ -28,10 +28,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.cancel
+import gitfit.composeapp.generated.resources.decrease_reps
 import gitfit.composeapp.generated.resources.delete
 import gitfit.composeapp.generated.resources.edit_progression
 import gitfit.composeapp.generated.resources.enum_progression_type_icrease_reps
 import gitfit.composeapp.generated.resources.enum_progression_type_icrease_weight
+import gitfit.composeapp.generated.resources.increase_reps
 import gitfit.composeapp.generated.resources.minimum_repetitions
 import gitfit.composeapp.generated.resources.minimum_weight
 import gitfit.composeapp.generated.resources.progresison_type
@@ -213,11 +215,11 @@ private fun MinimumRepSelector(
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         IconButton({ if (reps > 0) onRepChange(reps - 1) }) {
-            Icon(Icons.Default.Remove, "")
+            Icon(Icons.Default.Remove, stringResource(Res.string.decrease_reps))
         }
         Text(reps.toString())
         IconButton({ onRepChange(reps + 1) }) {
-            Icon(Icons.Default.Add, "")
+            Icon(Icons.Default.Add, stringResource(Res.string.increase_reps))
         }
     }
 }

@@ -195,5 +195,19 @@
     <string name="enum_exercise_metric_total_workout_volume">Celkový objem tréninku</string>
     <string name="enum_exercise_metric_total_repetitions">Počet opakování v tréninku</string>
 
+    <!--icon content descriptions-->
+    <string name="about_app">Zobrazit informace o aplikace</string>
+    <string name="navigate_back">Navigovat zpět</string>
+    <string name="expand">Rozšířit seznam</string>
+    <string name="collapse">Zmenšit seznam</string>
+    <string name="increase_reps">Zvýšit opakování</string>
+    <string name="decrease_reps">Snížit opakování</string>
+    <string name="edit_plan">Upravit plán</string>
+    <string name="select_measurement_category">Vybrat kategorii měření</string>
+    <string name="show_exercise_dropdown_menu">Ukázat dropdown menu</string>
+    <string name="show_password">Ukázat heslo</string>
+    <string name="start_workout">Spustit trénink</string>
+    <string name="delete_series">Smazat sérii</string>
+
     <string name="app_explanation">GitFit je open-source multiplatformní applikace, která byla vytvořena v rámci bakalářské práce na FIS VŠE.\nZdrojový kód je dostupný na https://github.com/JakubHerr/GitFit\nautor: Jakub Herrmann</string>
 </resources>

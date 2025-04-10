@@ -21,7 +21,7 @@ fun ConfirmationDialog(
     onDismiss: () -> Unit = {},
 ) {
     AlertDialog(
-        icon = { Icon(Icons.Default.Warning, "") },
+        icon = { Icon(Icons.Default.Warning, null) },
         title = { Text(title) },
         text = { Text(text) },
         onDismissRequest = onDismiss,

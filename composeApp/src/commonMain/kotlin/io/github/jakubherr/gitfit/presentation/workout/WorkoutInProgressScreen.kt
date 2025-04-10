@@ -45,6 +45,7 @@ import gitfit.composeapp.generated.resources.kg
 import gitfit.composeapp.generated.resources.reps
 import gitfit.composeapp.generated.resources.save_workout
 import gitfit.composeapp.generated.resources.set
+import gitfit.composeapp.generated.resources.show_exercise_dropdown_menu
 import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import io.github.jakubherr.gitfit.presentation.shared.WorkoutBlockItem
@@ -174,7 +175,7 @@ fun WorkoutBlockItemDropdownMenu(
 
     Box {
         IconButton({ expanded = !expanded }) {
-            Icon(Icons.Default.MoreVert, "")
+            Icon(Icons.Default.MoreVert, stringResource(Res.string.show_exercise_dropdown_menu))
         }
 
         DropdownMenu(

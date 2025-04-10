@@ -30,6 +30,7 @@ import gitfit.composeapp.generated.resources.confirm
 import gitfit.composeapp.generated.resources.delete_exercise
 import gitfit.composeapp.generated.resources.edit_progression
 import gitfit.composeapp.generated.resources.plan_name
+import gitfit.composeapp.generated.resources.show_exercise_dropdown_menu
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 import io.github.jakubherr.gitfit.presentation.shared.PlanBlockItem
@@ -101,7 +102,7 @@ fun PlanBlockItemDropdownMenu(
 
     Box {
         IconButton({ expanded = !expanded }) {
-            Icon(Icons.Default.MoreVert, "")
+            Icon(Icons.Default.MoreVert, stringResource(Res.string.show_exercise_dropdown_menu))
         }
 
         DropdownMenu(

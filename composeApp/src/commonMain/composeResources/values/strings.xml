@@ -195,5 +195,19 @@
     <string name="enum_exercise_metric_total_workout_volume">Total workout volume</string>
     <string name="enum_exercise_metric_total_repetitions">Total repetitions</string>
 
+    <!--icon content descriptions-->
+    <string name="about_app">Show info about app</string>
+    <string name="navigate_back">Navigate back</string>
+    <string name="expand">Expand</string>
+    <string name="collapse">Collapse</string>
+    <string name="increase_reps">Increase reps</string>
+    <string name="decrease_reps">Decrease reps</string>
+    <string name="edit_plan">Edit plan</string>
+    <string name="select_measurement_category">Select measurement category</string>
+    <string name="show_exercise_dropdown_menu">Show exercise dropdown menu</string>
+    <string name="show_password">Show password</string>
+    <string name="start_workout">Start workout</string>
+    <string name="delete_series">Delete series</string>
+
     <string name="app_explanation">GitFit is an open-source multiplatform application that was created as part of a bachelor's thesis at FIS VŠE.\n The source code is available at https://github.com/JakubHerr/GitFit\n author: Jakub Herrmann</string>
 </resources>

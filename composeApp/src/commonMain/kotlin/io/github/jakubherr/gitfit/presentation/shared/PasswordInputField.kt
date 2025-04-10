@@ -20,6 +20,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.password
+import gitfit.composeapp.generated.resources.show_password
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -40,7 +41,7 @@ fun PasswordInputField(
             IconButton({ showPassword = !showPassword }) {
                 Icon(
                     if (showPassword) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                    "",
+                    stringResource(Res.string.show_password),
                 )
             }
         },

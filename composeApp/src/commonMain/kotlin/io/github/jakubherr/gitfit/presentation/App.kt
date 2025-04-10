@@ -30,6 +30,7 @@ import gitfit.composeapp.generated.resources.add_edit_measurement_route
 import gitfit.composeapp.generated.resources.create_exercise_route
 import gitfit.composeapp.generated.resources.exercise_detail_route
 import gitfit.composeapp.generated.resources.measurement_history_route
+import gitfit.composeapp.generated.resources.navigate_back
 import gitfit.composeapp.generated.resources.plan_creation_route
 import gitfit.composeapp.generated.resources.plan_detail_route
 import gitfit.composeapp.generated.resources.planing_workout_route
@@ -106,7 +107,7 @@ fun GitFitTopAppBar(
             navigationIcon = {
                 if (showBackButton) {
                     IconButton({ if (title != null) onBack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(Res.string.navigate_back))
                     }
                 }
             },

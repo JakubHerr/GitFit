@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.add_set
 import gitfit.composeapp.generated.resources.delete
+import gitfit.composeapp.generated.resources.delete_series
 import gitfit.composeapp.generated.resources.done
 import io.github.jakubherr.gitfit.domain.isNonNegativeDouble
 import io.github.jakubherr.gitfit.domain.isNonNegativeLong
@@ -112,7 +113,7 @@ fun PlanBlockItem(
                     onValidSetEntered = { onValidSetEntered(it) },
                     actionSlot = {
                         IconButton({ onDeleteSeries(series) }) {
-                            Icon(Icons.Default.Delete, "", tint = MaterialTheme.colorScheme.error)
+                            Icon(Icons.Default.Delete, stringResource(Res.string.delete_series), tint = MaterialTheme.colorScheme.error)
                         }
                     },
                 )

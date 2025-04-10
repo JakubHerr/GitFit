@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.about_app
 import gitfit.composeapp.generated.resources.app_explanation
 import gitfit.composeapp.generated.resources.cancel
 import gitfit.composeapp.generated.resources.confirm_account_deletion
@@ -89,7 +90,7 @@ fun SettingsScreen(
         ) {
             Icon(
                 Icons.Default.Info,
-                "",
+                stringResource(Res.string.about_app),
                 modifier = Modifier.size(80.dp)
             )
         }

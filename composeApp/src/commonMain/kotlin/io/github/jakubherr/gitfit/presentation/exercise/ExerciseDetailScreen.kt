@@ -111,7 +111,7 @@ fun ExerciseDetailScreen(
 
             if (exercise.isCustom) {
                 IconButton({ onDeleteExercise(exercise.id) }) {
-                    Icon(Icons.Default.Delete, "")
+                    Icon(Icons.Default.Delete, stringResource(Res.string.delete_custom_exercise))
                 }
             }
         }

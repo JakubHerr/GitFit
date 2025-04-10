@@ -33,7 +33,10 @@ import gitfit.composeapp.generated.resources.add_to_your_plans
 import gitfit.composeapp.generated.resources.cancel
 import gitfit.composeapp.generated.resources.confirm
 import gitfit.composeapp.generated.resources.delete_plan
+import gitfit.composeapp.generated.resources.delete_workout
+import gitfit.composeapp.generated.resources.edit_plan
 import gitfit.composeapp.generated.resources.plan_deletion_expalantion
+import gitfit.composeapp.generated.resources.start_workout
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
@@ -80,13 +83,13 @@ fun PlanDetailScreen(
                     }
                 } else {
                     IconButton({ onAction(PlanAction.EditPlan(plan)) }) {
-                        Icon(Icons.Default.Edit, "")
+                        Icon(Icons.Default.Edit, stringResource(Res.string.edit_plan))
                     }
 
                     IconButton(
                         onClick = { showDialog = true },
                     ) {
-                        Icon(Icons.Default.Delete, "", tint = MaterialTheme.colorScheme.error)
+                        Icon(Icons.Default.Delete, stringResource(Res.string.delete_workout), tint = MaterialTheme.colorScheme.error)
                     }
                 }
             }
@@ -102,7 +105,7 @@ fun PlanDetailScreen(
                     workout,
                     onActionClicked = { onWorkoutSelected(workout) },
                     actionSlot = {
-                        if (!isPredefined) Icon(Icons.Default.PlayArrow, "", tint = MaterialTheme.colorScheme.primary)
+                        if (!isPredefined) Icon(Icons.Default.PlayArrow, stringResource(Res.string.start_workout), tint = MaterialTheme.colorScheme.primary)
                     },
                 )
             }

@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.click_to_add_exercise
+import gitfit.composeapp.generated.resources.delete_series
 import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 import org.jetbrains.compose.resources.stringResource
@@ -31,7 +32,7 @@ fun WorkoutPlanListItem(
     workout: WorkoutPlan,
     modifier: Modifier = Modifier,
     onItemClicked: () -> Unit = {},
-    actionSlot: @Composable () -> Unit = { Icon(Icons.Default.Delete, "", tint = MaterialTheme.colorScheme.error) },
+    actionSlot: @Composable () -> Unit = { Icon(Icons.Default.Delete, stringResource(Res.string.delete_series), tint = MaterialTheme.colorScheme.error) },
     onActionClicked: () -> Unit = {},
 ) {
     Card(

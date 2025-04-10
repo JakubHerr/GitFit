@@ -48,6 +48,7 @@ import gitfit.composeapp.generated.resources.right_calf
 import gitfit.composeapp.generated.resources.right_forearm
 import gitfit.composeapp.generated.resources.right_thigh
 import gitfit.composeapp.generated.resources.see_all
+import gitfit.composeapp.generated.resources.select_measurement_category
 import gitfit.composeapp.generated.resources.waist
 import gitfit.composeapp.generated.resources.weight
 import io.github.jakubherr.gitfit.domain.model.Measurement
@@ -185,7 +186,7 @@ fun MeasurementSelectionDropdown(
     var expanded by remember { mutableStateOf(false) }
 
     IconButton({ expanded = !expanded }) {
-        Icon(Icons.Default.KeyboardArrowDown, "")
+        Icon(Icons.Default.KeyboardArrowDown, stringResource(Res.string.select_measurement_category))
     }
 
     DropdownMenu(

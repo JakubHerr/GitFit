@@ -63,7 +63,7 @@ fun GitFitNavScaffold(
                         icon = {
                             Icon(
                                 it.icon,
-                                null,
+                                stringResource(it.label),
                             )
                         },
                         label = { Text(stringResource(it.label)) },

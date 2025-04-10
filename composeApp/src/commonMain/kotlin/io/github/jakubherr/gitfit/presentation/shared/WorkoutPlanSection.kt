@@ -28,6 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
+import gitfit.composeapp.generated.resources.collapse
+import gitfit.composeapp.generated.resources.expand
 import gitfit.composeapp.generated.resources.list_is_empty
 import gitfit.composeapp.generated.resources.predefined_plans
 import gitfit.composeapp.generated.resources.your_plans
@@ -82,7 +84,8 @@ fun ExpandableSection(
         Text(title, fontWeight = FontWeight.Bold)
 
         val icon = if (expanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown
-        Icon(icon, "")
+        val description = if (expanded) stringResource(Res.string.collapse) else stringResource(Res.string.expand)
+        Icon(icon, description)
     }
 }
 

@@ -83,7 +83,7 @@ fun ExerciseListScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Icon(Icons.Default.Block, "", Modifier.size(128.dp).alpha(0.6f))
+                Icon(Icons.Default.Block, null, Modifier.size(128.dp).alpha(0.6f))
                 Text(stringResource(Res.string.error_exercise_list_empty))
             }
         } else {
@@ -119,7 +119,7 @@ fun SearchBar(
         onQueryChange,
         modifier = modifier.fillMaxWidth(),
         singleLine = true,
-        leadingIcon = { Icon(Icons.Default.Search, "") },
+        leadingIcon = { Icon(Icons.Default.Search, null) },
         placeholder = { Text(stringResource(Res.string.search_exercise)) },
     )
 }

@@ -31,6 +31,6 @@ fun ExerciseListItem(
             Text(exercise.name)
             Text(exercise.primaryMuscle.name.lowercase())
         }
-        Icon(Icons.Default.ChevronRight, "", modifier.size(32.dp))
+        Icon(Icons.Default.ChevronRight, null, modifier.size(32.dp))
     }
 }

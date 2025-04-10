@@ -65,7 +65,7 @@ fun WorkoutDetailScreen(
             Text(workout.date.toString(), fontWeight = FontWeight.Bold)
 
             IconButton({ showDialog = true }) {
-                Icon(Icons.Default.Delete, "")
+                Icon(Icons.Default.Delete, stringResource(Res.string.delete_workout_record))
             }
         }
 
