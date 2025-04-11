@@ -33,26 +33,26 @@ class FirebasePlanRepository : PlanRepository {
     override suspend fun saveCustomPlan(
         userId: String,
         plan: Plan,
-    ) {
-        withContext(context) {
+    ): Result<Unit> {
+        return withContext(context) {
             val id = plan.id.ifBlank { userPlanRef(userId).document.id }
-            userPlanRef(userId).document(id).set(plan.copy(id = id))
+            runCatching { userPlanRef(userId).document(id).set(plan.copy(id = id)) }
         }
     }
 
-    override suspend fun saveDefaultPlan(plan: Plan) {
-        withContext(context) {
+    override suspend fun saveDefaultPlan(plan: Plan): Result<Unit> {
+        return withContext(context) {
             val id = plan.id.ifBlank { planRef.document.id }
-            planRef.document(id).set(plan.copy(id = id))
+            runCatching { planRef.document(id).set(plan.copy(id = id)) }
         }
     }
 
     override suspend fun deleteCustomPlan(
         userId: String,
         planId: String,
-    ) {
-        withContext(context) {
-            userPlanRef(userId).document(planId).delete()
+    ): Result<Unit> {
+        return withContext(context) {
+            runCatching { userPlanRef(userId).document(planId).delete() }
         }
     }
 
@@ -79,7 +79,7 @@ class FirebasePlanRepository : PlanRepository {
 
         return withContext(context) {
             val plan = userPlanRef(userId).document(planId).get()
-            if (plan.exists) plan.data<Plan>() else null
+            runCatching { plan.data<Plan>() }.getOrNull()
         }
     }
 }

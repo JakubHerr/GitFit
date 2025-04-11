@@ -25,6 +25,6 @@ interface ExerciseRepository {
 
     suspend fun removeAllCustomExercises(userId: String): Result<Unit>
 
-    // TODO use to fill Firebase with predefined exercises and remove
+    // this action is restricted by firebase security rules
     suspend fun addDefaultExercise(exercise: Exercise)
 }
