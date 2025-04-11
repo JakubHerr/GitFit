@@ -1,0 +1,7 @@
+This product depends on a modified version of GitLive Firebase Java SDK, A pure java port of the Firebase Android SDK
+- HOMEPAGE:
+    https://github.com/GitLiveApp/firebase-java-sdk
+
+Modifications:
+  - included unmerged pull request (https://github.com/GitLiveApp/firebase-java-sdk/pull/33) from GitHub user JacobCube
+  - added basic implementations for missing functions: email verification and password reset
