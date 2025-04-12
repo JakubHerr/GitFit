@@ -144,6 +144,7 @@ ktlint {
 
 dependencies {
     implementation(libs.androidx.material3.android) // note: why does this work on desktop?
+    implementation(compose.desktop.currentOs)
     debugImplementation(compose.uiTooling)
 }
 
@@ -152,13 +153,17 @@ compose.desktop {
         mainClass = "io.github.jakubherr.gitfit.MainKt"
 
         nativeDistributions {
-            // TODO try to debug and improve
-            // include all modules is a hack to fix missing JVM libraries when packaging desktop
-            // see https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-native-distribution.html#including-jdk-modules
-            includeAllModules = true
+            // use JDK 18 when compiling desktop release distributable
+            // for more info see: https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-native-distribution.html#including-jdk-modules
+            modules("java.compiler", "java.instrument", "java.management", "java.naming", "java.sql", "jdk.unsupported")
             targetFormats(TargetFormat.Msi, TargetFormat.Exe, TargetFormat.AppImage)
-            packageName = "io.github.jakubherr.gitfit"
-            packageVersion = "1.0.0"
+            packageName = "GitFit"
+            packageVersion = "0.9.1"
+            licenseFile.set(project.file("../LICENSE"))
+
+            windows {
+                iconFile.set(project.file("../icon.ico"))
+            }
         }
     }
 }
