@@ -64,7 +64,9 @@ class GraphViewModel(
 
     private fun <T> List<Workout>.toDataPoints(calculation: (Workout) -> T?): List<DefaultPoint<String, T>> {
         val list = buildList {
-            this@toDataPoints.forEach { workout ->
+            this@toDataPoints
+                .sortedBy { it.date }
+                .forEach { workout ->
                 val metric = calculation(workout)
                 if (metric != null) add(
                     DefaultPoint(
