@@ -1,6 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -16,6 +17,7 @@ plugins {
 kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
@@ -69,6 +71,9 @@ kotlin {
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+
+            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+            implementation(compose.uiTest)
         }
     }
 }
@@ -83,6 +88,8 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 6 // this version code should be incremented for every single AAB that is uploaded to Google Play console
         versionName = "0.9.1"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     packaging {
         resources {
@@ -146,6 +153,8 @@ dependencies {
     implementation(libs.androidx.material3.android) // note: why does this work on desktop?
     implementation(compose.desktop.currentOs)
     debugImplementation(compose.uiTooling)
+
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.6")
 }
 
 compose.desktop {
