@@ -149,6 +149,7 @@ fun WorkoutInProgressScreen(
             ) {
                 Button(
                     onClick = { onAction(WorkoutAction.DeleteWorkout(workout.id)) },
+                    modifier = Modifier.testTag("DeleteWorkoutInProgress"),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,
                         contentColor = MaterialTheme.colorScheme.onError,

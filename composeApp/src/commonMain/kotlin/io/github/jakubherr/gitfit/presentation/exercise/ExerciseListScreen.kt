@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
@@ -84,7 +85,7 @@ fun ExerciseListScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Icon(Icons.Default.Block, null, Modifier.size(128.dp).alpha(0.6f))
+                Icon(Icons.Default.Block, null, Modifier.size(128.dp).alpha(0.6f).testTag("EmptyExerciseList"))
                 Text(stringResource(Res.string.error_exercise_list_empty))
             }
         } else {
