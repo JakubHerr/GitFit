@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
@@ -74,11 +75,17 @@ fun DashboardScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (currentWorkout == null) {
-                    Button({ onAction(DashboardAction.UnplannedWorkoutClick) }) {
+                    Button(
+                        { onAction(DashboardAction.UnplannedWorkoutClick) },
+                        Modifier.testTag("StartWorkoutButton")
+                    ) {
                         Text(stringResource(Res.string.start_unplanned_workout))
                     }
                 } else {
-                    Button({ onAction(DashboardAction.ResumeWorkoutClick) }) {
+                    Button(
+                        { onAction(DashboardAction.ResumeWorkoutClick) },
+                        Modifier.testTag("StartWorkoutButton")
+                    ) {
                         Text(stringResource(Res.string.resume_workout))
                     }
                 }

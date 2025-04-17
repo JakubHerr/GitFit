@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
@@ -135,7 +136,7 @@ fun WorkoutInProgressScreen(
                 item {
                     Button(
                         onClick = { onAction(WorkoutAction.AskForExercise(workout.id)) },
-                        modifier = Modifier.sizeIn(maxWidth = 320.dp).fillMaxWidth().padding(horizontal = 32.dp)
+                        modifier = Modifier.sizeIn(maxWidth = 320.dp).fillMaxWidth().padding(horizontal = 32.dp).testTag("WorkoutAddExercise")
                     ) {
                         Text(stringResource(Res.string.add_exercise))
                     }

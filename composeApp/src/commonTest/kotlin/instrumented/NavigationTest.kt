@@ -1,5 +1,6 @@
 package instrumented
 
+import androidx.compose.ui.test.ComposeUiTest
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -29,21 +30,7 @@ class NavigationTest {
         onNodeWithContentDescription("Navigovat zpět").performClick()
         waitForIdle()
 
-        onNodeWithText("Email").performTextInput("uitest@test.test")
-        waitForIdle()
-
-        onNodeWithText("Heslo").performTextInput("uitestpassword")
-        waitForIdle()
-
-        onNodeWithText("Přihlásit se").performClick()
-
-        waitUntilDoesNotExist(
-            hasTestTag("AuthProgressIndicator"),
-            timeoutMillis = 3000
-        )
-
-        onNodeWithText("Přeskočit ověření").performClick()
-        waitForIdle()
+        login()
 
         onNodeWithText("Plány").performClick()
         waitForIdle()
@@ -64,4 +51,23 @@ class NavigationTest {
             timeoutMillis = 3000
         )
     }
+}
+
+@OptIn(ExperimentalTestApi::class)
+fun ComposeUiTest.login() {
+    onNodeWithText("Email").performTextInput("uitest@test.test")
+    waitForIdle()
+
+    onNodeWithText("Heslo").performTextInput("uitestpassword")
+    waitForIdle()
+
+    onNodeWithText("Přihlásit se").performClick()
+
+    waitUntilDoesNotExist(
+        hasTestTag("AuthProgressIndicator"),
+        timeoutMillis = 3000
+    )
+
+    onNodeWithText("Přeskočit ověření").performClick()
+    waitForIdle()
 }
