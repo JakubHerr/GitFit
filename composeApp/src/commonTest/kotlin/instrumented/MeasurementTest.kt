@@ -11,6 +11,7 @@ import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.runComposeUiTest
+import androidx.compose.ui.test.waitUntilDoesNotExist
 import androidx.compose.ui.test.waitUntilExactlyOneExists
 import io.github.jakubherr.gitfit.presentation.App
 import io.github.jakubherr.gitfit.presentation.measurement.MeasurementType
@@ -18,10 +19,11 @@ import kotlin.test.Test
 
 class MeasurementTest {
 
-    // add todays measurement
-    // edit todays measurement
-    // check history for measurement record
-    // delete measurement record
+    // This test validates that user can:
+    //  add today's measurement
+    //  edit today's measurement
+    //  check history for measurement record
+    //  delete measurement record
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun measurementTest() = runComposeUiTest {
@@ -32,15 +34,12 @@ class MeasurementTest {
         login()
         createNewMeasurement()
         waitUntilExactlyOneExists(hasText("Upravit dnešní měření"))
-
-        onNodeWithText("Upravit dnešní měření").performClick()
-        waitForIdle()
-        addMeasurementValues("32.1")
-        onNodeWithTag("SaveMeasurementButton").performClick()
-        waitForIdle()
+        editTodaysMeasurement()
 
         onNodeWithText("Zobrazit vše").performClick()
-        waitForIdle()
+        waitUntilExactlyOneExists(hasTestTag("MeasurementCard"))
+
+        deleteMeasurement()
     }
 
     @OptIn(ExperimentalTestApi::class)
@@ -53,7 +52,24 @@ class MeasurementTest {
         onNodeWithTag("SaveMeasurementButton").performClick()
     }
 
+    @OptIn(ExperimentalTestApi::class)
+    private fun ComposeUiTest.editTodaysMeasurement() {
+        onNodeWithText("Upravit dnešní měření").performClick()
+        waitForIdle()
+        addMeasurementValues("32.1")
+        onNodeWithTag("SaveMeasurementButton").performClick()
+        waitForIdle()
+    }
 
+    @OptIn(ExperimentalTestApi::class)
+    private fun ComposeUiTest.deleteMeasurement() {
+        onNodeWithTag("MeasurementCard").performClick()
+        waitForIdle()
+        onNodeWithTag("DeleteMeasurementButton").performClick()
+        waitForIdle()
+        onNodeWithTag("ConfirmDialogButton").performClick()
+        waitUntilDoesNotExist(hasTestTag("MeasurementCard"))
+    }
 
     @OptIn(ExperimentalTestApi::class)
     private fun ComposeUiTest.addMeasurementValues(value: String) {

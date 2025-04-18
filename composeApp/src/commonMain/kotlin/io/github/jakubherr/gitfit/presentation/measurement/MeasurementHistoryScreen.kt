@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
@@ -113,7 +114,7 @@ fun MeasurementListItem(
     }
 
     Card(
-        modifier = modifier,
+        modifier = modifier.testTag("MeasurementCard"),
         onClick = { expanded = !expanded },
     ) {
         Column(
@@ -154,7 +155,7 @@ fun MeasurementListItem(
                 ) {
                     Button(
                         onClick = { showDialog = true },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().testTag("DeleteMeasurementButton"),
                         colors =
                             ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.error,
