@@ -175,7 +175,10 @@ fun WorkoutBlockItemDropdownMenu(
     var expanded by remember { mutableStateOf(false) }
 
     Box {
-        IconButton({ expanded = !expanded }) {
+        IconButton(
+            onClick = { expanded = !expanded },
+            modifier = Modifier.testTag("WorkoutExerciseDropdown")
+        ) {
             Icon(Icons.Default.MoreVert, stringResource(Res.string.show_exercise_dropdown_menu))
         }
 
@@ -185,6 +188,7 @@ fun WorkoutBlockItemDropdownMenu(
         ) {
             DropdownMenuItem(
                 text = { Text(stringResource(Res.string.delete_exercise)) },
+                modifier = Modifier.testTag("WorkoutDeleteExercise"),
                 onClick = {
                     expanded = false
                     onDeleteExercise()
@@ -192,6 +196,7 @@ fun WorkoutBlockItemDropdownMenu(
             )
             DropdownMenuItem(
                 text = { Text(stringResource(Res.string.delete_last_set)) },
+                modifier = Modifier.testTag("WorkoutDeleteLastSet"),
                 onClick = {
                     expanded = false
                     onDeleteSet()
