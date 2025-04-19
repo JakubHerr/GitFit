@@ -139,6 +139,8 @@ class PlanTest {
         onNodeWithTag("WorkoutPlanRepsInput").performTextInput("56")
         waitForIdle()
 
+        // TODO add progression settings
+
         // save workout day
         onNodeWithTag("ConfirmWorkoutPlan").performClick()
 

@@ -103,7 +103,10 @@ fun ExerciseListScreen(
             }
         }
         Row {
-            Button(onAddExerciseClick) {
+            Button(
+                onAddExerciseClick,
+                modifier = Modifier.testTag("CreateExerciseButton")
+            ) {
                 Text(stringResource(Res.string.create_exercise))
             }
         }
@@ -119,7 +122,7 @@ fun SearchBar(
     TextField(
         query,
         onQueryChange,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().testTag("ExerciseSearchBar"),
         singleLine = true,
         leadingIcon = { Icon(Icons.Default.Search, null) },
         placeholder = { Text(stringResource(Res.string.search_exercise)) },

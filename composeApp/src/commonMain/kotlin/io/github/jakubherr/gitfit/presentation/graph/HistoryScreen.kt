@@ -38,7 +38,7 @@ fun HistoryScreen(
         ) {
             Button(
                 onBrowseExerciseData,
-                Modifier.fillMaxWidth()
+                Modifier.fillMaxWidth().testTag("BrowseExerciseHistoryButton")
             ) {
                 Text(stringResource(Res.string.browse_exercise_history))
             }
