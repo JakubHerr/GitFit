@@ -27,8 +27,7 @@ class NavigationTest {
         onNodeWithText("Zapomenuté heslo").performClick()
         waitForIdle()
 
-        onNodeWithContentDescription("Navigovat zpět").performClick()
-        waitForIdle()
+        navigateBack()
 
         login()
 
@@ -73,4 +72,10 @@ fun ComposeUiTest.logout() {
         hasTestTag("AuthProgressIndicator"),
         timeoutMillis = 3000
     )
+}
+
+@OptIn(ExperimentalTestApi::class)
+fun ComposeUiTest.navigateBack() {
+    onNodeWithContentDescription("Navigovat zpět").performClick()
+    waitForIdle()
 }

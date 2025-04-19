@@ -157,7 +157,10 @@ fun WorkoutInProgressScreen(
                 ) {
                     Text(stringResource(Res.string.delete_workout))
                 }
-                Button(onClick = { onAction(WorkoutAction.CompleteCurrentWorkout) }) {
+                Button(
+                    onClick = { onAction(WorkoutAction.CompleteCurrentWorkout) },
+                    modifier = Modifier.testTag("SaveWorkoutInProgress")
+                ) {
                     Text(stringResource(Res.string.save_workout))
                 }
             }

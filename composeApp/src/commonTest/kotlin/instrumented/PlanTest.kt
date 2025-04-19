@@ -67,7 +67,10 @@ class PlanTest {
 
     @OptIn(ExperimentalTestApi::class)
     private fun ComposeUiTest.editPlan() {
-        waitUntilExactlyOneExists(hasTestTag("EditPlanButton"))
+        waitUntilExactlyOneExists(
+            hasTestTag("EditPlanButton"),
+            timeoutMillis = 3000
+        )
         onNodeWithTag("EditPlanButton").performClick()
 
         // Rename plan
