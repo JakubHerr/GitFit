@@ -2,6 +2,8 @@ package instrumented
 
 import androidx.compose.ui.test.ComposeUiTest
 import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onFirst
@@ -43,8 +45,13 @@ class PlanTest {
 
         onNodeWithTag("UserPlanListItem").performClick()
 
-        deletePlan()
+        executeWorkoutFromPlan()
 
+        onNodeWithText("Plány").performClick()
+        waitForIdle()
+        onNodeWithTag("UserPlanListItem").performClick()
+        deletePlan()
+        deleteWorkoutRecord()
         logout()
     }
 
@@ -139,7 +146,7 @@ class PlanTest {
         onNodeWithTag("WorkoutPlanRepsInput").performTextInput("56")
         waitForIdle()
 
-        // TODO add progression settings
+        addProgression()
 
         // save workout day
         onNodeWithTag("ConfirmWorkoutPlan").performClick()
@@ -147,11 +154,43 @@ class PlanTest {
         // save plan
         waitUntilExactlyOneExists(hasTestTag("SavePlan"))
         onNodeWithTag("SavePlan").performClick()
+
+    }
+
+    @OptIn(ExperimentalTestApi::class)
+    private fun ComposeUiTest.addProgression() {
+        onNodeWithTag("PlanExerciseDropdown").performClick()
+        onNodeWithTag("PlanEditProgression").performClick()
+
+        onNodeWithTag("SaveProgressionButton").assertIsNotEnabled()
+        onNodeWithTag("MinimumWeightInput").performTextInput("20")
+        onNodeWithTag("WeightIncreaseInput").performTextInput("5")
+        onNodeWithTag("SaveProgressionButton").assertIsEnabled().performClick()
+    }
+
+    @OptIn(ExperimentalTestApi::class)
+    private fun ComposeUiTest.executeWorkoutFromPlan() {
+        onNodeWithTag("WorkoutPlanListItemAction").performClick()
+
+        waitUntilExactlyOneExists(
+            hasTestTag("WorkoutSeriesCheckbox"),
+            timeoutMillis = 3000
+        )
+        onNodeWithTag("WorkoutSeriesCheckbox").performClick()
+        waitForIdle()
+        onNodeWithTag("SaveWorkoutInProgress").performClick()
+        waitUntilDoesNotExist(
+            hasTestTag("WorkoutProgressIndicator"),
+            timeoutMillis = 3000L
+        )
     }
 
     @OptIn(ExperimentalTestApi::class)
     private fun ComposeUiTest.deletePlan() {
-        waitUntilExactlyOneExists(hasTestTag("DeletePlanButton"))
+        waitUntilExactlyOneExists(
+            hasTestTag("DeletePlanButton"),
+            timeoutMillis = 3000
+        )
         onNodeWithTag("DeletePlanButton").performClick()
         waitForIdle()
         onNodeWithTag("ConfirmDialogButton").performClick()

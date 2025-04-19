@@ -4,10 +4,8 @@ import androidx.compose.ui.test.ComposeUiTest
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
-import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -60,19 +58,8 @@ class WorkoutTest {
             timeoutMillis = 3000
         )
 
-        navigateToWorkoutRecord()
+        deleteWorkoutRecord()
 
-        // delete and confirm deletion
-        onNodeWithTag("DeleteWorkoutRecordButton").performClick()
-        onNodeWithTag("ConfirmDialogButton").performClick()
-
-        // wait for record list to be empty
-        waitUntilDoesNotExist(
-            hasTestTag("WorkoutListItem"),
-            timeoutMillis = 3000
-        )
-
-        navigateBack()
         logout()
     }
 
@@ -162,21 +149,33 @@ class WorkoutTest {
             timeoutMillis = 3000
         )
     }
+}
 
-    @OptIn(ExperimentalTestApi::class)
-    private fun ComposeUiTest.navigateToWorkoutRecord() {
-        // go to history, click on browse workout records
-        onNodeWithText("Historie").performClick()
-        onNodeWithTag("BrowseWorkoutHistoryButton").performClick()
+@OptIn(ExperimentalTestApi::class)
+fun ComposeUiTest.deleteWorkoutRecord() {
+    // go to history, click on browse workout records
+    onNodeWithText("Historie").performClick()
+    onNodeWithTag("BrowseWorkoutHistoryButton").performClick()
 
-        // wait for record to show up
-        waitUntilExactlyOneExists(
-            hasTestTag("WorkoutListItem"),
-            timeoutMillis = 3000
-        )
+    // wait for record to show up
+    waitUntilExactlyOneExists(
+        hasTestTag("WorkoutListItem"),
+        timeoutMillis = 3000
+    )
 
-        // click on it
-        onNodeWithTag("WorkoutListItem").performClick()
-        waitForIdle()
-    }
+    // click on it
+    onNodeWithTag("WorkoutListItem").performClick()
+    waitForIdle()
+
+    // delete and confirm deletion
+    onNodeWithTag("DeleteWorkoutRecordButton").performClick()
+    onNodeWithTag("ConfirmDialogButton").performClick()
+
+    // wait for record list to be empty
+    waitUntilDoesNotExist(
+        hasTestTag("WorkoutListItem"),
+        timeoutMillis = 3000
+    )
+
+    navigateBack()
 }

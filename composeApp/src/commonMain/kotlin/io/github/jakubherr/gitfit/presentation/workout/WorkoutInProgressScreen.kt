@@ -88,7 +88,7 @@ fun WorkoutInProgressScreenRoot(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            CircularProgressIndicator()
+            CircularProgressIndicator(modifier = Modifier.testTag("WorkoutProgressIndicator"))
         }
     } else {
         WorkoutInProgressScreen(workout!!) { action ->
