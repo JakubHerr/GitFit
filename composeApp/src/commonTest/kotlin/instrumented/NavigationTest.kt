@@ -41,15 +41,7 @@ class NavigationTest {
         onNodeWithText("Historie").performClick()
         waitForIdle()
 
-        onNodeWithText("Nastavení").performClick()
-        waitForIdle()
-
-        onNodeWithText("Odhlásit se").performClick()
-
-        waitUntilDoesNotExist(
-            hasTestTag("AuthProgressIndicator"),
-            timeoutMillis = 3000
-        )
+        logout()
     }
 }
 
@@ -70,4 +62,15 @@ fun ComposeUiTest.login() {
 
     onNodeWithText("Přeskočit ověření").performClick()
     waitForIdle()
+}
+
+@OptIn(ExperimentalTestApi::class)
+fun ComposeUiTest.logout() {
+    onNodeWithText("Nastavení").performClick()
+    waitForIdle()
+    onNodeWithText("Odhlásit se").performClick()
+    waitUntilDoesNotExist(
+        hasTestTag("AuthProgressIndicator"),
+        timeoutMillis = 3000
+    )
 }

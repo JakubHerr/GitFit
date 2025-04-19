@@ -79,7 +79,7 @@ fun SharedBlockItem(
                 ) {
                     Button(
                         onClick = onAddSet,
-                        Modifier.sizeIn(maxWidth = 320.dp).fillMaxWidth(),
+                        Modifier.sizeIn(maxWidth = 320.dp).fillMaxWidth().testTag("AddSeriesButton"),
                     ) {
                         Text(stringResource(Res.string.add_set))
                     }
@@ -119,7 +119,10 @@ fun PlanBlockItem(
                     validator = { weight, reps -> weight.isNonNegativeDouble() && reps.isNonNegativeLong() },
                     onValidSetEntered = { onValidSetEntered(it) },
                     actionSlot = {
-                        IconButton({ onDeleteSeries(series) }) {
+                        IconButton(
+                            onClick = { onDeleteSeries(series) },
+                            modifier = Modifier.testTag("WorkoutPlanDeleteSeries")
+                        ) {
                             Icon(Icons.Default.Delete, stringResource(Res.string.delete_series), tint = MaterialTheme.colorScheme.error)
                         }
                     },

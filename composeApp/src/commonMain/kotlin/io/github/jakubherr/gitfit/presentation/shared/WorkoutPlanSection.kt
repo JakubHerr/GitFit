@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
@@ -61,7 +62,7 @@ fun PlanLazyColumn(
             verticalArrangement = if (expanded) Arrangement.spacedBy(16.dp) else Arrangement.spacedBy(0.dp),
         ) {
             items(plans) { plan ->
-                if (expanded) PlanListItem(plan) { onPlanSelected(it) }
+                if (expanded) PlanListItem(plan, testTag = "PlanListItem") { onPlanSelected(it) }
             }
             item {
                 if (expanded && plans.isEmpty()) Text(stringResource(Res.string.list_is_empty), fontWeight = FontWeight.Light)
@@ -114,7 +115,7 @@ fun PlanSectionLazyColumn(
         if (userPlansExpanded) {
             if (userPlans.isEmpty()) item { Text(stringResource(Res.string.list_is_empty)) }
             items(userPlans) { plan ->
-                PlanListItem(plan) {
+                PlanListItem(plan, testTag = "UserPlanListItem") {
                     onUserPlanSelected(it)
                 }
             }
@@ -130,7 +131,7 @@ fun PlanSectionLazyColumn(
         if (predefinedPlansExpanded) {
             if (predefinedPlans.isEmpty()) item { Text(stringResource(Res.string.list_is_empty)) }
             items(predefinedPlans) { plan ->
-                PlanListItem(plan) {
+                PlanListItem(plan, testTag = "PredefinedPlanListItem") {
                     onPredefinedPlanSelected(it)
                 }
             }
@@ -142,9 +143,13 @@ fun PlanSectionLazyColumn(
 private fun PlanListItem(
     plan: Plan,
     modifier: Modifier = Modifier,
+    testTag: String,
     onPlanClicked: (Plan) -> Unit = {},
 ) {
-    Card({ onPlanClicked(plan) }) {
+    Card(
+        { onPlanClicked(plan) },
+        modifier = Modifier.testTag(testTag)
+    ) {
         Column(modifier.fillMaxWidth().padding(8.dp)) {
             Text(plan.name, fontWeight = FontWeight.Bold)
             plan.workoutPlans.forEach { workout ->

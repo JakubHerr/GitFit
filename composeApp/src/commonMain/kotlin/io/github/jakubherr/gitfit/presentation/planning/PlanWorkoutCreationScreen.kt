@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.add_exercise
@@ -56,6 +57,7 @@ fun PlanWorkoutCreationScreen(
             StringInputField(
                 value = workoutPlan.name,
                 onValueChange = { onAction(PlanAction.RenameWorkout(workoutPlan, it)) },
+                modifier = Modifier.testTag("WorkoutPlanNameInput"),
                 maxLength = 20,
                 label = { Text(stringResource(Res.string.plan_name)) },
                 isError = workoutPlan.name.isBlank(),
@@ -83,12 +85,21 @@ fun PlanWorkoutCreationScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Button(onClick = { onAddExerciseClick(workoutPlan.idx) }) { Text(stringResource(Res.string.add_exercise)) }
+            Button(
+                onClick = { onAddExerciseClick(workoutPlan.idx) },
+                modifier = Modifier.testTag("WorkoutPlanAddExercise")
+            ) {
+                Text(stringResource(Res.string.add_exercise))
+            }
 
-            Button({
-                onAction(PlanAction.ValidateWorkout(workoutPlan))
-                onSave()
-            }) { Text(stringResource(Res.string.confirm)) }
+            Button(
+                onClick = {
+                    onAction(PlanAction.ValidateWorkout(workoutPlan))
+                    onSave()
+                },
+                modifier = Modifier.testTag("ConfirmWorkoutPlan")
+
+            ) { Text(stringResource(Res.string.confirm)) }
         }
     }
 }
@@ -102,7 +113,10 @@ fun PlanBlockItemDropdownMenu(
     var expanded by remember { mutableStateOf(false) }
 
     Box {
-        IconButton({ expanded = !expanded }) {
+        IconButton(
+           onClick = { expanded = !expanded },
+            modifier = Modifier.testTag("PlanExerciseDropdown")
+        ) {
             Icon(Icons.Default.MoreVert, stringResource(Res.string.show_exercise_dropdown_menu))
         }
 
@@ -112,6 +126,7 @@ fun PlanBlockItemDropdownMenu(
         ) {
             DropdownMenuItem(
                 text = { Text(stringResource(Res.string.delete_exercise)) },
+                modifier = Modifier.testTag("PlanDeleteExercise"),
                 onClick = {
                     onDeleteExercise()
                     expanded = false
@@ -119,6 +134,7 @@ fun PlanBlockItemDropdownMenu(
             )
             DropdownMenuItem(
                 text = { Text(stringResource(Res.string.edit_progression)) },
+                modifier = Modifier.testTag("PlanEditProgression"),
                 onClick = {
                     onEditProgression()
                     expanded = false

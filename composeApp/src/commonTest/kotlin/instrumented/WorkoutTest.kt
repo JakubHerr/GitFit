@@ -100,5 +100,7 @@ class WorkoutTest {
             hasText("Spustit neplánovaný trénink"),
             timeoutMillis = 3000
         )
+
+        logout()
     }
 }

@@ -40,6 +40,7 @@ fun SetInput(
 
         DoubleInputField(
             weight,
+            modifier = Modifier.testTag("WorkoutPlanWeightInput").width(64.dp),
             onValueChange = { newWeight ->
                 weight = newWeight
 
@@ -51,6 +52,7 @@ fun SetInput(
 
         IntegerInputField(
             reps,
+            modifier = Modifier.testTag("WorkoutPlanRepsInput").width(64.dp),
             onValueChange = {
                 reps = it
 
