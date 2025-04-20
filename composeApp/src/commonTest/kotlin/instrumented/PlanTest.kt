@@ -170,6 +170,7 @@ class PlanTest {
 
     @OptIn(ExperimentalTestApi::class)
     private fun ComposeUiTest.executeWorkoutFromPlan() {
+        waitUntilExactlyOneExists(hasTestTag("WorkoutPlanListItemAction"))
         onNodeWithTag("WorkoutPlanListItemAction").performClick()
 
         waitUntilExactlyOneExists(

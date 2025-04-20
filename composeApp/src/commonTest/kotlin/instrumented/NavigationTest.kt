@@ -64,6 +64,25 @@ fun ComposeUiTest.login() {
 }
 
 @OptIn(ExperimentalTestApi::class)
+fun ComposeUiTest.register() {
+    onNodeWithText("Email").performTextInput("registration@test.test")
+    waitForIdle()
+
+    onNodeWithText("Heslo").performTextInput("registrationtest")
+    waitForIdle()
+
+    onNodeWithText("Registrovat").performClick()
+
+    waitUntilDoesNotExist(
+        hasTestTag("AuthProgressIndicator"),
+        timeoutMillis = 3000
+    )
+
+    onNodeWithText("Přeskočit ověření").performClick()
+    waitForIdle()
+}
+
+@OptIn(ExperimentalTestApi::class)
 fun ComposeUiTest.logout() {
     onNodeWithText("Nastavení").performClick()
     waitForIdle()

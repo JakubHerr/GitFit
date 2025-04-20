@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -112,7 +113,7 @@ fun SettingsScreen(
                         showPasswordInput = false
                         onDeleteAccount(password)
                     },
-                    Modifier.fillMaxWidth(),
+                    Modifier.fillMaxWidth().testTag("DeleteAccountButton2"),
                     colors =
                     ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,
@@ -133,6 +134,7 @@ fun SettingsScreen(
 
                 Button(
                     onClick = { showAccountDeletionDialog = true },
+                    modifier = Modifier.testTag("DeleteAccountButton1"),
                     colors =
                     ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,
