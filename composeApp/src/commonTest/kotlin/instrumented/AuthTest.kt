@@ -12,7 +12,6 @@ import io.github.jakubherr.gitfit.presentation.App
 import kotlin.test.Test
 
 class AuthTest {
-
     // This test validates that user can register a new account and then delete it from settings
     @OptIn(ExperimentalTestApi::class)
     @Test
