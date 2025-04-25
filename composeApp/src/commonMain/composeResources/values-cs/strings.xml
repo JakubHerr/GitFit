@@ -99,6 +99,7 @@
     <string name="error_exercise_list_empty">Seznam cviků je prázdný</string>
     <string name="error_exercise_not_found">Cvik nebyl nalezen</string>
     <string name="empty_workout_history">Žádné záznamy nenalezeny</string>
+    <string name="empty_measurement_history">Žádná měření nenalezena</string>
     <string name="empty_workout_plans">Žádné tréninkové plány</string>
     <string name="list_is_empty">Seznam je prázdný</string>
 

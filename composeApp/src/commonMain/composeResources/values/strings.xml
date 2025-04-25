@@ -99,6 +99,7 @@
     <string name="error_exercise_list_empty">No exercises found</string>
     <string name="error_exercise_not_found">Exercise not found</string>
     <string name="empty_workout_history">No workout history</string>
+    <string name="empty_measurement_history">No measurement history</string>
     <string name="empty_workout_plans">No training plans</string>
     <string name="list_is_empty">List is empty</string>
 
