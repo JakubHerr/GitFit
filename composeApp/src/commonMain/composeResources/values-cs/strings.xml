@@ -18,8 +18,13 @@
     <string name="skip_verification">Přeskočit ověření</string>
 
     <string name="delete_account">Smazat účet</string>
+    <string name="change_password">Změnit heslo</string>
     <string name="delete_account_explanaiton">Opravdu chcete smazat účet? Všechna data budou smazána</string>
     <string name="confirm_account_deletion">Potvrďte smazání účtu zadáním hesla</string>
+    <string name="confirm_password_change">Potvrďte změnu hesla zadáním údajů</string>
+    <string name="old_password">Staré heslo</string>
+    <string name="new_password">Nové heslo</string>
+    <string name="password_changed">Heslo bylo změněno</string>
     <string name="account_deleted">Účet byl smazán</string>
 
     <string name="error_email_used_already">Email je již zaregistrovaný</string>

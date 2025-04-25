@@ -18,8 +18,13 @@
     <string name="skip_verification">Skip verification</string>
 
     <string name="delete_account">Delete account</string>
+    <string name="change_password">Change password</string>
     <string name="delete_account_explanaiton">Are sure you want to delete your account? All of your data will be lost</string>
     <string name="confirm_account_deletion">Please confirm account deletion by entering your password</string>
+    <string name="confirm_password_change">Please enter your old and new password</string>
+    <string name="old_password">Old password</string>
+    <string name="new_password">New password</string>
+    <string name="password_changed">Password changed successfully</string>
     <string name="account_deleted">Account deleted</string>
 
     <string name="error_email_used_already">Email is used already</string>

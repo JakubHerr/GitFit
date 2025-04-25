@@ -19,6 +19,11 @@ interface AuthRepository {
 
     suspend fun signOut(): Result<Unit>
 
+    suspend fun changePassword(
+        oldPassword: String,
+        newPassword: String
+    ): Result<Unit>
+
     // the lambda allows the caller to specify all actions that must be successfully executed before the account is deleted
     // generally, the caller should ensure ALL user data is deleted (workout records, measurements etc.)
     suspend fun deleteUser(

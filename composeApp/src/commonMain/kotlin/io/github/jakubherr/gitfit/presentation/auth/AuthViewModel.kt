@@ -52,6 +52,7 @@ class AuthViewModel(
             is AuthAction.VerifyEmail -> verifyEmail()
             is AuthAction.RequestPasswordReset -> sendPasswordResetEmail(action.email)
             is AuthAction.SignOut -> signOut()
+            is AuthAction.ChangePassword -> changePassword(action.oldPassword, action.newPassword)
             is AuthAction.DeleteAccount -> deleteAccount(action.password)
             is AuthAction.ErrorHandled -> error.value = null
             is AuthAction.ActionHandled -> _finishedAction.value = null
@@ -81,7 +82,17 @@ class AuthViewModel(
     }
 
     private fun sendPasswordResetEmail(email: String) {
-        launch { authRepository.sendPasswordResetEmail(email).onSuccess { _finishedAction.value = AuthAction.RequestPasswordReset(email) } }
+        launch {
+            authRepository.sendPasswordResetEmail(email)
+                .onSuccess { _finishedAction.value = AuthAction.RequestPasswordReset(email) }
+        }
+    }
+
+    private fun changePassword(oldPassword: String, newPassword: String) {
+        launch {
+            authRepository.changePassword(oldPassword, newPassword)
+                .onSuccess { _finishedAction.value = AuthAction.ChangePassword(oldPassword, newPassword) }
+        }
     }
 
     private fun deleteAccount(password: String) {
@@ -116,6 +127,8 @@ sealed interface AuthAction {
     class Register(val email: String, val password: String) : AuthAction
 
     class RequestPasswordReset(val email: String) : AuthAction
+
+    class ChangePassword(val oldPassword: String, val newPassword: String) : AuthAction
 
     class DeleteAccount(val password: String) : AuthAction
 
