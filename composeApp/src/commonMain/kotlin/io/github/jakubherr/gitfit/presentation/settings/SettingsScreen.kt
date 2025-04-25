@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
@@ -36,6 +37,7 @@ import gitfit.composeapp.generated.resources.delete
 import gitfit.composeapp.generated.resources.delete_account
 import gitfit.composeapp.generated.resources.delete_account_explanaiton
 import gitfit.composeapp.generated.resources.log_out
+import gitfit.composeapp.generated.resources.privacy_policy
 import io.github.jakubherr.gitfit.presentation.auth.AuthAction
 import io.github.jakubherr.gitfit.presentation.auth.AuthState
 import io.github.jakubherr.gitfit.presentation.auth.AuthViewModel
@@ -161,10 +163,19 @@ fun InfoDialog(
                 .wrapContentHeight()
                 .padding(16.dp),
         ) {
-            Text(
-                modifier = Modifier.padding(16.dp),
-                text = stringResource(Res.string.app_explanation),
-            )
+            SelectionContainer {
+                Text(
+                    modifier = Modifier.padding(16.dp),
+                    text = stringResource(Res.string.app_explanation),
+                )
+            }
+
+            SelectionContainer {
+                Text(
+                    modifier = Modifier.padding(16.dp),
+                    text = stringResource(Res.string.privacy_policy),
+                )
+            }
         }
     }
 }

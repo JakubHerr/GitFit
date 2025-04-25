@@ -210,5 +210,6 @@
     <string name="start_workout">Spustit trénink</string>
     <string name="delete_series">Smazat sérii</string>
 
-    <string name="app_explanation">GitFit je open-source multiplatformní applikace, která byla vytvořena v rámci bakalářské práce na FIS VŠE.\nZdrojový kód je dostupný na https://github.com/JakubHerr/GitFit\nautor: Jakub Herrmann</string>
+    <string name="app_explanation">GitFit je open-source multiplatformní aplikace, která byla vytvořena v rámci bakalářské práce na FIS VŠE.\nZdrojový kód je dostupný na https://github.com/JakubHerr/GitFit\nautor: Jakub Herrmann</string>
+    <string name="privacy_policy">Zásady ochrany osobních údajů jsou dostupné na https://www.termsfeed.com/live/560ffd96-743c-462d-a823-f7f9e83a5f94</string>
 </resources>

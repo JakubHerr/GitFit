@@ -211,4 +211,5 @@
     <string name="delete_series">Delete series</string>
 
     <string name="app_explanation">GitFit is an open-source multiplatform application that was created as part of a bachelor's thesis at FIS VŠE.\n The source code is available at https://github.com/JakubHerr/GitFit\n author: Jakub Herrmann</string>
+    <string name="privacy_policy">Privacy policy is available at https://www.termsfeed.com/live/560ffd96-743c-462d-a823-f7f9e83a5f94</string>
 </resources>
