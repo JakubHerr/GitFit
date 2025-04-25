@@ -46,10 +46,13 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
+            implementation(libs.koalaplot)
+
             implementation(libs.material3.adaptive)
 
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.json)
 
@@ -61,8 +64,6 @@ kotlin {
 
             implementation(libs.gitlive.firebase.firestore)
             implementation(libs.gitlive.firebase.auth)
-
-            implementation(libs.koalaplot)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

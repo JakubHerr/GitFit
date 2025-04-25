@@ -59,10 +59,13 @@ gitlive-firebase-crashlytics = { group = "dev.gitlive", name = "firebase-crashly
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
+
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
-composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+
+composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+
 googleServices = { id = "com.google.gms.google-services", version.ref = "gms" }
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics-plugin" }
