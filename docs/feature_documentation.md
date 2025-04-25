@@ -2,9 +2,9 @@
 The application has the following major features and use cases:
 
 # Offline-first data synchronization
-- Application uses Google Firebase for authentication and data synchronization
+- Application uses Google Firebase backend and GitLive Firebase SDK for user authentication and data synchronization
 - The majority of features will work with no internet connection on mobile devices
-- On desktop, Google Firebase SDK does not currently support caching and internet connection is required at least for login
+- On desktop, GitLive Firebase SDK does not currently support caching and internet connection is required at least for login
 - User MUST be connected to the internet when deleting their account to clear online database
 - without internet connection, the user can do the following actions:
 - start and finish an unplanned workout without internet
@@ -27,7 +27,7 @@ The application has the following major features and use cases:
 ##### User deletion
 - User can delete their account from their profile
 - on account deletion, all user data is deleted
-- TODO User can request account deletion from outside of the application
+- User can request account deletion from outside of the application (https://jakubherr.github.io/)
 
 
 # Workout planning
@@ -37,7 +37,6 @@ The application has the following major features and use cases:
 - A plan is made of one or many workout plans/days
 - Workout day consists of blocks of exercises with sets
 - user can rename workout day
-- User can save a created plan to database
 - User can start a new workout record from a workout day in a plan
 - User can delete workout days in a plan or the entire plan
 
@@ -50,7 +49,6 @@ The application has the following major features and use cases:
 - an increment is the amount that either weight or repetitions will be incremented when threshold is reached
 - for progressive overload to work, user must start workout from a predefined plan
 - after the workout is completed, the plan is automatically updated if a threshold was reached
-
 
 ### Customization
 - user can create custom exercise
@@ -69,7 +67,7 @@ The application has the following major features and use cases:
 ### User body measurements
 - user can input their body measurements
 - measurements are tracked over time on a graph
-- user can browse all previous measurements 
+- user can browse all previous measurements
 - user can delete measurements
 
 ### Data visualization with graphs
@@ -80,12 +78,6 @@ The application has the following major features and use cases:
 # User input validation
 - all user input must be validated
 - String user input is generally limited to 20 characters with exception for email and password fields
-- User measurement and weight input are all limited to 6 digits, including 2 decimal places
-- repetition count is limited to a whole number
-- Plan, exercise and workout name must not be blank! 
-
-#### Auth
-- User's password must be at least 12 characters long
 
 #### Workout plan
 - workout plan must have a valid name
@@ -94,8 +86,6 @@ The application has the following major features and use cases:
 - every exercise block must contain at least one set that is not empty
 - every set must contain valid input for weight and repetitions
 - valid weight is a non-negative number with up to two decimal points
-- User can define progressive overload settings for each exercise block in workout day
-- overload is optional
 - valid repetition is a whole non-negative number (user wants to record failed lift)
 
 #### Measurement
@@ -108,6 +98,4 @@ The application has the following major features and use cases:
 - If user is not signed-in, the app starts with a login screen
 - (mobile only) If a user was signed-in already, the app starts with a dashboard screen
 - User can navigate between top-level destinations using a navigation bar
-- user can navigate to the previous destination using a back button on desktop
-- User can start a predefined workout by clicking on a plan and selecting a workout day
 - When user is exiting an operation with unsaved progress (workout plan), they must confirm this action

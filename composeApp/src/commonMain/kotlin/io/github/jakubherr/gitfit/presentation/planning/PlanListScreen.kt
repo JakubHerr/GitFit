@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
@@ -75,7 +76,10 @@ fun PlanListScreen(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.Bottom,
             ) {
-                Button(onCreateNewPlan) {
+                Button(
+                    onClick = onCreateNewPlan,
+                    modifier = Modifier.testTag("CreateNewPlanButton")
+                ) {
                     Text(stringResource(Res.string.create_new_plan))
                 }
             }

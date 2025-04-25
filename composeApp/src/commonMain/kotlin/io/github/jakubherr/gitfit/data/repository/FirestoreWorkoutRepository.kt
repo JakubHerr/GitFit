@@ -108,23 +108,24 @@ class FirestoreWorkoutRepository(
                     planWorkoutIdx = workoutIdx,
                 )
 
-            workoutRef(userId).document(id).set(workout)
-            Result.success(Unit)
+            runCatching { workoutRef(userId).document(id).set(workout) }
         }
     }
 
-    override suspend fun completeWorkout(workout: Workout) {
-        val userId = authRepository.currentUser.id.ifBlank { return }
+    override suspend fun completeWorkout(workout: Workout): Result<Unit> {
+        val userId = authRepository.currentUser.id.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
 
-        withContext(dispatcher) {
+        return withContext(dispatcher) {
             val newWorkout = workout.copy(completed = true, inProgress = false)
-            workoutRef(userId).document(workout.id).set(newWorkout)
+            runCatching { workoutRef(userId).document(workout.id).set(newWorkout) }
         }
     }
 
-    override suspend fun deleteWorkout(workoutId: String) {
-        val userId = authRepository.currentUser.id.ifBlank { return }
-        withContext(dispatcher) { workoutRef(userId).document(workoutId).delete() }
+    override suspend fun deleteWorkout(workoutId: String): Result<Unit> {
+        val userId = authRepository.currentUser.id.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
+        return withContext(dispatcher) {
+            runCatching { workoutRef(userId).document(workoutId).delete() }
+        }
     }
 
     override suspend fun deleteAllWorkouts(userId: String): Result<Unit> {
@@ -145,24 +146,24 @@ class FirestoreWorkoutRepository(
     override suspend fun addBlock(
         workout: Workout,
         exercise: Exercise,
-    ) {
-        val userId = authRepository.currentUser.id.ifBlank { return }
+    ): Result<Unit> {
+        val userId = authRepository.currentUser.id.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
 
-        withContext(dispatcher) {
+        return withContext(dispatcher) {
             val newWorkout = workout.addBlock(exercise)
-            workoutRef(userId).document(workout.id).set(newWorkout)
+            runCatching { workoutRef(userId).document(workout.id).set(newWorkout) }
         }
     }
 
     override suspend fun removeBlock(
         workout: Workout,
         blockIdx: Int,
-    ) {
-        val userId = authRepository.currentUser.id.ifBlank { return }
+    ): Result<Unit> {
+        val userId = authRepository.currentUser.id.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
 
-        withContext(dispatcher) {
+        return withContext(dispatcher) {
             val newWorkout = workout.removeBlock(blockIdx)
-            workoutRef(userId).document(workout.id).set(newWorkout)
+            runCatching { workoutRef(userId).document(workout.id).set(newWorkout) }
         }
     }
 
@@ -170,24 +171,24 @@ class FirestoreWorkoutRepository(
         workout: Workout,
         blockIdx: Int,
         seconds: Long?,
-    ) {
-        val userId = authRepository.currentUser.id.ifBlank { return }
+    ): Result<Unit> {
+        val userId = authRepository.currentUser.id.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
 
-        withContext(dispatcher) {
+        return withContext(dispatcher) {
             val newWorkout = workout.updateBlock(workout.blocks[blockIdx].copy(restTimeSeconds = seconds))
-            workoutRef(userId).document(workout.id).set(newWorkout)
+            runCatching { workoutRef(userId).document(workout.id).set(newWorkout) }
         }
     }
 
     override suspend fun addSeries(
         workout: Workout,
         blockIdx: Int,
-    ) {
-        val userId = authRepository.currentUser.id.ifBlank { return }
+    ): Result<Unit> {
+        val userId = authRepository.currentUser.id.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
 
-        withContext(dispatcher) {
+        return withContext(dispatcher) {
             val newWorkout = workout.updateBlock(workout.blocks[blockIdx].addSeries())
-            workoutRef(userId).document(workout.id).set(newWorkout)
+            runCatching { workoutRef(userId).document(workout.id).set(newWorkout) }
         }
     }
 
@@ -195,12 +196,12 @@ class FirestoreWorkoutRepository(
         workout: Workout,
         blockIdx: Int,
         set: Series,
-    ) {
-        val userId = authRepository.currentUser.id.ifBlank { return }
+    ): Result<Unit> {
+        val userId = authRepository.currentUser.id.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
 
-        withContext(dispatcher) {
+        return withContext(dispatcher) {
             val newWorkout = workout.updateBlock(workout.blocks[blockIdx].updateSeries(set))
-            workoutRef(userId).document(workout.id).set(newWorkout)
+            runCatching { workoutRef(userId).document(workout.id).set(newWorkout) }
         }
     }
 
@@ -208,12 +209,12 @@ class FirestoreWorkoutRepository(
         workout: Workout,
         blockIdx: Int,
         set: Series,
-    ) {
-        val userId = authRepository.currentUser.id.ifBlank { return }
+    ): Result<Unit> {
+        val userId = authRepository.currentUser.id.ifBlank { return Result.failure(AuthError.UserLoggedOut) }
 
-        withContext(dispatcher) {
+        return withContext(dispatcher) {
             val newWorkout = workout.updateBlock(workout.blocks[blockIdx].removeSeries(set))
-            workoutRef(userId).document(workout.id).set(newWorkout)
+            runCatching { workoutRef(userId).document(workout.id).set(newWorkout) }
         }
     }
 }

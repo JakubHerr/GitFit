@@ -50,6 +50,19 @@ class FirebaseAuthRepository : AuthRepository {
         }
     }
 
+    override suspend fun changePassword(
+        oldPassword: String,
+        newPassword: String
+    ): Result<Unit> {
+        if (!currentUser.loggedIn) return Result.failure(AuthError.UserLoggedOut)
+
+        signInUser(currentUser.email, oldPassword).onFailure { return Result.failure(it) }
+        return runWithErrorChecking {
+            auth.currentUser?.updatePassword(newPassword)
+            Result.success(Unit)
+        }
+    }
+
     override suspend fun deleteUser(
         password: String,
         beforeDelete: suspend (String) -> Result<Unit>,

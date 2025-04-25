@@ -5,38 +5,55 @@ left to right direction
 actor Uživatel as User
 
 package Systém {
-    (Naplánování tréninku) as (Plan)
-    (Zaznamenání tréninku) as (Record)
-    (Zobrazení seznamu cviků) as (ShowExercise)
-    (Zobrazení detailu cviku) as (ShowDetail)
-    (Zobrazení výsledků v čase) as (ShowHistory)
-    (Nastavení preferencí) as (Onboarding)
-    (Registrace) as (Register)
-    (Příhlášení) as (Login)
-    (Správa vlastních cviků) as (CustomExercise)
-    (Správa vlastních měření) as (Measure)
-    (Zobrazení profilu) as (Profile)
+    package Autentizace {
+        (F01 Registrace) as (Register)
+        (F02 Příhlášení) as (Login)
+        (F03 Oveření emailu) as (Verify)
+        (F04 Obnovení hesla) as (Reset)
+    }
+
+    package "Interakce po přihlášení" {
+        (F09 Zaznamenání tréninku) as (Record)
+        (F07 Tvorba tréninkového plánu) as (Plan)
+        (Správa vlastních měření) as (Measure)
+        (Zobrazení historie záznamů) as (ShowHistory)
+        (Zobrazení nastavení) as (Settings)
+
+        (F05 Výmaz uživatelského účtu) as (Delete)
+
+        (Zobrazení seznamu cviků) as (ShowExercise)
+        (Zobrazení detailu cviku) as (ShowDetail)
+        (Správa vlastních cviků) as (CustomExercise)
+
+        (Správa zaznamenaných tréninků) as (WorkoutHistory)
+
+        (F08 Nastavení progresivního přetížení) as (Overload)
+        (Odhlášení) as (Logout)
+    }
 }
 
+
+User --> (Login)
+User --> (Register)
+User --> (Verify)
+User --> (Reset)
+
+(Settings) -.> (Delete) : <<include>>
+(Settings) -.> (Logout) : <<include>>
+
+User --> (Record)
 User --> (Plan)
-User --> (ShowExercise)
 User --> (ShowHistory)
 User --> (Measure)
-User --> (Register)
-User --> (Login)
-(Register) -left-> (Login)
-(Login) -left-> (Onboarding)
-(ShowExercise) --> (ShowDetail)
-(ShowExercise) --> (CustomExercise)
-(Plan) --> (Record)
-(Onboarding) --> (Profile)
+User --> (Settings)
 
-note bottom of (Onboarding)
-    Uživatel může, ale nemusí nastavit
-    výšku, váhu, systém měření (Kg, Lbs)
-endnote
+(Record) -.> (ShowExercise) : <<include>>
+(Plan) -.> (ShowExercise) : <<include>>
+(ShowHistory) -.> (ShowExercise) : <<include>>
+(ShowHistory) -.> (WorkoutHistory) : <<include>>
 
-note bottom of (Measure)
-    Uživatel může zaznamenávat změny váhy a např. obvodu pasu
-endnote
+(ShowExercise) <.- (ShowDetail) : <<extend>>
+(ShowExercise) <.- (CustomExercise) : <<extend>>
+
+(Plan) <-. (Overload) : <<extend>>
 @enduml

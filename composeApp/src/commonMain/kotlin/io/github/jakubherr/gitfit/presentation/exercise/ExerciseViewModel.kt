@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import io.github.jakubherr.gitfit.domain.model.Exercise
 import io.github.jakubherr.gitfit.domain.repository.AuthRepository
 import io.github.jakubherr.gitfit.domain.repository.ExerciseRepository
-import io.github.jakubherr.gitfit.presentation.shared.Resource
 import kotlinx.coroutines.launch
 
 class ExerciseViewModel(
@@ -61,5 +60,5 @@ sealed interface ExerciseAction {
 
     class SelectExercise(val exercise: Exercise) : ExerciseAction
 
-    class CreateDefaultExercise(val exercise: Exercise) : ExerciseAction // TODO REMOVE
+    class CreateDefaultExercise(val exercise: Exercise) : ExerciseAction
 }

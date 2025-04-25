@@ -1,6 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -16,6 +17,7 @@ plugins {
 kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
@@ -44,10 +46,13 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
+            implementation(libs.koalaplot)
+
             implementation(libs.material3.adaptive)
 
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.json)
 
@@ -59,8 +64,6 @@ kotlin {
 
             implementation(libs.gitlive.firebase.firestore)
             implementation(libs.gitlive.firebase.auth)
-
-            implementation(libs.koalaplot)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -69,6 +72,9 @@ kotlin {
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+
+            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+            implementation(compose.uiTest)
         }
     }
 }
@@ -81,8 +87,10 @@ android {
         applicationId = "io.github.jakubherr.gitfit"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 4 // this version code should be incremented for every single AAB that is uploaded to Google Play console
-        versionName = "0.9.0"
+        versionCode = libs.versions.gitfitVersionCode.get().toInt()
+        versionName = libs.versions.gitfit.get()
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     packaging {
         resources {
@@ -144,7 +152,10 @@ ktlint {
 
 dependencies {
     implementation(libs.androidx.material3.android) // note: why does this work on desktop?
+    implementation(compose.desktop.currentOs)
     debugImplementation(compose.uiTooling)
+
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.6")
 }
 
 compose.desktop {
@@ -152,13 +163,17 @@ compose.desktop {
         mainClass = "io.github.jakubherr.gitfit.MainKt"
 
         nativeDistributions {
-            // TODO try to debug and improve
-            // include all modules is a hack to fix missing JVM libraries when packaging desktop
-            // see https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-native-distribution.html#including-jdk-modules
-            includeAllModules = true
+            // use JDK 18 when compiling desktop release distributable
+            // for more info see: https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-native-distribution.html#including-jdk-modules
+            modules("java.compiler", "java.instrument", "java.management", "java.naming", "java.sql", "jdk.unsupported")
             targetFormats(TargetFormat.Msi, TargetFormat.Exe, TargetFormat.AppImage)
-            packageName = "io.github.jakubherr.gitfit"
-            packageVersion = "1.0.0"
+            packageName = "GitFit"
+            packageVersion = "0.9.1"
+            licenseFile.set(project.file("../LICENSE"))
+
+            windows {
+                iconFile.set(project.file("../icon.ico"))
+            }
         }
     }
 }

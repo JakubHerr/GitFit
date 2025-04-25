@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.save_measurement
@@ -40,14 +42,15 @@ fun AddEditMeasurementScreen(
 
     Column(Modifier.padding(16.dp)) {
         LazyColumn(
-            modifier.fillMaxSize().weight(1.0f),
+            modifier.fillMaxSize().weight(1.0f).testTag("MeasurementLazyList"),
         ) {
-            items(measurementTypes) { measurement ->
+            itemsIndexed(measurementTypes) { idx, measurement ->
                 MeasurementInputField(
                     measurement.backingField.value,
                     measurement.label,
                     measurement.unit,
                     Modifier.padding(16.dp),
+                    testTag = "MeasurementInput$idx",
                 ) {
                     measurement.backingField.value = it
                 }
@@ -58,11 +61,14 @@ fun AddEditMeasurementScreen(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
         ) {
-            Button(onClick = {
+            Button(
+                onClick = {
                 // TODO notify of error
                 val measurement = measurementTypes.toMeasurement()
                 onSave(measurement)
-            }) {
+            },
+                modifier = Modifier.testTag("SaveMeasurementButton")
+            ) {
                 Text(stringResource(Res.string.save_measurement))
             }
         }

@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.add_set
@@ -78,7 +79,7 @@ fun SharedBlockItem(
                 ) {
                     Button(
                         onClick = onAddSet,
-                        Modifier.sizeIn(maxWidth = 320.dp).fillMaxWidth(),
+                        Modifier.sizeIn(maxWidth = 320.dp).fillMaxWidth().testTag("AddSeriesButton"),
                     ) {
                         Text(stringResource(Res.string.add_set))
                     }
@@ -118,7 +119,10 @@ fun PlanBlockItem(
                     validator = { weight, reps -> weight.isNonNegativeDouble() && reps.isNonNegativeLong() },
                     onValidSetEntered = { onValidSetEntered(it) },
                     actionSlot = {
-                        IconButton({ onDeleteSeries(series) }) {
+                        IconButton(
+                            onClick = { onDeleteSeries(series) },
+                            modifier = Modifier.testTag("WorkoutPlanDeleteSeries")
+                        ) {
                             Icon(Icons.Default.Delete, stringResource(Res.string.delete_series), tint = MaterialTheme.colorScheme.error)
                         }
                     },
@@ -140,7 +144,7 @@ fun WorkoutBlockItem(
 ) {
     SharedBlockItem(
         block,
-        modifier = modifier,
+        modifier = modifier.testTag("WorkoutBlockItem"),
         readOnly = readOnly,
         seriesItems = {
             block.series.forEachIndexed { seriesIdx, series ->

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
@@ -24,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
@@ -90,6 +92,7 @@ fun EditProgressionScreen(
                 DoubleInputField(
                     minimumWeight,
                     onValueChange = { minimumWeight = it },
+                    modifier = Modifier.width(64.dp).testTag("MinimumWeightInput")
                 )
             }
 
@@ -123,6 +126,7 @@ fun EditProgressionScreen(
                         weightIncrease,
                         isError = !weightIncrease.isPositiveDouble(),
                         onValueChange = { weightIncrease = it },
+                        modifier = Modifier.width(64.dp).testTag("WeightIncreaseInput")
                     )
                 }
                 if (selectedProgressionType == ProgressionType.INCREASE_REPS) {
@@ -131,6 +135,7 @@ fun EditProgressionScreen(
                         repIncrease,
                         isError = !repIncrease.isPositiveInt(),
                         onValueChange = { repIncrease = it },
+                        modifier = Modifier.width(64.dp).testTag("RepsIncreaseInput")
                     )
                 }
             }
@@ -175,6 +180,7 @@ fun EditProgressionScreen(
 
                     onSave(settings)
                 },
+                modifier = Modifier.testTag("SaveProgressionButton")
             ) {
                 Text(stringResource(Res.string.save))
             }

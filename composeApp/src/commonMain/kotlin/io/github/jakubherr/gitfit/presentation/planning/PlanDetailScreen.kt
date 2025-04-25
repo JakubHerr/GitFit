@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
@@ -77,17 +78,22 @@ fun PlanDetailScreen(
             Row {
                 if (isPredefined) {
                     Button(
-                        { onAction(PlanAction.CopyDefaultPlan(plan)) }
+                        { onAction(PlanAction.CopyDefaultPlan(plan)) },
+                        Modifier.testTag("CopyDefaultPlan")
                     ) {
                         Text(stringResource(Res.string.add_to_your_plans))
                     }
                 } else {
-                    IconButton({ onAction(PlanAction.EditPlan(plan)) }) {
+                    IconButton(
+                        { onAction(PlanAction.EditPlan(plan)) },
+                        modifier = Modifier.testTag("EditPlanButton")
+                    ) {
                         Icon(Icons.Default.Edit, stringResource(Res.string.edit_plan))
                     }
 
                     IconButton(
                         onClick = { showDialog = true },
+                        modifier = Modifier.testTag("DeletePlanButton")
                     ) {
                         Icon(Icons.Default.Delete, stringResource(Res.string.delete_workout), tint = MaterialTheme.colorScheme.error)
                     }

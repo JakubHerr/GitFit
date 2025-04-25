@@ -74,6 +74,7 @@ private fun SettingsScreenPreview() {
             SettingsScreen(
                 authState = AuthState(User.LoggedOut, loading = true, error = null),
                 onLogout = { },
+                onChangePassword = { _,_ -> },
                 onDeleteAccount = { }
             )
         }

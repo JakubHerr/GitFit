@@ -18,8 +18,13 @@
     <string name="skip_verification">Přeskočit ověření</string>
 
     <string name="delete_account">Smazat účet</string>
+    <string name="change_password">Změnit heslo</string>
     <string name="delete_account_explanaiton">Opravdu chcete smazat účet? Všechna data budou smazána</string>
     <string name="confirm_account_deletion">Potvrďte smazání účtu zadáním hesla</string>
+    <string name="confirm_password_change">Potvrďte změnu hesla zadáním údajů</string>
+    <string name="old_password">Staré heslo</string>
+    <string name="new_password">Nové heslo</string>
+    <string name="password_changed">Heslo bylo změněno</string>
     <string name="account_deleted">Účet byl smazán</string>
 
     <string name="error_email_used_already">Email je již zaregistrovaný</string>
@@ -99,6 +104,7 @@
     <string name="error_exercise_list_empty">Seznam cviků je prázdný</string>
     <string name="error_exercise_not_found">Cvik nebyl nalezen</string>
     <string name="empty_workout_history">Žádné záznamy nenalezeny</string>
+    <string name="empty_measurement_history">Žádná měření nenalezena</string>
     <string name="empty_workout_plans">Žádné tréninkové plány</string>
     <string name="list_is_empty">Seznam je prázdný</string>
 
@@ -209,5 +215,6 @@
     <string name="start_workout">Spustit trénink</string>
     <string name="delete_series">Smazat sérii</string>
 
-    <string name="app_explanation">GitFit je open-source multiplatformní applikace, která byla vytvořena v rámci bakalářské práce na FIS VŠE.\nZdrojový kód je dostupný na https://github.com/JakubHerr/GitFit\nautor: Jakub Herrmann</string>
+    <string name="app_explanation">GitFit je open-source multiplatformní aplikace, která byla vytvořena v rámci bakalářské práce na FIS VŠE.\nZdrojový kód je dostupný na https://github.com/JakubHerr/GitFit\nautor: Jakub Herrmann</string>
+    <string name="privacy_policy">Zásady ochrany osobních údajů jsou dostupné na https://www.termsfeed.com/live/560ffd96-743c-462d-a823-f7f9e83a5f94</string>
 </resources>

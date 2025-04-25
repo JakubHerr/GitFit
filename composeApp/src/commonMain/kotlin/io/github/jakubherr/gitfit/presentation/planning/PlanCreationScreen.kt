@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.add_workout_day
@@ -71,6 +72,7 @@ fun PlanCreationScreen(
         StringInputField(
             value = plan.name,
             onValueChange = { onAction(PlanAction.RenamePlan(it)) },
+            modifier = Modifier.testTag("PlanNameInput"),
             maxLength = 20,
             label = { Text(stringResource(Res.string.plan_name)) },
             placeholder = { Text(plan.name, Modifier.alpha(0.5f)) },
@@ -85,9 +87,10 @@ fun PlanCreationScreen(
         ) {
             Text(stringResource(Res.string.workout_days))
 
-            Button({
-                onAction(PlanAction.AddWorkout(WorkoutPlan.Empty(plan.workoutPlans.size)))
-            }) {
+            Button(
+                onClick = { onAction(PlanAction.AddWorkout(WorkoutPlan.Empty(plan.workoutPlans.size))) },
+                modifier = Modifier.testTag("PlanAddWorkoutDay")
+            ) {
                 Text(stringResource(Res.string.add_workout_day))
             }
         }
@@ -101,6 +104,7 @@ fun PlanCreationScreen(
             items(plan.workoutPlans) { workout ->
                 WorkoutPlanListItem(
                     workout,
+                    modifier = Modifier.testTag("WorkoutPlanListItem"),
                     onItemClicked = { onWorkoutSelected(workout.idx) },
                     onActionClicked = { onAction(PlanAction.DeleteWorkout(workout)) },
                 )
@@ -121,7 +125,10 @@ fun PlanCreationScreen(
 
             ) { Text(stringResource(Res.string.discard_changes)) }
 
-            Button({ onAction(PlanAction.SavePlan) }) { Text(stringResource(Res.string.save)) }
+            Button(
+                onClick = { onAction(PlanAction.SavePlan) },
+                modifier = Modifier.testTag("SavePlan")
+            ) { Text(stringResource(Res.string.save)) }
         }
     }
 }

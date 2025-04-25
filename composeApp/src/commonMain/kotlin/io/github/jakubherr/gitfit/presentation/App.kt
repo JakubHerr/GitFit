@@ -49,40 +49,38 @@ import org.koin.compose.KoinContext
 @Composable
 fun App() {
     KoinContext {
+        val navController = rememberNavController()
+        val snackbarHostState = remember { SnackbarHostState() }
+        val scope = rememberCoroutineScope()
+
+        val destination = navController.currentBackStackEntryAsState().value?.destination
+        val topLevelDestination = TopLevelDestination.entries.firstOrNull { destination?.hasRoute(it.route) == true }
+
         GitFitTheme {
-            val navController = rememberNavController()
-            val snackbarHostState = remember { SnackbarHostState() }
-            val scope = rememberCoroutineScope()
-
-            val destination = navController.currentBackStackEntryAsState().value?.destination
-            val topLevelDestination = TopLevelDestination.entries.firstOrNull { destination?.hasRoute(it.route) == true }
-
-            GitFitTheme {
-                GitFitNavScaffold(
-                    currentDestination = topLevelDestination,
-                    onDestinationClicked = {
-                        navController.navigateToTopLevelDestination(it)
+            GitFitNavScaffold(
+                currentDestination = topLevelDestination,
+                onDestinationClicked = {
+                    navController.navigateToTopLevelDestination(it)
+                },
+            ) {
+                Scaffold(
+                    topBar = {
+                        val settings = navController.destinationSettings()
+                        GitFitTopAppBar(settings.first, settings.second) {
+                            navController.popBackStack()
+                        }
                     },
-                ) {
-                    Scaffold(
-                        topBar = {
-                            val settings = navController.destinationSettings()
-                            GitFitTopAppBar(settings.first, settings.second) {
-                                navController.popBackStack()
+                    snackbarHost = { SnackbarHost(snackbarHostState) },
+                ) { padding ->
+                    GitFitNavigation(
+                        navController,
+                        modifier = Modifier.padding(padding),
+                        showSnackbar = { message ->
+                            scope.launch {
+                                snackbarHostState.showSnackbar(message)
                             }
                         },
-                        snackbarHost = { SnackbarHost(snackbarHostState) },
-                    ) { padding ->
-                        GitFitNavigation(
-                            navController,
-                            modifier = Modifier.padding(padding),
-                            showSnackbar = { message ->
-                                scope.launch {
-                                    snackbarHostState.showSnackbar(message)
-                                }
-                            },
-                        )
-                    }
+                    )
                 }
             }
         }

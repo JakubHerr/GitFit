@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.account_deleted
+import gitfit.composeapp.generated.resources.password_changed
 import gitfit.composeapp.generated.resources.password_reset_sent
 import gitfit.composeapp.generated.resources.verification_email_sent
 import io.github.jakubherr.gitfit.presentation.auth.AuthAction
@@ -53,6 +54,7 @@ fun GitFitNavigation(
                     is AuthAction.VerifyEmail -> showSnackbar(getString(Res.string.verification_email_sent))
                     is AuthAction.RequestPasswordReset -> showSnackbar("${getString(Res.string.password_reset_sent)} ${action.email}")
                     is AuthAction.DeleteAccount -> showSnackbar(getString(Res.string.account_deleted))
+                    is AuthAction.ChangePassword -> showSnackbar(getString(Res.string.password_changed))
                     else -> { }
                 }
                 authViewModel.onAction(AuthAction.ActionHandled)

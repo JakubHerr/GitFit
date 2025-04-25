@@ -3,6 +3,7 @@ package io.github.jakubherr.gitfit.presentation.shared
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +13,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.dp
 import io.github.jakubherr.gitfit.domain.isNonNegativeDouble
 import io.github.jakubherr.gitfit.domain.isNonNegativeInt
 import io.github.jakubherr.gitfit.domain.model.Series
@@ -37,6 +40,7 @@ fun SetInput(
 
         DoubleInputField(
             weight,
+            modifier = Modifier.testTag("WorkoutPlanWeightInput").width(64.dp),
             onValueChange = { newWeight ->
                 weight = newWeight
 
@@ -48,6 +52,7 @@ fun SetInput(
 
         IntegerInputField(
             reps,
+            modifier = Modifier.testTag("WorkoutPlanRepsInput").width(64.dp),
             onValueChange = {
                 reps = it
 
@@ -78,11 +83,23 @@ fun CheckableSetInput(
     ) {
         Text((index + 1).toString())
 
-        DoubleInputField(weight, onValueChange = { weight = it }, enabled = !set.completed)
-        IntegerInputField(reps, onValueChange = { reps = it }, enabled = !set.completed)
+        DoubleInputField(
+            weight,
+            modifier = Modifier.width(64.dp).testTag("WorkoutWeightInput"),
+            onValueChange = { weight = it },
+            enabled = !set.completed,
+        )
+
+        IntegerInputField(
+            reps,
+            modifier = Modifier.width(64.dp).testTag("WorkoutRepsInput"),
+            onValueChange = { reps = it },
+            enabled = !set.completed,
+        )
 
         Checkbox(
             set.completed,
+            modifier = Modifier.testTag("WorkoutSeriesCheckbox"),
             enabled = weight.isNonNegativeDouble() && reps.isNonNegativeInt(),
             onCheckedChange = { onToggle(weight, reps) },
         )

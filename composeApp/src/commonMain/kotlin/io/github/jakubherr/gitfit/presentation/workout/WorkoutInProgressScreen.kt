@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
@@ -87,7 +88,7 @@ fun WorkoutInProgressScreenRoot(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            CircularProgressIndicator()
+            CircularProgressIndicator(modifier = Modifier.testTag("WorkoutProgressIndicator"))
         }
     } else {
         WorkoutInProgressScreen(workout!!) { action ->
@@ -135,7 +136,7 @@ fun WorkoutInProgressScreen(
                 item {
                     Button(
                         onClick = { onAction(WorkoutAction.AskForExercise(workout.id)) },
-                        modifier = Modifier.sizeIn(maxWidth = 320.dp).fillMaxWidth().padding(horizontal = 32.dp)
+                        modifier = Modifier.sizeIn(maxWidth = 320.dp).fillMaxWidth().padding(horizontal = 32.dp).testTag("WorkoutAddExercise")
                     ) {
                         Text(stringResource(Res.string.add_exercise))
                     }
@@ -148,6 +149,7 @@ fun WorkoutInProgressScreen(
             ) {
                 Button(
                     onClick = { onAction(WorkoutAction.DeleteWorkout(workout.id)) },
+                    modifier = Modifier.testTag("DeleteWorkoutInProgress"),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,
                         contentColor = MaterialTheme.colorScheme.onError,
@@ -155,7 +157,10 @@ fun WorkoutInProgressScreen(
                 ) {
                     Text(stringResource(Res.string.delete_workout))
                 }
-                Button(onClick = { onAction(WorkoutAction.CompleteCurrentWorkout) }) {
+                Button(
+                    onClick = { onAction(WorkoutAction.CompleteCurrentWorkout) },
+                    modifier = Modifier.testTag("SaveWorkoutInProgress")
+                ) {
                     Text(stringResource(Res.string.save_workout))
                 }
             }
@@ -173,7 +178,10 @@ fun WorkoutBlockItemDropdownMenu(
     var expanded by remember { mutableStateOf(false) }
 
     Box {
-        IconButton({ expanded = !expanded }) {
+        IconButton(
+            onClick = { expanded = !expanded },
+            modifier = Modifier.testTag("WorkoutExerciseDropdown")
+        ) {
             Icon(Icons.Default.MoreVert, stringResource(Res.string.show_exercise_dropdown_menu))
         }
 
@@ -183,6 +191,7 @@ fun WorkoutBlockItemDropdownMenu(
         ) {
             DropdownMenuItem(
                 text = { Text(stringResource(Res.string.delete_exercise)) },
+                modifier = Modifier.testTag("WorkoutDeleteExercise"),
                 onClick = {
                     expanded = false
                     onDeleteExercise()
@@ -190,6 +199,7 @@ fun WorkoutBlockItemDropdownMenu(
             )
             DropdownMenuItem(
                 text = { Text(stringResource(Res.string.delete_last_set)) },
+                modifier = Modifier.testTag("WorkoutDeleteLastSet"),
                 onClick = {
                     expanded = false
                     onDeleteSet()

@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 
 @Composable
 fun ConfirmationDialog(
@@ -23,15 +24,22 @@ fun ConfirmationDialog(
     AlertDialog(
         icon = { Icon(Icons.Default.Warning, null) },
         title = { Text(title) },
+        modifier = Modifier.testTag("ConfirmationDialog"),
         text = { Text(text) },
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(onConfirm) {
+            TextButton(
+                onConfirm,
+                modifier = Modifier.testTag("ConfirmDialogButton")
+            ) {
                 Text(confirmText, color = MaterialTheme.colorScheme.error)
             }
         },
         dismissButton = {
-            TextButton(onDismiss) {
+            TextButton(
+                onDismiss,
+                modifier = Modifier.testTag("DismissDialogButton")
+            ) {
                 Text(dismissText)
             }
         },

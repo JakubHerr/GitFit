@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.cancel
@@ -86,6 +87,7 @@ fun ExerciseCreateScreen(
         StringInputField(
             value = name,
             onValueChange = { name = it },
+            modifier = Modifier.testTag("ExerciseNameInput"),
             label = { Text(stringResource(Res.string.name)) },
             maxLength = 20,
         )
@@ -117,22 +119,27 @@ fun ExerciseCreateScreen(
         }
 
         Row {
-            Button({
-                if (name.isBlank()) return@Button
+            Button(
+                onClick = {
+                    if (name.isBlank()) return@Button
 
-                onExerciseCreated(
-                    Exercise(
-                        "",
-                        name,
-                        "",
-                        isCustom = true,
-                        selectedPrimaryMuscle,
-                        selectedSecondaryMuscle,
-                    ),
-                )
-            }) {
+                    onExerciseCreated(
+                        Exercise(
+                            "",
+                            name,
+                            "",
+                            isCustom = true,
+                            selectedPrimaryMuscle,
+                            selectedSecondaryMuscle,
+                        ),
+                    )
+                },
+                modifier = Modifier.testTag("SaveExerciseButton")
+
+            ) {
                 Text(stringResource(Res.string.save_exercise))
             }
+
             Button({ showDialog = true }) {
                 Text(stringResource(Res.string.cancel))
             }

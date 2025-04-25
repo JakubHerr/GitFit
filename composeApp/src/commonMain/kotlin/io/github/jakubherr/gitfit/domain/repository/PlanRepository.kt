@@ -11,16 +11,16 @@ interface PlanRepository {
     suspend fun saveCustomPlan(
         userId: String,
         plan: Plan,
-    )
+    ): Result<Unit>
 
     suspend fun saveDefaultPlan(
         plan: Plan,
-    )
+    ): Result<Unit>
 
     suspend fun deleteCustomPlan(
         userId: String,
         planId: String,
-    )
+    ): Result<Unit>
 
     suspend fun deleteAllCustomPlans(userId: String): Result<Unit>
 
