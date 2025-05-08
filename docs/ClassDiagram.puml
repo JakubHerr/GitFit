@@ -2,42 +2,64 @@
 'https://plantuml.com/class-diagram
 
 package presentation {
-    package ui {
-        class ExerciseDetailScreen
-        class ExerciseListScreen
-    }
-    package vm {
-        class ExerciseViewModel
+    package exercise {
+        annotation ExerciseDetailScreen
+        annotation ExerciseListScreen {
+            onExerciseClick: (Exercise) -> Unit
+        }
+
+        class ExerciseViewModel {
+            defaultExercises: Flow<List<Exercise>
+            onAction(action: ExerciseAction)
+        }
     }
 }
 
 package domain {
-    class Exercise
+    package repository {
+        interface ExerciseRepository {
+            getDefaultExercises(): Flow<List<Exercise>>
+            addCustomExercise(): Result<Unit>
+        }
+    }
+
+    package model {
+        class Exercise {
+            id: String
+            name: String
+            description: String?
+            isCustom: Boolean
+            primaryMuscle: MuscleGroup
+            secondaryMuscle: List<MuscleGroup>
+        }
+    }
 }
 
 package data {
-    interface RemoteExerciseDataSource
-    interface LocalExerciseDataSource
-    interface ExerciseRepository
-    class ExerciseRepositoryImpl
-    class SqlDelightDataSource
+    class FirestoreExerciseRepository
 }
 
-note right of ExerciseRepository : Repozitář abstrahuje, odkud data pochází a jak se ukládají
+note bottom of ExerciseRepository : Rozhraní abstrahuje, odkud data pochází a jak se ukládají
 note right of ExerciseViewModel
- ViewModel poskytuje stav, který se má zobrazit
- a reaguje na akce uživatele
- endnote
+    ViewModel poskytuje stav, který se má
+    zobrazit v UI a reaguje na akce uživatele.
+    Může být sdílený mezi obrazovkami
+endnote
 
+note bottom of FirestoreExerciseRepository
+    Repozitář je hlavní vlastník dat a jediný zdroj pravdy.
+    Poskytuje ostatním vrstvám data v neměnné podobě.
+    Jeho odpovědností je synchronizace lokální a online databáze.
+endnote
 
-ExerciseRepository -- ExerciseRepositoryImpl
 ExerciseListScreen -> ExerciseViewModel : Event
 ExerciseListScreen <- ExerciseViewModel : State
-ExerciseDetailScreen -- ExerciseViewModel
-ExerciseViewModel -- ExerciseRepository
-ExerciseRepositoryImpl -- RemoteExerciseDataSource
-ExerciseRepositoryImpl -- LocalExerciseDataSource
-LocalExerciseDataSource -- SqlDelightDataSource
 
-ExerciseViewModel : StateFlow<Exercise>
+ExerciseDetailScreen --> ExerciseViewModel : Event
+ExerciseDetailScreen <-- ExerciseViewModel : State
+
+ExerciseViewModel --> ExerciseRepository : Event
+ExerciseViewModel <-- ExerciseRepository : State
+
+ExerciseRepository <|.. FirestoreExerciseRepository
 @enduml

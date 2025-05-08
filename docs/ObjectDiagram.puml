@@ -1,0 +1,93 @@
+@startuml
+'https://plantuml.com/object-diagram
+
+object User {
+    id: String,
+    email: String
+    loggedIn: Boolean
+    emailVerified: Boolean
+}
+
+object Workout {
+    id: String,
+    blocks: List<Block>
+    date: LocalDate
+    completed: Boolean
+    inProgress: Boolean
+    planId: String?
+    planWorkoutIdx: Int?
+}
+
+object Plan {
+    id: String,
+    userId: String?
+    name: String
+    description: String
+    workoutPlans: List<WorkoutPlan>
+}
+
+object WorkoutPlan {
+    name: String
+    idx: Int
+    blocks: List<Block>
+}
+
+object ProgressionSettings {
+    incrementWeightByKg: Double
+    incrementRepsBy: Int
+    type: ProgressionType
+    trigger: ProgressionTrigger
+    weightThreshold: Double
+    repThreshold: Int
+}
+
+enum ProgressionType {
+    INCREASE_WEIGHT
+    INCREASE_REPS
+}
+
+enum ProgressionTrigger {
+    MINIMUM_REPS_AND_WEIGHT_EVERY_SET
+}
+
+object Measurement {
+    date: LocalDate,
+    neck: Double?
+    chest: Double?
+    leftArm: Double?
+    rightArm: Double?
+    leftForearm: Double?
+    rightForearm: Double?
+    waist: Double?
+    leftThigh: Double?
+    rightThigh: Double?
+    leftCalf: Double?
+    rightCalf: Double?
+    bodyweight: Double?
+    height: Double?
+}
+
+object Exercise {
+    id: String
+    name: String
+    description: String?
+    isCustom: Boolean
+    primaryMuscle: MuscleGroup
+    secondaryMuscle: List<MuscleGroup>
+}
+
+object Block {
+    idx: Int
+    exercise: Exercise
+    series: List<Series>
+    restTimeSeconds: Long?
+    progressionSettings: ProgressionSettings?
+}
+
+object Series {
+    idx: Int,
+    repetitions: Long?
+    weight: Double?
+    completed: Boolean
+}
+@enduml

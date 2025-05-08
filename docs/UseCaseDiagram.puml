@@ -9,37 +9,34 @@ package Systém {
         (F01 Registrace) as (Register)
         (F02 Příhlášení) as (Login)
         (F03 Oveření emailu) as (Verify)
-        (F04 Obnovení hesla) as (Reset)
+        (F04 Obnova zapomenutého hesla) as (Reset)
     }
 
     package "Interakce po přihlášení" {
         (F09 Zaznamenání tréninku) as (Record)
         (F07 Tvorba tréninkového plánu) as (Plan)
-        (Správa vlastních měření) as (Measure)
-        (Zobrazení historie záznamů) as (ShowHistory)
-        (Zobrazení nastavení) as (Settings)
+        (F14 Správa měření) as (Measure)
+        (F15 Zobrazení historie záznamů) as (ShowHistory)
+        (F16 Zobrazení nastavení) as (Settings)
 
         (F05 Výmaz uživatelského účtu) as (Delete)
 
-        (Zobrazení seznamu cviků) as (ShowExercise)
-        (Zobrazení detailu cviku) as (ShowDetail)
-        (Správa vlastních cviků) as (CustomExercise)
+        (F10 Zobrazení seznamu cviků) as (ShowExercise)
+        (F11 Správa vlastního cviku) as (CustomExercise)
+        (F12 Zobrazení detailu cviku) as (ShowDetail)
 
-        (Správa zaznamenaných tréninků) as (WorkoutHistory)
+        (F13 Automatický časovač odpočinku) as (Timer)
 
         (F08 Nastavení progresivního přetížení) as (Overload)
-        (Odhlášení) as (Logout)
+        (F06 Odhlášení) as (Logout)
+        (F18 Změna uživatelského hesla) as (ChangePassword)
     }
 }
-
 
 User --> (Login)
 User --> (Register)
 User --> (Verify)
 User --> (Reset)
-
-(Settings) -.> (Delete) : <<include>>
-(Settings) -.> (Logout) : <<include>>
 
 User --> (Record)
 User --> (Plan)
@@ -49,11 +46,16 @@ User --> (Settings)
 
 (Record) -.> (ShowExercise) : <<include>>
 (Plan) -.> (ShowExercise) : <<include>>
-(ShowHistory) -.> (ShowExercise) : <<include>>
-(ShowHistory) -.> (WorkoutHistory) : <<include>>
+(ShowHistory) .-> (ShowExercise) : <<include>>
 
-(ShowExercise) <.- (ShowDetail) : <<extend>>
-(ShowExercise) <.- (CustomExercise) : <<extend>>
+(Record) <.- (Timer) : <<extend>>
+
+(ShowExercise) <.left. (ShowDetail) : <<extend>>
+(ShowExercise) <. (CustomExercise) : <<extend>>
 
 (Plan) <-. (Overload) : <<extend>>
+
+(Settings) -.> (Delete) : <<include>>
+(Settings) -.> (Logout) : <<include>>
+(Settings) -.> (ChangePassword) : <<include>>
 @enduml
