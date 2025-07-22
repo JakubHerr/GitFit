@@ -9,15 +9,13 @@ import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.domain.repository.AuthError
 import io.github.jakubherr.gitfit.domain.repository.AuthRepository
 import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
+import io.github.jakubherr.gitfit.domain.today
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayIn
 
 class FirestoreWorkoutRepository(
     private val authRepository: AuthRepository,
@@ -78,7 +76,7 @@ class FirestoreWorkoutRepository(
             val workout =
                 Workout(
                     id = id,
-                    date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
+                    date = today(),
                     blocks = emptyList(),
                     completed = false,
                     inProgress = true,
