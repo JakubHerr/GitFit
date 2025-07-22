@@ -24,10 +24,6 @@ import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-private val apiModule =
-    module {
-    }
-
 private val repositoryModule =
     module {
         singleOf(::FirestoreExerciseRepository).bind<ExerciseRepository>()
@@ -49,7 +45,7 @@ private val viewmodelModule =
         viewModelOf(::GraphViewModel)
     }
 
-private val sharedModules = listOf(viewmodelModule, repositoryModule, apiModule)
+private val sharedModules = listOf(viewmodelModule, repositoryModule)
 
 fun initKoin(config: KoinAppDeclaration? = null) =
     startKoin {
