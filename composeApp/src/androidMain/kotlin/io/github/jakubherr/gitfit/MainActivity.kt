@@ -1,8 +1,10 @@
 package io.github.jakubherr.gitfit
 
 import android.os.Bundle
+import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.view.WindowCompat
 import com.google.firebase.FirebaseApp
 import io.github.jakubherr.gitfit.presentation.App
 
@@ -11,7 +13,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
 
-        // TODO try to make system bar the same color as custom theme
+        // TODO fix window insets when app is in landscape mode
+        window.navigationBarColor = android.graphics.Color.TRANSPARENT
 
         setContent {
             App()
