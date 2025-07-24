@@ -94,7 +94,7 @@ fun SettingsScreen(
         )
     }
 
-    Column(modifier.fillMaxSize().padding(16.dp)) {
+    Column(modifier.fillMaxSize().padding(horizontal = 16.dp)) {
         IconButton(
             onClick = { showInfoDialog = true },
         ) {

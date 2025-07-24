@@ -5,6 +5,7 @@ import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkOut
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -64,6 +65,7 @@ fun App() {
                 },
             ) {
                 Scaffold(
+                    modifier = Modifier.imePadding(),
                     topBar = {
                         val settings = navController.destinationSettings()
                         GitFitTopAppBar(settings.first, settings.second) {
