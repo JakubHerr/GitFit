@@ -90,6 +90,7 @@
     <!--Block CRUD-->
     <string name="error_block_with_progression">Bloky s progresí nelze odstranit</string>
     <string name="error_block_not_found">Blok nenalezen</string>
+    <string name="add_rest_timer">Přidat pauzu mezi sety</string>
 
     <!--series CRUD-->
     <string name="add_set">Přidat sérii</string>

@@ -76,6 +76,7 @@ class WorkoutViewModel(
             is WorkoutAction.SelectWorkout -> selectedWorkout = action.workout
             is WorkoutAction.AskForExercise -> {}
             is WorkoutAction.AddBlock -> addBlock(action.workout, action.exercise)
+            is WorkoutAction.SetBlockTimer -> setBlockTimer(action.workout, action.blockIdx, action.seconds)
             is WorkoutAction.RemoveBlock -> removeBlock(action.workout, action.block)
             is WorkoutAction.AddSet -> addSeries(action.workout, action.blockIdx)
             is WorkoutAction.ModifySeries -> modifySeries(action.workout, action.blockIdx, action.series)
@@ -84,6 +85,16 @@ class WorkoutViewModel(
                 workoutSaved = false
                 progressionHandled = false
             }
+        }
+    }
+
+    private fun setBlockTimer(
+        workout: Workout,
+        blockIdx: Int,
+        seconds: Long
+    ) {
+        viewModelScope.launch {
+            workoutRepository.setBlockTimer(workout, blockIdx, seconds)
         }
     }
 
@@ -202,6 +213,8 @@ sealed interface WorkoutAction {
     class SelectWorkout(val workout: Workout) : WorkoutAction
 
     class AddBlock(val workout: Workout, val exercise: Exercise) : WorkoutAction
+
+    class SetBlockTimer(val workout: Workout, val blockIdx: Int, val seconds: Long) : WorkoutAction
 
     class RemoveBlock(val workout: Workout, val block: Block) : WorkoutAction
 

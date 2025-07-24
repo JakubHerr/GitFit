@@ -20,7 +20,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.add_exercise
+import gitfit.composeapp.generated.resources.add_rest_timer
 import gitfit.composeapp.generated.resources.cancel
 import gitfit.composeapp.generated.resources.delete_exercise
 import gitfit.composeapp.generated.resources.delete_last_set
@@ -49,6 +49,7 @@ import gitfit.composeapp.generated.resources.set
 import gitfit.composeapp.generated.resources.show_exercise_dropdown_menu
 import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
+import io.github.jakubherr.gitfit.presentation.shared.TimePickerDialog
 import io.github.jakubherr.gitfit.presentation.shared.WorkoutBlockItem
 import org.jetbrains.compose.resources.stringResource
 
@@ -106,6 +107,8 @@ fun WorkoutInProgressScreen(
     workout: Workout,
     onAction: (WorkoutAction) -> Unit = {},
 ) {
+    var showTimePicker by remember { mutableStateOf(false) }
+
     Surface {
         Column {
             LazyColumn(
@@ -129,9 +132,22 @@ fun WorkoutInProgressScreen(
                                         onAction(WorkoutAction.DeleteLastSeries(workout, block.idx, it))
                                     }
                                 },
+                                onAddRestTimer = {
+                                    showTimePicker = true
+                                }
                             )
                         },
                     )
+
+                    if (showTimePicker) {
+                        TimePickerDialog(
+                            onConfirm = {
+                                onAction(WorkoutAction.SetBlockTimer(workout,block.idx, it.toLong()))
+                                showTimePicker = false
+                            },
+                            onDismiss = { showTimePicker = false }
+                        )
+                    }
                 }
                 item {
                     Button(
@@ -166,7 +182,6 @@ fun WorkoutInProgressScreen(
             }
         }
     }
-
 }
 
 @Composable
@@ -174,6 +189,7 @@ fun WorkoutBlockItemDropdownMenu(
     modifier: Modifier = Modifier,
     onDeleteExercise: () -> Unit = {},
     onDeleteSet: () -> Unit = {},
+    onAddRestTimer: () -> Unit = {},
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -204,6 +220,13 @@ fun WorkoutBlockItemDropdownMenu(
                     expanded = false
                     onDeleteSet()
                 },
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(Res.string.add_rest_timer)) },
+                onClick = {
+                    expanded = false
+                    onAddRestTimer()
+                }
             )
         }
     }

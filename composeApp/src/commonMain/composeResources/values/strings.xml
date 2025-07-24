@@ -90,6 +90,7 @@
     <!--Block CRUD-->
     <string name="error_block_with_progression">Blocks with progression can not be removed</string>
     <string name="error_block_not_found">Block not found</string>
+    <string name="add_rest_timer">Add rest timer</string>
 
     <!--series CRUD-->
     <string name="add_set">Add set</string>
