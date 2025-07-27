@@ -22,6 +22,7 @@ import gitfit.composeapp.generated.resources.start_unplanned_workout
 import gitfit.composeapp.generated.resources.training_plans
 import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.Workout
+import io.github.jakubherr.gitfit.presentation.NotificationPermissionEffect
 import io.github.jakubherr.gitfit.presentation.planning.PlanningViewModel
 import io.github.jakubherr.gitfit.presentation.shared.PlanLazyColumn
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
@@ -38,6 +39,8 @@ fun DashboardScreenRoot(
 ) {
     val current by vm.currentWorkout.collectAsStateWithLifecycle()
     val plans by planVM.userPlans.collectAsStateWithLifecycle(emptyList())
+
+    NotificationPermissionEffect()
 
     DashboardScreen(
         currentWorkout = current,

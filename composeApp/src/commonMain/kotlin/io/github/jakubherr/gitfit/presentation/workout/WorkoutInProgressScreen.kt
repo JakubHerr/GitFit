@@ -50,6 +50,7 @@ import gitfit.composeapp.generated.resources.show_exercise_dropdown_menu
 import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.presentation.shared.ConfirmationDialog
 import io.github.jakubherr.gitfit.presentation.shared.TimePickerDialog
+import io.github.jakubherr.gitfit.presentation.shared.Timer
 import io.github.jakubherr.gitfit.presentation.shared.WorkoutBlockItem
 import org.jetbrains.compose.resources.stringResource
 
@@ -92,7 +93,11 @@ fun WorkoutInProgressScreenRoot(
             CircularProgressIndicator(modifier = Modifier.testTag("WorkoutProgressIndicator"))
         }
     } else {
-        WorkoutInProgressScreen(workout!!) { action ->
+        WorkoutInProgressScreen(
+            workout!!,
+            vm.time,
+            vm.timeLeft,
+        ) { action ->
             if (action is WorkoutAction.DeleteWorkout) {
                 showDialog = true
             } else {
@@ -105,6 +110,8 @@ fun WorkoutInProgressScreenRoot(
 @Composable
 fun WorkoutInProgressScreen(
     workout: Workout,
+    restTime: Long = 0,
+    restTimeLeft: Long = 0,
     onAction: (WorkoutAction) -> Unit = {},
 ) {
     var showTimePicker by remember { mutableStateOf(false) }
@@ -157,6 +164,15 @@ fun WorkoutInProgressScreen(
                         Text(stringResource(Res.string.add_exercise))
                     }
                 }
+            }
+
+            if (restTimeLeft > 0) {
+                Timer(
+                    restTime,
+                    restTimeLeft,
+                    onSkip = { onAction(WorkoutAction.CancelTimer) },
+                    onChangeTimer = { onAction(WorkoutAction.ChangeTimer(it)) }
+                )
             }
 
             Row(

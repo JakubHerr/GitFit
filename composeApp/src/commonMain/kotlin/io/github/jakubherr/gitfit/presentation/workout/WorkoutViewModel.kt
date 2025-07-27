@@ -1,6 +1,7 @@
 package io.github.jakubherr.gitfit.presentation.workout
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -13,7 +14,9 @@ import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.domain.repository.AuthRepository
 import io.github.jakubherr.gitfit.domain.repository.PlanRepository
 import io.github.jakubherr.gitfit.domain.repository.WorkoutRepository
+import io.github.jakubherr.gitfit.presentation.NotificationHandler
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapLatest
@@ -24,8 +27,41 @@ class WorkoutViewModel(
     private val workoutRepository: WorkoutRepository,
     private val planRepository: PlanRepository,
     private val authRepository: AuthRepository,
+    private val nh: NotificationHandler
 ) : ViewModel() {
     private val currentUser = authRepository.currentUserFlow
+
+    var timeLeft by mutableLongStateOf(0)
+        private set
+    var time by mutableLongStateOf(0)
+        private set
+
+    var timerJob: Job? = null
+
+    private fun setTimer(seconds: Long) {
+        timerJob?.cancel()
+        timerJob = viewModelScope.launch {
+            time = seconds
+            timeLeft = seconds
+            while (timeLeft > 0) {
+                delay(1000)
+                timeLeft--
+            }
+            time = 0
+            nh.sendNotification()
+        }
+    }
+
+    private fun changeTimer(seconds: Long) {
+        if (seconds > 0) time += seconds
+        timeLeft += seconds
+    }
+
+    private fun cancelTimer() {
+        timerJob?.cancel()
+        time = 0
+        timeLeft = 0
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     var currentWorkout =
@@ -79,12 +115,16 @@ class WorkoutViewModel(
             is WorkoutAction.SetBlockTimer -> setBlockTimer(action.workout, action.blockIdx, action.seconds)
             is WorkoutAction.RemoveBlock -> removeBlock(action.workout, action.block)
             is WorkoutAction.AddSet -> addSeries(action.workout, action.blockIdx)
-            is WorkoutAction.ModifySeries -> modifySeries(action.workout, action.blockIdx, action.series)
+            is WorkoutAction.ModifySeries -> modifySeries(action.workout, action.block, action.series)
             is WorkoutAction.DeleteLastSeries -> deleteLastSeries(action.workout, action.blockIdx, action.series)
             WorkoutAction.NotifyWorkoutSaved -> {
                 workoutSaved = false
                 progressionHandled = false
             }
+
+            is WorkoutAction.SetTimer -> setTimer(action.seconds)
+            is WorkoutAction.CancelTimer -> cancelTimer()
+            is WorkoutAction.ChangeTimer -> changeTimer(action.seconds)
         }
     }
 
@@ -184,10 +224,11 @@ class WorkoutViewModel(
 
     private fun modifySeries(
         workout: Workout,
-        blockIdx: Int,
+        block: Block,
         series: Series,
     ) {
-        viewModelScope.launch { workoutRepository.modifySeries(workout, blockIdx, series) }
+        viewModelScope.launch { workoutRepository.modifySeries(workout, block.idx, series) }
+        if (block.restTimeSeconds != null && series.completed) setTimer(block.restTimeSeconds)
     }
 
     private fun deleteLastSeries(
@@ -220,11 +261,17 @@ sealed interface WorkoutAction {
 
     class AddSet(val workout: Workout, val blockIdx: Int) : WorkoutAction
 
-    class ModifySeries(val workout: Workout, val blockIdx: Int, val series: Series) : WorkoutAction
+    class ModifySeries(val workout: Workout, val block: Block, val series: Series) : WorkoutAction
 
     class DeleteLastSeries(val workout: Workout, val blockIdx: Int, val series: Series) : WorkoutAction
 
     class AskForExercise(val workoutId: String) : WorkoutAction
 
     object NotifyWorkoutSaved : WorkoutAction
+
+    class SetTimer(val seconds: Long) : WorkoutAction
+
+    class ChangeTimer(val seconds: Long) : WorkoutAction
+
+    object CancelTimer : WorkoutAction
 }

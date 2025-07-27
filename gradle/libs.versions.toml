@@ -1,4 +1,5 @@
 [versions]
+accompanist = "0.37.3"
 agp = "8.11.1"
 android-compileSdk = "35"
 android-minSdk = "26"
@@ -45,6 +46,9 @@ koin-android = { module = "io.insert-koin:koin-android" }
 koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
 koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation" }
+
+# Permissions
+accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
 
 # Serialization to and from Firebase documents
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "ktx-serialization" }

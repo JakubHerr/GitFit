@@ -159,7 +159,7 @@ fun WorkoutBlockItem(
                             onAction(
                                 WorkoutAction.ModifySeries(
                                     workout,
-                                    block.idx,
+                                    block,
                                     series.copy(
                                         weight = weight.toDouble(),
                                         repetitions = reps.toLong(),
