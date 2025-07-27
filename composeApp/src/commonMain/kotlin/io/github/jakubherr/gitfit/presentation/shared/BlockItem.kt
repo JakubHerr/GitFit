@@ -98,6 +98,7 @@ fun PlanBlockItem(
     onDeleteSeries: (Series) -> Unit = {},
     onDeleteExercise: () -> Unit = {},
     onEditProgression: () -> Unit = {},
+    onAddRestTimer: (Long) -> Unit = {},
 ) {
     SharedBlockItem(
         block = block,
@@ -107,6 +108,7 @@ fun PlanBlockItem(
             PlanBlockItemDropdownMenu(
                 onDeleteExercise = onDeleteExercise,
                 onEditProgression = onEditProgression,
+                onAddRestTimer = onAddRestTimer,
             )
         },
         seriesAction = stringResource(Res.string.delete),

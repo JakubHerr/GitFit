@@ -29,7 +29,7 @@ import kotlin.math.ceil
 @Preview
 fun TimePickerDialog(
     onDismiss: () -> Unit = {},
-    onConfirm: (Int) -> Unit = {},
+    onConfirm: (Long) -> Unit = {},
 ) {
     val timeSeconds = listOf(5,10,15,20,25,30,35,40,45,50,55,60,70,80,90,100,110,120)
 
@@ -68,7 +68,7 @@ fun TimePickerDialog(
                         )
                     }
                     TextButton(
-                        onClick = { onConfirm(selectedTime) },
+                        onClick = { onConfirm(selectedTime.toLong()) },
                     ) {
                         Text(stringResource(Res.string.confirm))
                     }

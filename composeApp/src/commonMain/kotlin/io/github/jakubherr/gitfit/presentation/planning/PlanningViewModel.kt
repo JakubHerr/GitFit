@@ -56,6 +56,7 @@ class PlanningViewModel(
 
             is PlanAction.ErrorHandled -> error = null
             is PlanAction.SaveDefaultPlan -> saveDefaultPlan(action.plan)
+            is PlanAction.SetTimer -> plan = plan.setRestTime(action.workout, action.block, action.seconds)
         }
     }
 
@@ -141,6 +142,8 @@ sealed interface PlanAction {
     class SaveProgression(val workout: WorkoutPlan, val block: Block, val progression: ProgressionSettings) : PlanAction
 
     class DeleteProgression(val workout: WorkoutPlan, val block: Block) : PlanAction
+
+    class SetTimer(val workout: WorkoutPlan, val block: Block, val seconds: Long) : PlanAction
 
     object ErrorHandled : PlanAction
 }

@@ -149,7 +149,7 @@ fun WorkoutInProgressScreen(
                     if (showTimePicker) {
                         TimePickerDialog(
                             onConfirm = {
-                                onAction(WorkoutAction.SetBlockTimer(workout,block.idx, it.toLong()))
+                                onAction(WorkoutAction.SetBlockTimer(workout,block.idx, it))
                                 showTimePicker = false
                             },
                             onDismiss = { showTimePicker = false }
