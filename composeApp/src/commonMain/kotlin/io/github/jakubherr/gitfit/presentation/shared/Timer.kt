@@ -25,7 +25,9 @@ fun Timer(
     onSkip: () -> Unit = {},
     onChangeTimer: (Long) -> Unit = {},
 ) {
-    Card {
+    Card(
+        Modifier.padding(horizontal = 16.dp)
+    ) {
         Column(
             Modifier.fillMaxWidth().wrapContentHeight().padding(8.dp)
         ) {

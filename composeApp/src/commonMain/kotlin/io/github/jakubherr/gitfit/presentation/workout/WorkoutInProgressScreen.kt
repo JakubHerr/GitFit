@@ -114,7 +114,7 @@ fun WorkoutInProgressScreen(
     restTimeLeft: Long = 0,
     onAction: (WorkoutAction) -> Unit = {},
 ) {
-    var showTimePicker by remember { mutableStateOf(false) }
+    var showTimePickerForBlock by remember { mutableStateOf<Int?>(null) }
 
     Surface {
         Column {
@@ -140,19 +140,19 @@ fun WorkoutInProgressScreen(
                                     }
                                 },
                                 onAddRestTimer = {
-                                    showTimePicker = true
+                                    showTimePickerForBlock = block.idx
                                 }
                             )
                         },
                     )
 
-                    if (showTimePicker) {
+                    if (showTimePickerForBlock == block.idx) {
                         TimePickerDialog(
                             onConfirm = {
                                 onAction(WorkoutAction.SetBlockTimer(workout,block.idx, it))
-                                showTimePicker = false
+                                showTimePickerForBlock = null
                             },
-                            onDismiss = { showTimePicker = false }
+                            onDismiss = { showTimePickerForBlock = null }
                         )
                     }
                 }

@@ -91,7 +91,7 @@ data class Plan(
         block: Block,
         seconds: Long
     ): Plan {
-        return updateWorkoutPlan(workoutPlan.updateBlock(block.copy(restTimeSeconds = seconds)))
+        return updateWorkoutPlan(workoutPlan.updateBlock(block.copy(restTimeSeconds = if (seconds == 0L) null else seconds)))
     }
 
     sealed class Error {

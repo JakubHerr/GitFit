@@ -134,7 +134,7 @@ class WorkoutViewModel(
         seconds: Long
     ) {
         viewModelScope.launch {
-            workoutRepository.setBlockTimer(workout, blockIdx, seconds)
+            workoutRepository.setBlockTimer(workout, blockIdx, if (seconds == 0L) null else seconds)
         }
     }
 
