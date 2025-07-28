@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
@@ -160,7 +161,8 @@ fun MeasurementInputField(
     unit: String,
     modifier: Modifier = Modifier,
     testTag: String,
-    onValueChange: (String) -> Unit,
+    imeAction: ImeAction = ImeAction.Done,
+    onValueChange: (String) -> Unit
 ) {
     Row(
         modifier.fillMaxWidth(),
@@ -173,7 +175,7 @@ fun MeasurementInputField(
             Modifier.wrapContentWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            DoubleInputField(value, onValueChange = onValueChange, modifier = Modifier.width(64.dp).testTag(testTag))
+            DoubleInputField(value, onValueChange = onValueChange, modifier = Modifier.width(64.dp).testTag(testTag), imeAction = imeAction)
             Spacer(Modifier.width(12.dp))
             Text(unit)
         }

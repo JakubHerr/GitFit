@@ -3,6 +3,7 @@ package io.github.jakubherr.gitfit.presentation.auth
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -14,6 +15,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.enter_email
@@ -55,7 +58,11 @@ fun ResetPasswordScreen(
                 email,
                 onValueChange = { email = it },
                 singleLine = true,
-                label = { Text(stringResource(Res.string.enter_email)) }
+                label = { Text(stringResource(Res.string.enter_email)) },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Done
+                )
             )
 
             Button(

@@ -27,8 +27,9 @@ import org.jetbrains.compose.resources.stringResource
 fun PasswordInputField(
     password: String,
     onPasswordChange: (String) -> Unit,
-    label: String = stringResource(Res.string.password),
     modifier: Modifier = Modifier,
+    label: String = stringResource(Res.string.password),
+    imeAction: ImeAction = ImeAction.Done
 ) {
     var showPassword by remember { mutableStateOf(false) }
 
@@ -50,7 +51,7 @@ fun PasswordInputField(
         keyboardOptions =
             KeyboardOptions(
                 keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Done,
+                imeAction = imeAction,
             ),
     )
 }

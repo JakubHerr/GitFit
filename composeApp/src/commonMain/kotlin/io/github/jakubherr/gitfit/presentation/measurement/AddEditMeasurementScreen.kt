@@ -15,6 +15,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.save_measurement
@@ -47,6 +48,7 @@ fun AddEditMeasurementScreen(
                     measurement.label,
                     measurement.unit,
                     Modifier.padding(16.dp),
+                    imeAction = if (idx == measurementTypes.lastIndex) ImeAction.Done else ImeAction.Next,
                     testTag = "MeasurementInput$idx",
                 ) {
                     measurement.backingField.value = it
