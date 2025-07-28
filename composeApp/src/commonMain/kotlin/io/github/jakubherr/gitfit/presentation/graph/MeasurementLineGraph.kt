@@ -23,7 +23,10 @@ import io.github.koalaplot.core.xygraph.DefaultPoint
 import io.github.koalaplot.core.xygraph.XYGraph
 import io.github.koalaplot.core.xygraph.autoScaleYRange
 import io.github.koalaplot.core.xygraph.rememberDoubleLinearAxisModel
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.number
 import org.jetbrains.compose.resources.stringResource
+import kotlin.let
 
 @OptIn(ExperimentalKoalaPlotApi::class)
 @Composable
@@ -35,26 +38,24 @@ fun MeasurementLineGraph(
     // take list of measurements
     // filter out measurements that are missing the selected type
     // map these measurements to a DefaultPoint of date and value
-    val data = measurementList
-        .map {
-            val value = when (measurementType) {
-                MeasurementType.NECK -> it.neck
-                MeasurementType.CHEST -> it.chest
-                MeasurementType.LEFT_ARM -> it.leftArm
-                MeasurementType.RIGHT_ARM -> it.rightArm
-                MeasurementType.LEFT_FOREARM -> it.leftForearm
-                MeasurementType.RIGHT_FOREARM -> it.rightForearm
-                MeasurementType.WAIST -> it.waist
-                MeasurementType.LEFT_THIGH -> it.leftThigh
-                MeasurementType.RIGHT_THIGH -> it.rightThigh
-                MeasurementType.LEFT_CALF -> it.leftCalf
-                MeasurementType.RIGHT_CALF -> it.rightCalf
-                MeasurementType.WEIGHT -> it.bodyweight
-                MeasurementType.HEIGHT -> it.height
-            }
-            it.date to value
-        }.filter { it.second != null }
-        .map { DefaultPoint(it.first.toString(), it.second!!) }
+    val data: List<DefaultPoint<String, Double>> = measurementList.mapNotNull { measurement ->
+        val value = when (measurementType) {
+            MeasurementType.NECK -> measurement.neck
+            MeasurementType.CHEST -> measurement.chest
+            MeasurementType.LEFT_ARM -> measurement.leftArm
+            MeasurementType.RIGHT_ARM -> measurement.rightArm
+            MeasurementType.LEFT_FOREARM -> measurement.leftForearm
+            MeasurementType.RIGHT_FOREARM -> measurement.rightForearm
+            MeasurementType.WAIST -> measurement.waist
+            MeasurementType.LEFT_THIGH -> measurement.leftThigh
+            MeasurementType.RIGHT_THIGH -> measurement.rightThigh
+            MeasurementType.LEFT_CALF -> measurement.leftCalf
+            MeasurementType.RIGHT_CALF -> measurement.rightCalf
+            MeasurementType.WEIGHT -> measurement.bodyweight
+            MeasurementType.HEIGHT -> measurement.height
+        }
+        value?.let { DefaultPoint("${measurement.date.day}.${measurement.date.month.number}.", it) }
+    }
 
     val title =
         if (data.isNotEmpty()) {
