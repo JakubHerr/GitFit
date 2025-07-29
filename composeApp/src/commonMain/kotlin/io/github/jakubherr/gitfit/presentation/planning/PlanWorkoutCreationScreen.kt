@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.add_exercise
+import gitfit.composeapp.generated.resources.add_rest_timer
 import gitfit.composeapp.generated.resources.confirm
 import gitfit.composeapp.generated.resources.delete_exercise
 import gitfit.composeapp.generated.resources.edit_progression
@@ -36,6 +37,7 @@ import io.github.jakubherr.gitfit.domain.model.Block
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
 import io.github.jakubherr.gitfit.presentation.shared.PlanBlockItem
 import io.github.jakubherr.gitfit.presentation.shared.StringInputField
+import io.github.jakubherr.gitfit.presentation.shared.TimePickerDialog
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -76,6 +78,7 @@ fun PlanWorkoutCreationScreen(
                     onDeleteSeries = { onAction(PlanAction.RemoveSet(workoutPlan, block, it)) },
                     onDeleteExercise = { onAction(PlanAction.RemoveExercise(workoutPlan, block)) },
                     onEditProgression = { onEditProgression(block) },
+                    onAddRestTimer = { onAction(PlanAction.SetTimer(workoutPlan, block, it)) }
                 )
             }
         }
@@ -109,8 +112,20 @@ fun PlanBlockItemDropdownMenu(
     modifier: Modifier = Modifier,
     onDeleteExercise: () -> Unit = {},
     onEditProgression: () -> Unit = {},
+    onAddRestTimer: (Long) -> Unit = {},
 ) {
     var expanded by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(false) }
+
+    if (showTimePicker) {
+        TimePickerDialog(
+            onDismiss = { showTimePicker = false},
+            onConfirm = {
+                onAddRestTimer(it)
+                showTimePicker = false
+            }
+        )
+    }
 
     Box {
         IconButton(
@@ -132,6 +147,7 @@ fun PlanBlockItemDropdownMenu(
                     expanded = false
                 },
             )
+
             DropdownMenuItem(
                 text = { Text(stringResource(Res.string.edit_progression)) },
                 modifier = Modifier.testTag("PlanEditProgression"),
@@ -139,6 +155,13 @@ fun PlanBlockItemDropdownMenu(
                     onEditProgression()
                     expanded = false
                 },
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(Res.string.add_rest_timer)) },
+                onClick = {
+                    expanded = false
+                    showTimePicker = true
+                }
             )
         }
     }

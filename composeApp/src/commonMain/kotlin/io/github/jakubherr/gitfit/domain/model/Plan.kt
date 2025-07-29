@@ -86,6 +86,14 @@ data class Plan(
         return updateWorkoutPlan(workoutPlan.updateBlock(block.copy(progressionSettings = progressionSettings)))
     }
 
+    fun setRestTime(
+        workoutPlan: WorkoutPlan,
+        block: Block,
+        seconds: Long
+    ): Plan {
+        return updateWorkoutPlan(workoutPlan.updateBlock(block.copy(restTimeSeconds = if (seconds == 0L) null else seconds)))
+    }
+
     sealed class Error {
         object InvalidPlanName : Error()
 

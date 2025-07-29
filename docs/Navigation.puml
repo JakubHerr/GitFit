@@ -1,0 +1,74 @@
+@startuml
+'https://plantuml.com/state-diagram
+hide empty description
+
+state NavHost {
+    state fork <<fork>>
+
+    [*] --> fork
+    fork --> AuthGraphRoute
+    fork --> LoggedInRoute
+    fork -right-> VerifyEmailRoute
+
+    state AuthGraphRoute {
+        AuthGraphRoute --> LoginRoute
+        LoginRoute --> ResetPasswordRoute
+    }
+
+    state LoggedInRoute {
+        state TopLevelDestinations {
+            LoggedInRoute --> Dashboard
+            Dashboard --> PlanOverviewRoute
+            PlanOverviewRoute --> MeasurementRoute
+            MeasurementRoute --> HistoryRoute
+            HistoryRoute --> SettingsRoute
+        }
+
+        state workoutNavigation {
+            Dashboard -> WorkoutInProgressRoute : Start unplanned workout
+
+            HistoryRoute --> WorkoutHistoryRoute
+            WorkoutHistoryRoute --> WorkoutDetailRoute
+        }
+
+        state planningNavigation {
+            PlanOverviewRoute --> PlanCreationRoute : Create new plan
+            PlanOverviewRoute --> PlanDetailRoute : Select existing plan
+
+            Dashboard -> PlanDetailRoute : Select existing plan
+            PlanDetailRoute -> WorkoutInProgressRoute : Start planned workout
+            PlanDetailRoute --> PlanCreationRoute : Edit plan
+
+            PlanningWorkoutRoute --> AddExerciseToPlanRoute
+            PlanningWorkoutRoute --> EditProgressionRoute
+
+            PlanCreationRoute --> PlanningWorkoutRoute : Edit workout day
+        }
+
+        state measurementNavigation {
+            MeasurementRoute -> MeasurementAddEditRoute
+            MeasurementRoute -> MeasurementHistoryRoute
+            HistoryRoute --> MeasurementHistoryRoute
+        }
+
+        state exerciseNavigation {
+            WorkoutInProgressRoute --> AddExerciseToWorkoutRoute
+
+            AddExerciseToWorkoutRoute --> CreateExerciseRoute
+
+            HistoryRoute --> ExerciseListRoute
+
+            ExerciseListRoute --> ExerciseDetailRoute
+
+            ExerciseListRoute --> CreateExerciseRoute
+        }
+
+        SettingsRoute --> AuthGraphRoute
+    }
+
+
+    LoginRoute --> VerifyEmailRoute
+    VerifyEmailRoute --> LoggedInRoute
+}
+
+@enduml

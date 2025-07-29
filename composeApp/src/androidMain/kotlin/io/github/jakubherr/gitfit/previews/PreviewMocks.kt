@@ -8,10 +8,7 @@ import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.Series
 import io.github.jakubherr.gitfit.domain.model.Workout
 import io.github.jakubherr.gitfit.domain.model.WorkoutPlan
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
-import kotlinx.datetime.todayIn
+import io.github.jakubherr.gitfit.domain.today
 
 val mockExercise =
     Exercise(
@@ -59,7 +56,7 @@ val mockWorkout =
     Workout(
         id = "mock",
         blocks = listOf(mockBlockComplete, mockBlock),
-        date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
+        date = today(),
     )
 
 val mockWorkoutPlan = WorkoutPlan(
@@ -77,7 +74,7 @@ val mockPlan = Plan(
 )
 
 val mockMeasurement = Measurement(
-    date = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
+    date = today(),
     1.0,
     2.0,
     3.0,

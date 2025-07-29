@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import io.github.jakubherr.gitfit.domain.isNonNegativeDouble
 import io.github.jakubherr.gitfit.domain.isNonNegativeInt
@@ -48,6 +49,7 @@ fun SetInput(
                     onValidSetEntered(set.copy(weight = weight.toDouble(), repetitions = reps.toLong()))
                 }
             },
+            imeAction = ImeAction.Next
         )
 
         IntegerInputField(
@@ -88,6 +90,7 @@ fun CheckableSetInput(
             modifier = Modifier.width(64.dp).testTag("WorkoutWeightInput"),
             onValueChange = { weight = it },
             enabled = !set.completed,
+            imeAction = ImeAction.Next
         )
 
         IntegerInputField(

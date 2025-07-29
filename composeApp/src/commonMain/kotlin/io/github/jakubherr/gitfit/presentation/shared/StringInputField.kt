@@ -1,8 +1,10 @@
 package io.github.jakubherr.gitfit.presentation.shared
 
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
 
 @Composable
 fun StringInputField(
@@ -11,6 +13,7 @@ fun StringInputField(
     maxLength: Int,
     modifier: Modifier = Modifier,
     isError: Boolean = value.isBlank(),
+    imeAction: ImeAction = ImeAction.Done,
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
 ) {
@@ -22,5 +25,8 @@ fun StringInputField(
         label = label,
         isError = isError,
         placeholder = placeholder,
+        keyboardOptions = KeyboardOptions(
+            imeAction = imeAction
+        )
     )
 }

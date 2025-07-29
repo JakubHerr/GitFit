@@ -1,9 +1,7 @@
 package io.github.jakubherr.gitfit.domain.model
 
-import kotlinx.datetime.Clock
+import io.github.jakubherr.gitfit.domain.today
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayIn
 import kotlinx.serialization.Serializable
 
 // Important: never rename existing variable names, it will create problems with existing records in database
@@ -13,7 +11,7 @@ import kotlinx.serialization.Serializable
 data class Workout(
     val id: String,
     val blocks: List<Block>,
-    val date: LocalDate = Clock.System.todayIn(TimeZone.currentSystemDefault()),
+    val date: LocalDate = today(),
     val completed: Boolean = false,
     val inProgress: Boolean = false,
     val planId: String? = null,

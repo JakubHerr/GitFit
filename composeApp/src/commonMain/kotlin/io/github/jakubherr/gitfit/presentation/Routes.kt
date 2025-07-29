@@ -3,6 +3,8 @@ package io.github.jakubherr.gitfit.presentation
 import androidx.annotation.Keep
 import kotlinx.serialization.Serializable
 
+// see docs/Navigation.puml for navigation diagram
+
 @Serializable
 @Keep
 object AuthGraphRoute

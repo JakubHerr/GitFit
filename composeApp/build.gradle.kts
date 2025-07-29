@@ -34,6 +34,7 @@ kotlin {
             implementation(libs.koin.android)
             implementation(project.dependencies.platform(libs.firebase))
             implementation(libs.gitlive.firebase.crashlytics)
+            implementation(libs.accompanist.permissions)
         }
         commonMain.dependencies {
             // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-compatibility-and-versioning.html#jetpack-compose-artifacts-used

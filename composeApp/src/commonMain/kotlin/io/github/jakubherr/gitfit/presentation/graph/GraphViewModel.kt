@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.take
+import kotlinx.datetime.number
 
 class GraphViewModel(
     private val workoutRepository: WorkoutRepository,
@@ -70,7 +71,7 @@ class GraphViewModel(
                 val metric = calculation(workout)
                 if (metric != null) add(
                     DefaultPoint(
-                        "${workout.date.dayOfMonth}.${workout.date.monthNumber}.",
+                        "${workout.date.day}.${workout.date.month.number}.",
                         metric as T
                     )
                 )

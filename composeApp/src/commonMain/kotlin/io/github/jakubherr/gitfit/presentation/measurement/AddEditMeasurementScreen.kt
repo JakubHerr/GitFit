@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -16,13 +15,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.save_measurement
 import io.github.jakubherr.gitfit.domain.model.Measurement
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayIn
+import io.github.jakubherr.gitfit.domain.today
 import org.jetbrains.compose.resources.stringResource
 import kotlin.enums.EnumEntries
 
@@ -50,6 +48,7 @@ fun AddEditMeasurementScreen(
                     measurement.label,
                     measurement.unit,
                     Modifier.padding(16.dp),
+                    imeAction = if (idx == measurementTypes.lastIndex) ImeAction.Done else ImeAction.Next,
                     testTag = "MeasurementInput$idx",
                 ) {
                     measurement.backingField.value = it
@@ -77,7 +76,7 @@ fun AddEditMeasurementScreen(
 
 private fun EnumEntries<MeasurementType>.toMeasurement() =
     Measurement(
-        date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
+        date = today(),
         get(0).value(),
         get(1).value(),
         get(2).value(),
