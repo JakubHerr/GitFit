@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.ktlint)
     alias(libs.plugins.googleServices)
     alias(libs.plugins.crashlytics)
 }
@@ -82,13 +81,25 @@ kotlin {
 
 android {
     namespace = "io.github.jakubherr.gitfit"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk =
+        libs.versions.android.compileSdk
+            .get()
+            .toInt()
 
     defaultConfig {
         applicationId = "io.github.jakubherr.gitfit"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = libs.versions.gitfitVersionCode.get().toInt()
+        minSdk =
+            libs.versions.android.minSdk
+                .get()
+                .toInt()
+        targetSdk =
+            libs.versions.android.targetSdk
+                .get()
+                .toInt()
+        versionCode =
+            libs.versions.gitfitVersionCode
+                .get()
+                .toInt()
         versionName = libs.versions.gitfit.get()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
