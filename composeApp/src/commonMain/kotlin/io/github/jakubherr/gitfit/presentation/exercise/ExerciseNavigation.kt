@@ -10,9 +10,9 @@ import io.github.jakubherr.gitfit.presentation.CreateExerciseRoute
 import io.github.jakubherr.gitfit.presentation.ExerciseDetailRoute
 import io.github.jakubherr.gitfit.presentation.ExerciseListRoute
 import io.github.jakubherr.gitfit.presentation.graph.GraphViewModel
+import io.github.jakubherr.gitfit.presentation.sharedViewModel
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
-import io.github.jakubherr.gitfit.presentation.sharedViewModel
 
 fun NavGraphBuilder.exerciseNavigation(navController: NavHostController) {
     composable<ExerciseListRoute> {

@@ -27,7 +27,7 @@ class WorkoutViewModel(
     private val workoutRepository: WorkoutRepository,
     private val planRepository: PlanRepository,
     private val authRepository: AuthRepository,
-    private val nh: NotificationHandler
+    private val nh: NotificationHandler,
 ) : ViewModel() {
     private val currentUser = authRepository.currentUserFlow
 
@@ -40,16 +40,17 @@ class WorkoutViewModel(
 
     private fun setTimer(seconds: Long) {
         timerJob?.cancel()
-        timerJob = viewModelScope.launch {
-            time = seconds
-            timeLeft = seconds
-            while (timeLeft > 0) {
-                delay(1000)
-                timeLeft--
+        timerJob =
+            viewModelScope.launch {
+                time = seconds
+                timeLeft = seconds
+                while (timeLeft > 0) {
+                    delay(1000)
+                    timeLeft--
+                }
+                time = 0
+                nh.sendNotification()
             }
-            time = 0
-            nh.sendNotification()
-        }
     }
 
     private fun changeTimer(seconds: Long) {
@@ -65,33 +66,36 @@ class WorkoutViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     var currentWorkout =
-        currentUser.flatMapLatest { user ->
-            workoutRepository.observeCurrentWorkoutOrNull(user?.id ?: "")
-        }.stateIn(
-            scope = viewModelScope,
-            initialValue = null,
-            started = SharingStarted.WhileSubscribed(5_000L),
-        )
+        currentUser
+            .flatMapLatest { user ->
+                workoutRepository.observeCurrentWorkoutOrNull(user?.id ?: "")
+            }.stateIn(
+                scope = viewModelScope,
+                initialValue = null,
+                started = SharingStarted.WhileSubscribed(5_000L),
+            )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val plannedWorkouts =
-        currentUser.flatMapLatest { user ->
-            workoutRepository.getPlannedWorkouts(user?.id ?: "")
-        }.stateIn(
-            scope = viewModelScope,
-            initialValue = emptyList(),
-            started = SharingStarted.WhileSubscribed(5_000L),
-        )
+        currentUser
+            .flatMapLatest { user ->
+                workoutRepository.getPlannedWorkouts(user?.id ?: "")
+            }.stateIn(
+                scope = viewModelScope,
+                initialValue = emptyList(),
+                started = SharingStarted.WhileSubscribed(5_000L),
+            )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val completedWorkouts =
-        currentUser.flatMapLatest { user ->
-            workoutRepository.getCompletedWorkouts(user?.id ?: "")
-        }.stateIn(
-            scope = viewModelScope,
-            initialValue = emptyList(),
-            started = SharingStarted.WhileSubscribed(5_000L),
-        )
+        currentUser
+            .flatMapLatest { user ->
+                workoutRepository.getCompletedWorkouts(user?.id ?: "")
+            }.stateIn(
+                scope = viewModelScope,
+                initialValue = emptyList(),
+                started = SharingStarted.WhileSubscribed(5_000L),
+            )
 
     var selectedWorkout by mutableStateOf<Workout?>(null)
 
@@ -131,7 +135,7 @@ class WorkoutViewModel(
     private fun setBlockTimer(
         workout: Workout,
         blockIdx: Int,
-        seconds: Long
+        seconds: Long,
     ) {
         viewModelScope.launch {
             workoutRepository.setBlockTimer(workout, blockIdx, if (seconds == 0L) null else seconds)
@@ -192,8 +196,8 @@ class WorkoutViewModel(
             if (!isFromPlan) return
 
             // fetch plan that workout record was based on and its workout plan
-            val plan = planRepository.getCustomPlan(authRepository.currentUser.id, workout.planId!!) ?: return
-            var workoutPlan = plan.workoutPlans.getOrNull(workout.planWorkoutIdx!!) ?: return
+            val plan = planRepository.getCustomPlan(authRepository.currentUser.id, workout.planId) ?: return
+            var workoutPlan = plan.workoutPlans.getOrNull(workout.planWorkoutIdx) ?: return
             workoutPlan = workoutPlan.progressPlan(workout)
 
             // update plan in database
@@ -245,33 +249,65 @@ class WorkoutViewModel(
 sealed interface WorkoutAction {
     object StartNewWorkout : WorkoutAction
 
-    class StartPlannedWorkout(val plan: Plan, val workoutIdx: Int) : WorkoutAction
+    class StartPlannedWorkout(
+        val plan: Plan,
+        val workoutIdx: Int,
+    ) : WorkoutAction
 
     object CompleteCurrentWorkout : WorkoutAction
 
-    class DeleteWorkout(val workoutId: String) : WorkoutAction
+    class DeleteWorkout(
+        val workoutId: String,
+    ) : WorkoutAction
 
-    class SelectWorkout(val workout: Workout) : WorkoutAction
+    class SelectWorkout(
+        val workout: Workout,
+    ) : WorkoutAction
 
-    class AddBlock(val workout: Workout, val exercise: Exercise) : WorkoutAction
+    class AddBlock(
+        val workout: Workout,
+        val exercise: Exercise,
+    ) : WorkoutAction
 
-    class SetBlockTimer(val workout: Workout, val blockIdx: Int, val seconds: Long) : WorkoutAction
+    class SetBlockTimer(
+        val workout: Workout,
+        val blockIdx: Int,
+        val seconds: Long,
+    ) : WorkoutAction
 
-    class RemoveBlock(val workout: Workout, val block: Block) : WorkoutAction
+    class RemoveBlock(
+        val workout: Workout,
+        val block: Block,
+    ) : WorkoutAction
 
-    class AddSet(val workout: Workout, val blockIdx: Int) : WorkoutAction
+    class AddSet(
+        val workout: Workout,
+        val blockIdx: Int,
+    ) : WorkoutAction
 
-    class ModifySeries(val workout: Workout, val block: Block, val series: Series) : WorkoutAction
+    class ModifySeries(
+        val workout: Workout,
+        val block: Block,
+        val series: Series,
+    ) : WorkoutAction
 
-    class DeleteLastSeries(val workout: Workout, val blockIdx: Int, val series: Series) : WorkoutAction
+    class DeleteLastSeries(
+        val workout: Workout,
+        val blockIdx: Int,
+        val series: Series,
+    ) : WorkoutAction
 
-    class AskForExercise(val workoutId: String) : WorkoutAction
+    object AskForExercise : WorkoutAction
 
     object NotifyWorkoutSaved : WorkoutAction
 
-    class SetTimer(val seconds: Long) : WorkoutAction
+    class SetTimer(
+        val seconds: Long,
+    ) : WorkoutAction
 
-    class ChangeTimer(val seconds: Long) : WorkoutAction
+    class ChangeTimer(
+        val seconds: Long,
+    ) : WorkoutAction
 
     object CancelTimer : WorkoutAction
 }

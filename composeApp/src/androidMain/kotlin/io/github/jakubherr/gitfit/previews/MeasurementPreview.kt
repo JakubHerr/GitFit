@@ -13,7 +13,7 @@ private fun MeasurementHistoryPreview() {
     GitFitTheme {
         Surface {
             MeasurementHistoryScreen(
-                listOf(mockMeasurement, mockMeasurement, mockMeasurement)
+                listOf(mockMeasurement, mockMeasurement, mockMeasurement),
             )
         }
     }
@@ -25,7 +25,7 @@ private fun AddEditMeasurementScreenPreview() {
     GitFitTheme {
         Surface {
             AddEditMeasurementScreen(
-                oldMeasurement = mockMeasurement
+                oldMeasurement = mockMeasurement,
             )
         }
     }

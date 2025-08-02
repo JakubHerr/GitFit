@@ -58,47 +58,39 @@ data class Plan(
     fun addSeries(
         workoutPlan: WorkoutPlan,
         block: Block,
-    ): Plan {
-        return updateWorkoutPlan(workoutPlan.updateBlock(block.addSeries()))
-    }
+    ): Plan = updateWorkoutPlan(workoutPlan.updateBlock(block.addSeries()))
 
     fun updateSeries(
         workoutPlan: WorkoutPlan,
         block: Block,
         series: Series,
-    ): Plan {
-        return updateWorkoutPlan(workoutPlan.updateBlock(block.updateSeries(series)))
-    }
+    ): Plan = updateWorkoutPlan(workoutPlan.updateBlock(block.updateSeries(series)))
 
     fun removeSeries(
         workoutPlan: WorkoutPlan,
         block: Block,
         series: Series,
-    ): Plan {
-        return updateWorkoutPlan(workoutPlan.updateBlock(block.removeSeries(series)))
-    }
+    ): Plan = updateWorkoutPlan(workoutPlan.updateBlock(block.removeSeries(series)))
 
     fun setProgression(
         workoutPlan: WorkoutPlan,
         block: Block,
         progressionSettings: ProgressionSettings?,
-    ): Plan {
-        return updateWorkoutPlan(workoutPlan.updateBlock(block.copy(progressionSettings = progressionSettings)))
-    }
+    ): Plan = updateWorkoutPlan(workoutPlan.updateBlock(block.copy(progressionSettings = progressionSettings)))
 
     fun setRestTime(
         workoutPlan: WorkoutPlan,
         block: Block,
-        seconds: Long
-    ): Plan {
-        return updateWorkoutPlan(workoutPlan.updateBlock(block.copy(restTimeSeconds = if (seconds == 0L) null else seconds)))
-    }
+        seconds: Long,
+    ): Plan = updateWorkoutPlan(workoutPlan.updateBlock(block.copy(restTimeSeconds = if (seconds == 0L) null else seconds)))
 
     sealed class Error {
         object InvalidPlanName : Error()
 
         object NoWorkoutInPlan : Error()
 
-        class InvalidWorkout(val error: Workout.Error) : Error()
+        class InvalidWorkout(
+            val error: Workout.Error,
+        ) : Error()
     }
 }

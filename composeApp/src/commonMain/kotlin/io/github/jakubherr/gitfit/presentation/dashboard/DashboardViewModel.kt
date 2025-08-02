@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 class DashboardViewModel : ViewModel()
 
 sealed interface DashboardAction {
-    class PlannedWorkoutClick(val workoutId: String) : DashboardAction
+    class PlannedWorkoutClick(
+        val workoutId: String,
+    ) : DashboardAction
 
     object UnplannedWorkoutClick : DashboardAction
 

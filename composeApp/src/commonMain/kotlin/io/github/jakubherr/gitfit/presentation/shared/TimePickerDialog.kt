@@ -31,40 +31,75 @@ fun TimePickerDialog(
     onDismiss: () -> Unit = {},
     onConfirm: (Long) -> Unit = {},
 ) {
-    val timeSeconds = listOf(0,5,10,15,20,25,30,35,40,45,50,55,60,70,80,90,100,110,120,130,140,150,160,170,180,195,210,225,240,255,270,285,300)
+    val timeSeconds =
+        listOf(
+            0,
+            5,
+            10,
+            15,
+            20,
+            25,
+            30,
+            35,
+            40,
+            45,
+            50,
+            55,
+            60,
+            70,
+            80,
+            90,
+            100,
+            110,
+            120,
+            130,
+            140,
+            150,
+            160,
+            170,
+            180,
+            195,
+            210,
+            225,
+            240,
+            255,
+            270,
+            285,
+            300,
+        )
 
     val middle = ceil(timeSeconds.lastIndex / 2.0).toInt()
     var selectedTime by remember { mutableIntStateOf(middle) }
 
     Dialog(
-        onDismissRequest = onDismiss
+        onDismissRequest = onDismiss,
     ) {
         Card(
-            modifier = Modifier.width(256.dp)
+            modifier = Modifier.width(256.dp),
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
             ) {
                 ListPicker(
                     timeSeconds[middle],
                     timeSeconds,
-                    format = { "${this/60}m${this%60}s" },
+                    format = { "${this / 60}m${this % 60}s" },
                     onValueChange = {
                         selectedTime = it
-                    }
+                    },
                 )
 
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     TextButton(
                         onClick = onDismiss,
                     ) {
                         Text(
                             stringResource(Res.string.cancel),
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                     TextButton(

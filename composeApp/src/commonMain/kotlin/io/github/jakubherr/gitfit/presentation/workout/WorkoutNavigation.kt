@@ -37,9 +37,11 @@ fun NavGraphBuilder.workoutNavigation(
         WorkoutInProgressScreenRoot(
             vm = vm,
             onAction = { action ->
-                if (action !is WorkoutAction.CompleteCurrentWorkout && action !is WorkoutAction.RemoveBlock) vm.onAction(
-                    action
-                )
+                if (action !is WorkoutAction.CompleteCurrentWorkout && action !is WorkoutAction.RemoveBlock) {
+                    vm.onAction(
+                        action,
+                    )
+                }
 
                 when (action) {
                     is WorkoutAction.AskForExercise -> navController.navigate(AddExerciseToWorkoutRoute)

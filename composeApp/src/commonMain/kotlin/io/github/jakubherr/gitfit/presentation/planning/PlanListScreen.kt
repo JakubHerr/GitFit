@@ -17,10 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.create_new_plan
-import gitfit.composeapp.generated.resources.predefined_plans
-import gitfit.composeapp.generated.resources.your_plans
 import io.github.jakubherr.gitfit.domain.model.Plan
-import io.github.jakubherr.gitfit.presentation.shared.PlanLazyColumn
 import io.github.jakubherr.gitfit.presentation.shared.PlanSectionLazyColumn
 import org.jetbrains.compose.resources.stringResource
 
@@ -61,13 +58,13 @@ fun PlanListScreen(
             verticalArrangement = Arrangement.Top,
         ) {
             Column(
-                Modifier.weight(1.0f)
+                Modifier.weight(1.0f),
             ) {
                 PlanSectionLazyColumn(
                     userPlans,
                     predefinedPlans,
                     onUserPlanSelected,
-                    onDefaultPlanSelected
+                    onDefaultPlanSelected,
                 )
             }
 
@@ -78,7 +75,7 @@ fun PlanListScreen(
             ) {
                 Button(
                     onClick = onCreateNewPlan,
-                    modifier = Modifier.testTag("CreateNewPlanButton")
+                    modifier = Modifier.testTag("CreateNewPlanButton"),
                 ) {
                     Text(stringResource(Res.string.create_new_plan))
                 }

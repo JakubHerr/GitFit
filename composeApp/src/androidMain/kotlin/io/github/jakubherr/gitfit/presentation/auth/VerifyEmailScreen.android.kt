@@ -6,6 +6,10 @@ import kotlinx.coroutines.tasks.await
 
 // on Android, the library actually works, so email verification can be updated
 actual suspend fun checkEmailValidation(): Boolean {
-    runCatching { Firebase.auth.currentUser?.reload()?.await() }
+    runCatching {
+        Firebase.auth.currentUser
+            ?.reload()
+            ?.await()
+    }
     return Firebase.auth.currentUser?.isEmailVerified ?: false
 }

@@ -18,7 +18,6 @@ import io.github.jakubherr.gitfit.presentation.measurement.MeasurementType
 import kotlin.test.Test
 
 class MeasurementTest {
-
     // This test validates that user can:
     //  add today's measurement
     //  edit today's measurement
@@ -26,25 +25,26 @@ class MeasurementTest {
     //  delete measurement record
     @OptIn(ExperimentalTestApi::class)
     @Test
-    fun measurementTest() = runComposeUiTest {
-        setContent {
-            App()
+    fun measurementTest() =
+        runComposeUiTest {
+            setContent {
+                App()
+            }
+
+            login()
+            createNewMeasurement()
+            waitUntilExactlyOneExists(hasText("Upravit dnešní měření"))
+            editTodaysMeasurement()
+
+            onNodeWithText("Zobrazit vše").performClick()
+            waitUntilExactlyOneExists(hasTestTag("MeasurementCard"))
+
+            deleteMeasurement()
+
+            navigateBack()
+
+            logout()
         }
-
-        login()
-        createNewMeasurement()
-        waitUntilExactlyOneExists(hasText("Upravit dnešní měření"))
-        editTodaysMeasurement()
-
-        onNodeWithText("Zobrazit vše").performClick()
-        waitUntilExactlyOneExists(hasTestTag("MeasurementCard"))
-
-        deleteMeasurement()
-
-        navigateBack()
-
-        logout()
-    }
 
     @OptIn(ExperimentalTestApi::class)
     private fun ComposeUiTest.createNewMeasurement() {

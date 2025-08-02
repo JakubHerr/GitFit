@@ -75,19 +75,19 @@ fun DashboardScreen(
             Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (currentWorkout == null) {
                     Button(
                         { onAction(DashboardAction.UnplannedWorkoutClick) },
-                        Modifier.testTag("StartWorkoutButton")
+                        Modifier.testTag("StartWorkoutButton"),
                     ) {
                         Text(stringResource(Res.string.start_unplanned_workout))
                     }
                 } else {
                     Button(
                         { onAction(DashboardAction.ResumeWorkoutClick) },
-                        Modifier.testTag("StartWorkoutButton")
+                        Modifier.testTag("StartWorkoutButton"),
                     ) {
                         Text(stringResource(Res.string.resume_workout))
                     }

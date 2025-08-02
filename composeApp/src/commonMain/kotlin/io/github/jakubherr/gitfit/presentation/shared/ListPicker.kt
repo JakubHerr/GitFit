@@ -94,35 +94,42 @@ fun <E> ListPicker(
     val listSize = values.size
     val coercedOutOfBoundsPageCount = beyondViewportPageCount.coerceIn(0..listSize / 2)
     val visibleItemsCount = 1 + coercedOutOfBoundsPageCount * 2
-    val iteration = run {
-        if (wrapSelectorWheel) remember(key1 = coercedOutOfBoundsPageCount, key2 = listSize) {
-            (Int.MAX_VALUE - 2 * coercedOutOfBoundsPageCount) / listSize
+    val iteration =
+        run {
+            if (wrapSelectorWheel) {
+                remember(key1 = coercedOutOfBoundsPageCount, key2 = listSize) {
+                    (Int.MAX_VALUE - 2 * coercedOutOfBoundsPageCount) / listSize
+                }
+            } else {
+                1
+            }
         }
-        else 1
-    }
-    val intervals = remember(key1 = coercedOutOfBoundsPageCount, key2 = iteration, key3 = listSize) {
-        listOf(
-            0,
-            coercedOutOfBoundsPageCount,
-            coercedOutOfBoundsPageCount + iteration * listSize,
-            coercedOutOfBoundsPageCount + iteration * listSize + coercedOutOfBoundsPageCount,
-        )
-    }
+    val intervals =
+        remember(key1 = coercedOutOfBoundsPageCount, key2 = iteration, key3 = listSize) {
+            listOf(
+                0,
+                coercedOutOfBoundsPageCount,
+                coercedOutOfBoundsPageCount + iteration * listSize,
+                coercedOutOfBoundsPageCount + iteration * listSize + coercedOutOfBoundsPageCount,
+            )
+        }
     val scrollOfItemIndex = { it: Int ->
         it + (listSize * (iteration / 2))
     }
     val scrollOfItem = { item: E ->
         values.indexOf(item).takeIf { it != -1 }?.let { index -> scrollOfItemIndex(index) }
     }
-    val lazyListState = rememberLazyListState(
-        initialFirstVisibleItemIndex = remember(
-            key1 = initialValue,
-            key2 = listSize,
-            key3 = iteration,
-        ) {
-            scrollOfItem(initialValue) ?: 0
-        },
-    )
+    val lazyListState =
+        rememberLazyListState(
+            initialFirstVisibleItemIndex =
+                remember(
+                    key1 = initialValue,
+                    key2 = listSize,
+                    key3 = iteration,
+                ) {
+                    scrollOfItem(initialValue) ?: 0
+                },
+        )
     LaunchedEffect(key1 = values) {
         snapshotFlow { lazyListState.firstVisibleItemIndex }.collectLatest {
             onValueChange(values[it % listSize])
@@ -141,9 +148,10 @@ fun <E> ListPicker(
             ) { showTextField ->
                 if (showTextField) {
                     var isError by rememberSaveable { mutableStateOf(false) }
-                    val initialSelectedItem = remember {
-                        values[lazyListState.firstVisibleItemIndex % listSize]
-                    }
+                    val initialSelectedItem =
+                        remember {
+                            values[lazyListState.firstVisibleItemIndex % listSize]
+                        }
                     var value by rememberSaveable {
                         mutableStateOf(initialSelectedItem.format())
                     }
@@ -154,50 +162,62 @@ fun <E> ListPicker(
                     val coroutineScope = rememberCoroutineScope()
                     ComposeScope {
                         TextField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .focusRequester(focusRequester),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .focusRequester(focusRequester),
                             value = value,
                             onValueChange = { string ->
                                 value = string
                                 parse?.invoke(string).let { item ->
-                                    isError = kotlin.run {
-                                        if (item != null) !values.contains(item) // true: item not found
-                                        else true // string cannot be parsed
+                                    isError =
+                                        kotlin.run {
+                                            if (item != null) {
+                                                !values.contains(item) // true: item not found
+                                            } else {
+                                                true // string cannot be parsed
+                                            }
+                                        }
+                                    if (isError) {
+                                        onValueChange(initialSelectedItem)
+                                    } else {
+                                        onValueChange(item ?: initialSelectedItem)
                                     }
-                                    if (isError) onValueChange(initialSelectedItem)
-                                    else onValueChange(item ?: initialSelectedItem)
                                     onIsErrorChange(isError)
                                 }
                             },
                             textStyle = textStyle.copy(textAlign = TextAlign.Center),
-                            keyboardOptions = KeyboardOptions.Default.copy(
-                                keyboardType = keyboardType,
-                                imeAction = if (!isError) ImeAction.Done else ImeAction.Default,
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onDone = {
-                                    if (!isError) {
-                                        parse?.invoke(value)?.let { item ->
-                                            scrollOfItem(item)?.let { scroll ->
-                                                coroutineScope.launch {
-                                                    lazyListState.scrollToItem(scroll)
+                            keyboardOptions =
+                                KeyboardOptions.Default.copy(
+                                    keyboardType = keyboardType,
+                                    imeAction = if (!isError) ImeAction.Done else ImeAction.Default,
+                                ),
+                            keyboardActions =
+                                KeyboardActions(
+                                    onDone = {
+                                        if (!isError) {
+                                            parse?.invoke(value)?.let { item ->
+                                                scrollOfItem(item)?.let { scroll ->
+                                                    coroutineScope.launch {
+                                                        lazyListState.scrollToItem(scroll)
+                                                    }
                                                 }
                                             }
+                                            edit = false
                                         }
-                                        edit = false
-                                    }
-                                }),
+                                    },
+                                ),
                             isError = isError,
-                            colors = TextFieldDefaults.colors().copy(
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                                errorContainerColor = Color.Transparent,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                errorIndicatorColor = Color.Transparent,
-                                errorTextColor = MaterialTheme.colorScheme.error,
-                            ),
+                            colors =
+                                TextFieldDefaults.colors().copy(
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    errorContainerColor = Color.Transparent,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    errorIndicatorColor = Color.Transparent,
+                                    errorTextColor = MaterialTheme.colorScheme.error,
+                                ),
                         )
                     }
                 } else {
@@ -206,16 +226,20 @@ fun <E> ListPicker(
                         state = lazyListState,
                         flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(itemHeight * visibleItemsCount)
-                            .fadingEdge(
-                                brush = remember {
-                                    Brush.verticalGradient(
-                                        0F to Color.Transparent, 0.5F to Color.Black, 1F to Color.Transparent
-                                    )
-                                },
-                            ),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(itemHeight * visibleItemsCount)
+                                .fadingEdge(
+                                    brush =
+                                        remember {
+                                            Brush.verticalGradient(
+                                                0F to Color.Transparent,
+                                                0.5F to Color.Black,
+                                                1F to Color.Transparent,
+                                            )
+                                        },
+                                ),
                     ) {
                         items(
                             count = intervals.last(),
@@ -228,13 +252,20 @@ fun <E> ListPicker(
                             }
                             val textModifier = Modifier.padding(vertical = verticalPadding)
                             when (index) {
-                                in intervals[0]..<intervals[1] -> Text(
-                                    text = if (wrapSelectorWheel) values[(index - coercedOutOfBoundsPageCount + listSize) % listSize].format() else "",
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    style = textStyle,
-                                    modifier = textModifier,
-                                )
+                                in intervals[0]..<intervals[1] ->
+                                    Text(
+                                        text =
+                                            if (wrapSelectorWheel) {
+                                                values[(index - coercedOutOfBoundsPageCount + listSize) % listSize]
+                                                    .format()
+                                            } else {
+                                                ""
+                                            },
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        style = textStyle,
+                                        modifier = textModifier,
+                                    )
 
                                 in intervals[1]..<intervals[2] -> {
                                     Text(
@@ -242,22 +273,29 @@ fun <E> ListPicker(
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis,
                                         style = textStyle,
-                                        modifier = textModifier.then(
-                                            Modifier.clickable(
-                                                onClick = { edit = true },
-                                                enabled = enabled,
-                                            )
-                                        ),
+                                        modifier =
+                                            textModifier.then(
+                                                Modifier.clickable(
+                                                    onClick = { edit = true },
+                                                    enabled = enabled,
+                                                ),
+                                            ),
                                     )
                                 }
 
-                                in intervals[2]..<intervals[3] -> Text(
-                                    text = if (wrapSelectorWheel) values[(index - coercedOutOfBoundsPageCount) % listSize].format() else "",
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    style = textStyle,
-                                    modifier = textModifier,
-                                )
+                                in intervals[2]..<intervals[3] ->
+                                    Text(
+                                        text =
+                                            if (wrapSelectorWheel) {
+                                                values[(index - coercedOutOfBoundsPageCount) % listSize].format()
+                                            } else {
+                                                ""
+                                            },
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        style = textStyle,
+                                        modifier = textModifier,
+                                    )
                             }
                         }
                     }
@@ -285,12 +323,13 @@ fun ComposeScope(content: @Composable () -> Unit) {
 }
 
 @Stable
-fun Modifier.fadingEdge(brush: Brush) = this
-    .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
-    .drawWithContent {
-        drawContent()
-        drawRect(brush = brush, blendMode = BlendMode.DstIn)
-    }
+fun Modifier.fadingEdge(brush: Brush) =
+    this
+        .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
+        .drawWithContent {
+            drawContent()
+            drawRect(brush = brush, blendMode = BlendMode.DstIn)
+        }
 
 @Composable
 fun TextUnit.toDp() = LocalDensity.current.spToDp(this)

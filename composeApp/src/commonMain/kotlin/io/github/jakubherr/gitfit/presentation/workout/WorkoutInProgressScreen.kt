@@ -141,7 +141,7 @@ fun WorkoutInProgressScreen(
                                 },
                                 onAddRestTimer = {
                                     showTimePickerForBlock = block.idx
-                                }
+                                },
                             )
                         },
                     )
@@ -149,17 +149,23 @@ fun WorkoutInProgressScreen(
                     if (showTimePickerForBlock == block.idx) {
                         TimePickerDialog(
                             onConfirm = {
-                                onAction(WorkoutAction.SetBlockTimer(workout,block.idx, it))
+                                onAction(WorkoutAction.SetBlockTimer(workout, block.idx, it))
                                 showTimePickerForBlock = null
                             },
-                            onDismiss = { showTimePickerForBlock = null }
+                            onDismiss = { showTimePickerForBlock = null },
                         )
                     }
                 }
                 item {
                     Button(
-                        onClick = { onAction(WorkoutAction.AskForExercise(workout.id)) },
-                        modifier = Modifier.sizeIn(maxWidth = 320.dp).fillMaxWidth().padding(horizontal = 32.dp).testTag("WorkoutAddExercise")
+                        onClick = { onAction(WorkoutAction.AskForExercise) },
+                        modifier =
+                            Modifier
+                                .sizeIn(
+                                    maxWidth = 320.dp,
+                                ).fillMaxWidth()
+                                .padding(horizontal = 32.dp)
+                                .testTag("WorkoutAddExercise"),
                     ) {
                         Text(stringResource(Res.string.add_exercise))
                     }
@@ -171,7 +177,7 @@ fun WorkoutInProgressScreen(
                     restTime,
                     restTimeLeft,
                     onSkip = { onAction(WorkoutAction.CancelTimer) },
-                    onChangeTimer = { onAction(WorkoutAction.ChangeTimer(it)) }
+                    onChangeTimer = { onAction(WorkoutAction.ChangeTimer(it)) },
                 )
             }
 
@@ -182,16 +188,17 @@ fun WorkoutInProgressScreen(
                 Button(
                     onClick = { onAction(WorkoutAction.DeleteWorkout(workout.id)) },
                     modifier = Modifier.testTag("DeleteWorkoutInProgress"),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError,
-                    )
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            contentColor = MaterialTheme.colorScheme.onError,
+                        ),
                 ) {
                     Text(stringResource(Res.string.delete_workout))
                 }
                 Button(
                     onClick = { onAction(WorkoutAction.CompleteCurrentWorkout) },
-                    modifier = Modifier.testTag("SaveWorkoutInProgress")
+                    modifier = Modifier.testTag("SaveWorkoutInProgress"),
                 ) {
                     Text(stringResource(Res.string.save_workout))
                 }
@@ -212,7 +219,7 @@ fun WorkoutBlockItemDropdownMenu(
     Box {
         IconButton(
             onClick = { expanded = !expanded },
-            modifier = Modifier.testTag("WorkoutExerciseDropdown")
+            modifier = Modifier.testTag("WorkoutExerciseDropdown"),
         ) {
             Icon(Icons.Default.MoreVert, stringResource(Res.string.show_exercise_dropdown_menu))
         }
@@ -242,7 +249,7 @@ fun WorkoutBlockItemDropdownMenu(
                 onClick = {
                     expanded = false
                     onAddRestTimer()
-                }
+                },
             )
         }
     }
@@ -251,7 +258,7 @@ fun WorkoutBlockItemDropdownMenu(
 @Composable
 fun SetHeader(
     modifier: Modifier = Modifier,
-    seriesAction: String = stringResource(Res.string.done)
+    seriesAction: String = stringResource(Res.string.done),
 ) {
     Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         Text(stringResource(Res.string.set))

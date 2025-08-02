@@ -11,12 +11,13 @@ class PlanTest {
     @Test
     fun errorCheckingWorks() {
         // given plan with blank name
-        var plan = Plan(
-            id = "testPlan",
-            userId = "testUser",
-            name = "",
-            description = "",
-        )
+        var plan =
+            Plan(
+                id = "testPlan",
+                userId = "testUser",
+                name = "",
+                description = "",
+            )
         assertEquals(Plan.Error.InvalidPlanName, plan.error)
 
         // given named plan with no workout days
@@ -24,7 +25,7 @@ class PlanTest {
         assertEquals(Plan.Error.NoWorkoutInPlan, plan.error)
 
         // given plan with workout with no exercises
-        plan = plan.addWorkoutPlan(WorkoutPlan.Empty(plan.workoutPlans.size))
+        plan = plan.addWorkoutPlan(WorkoutPlan.empty(plan.workoutPlans.size))
         assertTrue {
             val error = plan.error
             error is Plan.Error.InvalidWorkout && error.error is Workout.Error.NoExerciseInWorkout
@@ -63,19 +64,21 @@ class PlanTest {
     @Test
     fun workoutPlanCRUD() {
         // given empty plan
-        var plan = Plan(
-            id = "testPlan",
-            userId = "testUser",
-            name = "plan name",
-            description = "",
-            workoutPlans = emptyList(),
-        )
+        var plan =
+            Plan(
+                id = "testPlan",
+                userId = "testUser",
+                name = "plan name",
+                description = "",
+                workoutPlans = emptyList(),
+            )
 
         // workout plans can be added
-        plan = plan
-            .addWorkoutPlan(WorkoutPlan.Empty(0))
-            .addWorkoutPlan(WorkoutPlan.Empty(1))
-            .addWorkoutPlan(WorkoutPlan.Empty(2))
+        plan =
+            plan
+                .addWorkoutPlan(WorkoutPlan.empty(0))
+                .addWorkoutPlan(WorkoutPlan.empty(1))
+                .addWorkoutPlan(WorkoutPlan.empty(2))
         assertEquals(3, plan.workoutPlans.size)
 
         // workout plans can be updated
@@ -97,25 +100,28 @@ class PlanTest {
     @Test
     fun exerciseCRUD() {
         // given plan with empty workout day
-        var plan = Plan(
-            id = "testPlan",
-            userId = "testUser",
-            name = "plan name",
-            description = "",
-            workoutPlans = listOf(
-                WorkoutPlan(
-                    name = "workout plan",
-                    idx = 0,
-                    blocks =  emptyList()
-                )
-            ),
-        )
+        var plan =
+            Plan(
+                id = "testPlan",
+                userId = "testUser",
+                name = "plan name",
+                description = "",
+                workoutPlans =
+                    listOf(
+                        WorkoutPlan(
+                            name = "workout plan",
+                            idx = 0,
+                            blocks = emptyList(),
+                        ),
+                    ),
+            )
 
         // exercise blocks can be added
-        plan = plan
-            .addExercise(0, testExercise)
-            .addExercise(0, testExercise)
-            .addExercise(0, testExercise)
+        plan =
+            plan
+                .addExercise(0, testExercise)
+                .addExercise(0, testExercise)
+                .addExercise(0, testExercise)
         assertEquals(3, plan.workoutPlans[0].blocks.size)
 
         // exercise blocks can be removed, even out of order
@@ -133,48 +139,67 @@ class PlanTest {
     @Test
     fun seriesCRUD() {
         // given plan with workout day with empty exercise
-        var plan = Plan(
-            id = "testPlan",
-            userId = "testUser",
-            name = "plan name",
-            description = "",
-            workoutPlans = listOf(
-                WorkoutPlan(
-                    name = "workout plan",
-                    idx = 0,
-                    blocks =  listOf(
-                        Block(
+        var plan =
+            Plan(
+                id = "testPlan",
+                userId = "testUser",
+                name = "plan name",
+                description = "",
+                workoutPlans =
+                    listOf(
+                        WorkoutPlan(
+                            name = "workout plan",
                             idx = 0,
-                            testExercise,
-                            series = emptyList()
-                        )
-                    )
-                )
-            ),
-        )
+                            blocks =
+                                listOf(
+                                    Block(
+                                        idx = 0,
+                                        testExercise,
+                                        series = emptyList(),
+                                    ),
+                                ),
+                        ),
+                    ),
+            )
 
         // series can be added
         plan = plan.addSeries(plan.workoutPlans[0], plan.workoutPlans[0].blocks[0])
         plan = plan.addSeries(plan.workoutPlans[0], plan.workoutPlans[0].blocks[0])
         plan = plan.addSeries(plan.workoutPlans[0], plan.workoutPlans[0].blocks[0])
-        assertEquals(3, plan.workoutPlans[0].blocks[0].series.size)
+        assertEquals(
+            3,
+            plan.workoutPlans[0]
+                .blocks[0]
+                .series.size,
+        )
 
         // series can be updated
-        val newSeries = plan.workoutPlans[0].blocks[0].series[0].copy(weight = 80.0, repetitions = 12)
-        plan = plan.updateSeries(
-            plan.workoutPlans[0],
-            plan.workoutPlans[0].blocks[0],
-            newSeries
-        )
+        val newSeries =
+            plan.workoutPlans[0]
+                .blocks[0]
+                .series[0]
+                .copy(weight = 80.0, repetitions = 12)
+        plan =
+            plan.updateSeries(
+                plan.workoutPlans[0],
+                plan.workoutPlans[0].blocks[0],
+                newSeries,
+            )
         assertEquals(newSeries, plan.workoutPlans[0].blocks[0].series[0])
 
         // series can be removed, even out of order
-        plan = plan.removeSeries(
-            plan.workoutPlans[0],
-            plan.workoutPlans[0].blocks[0],
-            plan.workoutPlans[0].blocks[0].series[1]
+        plan =
+            plan.removeSeries(
+                plan.workoutPlans[0],
+                plan.workoutPlans[0].blocks[0],
+                plan.workoutPlans[0].blocks[0].series[1],
+            )
+        assertEquals(
+            2,
+            plan.workoutPlans[0]
+                .blocks[0]
+                .series.size,
         )
-        assertEquals(2, plan.workoutPlans[0].blocks[0].series.size)
         assertTrue {
             plan.workoutPlans[0].blocks[0].series.forEachIndexed { index, series ->
                 if (series.idx != index) return@assertTrue false

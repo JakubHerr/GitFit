@@ -88,8 +88,8 @@ fun PlanCreationScreen(
             Text(stringResource(Res.string.workout_days))
 
             Button(
-                onClick = { onAction(PlanAction.AddWorkout(WorkoutPlan.Empty(plan.workoutPlans.size))) },
-                modifier = Modifier.testTag("PlanAddWorkoutDay")
+                onClick = { onAction(PlanAction.AddWorkout(WorkoutPlan.empty(plan.workoutPlans.size))) },
+                modifier = Modifier.testTag("PlanAddWorkoutDay"),
             ) {
                 Text(stringResource(Res.string.add_workout_day))
             }
@@ -118,16 +118,16 @@ fun PlanCreationScreen(
         ) {
             Button(
                 onClick = { showDialog = true },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.error,
-                    contentColor = MaterialTheme.colorScheme.onError,
-                ),
-
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    ),
             ) { Text(stringResource(Res.string.discard_changes)) }
 
             Button(
                 onClick = { onAction(PlanAction.SavePlan) },
-                modifier = Modifier.testTag("SavePlan")
+                modifier = Modifier.testTag("SavePlan"),
             ) { Text(stringResource(Res.string.save)) }
         }
     }

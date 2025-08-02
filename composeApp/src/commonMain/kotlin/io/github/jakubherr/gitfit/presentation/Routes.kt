@@ -47,11 +47,16 @@ object AddExerciseToWorkoutRoute
 
 @Serializable
 @Keep
-class AddExerciseToPlanRoute(val workoutIdx: Int)
+class AddExerciseToPlanRoute(
+    val workoutIdx: Int,
+)
 
 @Serializable
 @Keep
-data class ExerciseDetailRoute(val exerciseId: String, val isCustom: Boolean)
+data class ExerciseDetailRoute(
+    val exerciseId: String,
+    val isCustom: Boolean,
+)
 
 @Serializable
 @Keep
@@ -75,7 +80,9 @@ object PlanOverviewRoute
 
 @Serializable
 @Keep
-class PlanDetailRoute(val planId: String)
+class PlanDetailRoute(
+    val planId: String,
+)
 
 @Serializable
 @Keep
@@ -83,11 +90,16 @@ object PlanCreationRoute
 
 @Serializable
 @Keep
-class PlanningWorkoutRoute(val workoutIdx: Int)
+class PlanningWorkoutRoute(
+    val workoutIdx: Int,
+)
 
 @Serializable
 @Keep
-class EditProgressionRoute(val workoutIdx: Int, val blockIdx: Int)
+class EditProgressionRoute(
+    val workoutIdx: Int,
+    val blockIdx: Int,
+)
 
 @Serializable
 @Keep

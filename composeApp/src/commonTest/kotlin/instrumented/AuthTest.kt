@@ -14,20 +14,21 @@ import kotlin.test.Test
 class AuthTest {
     @OptIn(ExperimentalTestApi::class)
     @Test
-    fun authTest() = runComposeUiTest {
-        setContent {
-            App()
-        }
+    fun authTest() =
+        runComposeUiTest {
+            setContent {
+                App()
+            }
 
-        register()
-        onNodeWithText("Nastavení").performClick()
-        onNodeWithTag("DeleteAccountButton1").performClick()
-        onNodeWithTag("ConfirmDialogButton").performClick()
-        onNodeWithText("Heslo").performTextInput("registrationtest")
-        onNodeWithTag("DeleteAccountButton2").performClick()
-        waitUntilDoesNotExist(
-            hasTestTag("AuthProgressIndicator"),
-            timeoutMillis = 10000
-        )
-    }
+            register()
+            onNodeWithText("Nastavení").performClick()
+            onNodeWithTag("DeleteAccountButton1").performClick()
+            onNodeWithTag("ConfirmDialogButton").performClick()
+            onNodeWithText("Heslo").performTextInput("registrationtest")
+            onNodeWithTag("DeleteAccountButton2").performClick()
+            waitUntilDoesNotExist(
+                hasTestTag("AuthProgressIndicator"),
+                timeoutMillis = 10000,
+            )
+        }
 }

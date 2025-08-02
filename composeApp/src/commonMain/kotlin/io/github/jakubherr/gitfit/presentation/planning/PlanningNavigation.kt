@@ -25,9 +25,9 @@ import io.github.jakubherr.gitfit.presentation.exercise.ExerciseListScreenRoot
 import io.github.jakubherr.gitfit.presentation.exercise.ExerciseViewModel
 import io.github.jakubherr.gitfit.presentation.navigateToTopLevelDestination
 import io.github.jakubherr.gitfit.presentation.shared.toMessage
+import io.github.jakubherr.gitfit.presentation.sharedViewModel
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutAction
 import io.github.jakubherr.gitfit.presentation.workout.WorkoutViewModel
-import io.github.jakubherr.gitfit.presentation.sharedViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
@@ -59,7 +59,7 @@ fun NavGraphBuilder.planningNavigation(
             vm = vm,
             onCreateNewPlan = { navController.navigate(PlanCreationRoute) },
             onUserPlanSelected = { navController.navigate(PlanDetailRoute(it.id)) },
-            onDefaultPlanSelected = { navController.navigate(PlanDetailRoute(it.id)) }
+            onDefaultPlanSelected = { navController.navigate(PlanDetailRoute(it.id)) },
         )
     }
 
@@ -108,7 +108,7 @@ fun NavGraphBuilder.planningNavigation(
                 onAction = { action ->
                     planViewModel.onAction(action)
                     navController.popBackStack()
-                }
+                },
             )
         }
     }

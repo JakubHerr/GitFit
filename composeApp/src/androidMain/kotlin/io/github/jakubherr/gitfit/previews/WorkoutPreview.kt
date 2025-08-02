@@ -22,7 +22,7 @@ private fun WorkoutDetailScreenPreview() {
     GitFitTheme {
         Surface {
             WorkoutDetailScreen(
-                mockWorkout
+                mockWorkout,
             )
         }
     }
@@ -34,7 +34,7 @@ private fun WorkoutListScreenPreview() {
     GitFitTheme {
         Surface {
             WorkoutListScreen(
-                workoutList = listOf(mockWorkout, mockWorkout, mockWorkout)
+                workoutList = listOf(mockWorkout, mockWorkout, mockWorkout),
             ) { }
         }
     }

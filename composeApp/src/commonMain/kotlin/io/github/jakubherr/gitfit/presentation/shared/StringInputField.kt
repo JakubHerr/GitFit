@@ -25,8 +25,9 @@ fun StringInputField(
         label = label,
         isError = isError,
         placeholder = placeholder,
-        keyboardOptions = KeyboardOptions(
-            imeAction = imeAction
-        )
+        keyboardOptions =
+            KeyboardOptions(
+                imeAction = imeAction,
+            ),
     )
 }

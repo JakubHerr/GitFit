@@ -19,11 +19,12 @@ data class Workout(
 ) {
     // aggregates all completed, valid series of an exercise
     // if there are no valid series of exercise in workout, return null
-    private fun getExerciseSeries(exerciseId: String): List<Series>? = blocks
-        .filter { it.exercise.id == exerciseId }
-        .flatMap { it.series }
-        .filter { it.completed && it.isNotNull }
-        .ifEmpty { null }
+    private fun getExerciseSeries(exerciseId: String): List<Series>? =
+        blocks
+            .filter { it.exercise.id == exerciseId }
+            .flatMap { it.series }
+            .filter { it.completed && it.isNotNull }
+            .ifEmpty { null }
 
     fun getExerciseHeaviestWeight(exerciseId: String): Double? {
         val series = getExerciseSeries(exerciseId) ?: return null
@@ -66,12 +67,15 @@ data class Workout(
         return copy(blocks = newBlocks)
     }
 
-    val error: Error? get() = when {
-        blocks.isEmpty() -> Error.NoExerciseInWorkout
-        blocks.any { block -> block.series.isEmpty() } -> Error.NoSetInExercise
-        blocks.any { block -> block.series.any { series -> series.weight == null || series.repetitions == null } } -> Error.InvalidSetInExercise
-        else -> null
-    }
+    val error: Error? get() =
+        when {
+            blocks.isEmpty() -> Error.NoExerciseInWorkout
+            blocks.any { block -> block.series.isEmpty() } -> Error.NoSetInExercise
+            blocks.any { block ->
+                block.series.any { series -> series.weight == null || series.repetitions == null }
+            } -> Error.InvalidSetInExercise
+            else -> null
+        }
 
     fun hasExercise(exerciseId: String?) = blocks.any { it.exercise.id == exerciseId }
 

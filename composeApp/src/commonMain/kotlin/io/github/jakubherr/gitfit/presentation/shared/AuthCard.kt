@@ -30,17 +30,17 @@ fun AuthCard(
 
         if (loading) {
             CircularProgressIndicator(
-                Modifier.testTag("AuthProgressIndicator")
+                Modifier.testTag("AuthProgressIndicator"),
             )
         }
 
         Card(
-            modifier = Modifier.sizeIn(maxWidth = 512.dp)
+            modifier = Modifier.sizeIn(maxWidth = 512.dp),
         ) {
             Column(
                 Modifier.padding(8.dp).width(IntrinsicSize.Max),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 content()
             }

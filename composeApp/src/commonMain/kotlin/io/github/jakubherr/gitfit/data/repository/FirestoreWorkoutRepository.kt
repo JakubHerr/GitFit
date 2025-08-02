@@ -31,11 +31,10 @@ class FirestoreWorkoutRepository(
         return workoutRef(userId)
             .where {
                 ("completed" equalTo false) and ("inProgress" equalTo true)
-            }
-            .snapshots.map { workoutSnapshot ->
+            }.snapshots
+            .map { workoutSnapshot ->
                 runCatching { workoutSnapshot.documents.firstOrNull()?.data<Workout>() }.getOrNull()
-            }
-            .flowOn(dispatcher)
+            }.flowOn(dispatcher)
     }
 
     // if the device is offline and the user deletes the only completed workout, it will take longer to update for some reason
@@ -45,12 +44,10 @@ class FirestoreWorkoutRepository(
         return workoutRef(userId)
             .where {
                 ("completed" equalTo true) and ("inProgress" equalTo false)
-            }
-            .snapshots
+            }.snapshots
             .map { snapshot ->
                 snapshot.documents.map { it.data<Workout>() }
-            }
-            .flowOn(dispatcher)
+            }.flowOn(dispatcher)
     }
 
     override fun getPlannedWorkouts(userId: String): Flow<List<Workout>> {
@@ -59,12 +56,10 @@ class FirestoreWorkoutRepository(
         return workoutRef(userId)
             .where {
                 ("completed" equalTo false) and ("inProgress" equalTo false)
-            }
-            .snapshots
+            }.snapshots
             .map { snapshot ->
                 snapshot.documents.map { it.data<Workout>() }
-            }
-            .flowOn(dispatcher)
+            }.flowOn(dispatcher)
     }
 
     override suspend fun startNewWorkout(): Result<Unit> {

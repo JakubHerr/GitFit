@@ -33,7 +33,9 @@ fun WorkoutPlanListItem(
     workout: WorkoutPlan,
     modifier: Modifier = Modifier,
     onItemClicked: () -> Unit = {},
-    actionSlot: @Composable () -> Unit = { Icon(Icons.Default.Delete, stringResource(Res.string.delete_series), tint = MaterialTheme.colorScheme.error) },
+    actionSlot: @Composable () -> Unit = {
+        Icon(Icons.Default.Delete, stringResource(Res.string.delete_series), tint = MaterialTheme.colorScheme.error)
+    },
     onActionClicked: () -> Unit = {},
 ) {
     Card(
@@ -52,7 +54,7 @@ fun WorkoutPlanListItem(
 
                 IconButton(
                     onActionClicked,
-                    modifier = Modifier.testTag("WorkoutPlanListItemAction")
+                    modifier = Modifier.testTag("WorkoutPlanListItemAction"),
                 ) {
                     actionSlot()
                 }

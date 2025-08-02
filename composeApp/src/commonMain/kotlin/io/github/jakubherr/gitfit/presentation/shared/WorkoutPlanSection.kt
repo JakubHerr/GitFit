@@ -47,12 +47,12 @@ fun PlanLazyColumn(
     var expanded by remember { mutableStateOf(true) }
 
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     ) {
         ExpandableSection(
             title,
             expanded,
-            onExpanded = { expanded = !expanded }
+            onExpanded = { expanded = !expanded },
         )
 
         Spacer(Modifier.height(8.dp))
@@ -96,20 +96,20 @@ fun PlanSectionLazyColumn(
     predefinedPlans: List<Plan>,
     onUserPlanSelected: (Plan) -> Unit,
     onPredefinedPlanSelected: (Plan) -> Unit,
-    modifier: Modifier = Modifier.fillMaxWidth()
+    modifier: Modifier = Modifier.fillMaxWidth(),
 ) {
     var userPlansExpanded by remember { mutableStateOf(true) }
     var predefinedPlansExpanded by remember { mutableStateOf(true) }
 
     LazyColumn(
         modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item {
             ExpandableSection(
                 stringResource(Res.string.your_plans),
                 userPlansExpanded,
-                onExpanded = { userPlansExpanded = !userPlansExpanded }
+                onExpanded = { userPlansExpanded = !userPlansExpanded },
             )
         }
         if (userPlansExpanded) {
@@ -125,7 +125,7 @@ fun PlanSectionLazyColumn(
             ExpandableSection(
                 stringResource(Res.string.predefined_plans),
                 predefinedPlansExpanded,
-                onExpanded = { predefinedPlansExpanded = !predefinedPlansExpanded }
+                onExpanded = { predefinedPlansExpanded = !predefinedPlansExpanded },
             )
         }
         if (predefinedPlansExpanded) {
@@ -148,7 +148,7 @@ private fun PlanListItem(
 ) {
     Card(
         { onPlanClicked(plan) },
-        modifier = Modifier.testTag(testTag)
+        modifier = Modifier.testTag(testTag),
     ) {
         Column(modifier.fillMaxWidth().padding(8.dp)) {
             Text(plan.name, fontWeight = FontWeight.Bold)

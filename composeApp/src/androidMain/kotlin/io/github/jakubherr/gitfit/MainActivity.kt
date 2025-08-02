@@ -1,10 +1,8 @@
 package io.github.jakubherr.gitfit
 
 import android.os.Bundle
-import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.core.view.WindowCompat
 import com.google.firebase.FirebaseApp
 import io.github.jakubherr.gitfit.presentation.App
 

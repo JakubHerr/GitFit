@@ -79,21 +79,21 @@ fun PlanDetailScreen(
                 if (isPredefined) {
                     Button(
                         { onAction(PlanAction.CopyDefaultPlan(plan)) },
-                        Modifier.testTag("CopyDefaultPlan")
+                        Modifier.testTag("CopyDefaultPlan"),
                     ) {
                         Text(stringResource(Res.string.add_to_your_plans))
                     }
                 } else {
                     IconButton(
                         { onAction(PlanAction.EditPlan(plan)) },
-                        modifier = Modifier.testTag("EditPlanButton")
+                        modifier = Modifier.testTag("EditPlanButton"),
                     ) {
                         Icon(Icons.Default.Edit, stringResource(Res.string.edit_plan))
                     }
 
                     IconButton(
                         onClick = { showDialog = true },
-                        modifier = Modifier.testTag("DeletePlanButton")
+                        modifier = Modifier.testTag("DeletePlanButton"),
                     ) {
                         Icon(Icons.Default.Delete, stringResource(Res.string.delete_workout), tint = MaterialTheme.colorScheme.error)
                     }
@@ -111,7 +111,13 @@ fun PlanDetailScreen(
                     workout,
                     onActionClicked = { onWorkoutSelected(workout) },
                     actionSlot = {
-                        if (!isPredefined) Icon(Icons.Default.PlayArrow, stringResource(Res.string.start_workout), tint = MaterialTheme.colorScheme.primary)
+                        if (!isPredefined) {
+                            Icon(
+                                Icons.Default.PlayArrow,
+                                stringResource(Res.string.start_workout),
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        }
                     },
                 )
             }

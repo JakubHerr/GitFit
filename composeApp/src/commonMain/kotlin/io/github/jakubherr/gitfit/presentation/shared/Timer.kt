@@ -26,18 +26,18 @@ fun Timer(
     onChangeTimer: (Long) -> Unit = {},
 ) {
     Card(
-        Modifier.padding(horizontal = 16.dp)
+        Modifier.padding(horizontal = 16.dp),
     ) {
         Column(
-            Modifier.fillMaxWidth().wrapContentHeight().padding(8.dp)
+            Modifier.fillMaxWidth().wrapContentHeight().padding(8.dp),
         ) {
             Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 TextButton(
-                    onClick = { onChangeTimer(-15) }
+                    onClick = { onChangeTimer(-15) },
                 ) {
                     Text("-15s")
                 }
@@ -45,7 +45,7 @@ fun Timer(
                 Text("${timeLeft / 60}m:${timeLeft % 60}s")
 
                 TextButton(
-                    onClick = { onChangeTimer(+15) }
+                    onClick = { onChangeTimer(+15) },
                 ) {
                     Text("+15s")
                 }
@@ -59,7 +59,7 @@ fun Timer(
                 LinearProgressIndicator(progress = { 1.0f - (timeLeft.toFloat() / time.toFloat()) })
 
                 Button(
-                    onClick = onSkip
+                    onClick = onSkip,
                 ) {
                     Text("Skip")
                 }

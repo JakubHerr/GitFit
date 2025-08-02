@@ -30,29 +30,29 @@ fun HistoryScreen(
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         Column(
             Modifier.width(IntrinsicSize.Max).wrapContentHeight(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Button(
                 onBrowseExerciseData,
-                Modifier.fillMaxWidth().testTag("BrowseExerciseHistoryButton")
+                Modifier.fillMaxWidth().testTag("BrowseExerciseHistoryButton"),
             ) {
                 Text(stringResource(Res.string.browse_exercise_history))
             }
 
             Button(
                 onBrowseWorkoutData,
-                Modifier.fillMaxWidth().testTag("BrowseWorkoutHistoryButton")
+                Modifier.fillMaxWidth().testTag("BrowseWorkoutHistoryButton"),
             ) {
                 Text(stringResource(Res.string.browse_workout_history))
             }
 
             Button(
                 onBrowseMeasurementData,
-                Modifier.fillMaxWidth()
+                Modifier.fillMaxWidth(),
             ) {
                 Text(stringResource(Res.string.browse_measurement_history))
             }

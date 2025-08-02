@@ -7,101 +7,111 @@ import kotlin.test.assertTrue
 class WorkoutPlanTest {
     private val testExercise = Exercise("exerciseId", "exerciseName", primaryMuscle = MuscleGroup.CHEST)
 
-    private val originalPlan = WorkoutPlan(
-        idx = 0,
-        name = "original",
-        blocks = listOf(
-            Block(
-                idx = 0,
-                exercise = testExercise,
-                series = listOf(
-                    Series(
+    private val originalPlan =
+        WorkoutPlan(
+            idx = 0,
+            name = "original",
+            blocks =
+                listOf(
+                    Block(
                         idx = 0,
-                        repetitions = 10,
-                        weight = 50.0,
-                        completed = false
-                    )
-                ),
-                progressionSettings = null
-            ),
-            Block(
-                idx = 1,
-                exercise = testExercise,
-                series = listOf(
-                    Series(
-                        idx = 0,
-                        repetitions = 5,
-                        weight = 20.0,
-                        completed = false
+                        exercise = testExercise,
+                        series =
+                            listOf(
+                                Series(
+                                    idx = 0,
+                                    repetitions = 10,
+                                    weight = 50.0,
+                                    completed = false,
+                                ),
+                            ),
+                        progressionSettings = null,
                     ),
-                    Series(
+                    Block(
                         idx = 1,
-                        repetitions = 5,
-                        weight = 20.0,
-                        completed = false
-                    )
+                        exercise = testExercise,
+                        series =
+                            listOf(
+                                Series(
+                                    idx = 0,
+                                    repetitions = 5,
+                                    weight = 20.0,
+                                    completed = false,
+                                ),
+                                Series(
+                                    idx = 1,
+                                    repetitions = 5,
+                                    weight = 20.0,
+                                    completed = false,
+                                ),
+                            ),
+                        progressionSettings =
+                            ProgressionSettings(
+                                type = ProgressionType.INCREASE_WEIGHT,
+                                trigger = ProgressionTrigger.MINIMUM_REPS_AND_WEIGHT_EVERY_SET,
+                                incrementWeightByKg = 2.5,
+                                incrementRepsBy = 0,
+                                weightThreshold = 20.0,
+                                repThreshold = 5,
+                            ),
+                    ),
                 ),
-                progressionSettings = ProgressionSettings(
-                    type = ProgressionType.INCREASE_WEIGHT,
-                    trigger = ProgressionTrigger.MINIMUM_REPS_AND_WEIGHT_EVERY_SET,
-                    incrementWeightByKg = 2.5,
-                    incrementRepsBy = 0,
-                    weightThreshold = 20.0,
-                    repThreshold = 5,
-                )
-            )
         )
-    )
 
     @Test
     fun validProgression() {
         // given a recorded workout with progression
-        val workoutRecord = Workout(
-            id = "workoutId",
-            completed = true,
-            inProgress = false,
-            blocks = listOf(
-                Block(
-                    idx = 0,
-                    exercise = testExercise,
-                    series = listOf(
-                        Series(
+        val workoutRecord =
+            Workout(
+                id = "workoutId",
+                completed = true,
+                inProgress = false,
+                blocks =
+                    listOf(
+                        Block(
                             idx = 0,
-                            repetitions = 10,
-                            weight = 60.0,
-                            completed = true
-                        )
-                    ),
-                    progressionSettings = null
-                ),
-                Block(
-                    idx = 1,
-                    exercise = testExercise,
-                    series = listOf(
-                        Series(
-                            idx = 0,
-                            repetitions = 5,
-                            weight = 20.0,
-                            completed = true
+                            exercise = testExercise,
+                            series =
+                                listOf(
+                                    Series(
+                                        idx = 0,
+                                        repetitions = 10,
+                                        weight = 60.0,
+                                        completed = true,
+                                    ),
+                                ),
+                            progressionSettings = null,
                         ),
-                        Series(
+                        Block(
                             idx = 1,
-                            repetitions = 5,
-                            weight = 20.0,
-                            completed = true
-                        )
+                            exercise = testExercise,
+                            series =
+                                listOf(
+                                    Series(
+                                        idx = 0,
+                                        repetitions = 5,
+                                        weight = 20.0,
+                                        completed = true,
+                                    ),
+                                    Series(
+                                        idx = 1,
+                                        repetitions = 5,
+                                        weight = 20.0,
+                                        completed = true,
+                                    ),
+                                ),
+                            progressionSettings =
+                                ProgressionSettings(
+                                    type = ProgressionType.INCREASE_WEIGHT,
+                                    trigger = ProgressionTrigger.MINIMUM_REPS_AND_WEIGHT_EVERY_SET,
+                                    incrementWeightByKg = 2.5,
+                                    incrementRepsBy = 0,
+                                    weightThreshold = 20.0,
+                                    repThreshold = 5,
+                                ),
+                        ),
                     ),
-                    progressionSettings = ProgressionSettings(
-                        type = ProgressionType.INCREASE_WEIGHT,
-                        trigger = ProgressionTrigger.MINIMUM_REPS_AND_WEIGHT_EVERY_SET,
-                        incrementWeightByKg = 2.5,
-                        incrementRepsBy = 0,
-                        weightThreshold = 20.0,
-                        repThreshold = 5,
-                    )
-                )
             )
-        )
 
         // when user progresses a plan from a workout record
         val updatedPlan = originalPlan.progressPlan(workoutRecord)
@@ -122,52 +132,57 @@ class WorkoutPlanTest {
     @Test
     fun invalidProgression() {
         // given workout record based on workout plan, where user changed ordering of blocks with progression
-        val workoutRecord = Workout(
-            id = "workoutId",
-            completed = true,
-            inProgress = false,
-            blocks = listOf(
-                Block(
-                    idx = 0,
-                    exercise = testExercise,
-                    series = listOf(
-                        Series(
+        val workoutRecord =
+            Workout(
+                id = "workoutId",
+                completed = true,
+                inProgress = false,
+                blocks =
+                    listOf(
+                        Block(
                             idx = 0,
-                            repetitions = 5,
-                            weight = 20.0,
-                            completed = true
+                            exercise = testExercise,
+                            series =
+                                listOf(
+                                    Series(
+                                        idx = 0,
+                                        repetitions = 5,
+                                        weight = 20.0,
+                                        completed = true,
+                                    ),
+                                    Series(
+                                        idx = 1,
+                                        repetitions = 5,
+                                        weight = 20.0,
+                                        completed = true,
+                                    ),
+                                ),
+                            progressionSettings =
+                                ProgressionSettings(
+                                    type = ProgressionType.INCREASE_WEIGHT,
+                                    trigger = ProgressionTrigger.MINIMUM_REPS_AND_WEIGHT_EVERY_SET,
+                                    incrementWeightByKg = 2.5,
+                                    incrementRepsBy = 0,
+                                    weightThreshold = 20.0,
+                                    repThreshold = 5,
+                                ),
                         ),
-                        Series(
+                        Block(
                             idx = 1,
-                            repetitions = 5,
-                            weight = 20.0,
-                            completed = true
-                        )
+                            exercise = testExercise,
+                            series =
+                                listOf(
+                                    Series(
+                                        idx = 0,
+                                        repetitions = 10,
+                                        weight = 60.0,
+                                        completed = true,
+                                    ),
+                                ),
+                            progressionSettings = null,
+                        ),
                     ),
-                    progressionSettings = ProgressionSettings(
-                        type = ProgressionType.INCREASE_WEIGHT,
-                        trigger = ProgressionTrigger.MINIMUM_REPS_AND_WEIGHT_EVERY_SET,
-                        incrementWeightByKg = 2.5,
-                        incrementRepsBy = 0,
-                        weightThreshold = 20.0,
-                        repThreshold = 5,
-                    )
-                ),
-                Block(
-                    idx = 1,
-                    exercise = testExercise,
-                    series = listOf(
-                        Series(
-                            idx = 0,
-                            repetitions = 10,
-                            weight = 60.0,
-                            completed = true
-                        )
-                    ),
-                    progressionSettings = null
-                )
             )
-        )
 
         // when the plan is progressed
         val progressedPlan = originalPlan.progressPlan(workoutRecord)

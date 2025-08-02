@@ -26,9 +26,10 @@ class ExerciseViewModel(
             is ExerciseAction.EditCustomExercise -> editExercise(action.exercise)
             is ExerciseAction.DeleteCustomExercise -> deleteCustomExercise(action.exerciseId)
             is ExerciseAction.SelectExercise -> selectedExercise = action.exercise
-            is ExerciseAction.CreateDefaultExercise -> viewModelScope.launch {
-                exerciseRepository.addDefaultExercise(action.exercise)
-            }
+            is ExerciseAction.CreateDefaultExercise ->
+                viewModelScope.launch {
+                    exerciseRepository.addDefaultExercise(action.exercise)
+                }
         }
     }
 
@@ -52,13 +53,23 @@ class ExerciseViewModel(
 }
 
 sealed interface ExerciseAction {
-    class CreateExercise(val exercise: Exercise) : ExerciseAction
+    class CreateExercise(
+        val exercise: Exercise,
+    ) : ExerciseAction
 
-    class EditCustomExercise(val exercise: Exercise) : ExerciseAction
+    class EditCustomExercise(
+        val exercise: Exercise,
+    ) : ExerciseAction
 
-    class DeleteCustomExercise(val exerciseId: String) : ExerciseAction
+    class DeleteCustomExercise(
+        val exerciseId: String,
+    ) : ExerciseAction
 
-    class SelectExercise(val exercise: Exercise) : ExerciseAction
+    class SelectExercise(
+        val exercise: Exercise,
+    ) : ExerciseAction
 
-    class CreateDefaultExercise(val exercise: Exercise) : ExerciseAction
+    class CreateDefaultExercise(
+        val exercise: Exercise,
+    ) : ExerciseAction
 }

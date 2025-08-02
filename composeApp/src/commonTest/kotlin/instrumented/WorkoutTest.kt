@@ -30,45 +30,46 @@ class WorkoutTest {
     //  delete workout record from history
     @OptIn(ExperimentalTestApi::class)
     @Test
-    fun WorkoutTest() = runComposeUiTest {
-        setContent {
-            App()
+    fun workoutTest() =
+        runComposeUiTest {
+            setContent {
+                App()
+            }
+
+            login()
+
+            startNewWorkout()
+            addExerciseToWorkout("Bench Press")
+            addNewInvalidSeries()
+            deleteLastSeries()
+            removeExerciseFromWorkout()
+            deleteWorkoutInProgress()
+
+            startNewWorkout()
+            addExerciseToWorkout("Bench Press")
+            addNewValidSeries()
+
+            navigateBack()
+            resumeWorkout()
+
+            // save workout
+            onNodeWithTag("SaveWorkoutInProgress").performClick()
+            waitUntilExactlyOneExists(
+                hasText("Spustit neplánovaný trénink"),
+                timeoutMillis = 3000,
+            )
+
+            deleteWorkoutRecord()
+
+            logout()
         }
-
-        login()
-
-        startNewWorkout()
-        addExerciseToWorkout("Bench Press")
-        addNewInvalidSeries()
-        deleteLastSeries()
-        removeExerciseFromWorkout()
-        deleteWorkoutInProgress()
-
-        startNewWorkout()
-        addExerciseToWorkout("Bench Press")
-        addNewValidSeries()
-
-        navigateBack()
-        resumeWorkout()
-
-        // save workout
-        onNodeWithTag("SaveWorkoutInProgress").performClick()
-        waitUntilExactlyOneExists(
-            hasText("Spustit neplánovaný trénink"),
-            timeoutMillis = 3000
-        )
-
-        deleteWorkoutRecord()
-
-        logout()
-    }
 
     @OptIn(ExperimentalTestApi::class)
     private fun ComposeUiTest.startNewWorkout() {
         onNodeWithTag("StartWorkoutButton").performClick()
         waitUntilExactlyOneExists(
             hasTestTag("WorkoutAddExercise"),
-            timeoutMillis = 3000
+            timeoutMillis = 3000,
         )
     }
 
@@ -76,7 +77,7 @@ class WorkoutTest {
     private fun ComposeUiTest.resumeWorkout() {
         waitUntilExactlyOneExists(
             hasText("Pokračovat v záznamu"),
-            timeoutMillis = 3000
+            timeoutMillis = 3000,
         )
         onNodeWithText("Pokračovat v záznamu").performClick()
         waitForIdle()
@@ -90,7 +91,7 @@ class WorkoutTest {
         // wait for exercise list to load and add some exercise
         waitUntilDoesNotExist(
             hasTestTag("EmptyExerciseList"),
-            timeoutMillis = 3000
+            timeoutMillis = 3000,
         )
         onNodeWithText(exerciseName).performClick()
         waitForIdle()
@@ -146,7 +147,7 @@ class WorkoutTest {
         // check that there is no workout in progress
         waitUntilExactlyOneExists(
             hasText("Spustit neplánovaný trénink"),
-            timeoutMillis = 3000
+            timeoutMillis = 3000,
         )
     }
 }
@@ -160,7 +161,7 @@ fun ComposeUiTest.deleteWorkoutRecord() {
     // wait for record to show up
     waitUntilExactlyOneExists(
         hasTestTag("WorkoutListItem"),
-        timeoutMillis = 3000
+        timeoutMillis = 3000,
     )
 
     // click on it
@@ -174,7 +175,7 @@ fun ComposeUiTest.deleteWorkoutRecord() {
     // wait for record list to be empty
     waitUntilDoesNotExist(
         hasTestTag("WorkoutListItem"),
-        timeoutMillis = 3000
+        timeoutMillis = 3000,
     )
 
     navigateBack()

@@ -63,14 +63,15 @@ fun LoginScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    val isValidLogin = remember(email, password) {
-        email.isNotBlank() && password.isNotBlank()
-    }
+    val isValidLogin =
+        remember(email, password) {
+            email.isNotBlank() && password.isNotBlank()
+        }
 
     Surface {
         AuthCard(
             modifier,
-            state.loading
+            state.loading,
         ) {
             OutlinedTextField(
                 email,
@@ -78,10 +79,11 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 label = { Text(stringResource(Res.string.email)) },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next,
-                )
+                keyboardOptions =
+                    KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next,
+                    ),
             )
 
             PasswordInputField(

@@ -52,7 +52,7 @@ fun SharedBlockItem(
             Row(
                 Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Row {
                     Text(block.exercise.name, style = MaterialTheme.typography.titleLarge)
@@ -64,7 +64,7 @@ fun SharedBlockItem(
             HorizontalDivider(Modifier.padding(vertical = 12.dp))
 
             Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 SetHeader(seriesAction = seriesAction)
                 seriesItems()
@@ -123,7 +123,7 @@ fun PlanBlockItem(
                     actionSlot = {
                         IconButton(
                             onClick = { onDeleteSeries(series) },
-                            modifier = Modifier.testTag("WorkoutPlanDeleteSeries")
+                            modifier = Modifier.testTag("WorkoutPlanDeleteSeries"),
                         ) {
                             Icon(Icons.Default.Delete, stringResource(Res.string.delete_series), tint = MaterialTheme.colorScheme.error)
                         }

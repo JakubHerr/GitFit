@@ -81,6 +81,5 @@ fun NavGraphBuilder.loggedInNavigation(
 // basically, when the user logs out, all viewModels that may be holding his data are destroyed
 @OptIn(KoinExperimentalAPI::class)
 @Composable
-inline fun <reified T : ViewModel> NavHostController.sharedViewModel(): T {
-    return koinNavViewModel<T>(viewModelStoreOwner = getBackStackEntry(LoggedInRoute))
-}
+inline fun <reified T : ViewModel> NavHostController.sharedViewModel(): T =
+    koinNavViewModel<T>(viewModelStoreOwner = getBackStackEntry(LoggedInRoute))

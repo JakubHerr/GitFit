@@ -83,32 +83,38 @@ class AuthViewModel(
 
     private fun sendPasswordResetEmail(email: String) {
         launch {
-            authRepository.sendPasswordResetEmail(email)
+            authRepository
+                .sendPasswordResetEmail(email)
                 .onSuccess { _finishedAction.value = AuthAction.RequestPasswordReset(email) }
         }
     }
 
-    private fun changePassword(oldPassword: String, newPassword: String) {
+    private fun changePassword(
+        oldPassword: String,
+        newPassword: String,
+    ) {
         launch {
-            authRepository.changePassword(oldPassword, newPassword)
+            authRepository
+                .changePassword(oldPassword, newPassword)
                 .onSuccess { _finishedAction.value = AuthAction.ChangePassword(oldPassword, newPassword) }
         }
     }
 
     private fun deleteAccount(password: String) {
         launch {
-            authRepository.deleteUser(password) { userId ->
-                // nuke all user workouts
-                workoutRepository.deleteAllWorkouts(userId).onFailure { return@deleteUser Result.failure(it) }
-                // nuke all user plans
-                planRepository.deleteAllCustomPlans(userId).onFailure { return@deleteUser Result.failure(it) }
-                // nuke all user measurements
-                measurementRepository.deleteAllMeasurements(userId).onFailure { return@deleteUser Result.failure(it) }
-                // nuke all user custom exercises
-                exerciseRepository.removeAllCustomExercises(userId).onFailure { return@deleteUser Result.failure(it) }
-            }.onSuccess {
-                _finishedAction.value = AuthAction.DeleteAccount("")
-            }
+            authRepository
+                .deleteUser(password) { userId ->
+                    // nuke all user workouts
+                    workoutRepository.deleteAllWorkouts(userId).onFailure { return@deleteUser Result.failure(it) }
+                    // nuke all user plans
+                    planRepository.deleteAllCustomPlans(userId).onFailure { return@deleteUser Result.failure(it) }
+                    // nuke all user measurements
+                    measurementRepository.deleteAllMeasurements(userId).onFailure { return@deleteUser Result.failure(it) }
+                    // nuke all user custom exercises
+                    exerciseRepository.removeAllCustomExercises(userId).onFailure { return@deleteUser Result.failure(it) }
+                }.onSuccess {
+                    _finishedAction.value = AuthAction.DeleteAccount("")
+                }
         }
     }
 
@@ -122,15 +128,28 @@ class AuthViewModel(
 }
 
 sealed interface AuthAction {
-    class SignIn(val email: String, val password: String) : AuthAction
+    class SignIn(
+        val email: String,
+        val password: String,
+    ) : AuthAction
 
-    class Register(val email: String, val password: String) : AuthAction
+    class Register(
+        val email: String,
+        val password: String,
+    ) : AuthAction
 
-    class RequestPasswordReset(val email: String) : AuthAction
+    class RequestPasswordReset(
+        val email: String,
+    ) : AuthAction
 
-    class ChangePassword(val oldPassword: String, val newPassword: String) : AuthAction
+    class ChangePassword(
+        val oldPassword: String,
+        val newPassword: String,
+    ) : AuthAction
 
-    class DeleteAccount(val password: String) : AuthAction
+    class DeleteAccount(
+        val password: String,
+    ) : AuthAction
 
     object SignOut : AuthAction
 
