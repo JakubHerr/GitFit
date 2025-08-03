@@ -79,6 +79,9 @@ kotlin {
         androidInstrumentedTest.dependencies {
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.uiTest)
+            implementation(libs.screengrab)
+            implementation(libs.androidx.ui.test.junit4)
+            implementation(libs.androidx.junit.ktx)
         }
     }
 }
@@ -98,6 +101,15 @@ android {
             .get()
             .toInt()
 
+    // This was needed to correctly merge debug manifest for fastlane screenshots
+    sourceSets {
+        getByName("main") {
+            manifest.srcFile("src/androidMain/AndroidManifest.xml")
+        }
+        getByName("debug") {
+            manifest.srcFile("src/androidDebug/AndroidManifest.xml")
+        }
+    }
     defaultConfig {
         applicationId = "io.github.jakubherr.gitfit"
         minSdk =

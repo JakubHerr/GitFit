@@ -35,4 +35,21 @@ desc "Upload app to Google Play internal test track"
         skip_upload_apk: 'true'
     )
   end
+
+desc "Build debug and test APK and take screenshots"
+  lane :take_screenshots do
+    gradle(
+      task: 'clean'
+    )
+    build_android_app(
+      task: 'assemble',
+      build_type: 'Debug'
+    )
+    build_android_app(
+      task: 'assemble',
+      build_type: 'AndroidTest'
+    )
+    screengrab
+  end
+
 end
