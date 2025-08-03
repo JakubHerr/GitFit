@@ -5,6 +5,8 @@
 xcuserdata
 !src/**/build/
 local.properties
+keystore.properties
+gitfit-fastlane-secret.json
 .idea
 .DS_Store
 captures

@@ -2,6 +2,8 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -72,12 +74,22 @@ kotlin {
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
 
+        androidInstrumentedTest.dependencies {
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.uiTest)
         }
     }
 }
+
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
+
+fun getSecret(key: String): String = keystoreProperties.getProperty(key) ?: System.getenv(key)
 
 android {
     namespace = "io.github.jakubherr.gitfit"
@@ -104,6 +116,14 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        create("play") {
+            storeFile = file(getSecret("KEYSTORE_FILE"))
+            storePassword = getSecret("KEYSTORE_PASSWORD")
+            keyAlias = getSecret("KEY_ALIAS")
+            keyPassword = getSecret("KEY_PASSWORD")
+        }
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -114,6 +134,7 @@ android {
             isMinifyEnabled = true
             isDebuggable = false
             isShrinkResources = true
+            signingConfig = signingConfigs.getByName("play")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
@@ -134,6 +155,12 @@ android {
         // this needed to be increased from 11 to 17 because of GitLive Firebase ¯\_(ツ)_/¯
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+    // this fixes problem with fastlane not having access to a compiler
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
     }
 }
 

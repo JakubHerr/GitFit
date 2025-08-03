@@ -1,0 +1,2 @@
+json_key_file("/home//jeff/AndroidStudioProjects/GitFit/gitfit-fastlane-secret.json")
+package_name("io.github.jakubherr.gitfit")

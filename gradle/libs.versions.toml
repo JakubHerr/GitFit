@@ -21,7 +21,7 @@ crashlytics-plugin = "3.0.5"
 koalaplot = "0.9.0" # https://github.com/KoalaPlot/koalaplot-core https://koalaplot.github.io/docs/
 material3Android = "1.3.2"
 gitfit = "0.9.4"
-gitfitVersionCode = "8" # this version code should be incremented for every single AAB that is uploaded to Google Play console
+gitfitVersionCode = "10" # this version code should be incremented for every single AAB that is uploaded to Google Play console
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
