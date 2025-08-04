@@ -45,9 +45,9 @@ class BlockTest {
         // then all weights in block are increased by 5.12 kg and repetitions stay the same
         assertTrue {
             updatedBlock.series[0].weight == 30.12 &&
-            updatedBlock.series[0].repetitions == 10L &&
-            updatedBlock.series[1].weight == 25.12 &&
-            updatedBlock.series[1].repetitions == 10L
+                updatedBlock.series[0].repetitions == 10L &&
+                updatedBlock.series[1].weight == 25.12 &&
+                updatedBlock.series[1].repetitions == 10L
         }
         // and progression setting weight threshold is updated for the next progression
         assertTrue {
@@ -94,9 +94,9 @@ class BlockTest {
         // then all repetitions in the block are updated and weight stays the same
         assertTrue {
             updatedBlock.series[0].repetitions == 12L &&
-            updatedBlock.series[0].weight == 25.00 &&
-            updatedBlock.series[1].repetitions == 12L &&
-            updatedBlock.series[1].weight == 20.0
+                updatedBlock.series[0].weight == 25.00 &&
+                updatedBlock.series[1].repetitions == 12L &&
+                updatedBlock.series[1].weight == 20.0
         }
         // and progression setting repetition threshold is updated for the next progression
         assertTrue { updatedBlock.progressionSettings?.repThreshold == 12 }

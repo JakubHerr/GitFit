@@ -24,8 +24,11 @@ class PlanningViewModel(
     var error: Plan.Error? by mutableStateOf(null)
 
     val userPlans get() =
-        if (authRepository.currentUser.loggedIn) planRepository.getCustomPlans(authRepository.currentUser.id)
-        else emptyFlow()
+        if (authRepository.currentUser.loggedIn) {
+            planRepository.getCustomPlans(authRepository.currentUser.id)
+        } else {
+            emptyFlow()
+        }
 
     val predefinedPlans = planRepository.getPredefinedPlans()
 
@@ -51,8 +54,9 @@ class PlanningViewModel(
             is PlanAction.RemoveSet -> plan = plan.removeSeries(action.workout, action.block, action.set)
 
             is PlanAction.DeleteProgression -> plan = plan.setProgression(action.workout, action.block, null)
-            is PlanAction.SaveProgression -> plan =
-                plan.setProgression(action.workout, action.block, action.progression)
+            is PlanAction.SaveProgression ->
+                plan =
+                    plan.setProgression(action.workout, action.block, action.progression)
 
             is PlanAction.ErrorHandled -> error = null
             is PlanAction.SaveDefaultPlan -> saveDefaultPlan(action.plan)
@@ -109,41 +113,88 @@ class PlanningViewModel(
 sealed interface PlanAction {
     object SavePlan : PlanAction
 
-    class SaveDefaultPlan(val plan: Plan) : PlanAction // TODO REMOVE
+    class SaveDefaultPlan(
+        val plan: Plan,
+    ) : PlanAction // TODO REMOVE
 
-    class CopyDefaultPlan(val plan: Plan) : PlanAction
+    class CopyDefaultPlan(
+        val plan: Plan,
+    ) : PlanAction
 
-    class RenamePlan(val name: String) : PlanAction
+    class RenamePlan(
+        val name: String,
+    ) : PlanAction
 
-    class EditPlan(val plan: Plan) : PlanAction
+    class EditPlan(
+        val plan: Plan,
+    ) : PlanAction
 
     object DiscardPlan : PlanAction
 
-    class DeletePlan(val planId: String) : PlanAction
+    class DeletePlan(
+        val planId: String,
+    ) : PlanAction
 
-    class AddWorkout(val workout: WorkoutPlan) : PlanAction
+    class AddWorkout(
+        val workout: WorkoutPlan,
+    ) : PlanAction
 
-    class RenameWorkout(val workout: WorkoutPlan, val name: String) : PlanAction
+    class RenameWorkout(
+        val workout: WorkoutPlan,
+        val name: String,
+    ) : PlanAction
 
-    class ValidateWorkout(val workout: WorkoutPlan) : PlanAction
+    class ValidateWorkout(
+        val workout: WorkoutPlan,
+    ) : PlanAction
 
-    class DeleteWorkout(val workout: WorkoutPlan) : PlanAction
+    class DeleteWorkout(
+        val workout: WorkoutPlan,
+    ) : PlanAction
 
-    class AddExercise(val workoutIdx: Int, val exercise: Exercise) : PlanAction
+    class AddExercise(
+        val workoutIdx: Int,
+        val exercise: Exercise,
+    ) : PlanAction
 
-    class RemoveExercise(val workout: WorkoutPlan, val block: Block) : PlanAction
+    class RemoveExercise(
+        val workout: WorkoutPlan,
+        val block: Block,
+    ) : PlanAction
 
-    class AddSet(val workout: WorkoutPlan, val block: Block) : PlanAction
+    class AddSet(
+        val workout: WorkoutPlan,
+        val block: Block,
+    ) : PlanAction
 
-    class EditSet(val workout: WorkoutPlan, val block: Block, val set: Series) : PlanAction
+    class EditSet(
+        val workout: WorkoutPlan,
+        val block: Block,
+        val set: Series,
+    ) : PlanAction
 
-    class RemoveSet(val workout: WorkoutPlan, val block: Block, val set: Series) : PlanAction
+    class RemoveSet(
+        val workout: WorkoutPlan,
+        val block: Block,
+        val set: Series,
+    ) : PlanAction
 
-    class SaveProgression(val workout: WorkoutPlan, val block: Block, val progression: ProgressionSettings) : PlanAction
+    class SaveProgression(
+        val workout: WorkoutPlan,
+        val block: Block,
+        val progression: ProgressionSettings,
+    ) : PlanAction
 
-    class DeleteProgression(val workout: WorkoutPlan, val block: Block) : PlanAction
+    class DeleteProgression(
+        val workout: WorkoutPlan,
+        val block: Block,
+    ) : PlanAction
 
-    class SetTimer(val workout: WorkoutPlan, val block: Block, val seconds: Long) : PlanAction
+    class SetTimer(
+        val workout: WorkoutPlan,
+        val block: Block,
+        val seconds: Long,
+    ) : PlanAction
 
     object ErrorHandled : PlanAction
 }

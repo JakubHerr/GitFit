@@ -49,7 +49,11 @@ class MeasurementViewModel(
 }
 
 sealed interface MeasurementAction {
-    class SaveMeasurement(val measurement: Measurement) : MeasurementAction
+    class SaveMeasurement(
+        val measurement: Measurement,
+    ) : MeasurementAction
 
-    class DeleteMeasurement(val measurement: Measurement) : MeasurementAction
+    class DeleteMeasurement(
+        val measurement: Measurement,
+    ) : MeasurementAction
 }

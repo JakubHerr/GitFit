@@ -1,0 +1,55 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Runs all unit tests"
+  lane :test do
+    gradle(task: "composeApp:testDebugUnitTest")
+  end
+
+  lane :lint do
+      gradle(task: "ktlintCheck")
+  end
+
+desc "Upload app to Google Play internal test track"
+  lane :play do
+      lint
+      test
+    gradle(task: 'bundleRelease')
+    upload_to_play_store(
+        track: 'internal',
+        skip_upload_apk: 'true'
+    )
+  end
+
+desc "Build debug and test APK and take screenshots"
+  lane :take_screenshots do
+    gradle(
+      task: 'clean'
+    )
+    build_android_app(
+      task: 'assemble',
+      build_type: 'Debug'
+    )
+    build_android_app(
+      task: 'assemble',
+      build_type: 'AndroidTest'
+    )
+    screengrab
+  end
+
+end

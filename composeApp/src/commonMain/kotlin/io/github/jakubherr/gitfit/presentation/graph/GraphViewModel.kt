@@ -29,18 +29,18 @@ class GraphViewModel(
     private val currentUser = authRepository.currentUserFlow
 
     // TODO make state flow that will change the number of selected records
-    private val lastTen = currentUser.flatMapLatest { user ->
-        workoutRepository.getCompletedWorkouts(user?.id ?: "")
-    }
-    .map { wo ->
-        wo.filter { it.hasExercise(selectedExercise.value?.id) }.sortedByDescending { it.date }
-    }
-    .take(10)
-    .stateIn(
-        scope = viewModelScope,
-        initialValue = emptyList(),
-        started = SharingStarted.WhileSubscribed(5_000L),
-    )
+    private val lastTen =
+        currentUser
+            .flatMapLatest { user ->
+                workoutRepository.getCompletedWorkouts(user?.id ?: "")
+            }.map { wo ->
+                wo.filter { it.hasExercise(selectedExercise.value?.id) }.sortedByDescending { it.date }
+            }.take(10)
+            .stateIn(
+                scope = viewModelScope,
+                initialValue = emptyList(),
+                started = SharingStarted.WhileSubscribed(5_000L),
+            )
 
     val data: Flow<List<DefaultPoint<String, Int>>> =
         combine(lastTen, selectedMetric, selectedExercise) { workouts, metric, exercise ->
@@ -64,24 +64,30 @@ class GraphViewModel(
     }
 
     private fun <T> List<Workout>.toDataPoints(calculation: (Workout) -> T?): List<DefaultPoint<String, T>> {
-        val list = buildList {
-            this@toDataPoints
-                .sortedBy { it.date }
-                .forEach { workout ->
-                val metric = calculation(workout)
-                if (metric != null) add(
-                    DefaultPoint(
-                        "${workout.date.day}.${workout.date.month.number}.",
-                        metric as T
-                    )
-                )
+        val list =
+            buildList {
+                this@toDataPoints
+                    .sortedBy { it.date }
+                    .forEach { workout ->
+                        val metric = calculation(workout)
+                        if (metric != null) {
+                            add(
+                                DefaultPoint(
+                                    "${workout.date.day}.${workout.date.month.number}.",
+                                    metric as T,
+                                ),
+                            )
+                        }
+                    }
             }
-        }
 
         return list
     }
 }
 
 sealed interface GraphAction {
-    class ExerciseAndMetricSelected(val exercise: Exercise, val metric: ExerciseMetric) : GraphAction
+    class ExerciseAndMetricSelected(
+        val exercise: Exercise,
+        val metric: ExerciseMetric,
+    ) : GraphAction
 }

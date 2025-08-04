@@ -32,12 +32,12 @@ private fun ResetPasswordScreenPreview() {
         Surface {
             ResetPasswordScreen(
                 state =
-                AuthState(
-                    User.LoggedOut,
-                    error = null,
-                    loading = true,
-                ),
-                onResetPassword = { }
+                    AuthState(
+                        User.LoggedOut,
+                        error = null,
+                        loading = true,
+                    ),
+                onResetPassword = { },
             )
         }
     }

@@ -29,7 +29,7 @@ fun PasswordInputField(
     onPasswordChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     label: String = stringResource(Res.string.password),
-    imeAction: ImeAction = ImeAction.Done
+    imeAction: ImeAction = ImeAction.Done,
 ) {
     var showPassword by remember { mutableStateOf(false) }
 

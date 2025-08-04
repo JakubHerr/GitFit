@@ -22,7 +22,7 @@ private fun DashboardScreenPreview() {
     GitFitTheme {
         Surface {
             DashboardScreen(
-                userPlans = listOf(mockPlan, mockPlan)
+                userPlans = listOf(mockPlan, mockPlan),
             )
         }
     }
@@ -35,7 +35,7 @@ fun PlanListScreenPreview(modifier: Modifier = Modifier) {
         Surface {
             PlanListScreen(
                 userPlans = listOf(mockPlan),
-                predefinedPlans = listOf(mockPlan, mockPlan, mockPlan, mockPlan)
+                predefinedPlans = listOf(mockPlan, mockPlan, mockPlan, mockPlan),
             )
         }
     }
@@ -60,7 +60,6 @@ private fun HistoryScreenPreview() {
     GitFitTheme {
         Surface {
             HistoryScreen {
-
             }
         }
     }
@@ -74,8 +73,8 @@ private fun SettingsScreenPreview() {
             SettingsScreen(
                 authState = AuthState(User.LoggedOut, loading = true, error = null),
                 onLogout = { },
-                onChangePassword = { _,_ -> },
-                onDeleteAccount = { }
+                onChangePassword = { _, _ -> },
+                onDeleteAccount = { },
             )
         }
     }

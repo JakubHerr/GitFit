@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -63,31 +64,33 @@ fun LoginScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    val isValidLogin = remember(email, password) {
-        email.isNotBlank() && password.isNotBlank()
-    }
+    val isValidLogin =
+        remember(email, password) {
+            email.isNotBlank() && password.isNotBlank()
+        }
 
     Surface {
         AuthCard(
             modifier,
-            state.loading
+            state.loading,
         ) {
             OutlinedTextField(
                 email,
                 onValueChange = { email = it },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("EmailInput"),
                 singleLine = true,
                 label = { Text(stringResource(Res.string.email)) },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next,
-                )
+                keyboardOptions =
+                    KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next,
+                    ),
             )
 
             PasswordInputField(
                 password,
                 onPasswordChange = { password = it },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag("PasswordInput"),
             )
 
             Row(
@@ -103,6 +106,7 @@ fun LoginScreen(
 
                 Button(
                     onClick = { onAction(AuthAction.SignIn(email, password)) },
+                    modifier = Modifier.testTag("LoginButton"),
                     enabled = isValidLogin,
                 ) {
                     Text(stringResource(Res.string.sign_in))

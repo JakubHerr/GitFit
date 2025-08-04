@@ -26,33 +26,30 @@ class FirebaseAuthRepository : AuthRepository {
     override suspend fun registerUser(
         email: String,
         password: String,
-    ): Result<User> {
-        return runWithErrorChecking {
+    ): Result<User> =
+        runWithErrorChecking {
             val result = auth.createUserWithEmailAndPassword(email, password)
             Result.success(result.user.toUser())
         }
-    }
 
     override suspend fun signInUser(
         email: String,
         password: String,
-    ): Result<User> {
-        return runWithErrorChecking {
+    ): Result<User> =
+        runWithErrorChecking {
             val result = auth.signInWithEmailAndPassword(email, password)
             Result.success(result.user.toUser())
         }
-    }
 
-    override suspend fun signOut(): Result<Unit> {
-        return runWithErrorChecking {
+    override suspend fun signOut(): Result<Unit> =
+        runWithErrorChecking {
             auth.signOut()
             Result.success(Unit)
         }
-    }
 
     override suspend fun changePassword(
         oldPassword: String,
-        newPassword: String
+        newPassword: String,
     ): Result<Unit> {
         if (!currentUser.loggedIn) return Result.failure(AuthError.UserLoggedOut)
 
@@ -79,19 +76,17 @@ class FirebaseAuthRepository : AuthRepository {
         }
     }
 
-    override suspend fun sendVerificationEmail(): Result<Unit> {
-        return runWithErrorChecking {
+    override suspend fun sendVerificationEmail(): Result<Unit> =
+        runWithErrorChecking {
             auth.currentUser?.sendEmailVerification()
             Result.success(Unit)
         }
-    }
 
-    override suspend fun sendPasswordResetEmail(email: String): Result<Unit> {
-        return runWithErrorChecking {
+    override suspend fun sendPasswordResetEmail(email: String): Result<Unit> =
+        runWithErrorChecking {
             auth.sendPasswordResetEmail(email)
             Result.success(Unit)
         }
-    }
 
     private suspend fun <T> runWithErrorChecking(block: suspend () -> Result<T>): Result<T> {
         try {

@@ -21,5 +21,3 @@ enum class MuscleGroup {
     CHEST,
     FOREARMS,
 }
-
-

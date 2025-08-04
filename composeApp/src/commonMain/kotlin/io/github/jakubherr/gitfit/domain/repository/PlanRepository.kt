@@ -13,9 +13,7 @@ interface PlanRepository {
         plan: Plan,
     ): Result<Unit>
 
-    suspend fun saveDefaultPlan(
-        plan: Plan,
-    ): Result<Unit>
+    suspend fun saveDefaultPlan(plan: Plan): Result<Unit>
 
     suspend fun deleteCustomPlan(
         userId: String,

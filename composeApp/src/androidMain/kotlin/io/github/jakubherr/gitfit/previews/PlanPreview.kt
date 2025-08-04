@@ -16,7 +16,7 @@ private fun PlanDetailScreenPreview() {
         Surface {
             PlanDetailScreen(
                 plan = mockPlan,
-                isPredefined = false
+                isPredefined = false,
             )
         }
     }
@@ -28,7 +28,7 @@ private fun PlanWorkoutDetailPreview() {
     GitFitTheme {
         Surface {
             PlanWorkoutCreationScreen(
-                workoutPlan = mockWorkoutPlan
+                workoutPlan = mockWorkoutPlan,
             )
         }
     }
@@ -40,7 +40,7 @@ private fun EditProgressionPreview() {
     GitFitTheme {
         Surface {
             EditProgressionScreen(
-                block = mockBlock
+                block = mockBlock,
             )
         }
     }
@@ -52,7 +52,7 @@ private fun PlanCreationScreenPreview() {
     GitFitTheme {
         Surface {
             PlanCreationScreen(
-                plan = mockPlan
+                plan = mockPlan,
             )
         }
     }
@@ -64,7 +64,7 @@ private fun PlanWorkoutCreationPreview() {
     GitFitTheme {
         Surface {
             PlanWorkoutCreationScreen(
-                mockWorkoutPlan
+                mockWorkoutPlan,
             )
         }
     }

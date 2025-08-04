@@ -1,0 +1,15 @@
+# remove the leading '#' to uncomment lines
+
+app_package_name('io.github.jakubherr.gitfit')
+use_tests_in_packages(['screenshot'])
+
+app_apk_path('composeApp/build/outputs/apk/androidTest/debug/composeApp-debug-androidTest.apk')
+tests_apk_path('composeApp/build/outputs/apk/debug/composeApp-debug.apk')
+
+locales(['cs-CZ','en-US'])
+
+# clear all previously generated screenshots in your local output directory before creating new ones
+clear_previous_screenshots(true)
+
+# For more information about all available options run
+#   fastlane screengrab --help

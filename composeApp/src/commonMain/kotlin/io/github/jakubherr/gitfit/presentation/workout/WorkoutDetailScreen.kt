@@ -67,7 +67,7 @@ fun WorkoutDetailScreen(
 
             IconButton(
                 onClick = { showDialog = true },
-                modifier = Modifier.testTag("DeleteWorkoutRecordButton")
+                modifier = Modifier.testTag("DeleteWorkoutRecordButton"),
             ) {
                 Icon(Icons.Default.Delete, stringResource(Res.string.delete_workout_record))
             }
@@ -77,7 +77,7 @@ fun WorkoutDetailScreen(
 
         LazyColumn(
             Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             items(workout.blocks) { block ->
                 WorkoutBlockItem(workout, block, readOnly = true)

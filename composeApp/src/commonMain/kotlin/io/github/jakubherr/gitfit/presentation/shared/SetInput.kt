@@ -49,7 +49,7 @@ fun SetInput(
                     onValidSetEntered(set.copy(weight = weight.toDouble(), repetitions = reps.toLong()))
                 }
             },
-            imeAction = ImeAction.Next
+            imeAction = ImeAction.Next,
         )
 
         IntegerInputField(
@@ -90,7 +90,7 @@ fun CheckableSetInput(
             modifier = Modifier.width(64.dp).testTag("WorkoutWeightInput"),
             onValueChange = { weight = it },
             enabled = !set.completed,
-            imeAction = ImeAction.Next
+            imeAction = ImeAction.Next,
         )
 
         IntegerInputField(

@@ -11,15 +11,17 @@ import io.github.jakubherr.gitfit.domain.model.Plan
 import io.github.jakubherr.gitfit.domain.model.Workout
 import org.jetbrains.compose.resources.getString
 
-suspend fun Plan.Error.toMessage(): String = when (this) {
-    is Plan.Error.InvalidPlanName -> getString(Res.string.error_unnamed_plan)
-    is Plan.Error.InvalidWorkout -> this.error.toMessage()
-    is Plan.Error.NoWorkoutInPlan -> getString(Res.string.error_no_workouts_in_plan)
-}
+suspend fun Plan.Error.toMessage(): String =
+    when (this) {
+        is Plan.Error.InvalidPlanName -> getString(Res.string.error_unnamed_plan)
+        is Plan.Error.InvalidWorkout -> this.error.toMessage()
+        is Plan.Error.NoWorkoutInPlan -> getString(Res.string.error_no_workouts_in_plan)
+    }
 
-suspend fun Workout.Error.toMessage(): String = when (this) {
-    Workout.Error.BlankName -> getString(Res.string.error_unnamed_workout_plan)
-    Workout.Error.InvalidSetInExercise -> getString(Res.string.error_invalid_series_values)
-    Workout.Error.NoExerciseInWorkout -> getString(Res.string.error_no_exercise_in_workout)
-    Workout.Error.NoSetInExercise -> getString(Res.string.error_no_series_for_exercise)
-}
+suspend fun Workout.Error.toMessage(): String =
+    when (this) {
+        Workout.Error.BlankName -> getString(Res.string.error_unnamed_workout_plan)
+        Workout.Error.InvalidSetInExercise -> getString(Res.string.error_invalid_series_values)
+        Workout.Error.NoExerciseInWorkout -> getString(Res.string.error_no_exercise_in_workout)
+        Workout.Error.NoSetInExercise -> getString(Res.string.error_no_series_for_exercise)
+    }

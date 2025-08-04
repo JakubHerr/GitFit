@@ -13,7 +13,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class FirestoreMeasurementRepository : MeasurementRepository {
-    private fun measurementsRef(userId: String) = Firebase.firestore.collection("USERS").document(userId).collection("MEASUREMENTS")
+    private fun measurementsRef(userId: String) =
+        Firebase.firestore
+            .collection("USERS")
+            .document(userId)
+            .collection("MEASUREMENTS")
 
     private val dispatcher = Dispatchers.IO
 
@@ -38,20 +42,18 @@ class FirestoreMeasurementRepository : MeasurementRepository {
     override suspend fun saveMeasurement(
         userId: String,
         measurement: Measurement,
-    ): Result<Unit> {
-        return withContext(dispatcher) {
+    ): Result<Unit> =
+        withContext(dispatcher) {
             runCatching { measurementsRef(userId).document(today().toString()).set(measurement) }
         }
-    }
 
     override suspend fun deleteMeasurement(
         userId: String,
         measurement: Measurement,
-    ): Result<Unit> {
-        return withContext(dispatcher) {
+    ): Result<Unit> =
+        withContext(dispatcher) {
             runCatching { measurementsRef(userId).document(measurement.date.toString()).delete() }
         }
-    }
 
     override suspend fun deleteAllMeasurements(userId: String): Result<Unit> {
         userId.ifBlank { return Result.failure(AuthError.UserLoggedOut) }

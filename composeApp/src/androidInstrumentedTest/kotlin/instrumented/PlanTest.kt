@@ -20,46 +20,46 @@ import io.github.jakubherr.gitfit.presentation.App
 import kotlin.test.Test
 
 class PlanTest {
-
     @OptIn(ExperimentalTestApi::class)
     @Test
-    fun planTest() = runComposeUiTest {
-        setContent {
-            App()
+    fun planTest() =
+        runComposeUiTest {
+            setContent {
+                App()
+            }
+
+            login()
+
+            onNodeWithText("Plány").performClick()
+            waitForIdle()
+
+            copyPredefinedPlan()
+
+            onNodeWithTag("UserPlanListItem").performClick()
+
+            editPlan()
+
+            deletePlan()
+
+            createNewPlan()
+
+            onNodeWithTag("UserPlanListItem").performClick()
+
+            executeWorkoutFromPlan()
+
+            onNodeWithText("Plány").performClick()
+            waitForIdle()
+            onNodeWithTag("UserPlanListItem").performClick()
+            deletePlan()
+            deleteWorkoutRecord()
+            logout()
         }
-
-        login()
-
-        onNodeWithText("Plány").performClick()
-        waitForIdle()
-
-        copyPredefinedPlan()
-
-        onNodeWithTag("UserPlanListItem").performClick()
-
-        editPlan()
-
-        deletePlan()
-
-        createNewPlan()
-
-        onNodeWithTag("UserPlanListItem").performClick()
-
-        executeWorkoutFromPlan()
-
-        onNodeWithText("Plány").performClick()
-        waitForIdle()
-        onNodeWithTag("UserPlanListItem").performClick()
-        deletePlan()
-        deleteWorkoutRecord()
-        logout()
-    }
 
     @OptIn(ExperimentalTestApi::class)
     private fun ComposeUiTest.copyPredefinedPlan() {
         waitUntilAtLeastOneExists(
             hasTestTag("PredefinedPlanListItem"),
-            timeoutMillis = 3000
+            timeoutMillis = 3000,
         )
         onAllNodesWithTag("PredefinedPlanListItem").onFirst().performClick()
         waitForIdle()
@@ -68,7 +68,7 @@ class PlanTest {
 
         waitUntilExactlyOneExists(
             hasTestTag("UserPlanListItem"),
-            timeoutMillis = 3000
+            timeoutMillis = 3000,
         )
     }
 
@@ -76,7 +76,7 @@ class PlanTest {
     private fun ComposeUiTest.editPlan() {
         waitUntilExactlyOneExists(
             hasTestTag("EditPlanButton"),
-            timeoutMillis = 3000
+            timeoutMillis = 3000,
         )
         onNodeWithTag("EditPlanButton").performClick()
 
@@ -135,7 +135,7 @@ class PlanTest {
         waitForIdle()
         waitUntilDoesNotExist(
             hasTestTag("EmptyExerciseList"),
-            timeoutMillis = 3000
+            timeoutMillis = 3000,
         )
         onNodeWithText("Bench Press").performClick()
 
@@ -154,7 +154,6 @@ class PlanTest {
         // save plan
         waitUntilExactlyOneExists(hasTestTag("SavePlan"))
         onNodeWithTag("SavePlan").performClick()
-
     }
 
     @OptIn(ExperimentalTestApi::class)
@@ -175,14 +174,14 @@ class PlanTest {
 
         waitUntilExactlyOneExists(
             hasTestTag("WorkoutSeriesCheckbox"),
-            timeoutMillis = 3000
+            timeoutMillis = 3000,
         )
         onNodeWithTag("WorkoutSeriesCheckbox").performClick()
         waitForIdle()
         onNodeWithTag("SaveWorkoutInProgress").performClick()
         waitUntilDoesNotExist(
             hasTestTag("WorkoutProgressIndicator"),
-            timeoutMillis = 3000L
+            timeoutMillis = 3000L,
         )
     }
 
@@ -190,14 +189,14 @@ class PlanTest {
     private fun ComposeUiTest.deletePlan() {
         waitUntilExactlyOneExists(
             hasTestTag("DeletePlanButton"),
-            timeoutMillis = 3000
+            timeoutMillis = 3000,
         )
         onNodeWithTag("DeletePlanButton").performClick()
         waitForIdle()
         onNodeWithTag("ConfirmDialogButton").performClick()
         waitUntilDoesNotExist(
             hasTestTag("UserPlanListItem"),
-            timeoutMillis = 3000L
+            timeoutMillis = 3000L,
         )
     }
 }

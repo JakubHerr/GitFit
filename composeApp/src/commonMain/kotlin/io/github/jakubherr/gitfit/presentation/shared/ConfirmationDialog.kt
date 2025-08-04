@@ -30,7 +30,7 @@ fun ConfirmationDialog(
         confirmButton = {
             TextButton(
                 onConfirm,
-                modifier = Modifier.testTag("ConfirmDialogButton")
+                modifier = Modifier.testTag("ConfirmDialogButton"),
             ) {
                 Text(confirmText, color = MaterialTheme.colorScheme.error)
             }
@@ -38,7 +38,7 @@ fun ConfirmationDialog(
         dismissButton = {
             TextButton(
                 onDismiss,
-                modifier = Modifier.testTag("DismissDialogButton")
+                modifier = Modifier.testTag("DismissDialogButton"),
             ) {
                 Text(dismissText)
             }

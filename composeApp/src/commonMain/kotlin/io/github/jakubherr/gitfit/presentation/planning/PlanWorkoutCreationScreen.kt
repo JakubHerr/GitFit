@@ -68,7 +68,7 @@ fun PlanWorkoutCreationScreen(
 
         LazyColumn(
             Modifier.weight(1.0f).fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             items(workoutPlan.blocks) { block ->
                 PlanBlockItem(
@@ -78,7 +78,7 @@ fun PlanWorkoutCreationScreen(
                     onDeleteSeries = { onAction(PlanAction.RemoveSet(workoutPlan, block, it)) },
                     onDeleteExercise = { onAction(PlanAction.RemoveExercise(workoutPlan, block)) },
                     onEditProgression = { onEditProgression(block) },
-                    onAddRestTimer = { onAction(PlanAction.SetTimer(workoutPlan, block, it)) }
+                    onAddRestTimer = { onAction(PlanAction.SetTimer(workoutPlan, block, it)) },
                 )
             }
         }
@@ -90,7 +90,7 @@ fun PlanWorkoutCreationScreen(
         ) {
             Button(
                 onClick = { onAddExerciseClick(workoutPlan.idx) },
-                modifier = Modifier.testTag("WorkoutPlanAddExercise")
+                modifier = Modifier.testTag("WorkoutPlanAddExercise"),
             ) {
                 Text(stringResource(Res.string.add_exercise))
             }
@@ -100,8 +100,7 @@ fun PlanWorkoutCreationScreen(
                     onAction(PlanAction.ValidateWorkout(workoutPlan))
                     onSave()
                 },
-                modifier = Modifier.testTag("ConfirmWorkoutPlan")
-
+                modifier = Modifier.testTag("ConfirmWorkoutPlan"),
             ) { Text(stringResource(Res.string.confirm)) }
         }
     }
@@ -119,18 +118,18 @@ fun PlanBlockItemDropdownMenu(
 
     if (showTimePicker) {
         TimePickerDialog(
-            onDismiss = { showTimePicker = false},
+            onDismiss = { showTimePicker = false },
             onConfirm = {
                 onAddRestTimer(it)
                 showTimePicker = false
-            }
+            },
         )
     }
 
     Box {
         IconButton(
-           onClick = { expanded = !expanded },
-            modifier = Modifier.testTag("PlanExerciseDropdown")
+            onClick = { expanded = !expanded },
+            modifier = Modifier.testTag("PlanExerciseDropdown"),
         ) {
             Icon(Icons.Default.MoreVert, stringResource(Res.string.show_exercise_dropdown_menu))
         }
@@ -161,7 +160,7 @@ fun PlanBlockItemDropdownMenu(
                 onClick = {
                     expanded = false
                     showTimePicker = true
-                }
+                },
             )
         }
     }

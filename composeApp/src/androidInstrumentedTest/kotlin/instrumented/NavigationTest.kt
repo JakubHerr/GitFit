@@ -13,35 +13,35 @@ import io.github.jakubherr.gitfit.presentation.App
 import kotlin.test.Test
 
 class NavigationTest {
-
     // this test validates use cases F02 and F06 with real database on a testing account
     // It also navigates through all top level destinations in the app
     // this test assumes that it is run on a real device with internet access with Czech localization
     @OptIn(ExperimentalTestApi::class)
     @Test
-    fun navigationTest() = runComposeUiTest {
-        setContent {
-            App()
+    fun navigationTest() =
+        runComposeUiTest {
+            setContent {
+                App()
+            }
+
+            onNodeWithText("Zapomenuté heslo").performClick()
+            waitForIdle()
+
+            navigateBack()
+
+            login()
+
+            onNodeWithText("Plány").performClick()
+            waitForIdle()
+
+            onNodeWithText("Měření").performClick()
+            waitForIdle()
+
+            onNodeWithText("Historie").performClick()
+            waitForIdle()
+
+            logout()
         }
-
-        onNodeWithText("Zapomenuté heslo").performClick()
-        waitForIdle()
-
-        navigateBack()
-
-        login()
-
-        onNodeWithText("Plány").performClick()
-        waitForIdle()
-
-        onNodeWithText("Měření").performClick()
-        waitForIdle()
-
-        onNodeWithText("Historie").performClick()
-        waitForIdle()
-
-        logout()
-    }
 }
 
 @OptIn(ExperimentalTestApi::class)
@@ -56,7 +56,7 @@ fun ComposeUiTest.login() {
 
     waitUntilDoesNotExist(
         hasTestTag("AuthProgressIndicator"),
-        timeoutMillis = 3000
+        timeoutMillis = 3000,
     )
 
     onNodeWithText("Přeskočit ověření").performClick()
@@ -75,7 +75,7 @@ fun ComposeUiTest.register() {
 
     waitUntilDoesNotExist(
         hasTestTag("AuthProgressIndicator"),
-        timeoutMillis = 3000
+        timeoutMillis = 3000,
     )
 
     onNodeWithText("Přeskočit ověření").performClick()
@@ -89,7 +89,7 @@ fun ComposeUiTest.logout() {
     onNodeWithText("Odhlásit se").performClick()
     waitUntilDoesNotExist(
         hasTestTag("AuthProgressIndicator"),
-        timeoutMillis = 3000
+        timeoutMillis = 3000,
     )
 }
 

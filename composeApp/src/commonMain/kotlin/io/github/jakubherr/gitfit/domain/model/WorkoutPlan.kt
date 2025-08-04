@@ -9,13 +9,16 @@ data class WorkoutPlan(
     val idx: Int,
     val blocks: List<Block>,
 ) {
-    val error: Error? get() = when {
-        name.isBlank() -> Error.BlankName
-        blocks.isEmpty() -> Error.NoExerciseInWorkout
-        blocks.any { block -> block.series.isEmpty() } -> Error.NoSetInExercise
-        blocks.any { block -> block.series.any { series -> series.weight == null || series.repetitions == null } } -> Error.InvalidSetInExercise
-        else -> null
-    }
+    val error: Error? get() =
+        when {
+            name.isBlank() -> Error.BlankName
+            blocks.isEmpty() -> Error.NoExerciseInWorkout
+            blocks.any { block -> block.series.isEmpty() } -> Error.NoSetInExercise
+            blocks.any { block ->
+                block.series.any { series -> series.weight == null || series.repetitions == null }
+            } -> Error.InvalidSetInExercise
+            else -> null
+        }
 
     fun addBlock(exercise: Exercise): WorkoutPlan = copy(blocks = blocks + Block(blocks.size, exercise))
 
@@ -53,9 +56,13 @@ data class WorkoutPlan(
         // check every recorded block with progression for progress threshold criteria
         blocksWithProgression.forEach { recordedBlock ->
             val settings = recordedBlock.progressionSettings!!
-            val shouldProgress = recordedBlock.series.all { series ->
-                series.completed && series.isNotNull && series.weight!! >= settings.weightThreshold && series.repetitions!! >= settings.repThreshold
-            }
+            val shouldProgress =
+                recordedBlock.series.all { series ->
+                    series.completed &&
+                        series.isNotNull &&
+                        series.weight!! >= settings.weightThreshold &&
+                        series.repetitions!! >= settings.repThreshold
+                }
 
             // if criteria was met
             if (shouldProgress) {
@@ -75,10 +82,11 @@ data class WorkoutPlan(
     }
 
     companion object {
-        fun Empty(idx: Int) = WorkoutPlan(
-            "New workout",
-            idx,
-            emptyList(),
-        )
+        fun empty(idx: Int) =
+            WorkoutPlan(
+                "New workout",
+                idx,
+                emptyList(),
+            )
     }
 }

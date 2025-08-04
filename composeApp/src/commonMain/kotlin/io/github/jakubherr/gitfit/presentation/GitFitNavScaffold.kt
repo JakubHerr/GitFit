@@ -2,7 +2,6 @@ package io.github.jakubherr.gitfit.presentation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ManageSearch
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings

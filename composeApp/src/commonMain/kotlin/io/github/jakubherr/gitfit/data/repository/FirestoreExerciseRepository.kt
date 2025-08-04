@@ -14,17 +14,20 @@ import kotlinx.coroutines.withContext
 class FirestoreExerciseRepository : ExerciseRepository {
     private val defaultExerciseRef = Firebase.firestore.collection("EXERCISES")
 
-    private fun userExerciseRef(userId: String) = Firebase.firestore.collection("USERS").document(userId).collection("EXERCISES")
+    private fun userExerciseRef(userId: String) =
+        Firebase.firestore
+            .collection("USERS")
+            .document(userId)
+            .collection("EXERCISES")
 
     private val context = Dispatchers.IO
 
-    override fun getDefaultExercises(): Flow<List<Exercise>> {
-        return defaultExerciseRef.snapshots.map { snapshot ->
+    override fun getDefaultExercises(): Flow<List<Exercise>> =
+        defaultExerciseRef.snapshots.map { snapshot ->
             snapshot.documents.mapNotNull {
                 runCatching { it.data<Exercise>() }.getOrNull()
             }
         }
-    }
 
     override fun getCustomExercises(userId: String): Flow<List<Exercise>> {
         if (userId.isBlank()) return emptyFlow()

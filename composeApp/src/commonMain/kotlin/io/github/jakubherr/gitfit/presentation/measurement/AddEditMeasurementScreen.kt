@@ -62,11 +62,11 @@ fun AddEditMeasurementScreen(
         ) {
             Button(
                 onClick = {
-                // TODO notify of error
-                val measurement = measurementTypes.toMeasurement()
-                onSave(measurement)
-            },
-                modifier = Modifier.testTag("SaveMeasurementButton")
+                    // TODO notify of error
+                    val measurement = measurementTypes.toMeasurement()
+                    onSave(measurement)
+                },
+                modifier = Modifier.testTag("SaveMeasurementButton"),
             ) {
                 Text(stringResource(Res.string.save_measurement))
             }

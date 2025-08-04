@@ -17,7 +17,7 @@ import org.jetbrains.compose.resources.vectorResource
 @Composable
 fun GitFitLogo() {
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
             imageVector = vectorResource(Res.drawable.ic_launcher_foreground),

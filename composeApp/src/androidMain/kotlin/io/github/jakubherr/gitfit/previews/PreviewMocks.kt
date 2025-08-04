@@ -59,33 +59,36 @@ val mockWorkout =
         date = today(),
     )
 
-val mockWorkoutPlan = WorkoutPlan(
-    name = "Workout A",
-    idx = 0,
-    blocks = listOf(mockBlock)
-)
+val mockWorkoutPlan =
+    WorkoutPlan(
+        name = "Workout A",
+        idx = 0,
+        blocks = listOf(mockBlock),
+    )
 
-val mockPlan = Plan(
-    id = "mock",
-    userId = null,
-    name = "Mock plan",
-    description = "no description",
-    workoutPlans = listOf(mockWorkoutPlan, mockWorkoutPlan)
-)
+val mockPlan =
+    Plan(
+        id = "mock",
+        userId = null,
+        name = "Mock plan",
+        description = "no description",
+        workoutPlans = listOf(mockWorkoutPlan, mockWorkoutPlan),
+    )
 
-val mockMeasurement = Measurement(
-    date = today(),
-    1.0,
-    2.0,
-    3.0,
-    4.0,
-    5.0,
-    6.0,
-    7.0,
-    8.0,
-    9.0,
-    10.0,
-    11.0,
-    12.0,
-    13.0,
-)
+val mockMeasurement =
+    Measurement(
+        date = today(),
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        7.0,
+        8.0,
+        9.0,
+        10.0,
+        11.0,
+        12.0,
+        13.0,
+    )

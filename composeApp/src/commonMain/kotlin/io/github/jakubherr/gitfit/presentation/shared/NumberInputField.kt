@@ -28,7 +28,7 @@ fun NumberInputField(
     isError: Boolean = false,
     enabled: Boolean = true,
     maxlength: Int,
-    imeAction: ImeAction = ImeAction.Done
+    imeAction: ImeAction = ImeAction.Done,
 ) {
     OutlinedTextField(
         value,
@@ -36,10 +36,11 @@ fun NumberInputField(
         modifier = modifier,
         enabled = enabled,
         placeholder = { Text(placeholder.toString(), Modifier.alpha(0.6f)) },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number,
-            imeAction = imeAction
-        ),
+        keyboardOptions =
+            KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = imeAction,
+            ),
         isError = isError,
         singleLine = true,
     )
@@ -55,7 +56,7 @@ fun IntegerInputField(
     isError: Boolean = !value.isNonNegativeInt(),
     enabled: Boolean = true,
     maxlength: Int = 3, // nobody is doing more than 999 kg or 999 reps
-    imeAction: ImeAction = ImeAction.Done
+    imeAction: ImeAction = ImeAction.Done,
 ) {
     NumberInputField(
         value,
@@ -66,7 +67,7 @@ fun IntegerInputField(
         isError,
         enabled,
         maxlength,
-        imeAction
+        imeAction,
     )
 }
 
@@ -82,7 +83,7 @@ fun DoubleInputField(
     maxlength: Int = 6,
     enabled: Boolean = true,
     maxDecimals: Int = 2,
-    imeAction: ImeAction = ImeAction.Done
+    imeAction: ImeAction = ImeAction.Done,
 ) {
     NumberInputField(
         value,
@@ -95,6 +96,6 @@ fun DoubleInputField(
         isError,
         enabled,
         maxlength,
-        imeAction
+        imeAction,
     )
 }

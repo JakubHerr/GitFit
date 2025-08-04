@@ -17,44 +17,39 @@ class FirebasePlanRepository : PlanRepository {
 
     private fun userPlanRef(userId: String) = firestore.collection("USERS").document(userId).collection("PLANS")
 
-    override fun getPredefinedPlans(): Flow<List<Plan>> {
-        return planRef.snapshots.map { snapshot ->
+    override fun getPredefinedPlans(): Flow<List<Plan>> =
+        planRef.snapshots.map { snapshot ->
             snapshot.documents.map { it.data<Plan>() }
         }
-    }
 
-    override fun getCustomPlans(userId: String): Flow<List<Plan>> {
-        return userPlanRef(userId).snapshots.map { snapshot ->
+    override fun getCustomPlans(userId: String): Flow<List<Plan>> =
+        userPlanRef(userId).snapshots.map { snapshot ->
             snapshot.documents.map { it.data<Plan>() }
         }
-    }
 
     // if a plan is already associated with an id, it will get overwritten
     override suspend fun saveCustomPlan(
         userId: String,
         plan: Plan,
-    ): Result<Unit> {
-        return withContext(context) {
+    ): Result<Unit> =
+        withContext(context) {
             val id = plan.id.ifBlank { userPlanRef(userId).document.id }
             runCatching { userPlanRef(userId).document(id).set(plan.copy(id = id)) }
         }
-    }
 
-    override suspend fun saveDefaultPlan(plan: Plan): Result<Unit> {
-        return withContext(context) {
+    override suspend fun saveDefaultPlan(plan: Plan): Result<Unit> =
+        withContext(context) {
             val id = plan.id.ifBlank { planRef.document.id }
             runCatching { planRef.document(id).set(plan.copy(id = id)) }
         }
-    }
 
     override suspend fun deleteCustomPlan(
         userId: String,
         planId: String,
-    ): Result<Unit> {
-        return withContext(context) {
+    ): Result<Unit> =
+        withContext(context) {
             runCatching { userPlanRef(userId).document(planId).delete() }
         }
-    }
 
     override suspend fun deleteAllCustomPlans(userId: String): Result<Unit> {
         userId.ifBlank { return Result.failure(AuthError.UserLoggedOut) }

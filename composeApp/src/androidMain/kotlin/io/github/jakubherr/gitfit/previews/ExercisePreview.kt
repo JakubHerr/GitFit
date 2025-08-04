@@ -40,9 +40,10 @@ private fun ExerciseDetailScreenPreview() {
             // note: graph does not show values in preview
             ExerciseDetailScreen(
                 mockExercise,
-                graphData = listOf(
-                    DefaultPoint("2024-04-09", 70)
-                ),
+                graphData =
+                    listOf(
+                        DefaultPoint("2024-04-09", 70),
+                    ),
                 selectedMetric = ExerciseMetric.HEAVIEST_WEIGHT,
             )
         }

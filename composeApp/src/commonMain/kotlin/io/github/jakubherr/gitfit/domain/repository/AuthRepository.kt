@@ -21,7 +21,7 @@ interface AuthRepository {
 
     suspend fun changePassword(
         oldPassword: String,
-        newPassword: String
+        newPassword: String,
     ): Result<Unit>
 
     // the lambda allows the caller to specify all actions that must be successfully executed before the account is deleted

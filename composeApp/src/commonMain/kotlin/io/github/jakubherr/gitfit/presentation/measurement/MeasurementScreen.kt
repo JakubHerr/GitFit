@@ -56,12 +56,8 @@ import gitfit.composeapp.generated.resources.weight
 import io.github.jakubherr.gitfit.domain.model.Measurement
 import io.github.jakubherr.gitfit.presentation.graph.MeasurementLineGraph
 import io.github.jakubherr.gitfit.presentation.shared.DoubleInputField
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayIn
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
-import kotlin.enums.EnumEntries
 
 // use case: add, edit and review body measurements over time
 @Composable
@@ -79,7 +75,7 @@ fun MeasurementScreenRoot(
         todaysMeasurement,
         modifier,
         onRequestAddEditMeasurement,
-        onShowHistory
+        onShowHistory,
     )
 }
 
@@ -162,7 +158,7 @@ fun MeasurementInputField(
     modifier: Modifier = Modifier,
     testTag: String,
     imeAction: ImeAction = ImeAction.Done,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
 ) {
     Row(
         modifier.fillMaxWidth(),

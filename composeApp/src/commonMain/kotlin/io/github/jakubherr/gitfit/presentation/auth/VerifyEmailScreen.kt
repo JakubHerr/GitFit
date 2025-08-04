@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gitfit.composeapp.generated.resources.Res
 import gitfit.composeapp.generated.resources.email_not_verified
@@ -72,7 +73,7 @@ fun VerifyEmailScreen(
 
             Button(
                 onClick = onSkip,
-                Modifier.fillMaxWidth(),
+                Modifier.fillMaxWidth().testTag("SkipVerificationButton"),
             ) {
                 Text(stringResource(Res.string.skip_verification))
             }

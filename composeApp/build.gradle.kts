@@ -2,6 +2,8 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -9,7 +11,6 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.ktlint)
     alias(libs.plugins.googleServices)
     alias(libs.plugins.crashlytics)
 }
@@ -73,25 +74,67 @@ kotlin {
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
 
+        androidInstrumentedTest.dependencies {
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.uiTest)
+            implementation(libs.screengrab)
+            implementation(libs.androidx.ui.test.junit4)
+            implementation(libs.androidx.junit.ktx)
         }
     }
 }
 
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
+
+fun getSecret(key: String): String = keystoreProperties.getProperty(key) ?: System.getenv(key)
+
 android {
     namespace = "io.github.jakubherr.gitfit"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk =
+        libs.versions.android.compileSdk
+            .get()
+            .toInt()
 
+    // This was needed to correctly merge debug manifest for fastlane screenshots
+    sourceSets {
+        getByName("main") {
+            manifest.srcFile("src/androidMain/AndroidManifest.xml")
+        }
+        getByName("debug") {
+            manifest.srcFile("src/androidDebug/AndroidManifest.xml")
+        }
+    }
     defaultConfig {
         applicationId = "io.github.jakubherr.gitfit"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = libs.versions.gitfitVersionCode.get().toInt()
+        minSdk =
+            libs.versions.android.minSdk
+                .get()
+                .toInt()
+        targetSdk =
+            libs.versions.android.targetSdk
+                .get()
+                .toInt()
+        versionCode =
+            libs.versions.gitfitVersionCode
+                .get()
+                .toInt()
         versionName = libs.versions.gitfit.get()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        create("play") {
+            storeFile = file(getSecret("KEYSTORE_FILE"))
+            storePassword = getSecret("KEYSTORE_PASSWORD")
+            keyAlias = getSecret("KEY_ALIAS")
+            keyPassword = getSecret("KEY_PASSWORD")
+        }
     }
     packaging {
         resources {
@@ -103,6 +146,7 @@ android {
             isMinifyEnabled = true
             isDebuggable = false
             isShrinkResources = true
+            signingConfig = signingConfigs.getByName("play")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
@@ -123,6 +167,12 @@ android {
         // this needed to be increased from 11 to 17 because of GitLive Firebase ¯\_(ツ)_/¯
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+    // this fixes problem with fastlane not having access to a compiler
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
     }
 }
 

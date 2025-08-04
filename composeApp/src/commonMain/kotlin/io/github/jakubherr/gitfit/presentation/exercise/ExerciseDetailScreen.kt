@@ -114,7 +114,7 @@ fun ExerciseDetailScreen(
             if (exercise.isCustom) {
                 IconButton(
                     onClick = { onDeleteExercise(exercise.id) },
-                    modifier = Modifier.testTag("DeleteExerciseButton")
+                    modifier = Modifier.testTag("DeleteExerciseButton"),
                 ) {
                     Icon(Icons.Default.Delete, stringResource(Res.string.delete_custom_exercise))
                 }

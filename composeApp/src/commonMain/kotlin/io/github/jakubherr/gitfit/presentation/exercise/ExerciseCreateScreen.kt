@@ -134,8 +134,7 @@ fun ExerciseCreateScreen(
                         ),
                     )
                 },
-                modifier = Modifier.testTag("SaveExerciseButton")
-
+                modifier = Modifier.testTag("SaveExerciseButton"),
             ) {
                 Text(stringResource(Res.string.save_exercise))
             }

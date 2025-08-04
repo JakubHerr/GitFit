@@ -79,7 +79,7 @@ fun EditProgressionScreen(
     Column(modifier.fillMaxSize().padding(16.dp)) {
         Column(
             Modifier.weight(1.0f),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text("${stringResource(Res.string.edit_progression)}: ${block.exercise.name}")
             Text(stringResource(Res.string.starting_values), fontWeight = FontWeight.Bold)
@@ -92,7 +92,7 @@ fun EditProgressionScreen(
                 DoubleInputField(
                     minimumWeight,
                     onValueChange = { minimumWeight = it },
-                    modifier = Modifier.width(64.dp).testTag("MinimumWeightInput")
+                    modifier = Modifier.width(64.dp).testTag("MinimumWeightInput"),
                 )
             }
 
@@ -115,7 +115,6 @@ fun EditProgressionScreen(
                 selectedProgressionType = it
             }
 
-
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -126,7 +125,7 @@ fun EditProgressionScreen(
                         weightIncrease,
                         isError = !weightIncrease.isPositiveDouble(),
                         onValueChange = { weightIncrease = it },
-                        modifier = Modifier.width(64.dp).testTag("WeightIncreaseInput")
+                        modifier = Modifier.width(64.dp).testTag("WeightIncreaseInput"),
                     )
                 }
                 if (selectedProgressionType == ProgressionType.INCREASE_REPS) {
@@ -135,7 +134,7 @@ fun EditProgressionScreen(
                         repIncrease,
                         isError = !repIncrease.isPositiveInt(),
                         onValueChange = { repIncrease = it },
-                        modifier = Modifier.width(64.dp).testTag("RepsIncreaseInput")
+                        modifier = Modifier.width(64.dp).testTag("RepsIncreaseInput"),
                     )
                 }
             }
@@ -152,10 +151,11 @@ fun EditProgressionScreen(
             if (block.progressionSettings != null) {
                 Button(
                     onClick = onDelete,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError,
-                    )
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            contentColor = MaterialTheme.colorScheme.onError,
+                        ),
                 ) {
                     Text(stringResource(Res.string.delete))
                 }
@@ -180,7 +180,7 @@ fun EditProgressionScreen(
 
                     onSave(settings)
                 },
-                modifier = Modifier.testTag("SaveProgressionButton")
+                modifier = Modifier.testTag("SaveProgressionButton"),
             ) {
                 Text(stringResource(Res.string.save))
             }

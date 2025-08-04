@@ -21,14 +21,15 @@ private val channelId = "RestNotification"
 
 // TODO: make multiplatform once GitLive Firebase gets updated on desktop
 fun Context.createNotificationChannel() {
-    val channel = NotificationChannel(
-        channelId,
-        "Rest Notification",
-        NotificationManager.IMPORTANCE_DEFAULT
-    ).apply {
-        setSound(null, null)
-        enableVibration(true)
-    }
+    val channel =
+        NotificationChannel(
+            channelId,
+            "Rest Notification",
+            NotificationManager.IMPORTANCE_DEFAULT,
+        ).apply {
+            setSound(null, null)
+            enableVibration(true)
+        }
 
     val notificationManager: NotificationManager =
         getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -42,9 +43,10 @@ actual fun NotificationPermissionEffect() {
     // in previews
     if (LocalInspectionMode.current) return
     if (VERSION.SDK_INT < VERSION_CODES.TIRAMISU) return
-    val notificationsPermissionState = rememberPermissionState(
-        android.Manifest.permission.POST_NOTIFICATIONS,
-    )
+    val notificationsPermissionState =
+        rememberPermissionState(
+            android.Manifest.permission.POST_NOTIFICATIONS,
+        )
     LaunchedEffect(notificationsPermissionState) {
         val status = notificationsPermissionState.status
         if (status is PermissionStatus.Denied && !status.shouldShowRationale) {
@@ -53,21 +55,26 @@ actual fun NotificationPermissionEffect() {
     }
 }
 
-actual class NotificationHandler(private val context: Context) {
+actual class NotificationHandler(
+    private val context: Context,
+) {
     actual fun sendNotification() {
         with(context) {
-            val intent = Intent(this, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            }
+            val intent =
+                Intent(this, MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
             val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
-            val notification = NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle("Rest time over")
-                .setContentText("Get back to work!")
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .build()
+            val notification =
+                NotificationCompat
+                    .Builder(this, channelId)
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    .setContentTitle("Rest time over")
+                    .setContentText("Get back to work!")
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true)
+                    .build()
 
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

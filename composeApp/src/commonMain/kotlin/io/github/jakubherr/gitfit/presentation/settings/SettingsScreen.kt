@@ -102,7 +102,7 @@ fun SettingsScreen(
             Icon(
                 Icons.Default.Info,
                 stringResource(Res.string.about_app),
-                modifier = Modifier.size(80.dp)
+                modifier = Modifier.size(80.dp),
             )
         }
 
@@ -113,7 +113,7 @@ fun SettingsScreen(
                     onDeleteAccount = { password ->
                         showAccountDeletion = false
                         onDeleteAccount(password)
-                    }
+                    },
                 )
             }
             showPasswordChange -> {
@@ -124,18 +124,18 @@ fun SettingsScreen(
                     onChangePassword = { old, new ->
                         showPasswordChange = false
                         onChangePassword(old, new)
-                    }
+                    },
                 )
             }
             else -> {
                 AuthCard(
                     Modifier,
-                    loading = authState.loading
+                    loading = authState.loading,
                 ) {
                     Button(onLogout) { Text(stringResource(Res.string.log_out)) }
 
                     Button(
-                        onClick = { showPasswordChange = true }
+                        onClick = { showPasswordChange = true },
                     ) {
                         Text(stringResource(Res.string.change_password))
                     }
@@ -146,10 +146,10 @@ fun SettingsScreen(
                         onClick = { showAccountDeletionDialog = true },
                         modifier = Modifier.testTag("DeleteAccountButton1"),
                         colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.error,
-                            contentColor = MaterialTheme.colorScheme.onError,
-                        )
+                            ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.error,
+                                contentColor = MaterialTheme.colorScheme.onError,
+                            ),
                     ) {
                         Text(stringResource(Res.string.delete_account))
                     }
@@ -169,7 +169,7 @@ fun DeleteAccountCard(
 
     AuthCard(
         modifier,
-        loading
+        loading,
     ) {
         Text(stringResource(Res.string.confirm_account_deletion))
         PasswordInputField(
@@ -181,10 +181,10 @@ fun DeleteAccountCard(
             onClick = { onDeleteAccount(password) },
             Modifier.fillMaxWidth().testTag("DeleteAccountButton2"),
             colors =
-            ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.error,
-                contentColor = MaterialTheme.colorScheme.onError,
-            )
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError,
+                ),
         ) {
             Text(stringResource(Res.string.delete_account))
         }
@@ -195,33 +195,33 @@ fun DeleteAccountCard(
 fun PasswordChangeCard(
     modifier: Modifier = Modifier,
     loading: Boolean,
-    onChangePassword: (String, String) -> Unit
+    onChangePassword: (String, String) -> Unit,
 ) {
     var oldPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
 
     AuthCard(
         modifier,
-        loading
+        loading,
     ) {
         Text(stringResource(Res.string.confirm_password_change))
         PasswordInputField(
             password = oldPassword,
             onPasswordChange = { oldPassword = it },
             label = stringResource(Res.string.old_password),
-            imeAction = ImeAction.Next
+            imeAction = ImeAction.Next,
         )
 
         PasswordInputField(
             password = newPassword,
             onPasswordChange = { newPassword = it },
-            label = stringResource(Res.string.new_password)
+            label = stringResource(Res.string.new_password),
         )
 
         Button(
             onClick = { onChangePassword(oldPassword, newPassword) },
             Modifier.fillMaxWidth().testTag("ChangePasswordButton"),
-            enabled = oldPassword.isNotBlank() && newPassword.isNotBlank()
+            enabled = oldPassword.isNotBlank() && newPassword.isNotBlank(),
         ) {
             Text(stringResource(Res.string.change_password))
         }
@@ -229,17 +229,16 @@ fun PasswordChangeCard(
 }
 
 @Composable
-fun InfoDialog(
-    onDismiss: () -> Unit,
-) {
+fun InfoDialog(onDismiss: () -> Unit) {
     Dialog(
-        onDismissRequest = onDismiss
+        onDismissRequest = onDismiss,
     ) {
         Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(16.dp),
         ) {
             SelectionContainer {
                 Text(

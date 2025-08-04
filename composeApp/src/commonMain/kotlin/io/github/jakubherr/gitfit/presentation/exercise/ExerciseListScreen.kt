@@ -107,7 +107,7 @@ fun ExerciseListScreen(
         Row {
             Button(
                 onAddExerciseClick,
-                modifier = Modifier.testTag("CreateExerciseButton")
+                modifier = Modifier.testTag("CreateExerciseButton"),
             ) {
                 Text(stringResource(Res.string.create_exercise))
             }
@@ -128,8 +128,9 @@ fun SearchBar(
         singleLine = true,
         leadingIcon = { Icon(Icons.Default.Search, null) },
         placeholder = { Text(stringResource(Res.string.search_exercise)) },
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Done
-        )
+        keyboardOptions =
+            KeyboardOptions(
+                imeAction = ImeAction.Done,
+            ),
     )
 }
